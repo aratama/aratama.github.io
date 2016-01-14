@@ -1,0 +1,59 @@
+// ------------------------------
+//  Sonatina Symphonic Orchestra
+// ------------------------------
+//           Conga
+// ------------------------------
+
+<group>
+loop_mode=one_shot
+seq_length=2
+
+<region>
+sample=samples/percussion/conga-mut-rr1.mp3
+lokey=c3
+hikey=c3
+pitch_keycenter=c3
+seq_position=1
+
+<region>
+sample=samples/percussion/conga-mut-rr2.mp3
+lokey=c3
+hikey=c3
+pitch_keycenter=c3
+seq_position=2
+
+<group>
+loop_mode=one_shot
+seq_length=2
+
+<region>
+sample=samples/percussion/conga-opn-rr1.mp3
+lokey=d3
+hikey=d3
+pitch_keycenter=d3
+seq_position=1
+
+<region>
+sample=samples/percussion/conga-opn-rr2.mp3
+lokey=d3
+hikey=d3
+pitch_keycenter=d3
+seq_position=2
+
+<group>
+loop_mode=one_shot
+seq_length=2
+
+<region>
+sample=samples/percussion/conga-slp-rr1.mp3
+lokey=e3
+hikey=e3
+pitch_keycenter=e3
+seq_position=1
+
+<region>
+sample=samples/percussion/conga-slp-rr2.mp3
+lokey=e3
+hikey=e3
+pitch_keycenter=e3
+seq_position=2
