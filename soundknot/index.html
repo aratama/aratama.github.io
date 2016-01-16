@@ -16,20 +16,12 @@
         </style>
         <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
         <link href="reset.css" rel="stylesheet"></link>
+        <link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+        <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   </head>
   <body>
     <div id="splash" style="width:100%; height:100%; background-color:rgba(0, 0, 0, 0.5); z-index: 100000">
-      <script>
-        var splash = document.getElementById('splash');
-        splash.addEventListener("mousedown", function(e){
-            e.preventDefault(); 
-            e.stopPropagation(); 
-            splash.style.display = 'none'; 
-        });
-        window.addEventListener("load", function(){
-            splash.style.display = 'none';
-        });
-      </script>
+      <script src="splash.js"></script>
       <div style="width: 640px; height: 480px; position:absolute; left:0; right:0; top:0; bottom:0; margin:auto; background-color:#EBE7DE;">
           <img src="splash.svg"></img>
           <iframe src="license.txt" style="position: absolute; display:block; margin:20px; margin-left: auto; margin-right:auto; height: 100px; width: 500px; bottom: 0px; left:0; right:0; border: solid 1px grey;"></iframe>
