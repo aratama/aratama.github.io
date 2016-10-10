@@ -1,0 +1,75 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    font-family: "Century", serif;
+}
+
+header {
+    background-color: #464668;
+    color: #acacc0;
+    margin: 0px;
+    margin-bottom: 30px;
+    padding: 20px;
+    width: 100%;
+    box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 1);
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    pointer-events: none;
+}
+
+header > h1 {
+    margin: 0;
+    padding: 0;
+}
+
+p.content {
+    margin: 20px;
+}
+
+div.buttons > button {
+    color: black;
+    background-color: white;
+    border: solid 1px grey;
+    font-size: 16px;
+    padding: 5px;
+    padding-left: 30px;
+    padding-right: 30px;
+    font-family: "Century", serif;
+    transition-property: all;
+    transition-duration: 0.3s;
+
+    border-bottom: solid 1px grey;
+}
+
+div.buttons > button:hover {
+    background-color: #e2e2ef;
+}
+
+div.buttons select {
+    font-size: 16px;
+    padding: 5px;
+}
+
+textarea.source {
+    width: 100%;
+    height: 12em;
+    box-sizing: border-box;
+    font-size: 16px;
+    font-family: 'Courier New', monospace;
+    padding: 0.4em;
+}
+
+p.errors {
+    color: red;
+}
+
+pre {
+    font-size: 16px;
+    font-family: "Courier New", serif;
+}
