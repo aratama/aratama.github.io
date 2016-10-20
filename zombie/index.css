@@ -16,7 +16,7 @@ html, body {
 }
 
 canvas {
-    background-color: white;
+    /* background-color: white; */
     margin: auto;
     top: 0;
     bottom: 0;
