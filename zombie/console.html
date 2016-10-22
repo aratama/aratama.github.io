@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <script src="https://www.gstatic.com/firebasejs/3.0.2/firebase.js"></script>
+        <script src="console.js"></script>
+    </head>
+    <body>
+        <p>
+            <table>
+                <tr><td>Mail</td><td><input id="email"></input></td></tr>
+                <tr><td>Password</td><td><input id="password"></input></td></tr>
+            </table>
+            <button id="clearusers" type="password">Clear Users</button>
+        </p>
+        <script>
+            document.querySelector("#clearusers").addEventListener("click", function(e){
+                var email = document.querySelector("#email").value;
+                var password = document.querySelector("#password").value;
+                PS["Game.Zombie.Console"].clearAnnonimousUserData(email)(password)();
+                e.preventDefault();
+            });
+        </script>
+    </body>
+</html>
