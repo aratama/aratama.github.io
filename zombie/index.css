@@ -8,14 +8,14 @@ html, body {
     padding: 0;
     margin: 0;
     font-family: "Century", serif;
-    background-color: grey;
+    background-color: rgb(16, 16, 16);
     position: relative;
     width: 100%;
     height: 100%;
     overflow: hidden;
 }
 
-canvas {
+canvas, div#hud {
     /* background-color: white; */
     margin: auto;
     top: 0;
@@ -26,3 +26,38 @@ canvas {
     height: 720px;
     position: absolute;
 }
+
+div#hud {
+    color: white;
+}
+
+
+.start-button {
+    font-size: 32px;
+    font-family: serif;
+    position: absolute;
+    bottom: 100px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 100px;
+    height: 50px;
+}
+
+.sign-out-button {
+    font-size: 12px;
+    font-family: serif;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    margin: auto;
+    width: 100px;
+    height: 50px;
+}
+
+
+img.twitter-icon {
+    width: 80px;
+    height: 80px;
+}
+

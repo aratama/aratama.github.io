@@ -1021,6 +1021,8 @@ var PS = {};
   "use strict";
   var $foreign = PS["Web.Firebase"];
   var Control_Monad_Eff = PS["Control.Monad.Eff"];
+  var Control_Monad_Eff_Exception = PS["Control.Monad.Eff.Exception"];
+  var Control_Monad_Aff = PS["Control.Monad.Aff"];
   var Data_Foreign = PS["Data.Foreign"];
   var Data_Nullable = PS["Data.Nullable"];
   var Data_Maybe = PS["Data.Maybe"];
