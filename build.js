@@ -3,6 +3,13 @@ var glob = require("glob");
 var fs = require("fs");
 var path = require("path");
 var emoji = require('node-emoji');
+const mikan = require('mikanjs');
+
+const siteTitle = "ちょっと小さいのはたしかですが。";
+
+var articleTemplete = fs.readFileSync("templete-article.html").toString();
+
+var templeteIndex = fs.readFileSync("templete-index.html").toString();
 
 glob("raw/*.md", {}, (err, sources) => {
 
@@ -21,29 +28,11 @@ glob("raw/*.md", {}, (err, sources) => {
 
 
 
-        var source = fs.readFileSync(file);
-        var rendered = `
-<link rel="stylesheet" href="/res/highlight/styles/default.css">
-<script src="/res/highlight/highlight.pack.js"></script>
-<script>hljs.initHighlightingOnLoad();</script>
-
-<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  tex2jax: {inlineMath: [['$','$']]}
-});
-</script>
-<link rel="stylesheet" href="../style.css">
-<body>
-    <div class="content">
-        <header>${file}</header>
-        <article id="rendered">
-            <p><a href="index.html">目次</a></p>
-            ${marked(emoji.emojify(source.toString()), { renderer: renderer })}
-        </article>
-    </div>
-</body>
-        `;
+        var source = fs.readFileSync(file).toString();
+        var metadataString = /^<!--((.|\s)*?)-->/g.exec(source);
+        var metadata = metadataString == null ? {} : JSON.parse(metadataString[1]);
+        var date = new Date();
+        var rendered = eval("`" + articleTemplete + "`");
         fs.writeFileSync(`blog/${path.basename(file, ".md")}.html`, rendered);
     });
 
@@ -63,12 +52,8 @@ MathJax.Hub.Config({
     });
 
     var items = articles.map(article => {
-        return `<li><a href="${article.url}">${article.title}</a></li>`;
+        return `<a href="${article.url}"><li class="article">${article.title}</li></a>`;
     }).join("\n");
-    fs.writeFileSync("blog/index.html", `
-    <link rel="stylesheet" href="/style.css">
-    <article>
-        <ul>${items}</ul>
-    </article>`);
+    fs.writeFileSync("blog/index.html", eval("`" + templeteIndex + "`"));
 });
 

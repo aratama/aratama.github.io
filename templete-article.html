@@ -1,0 +1,31 @@
+<title>${metadata.title} - ${siteTitle}</title>
+<link rel="stylesheet" href="/res/highlight/styles/default.css">
+<script src="/res/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$']]}
+});
+</script>
+
+<link rel="stylesheet" href="../reset.css">
+<link rel="stylesheet" href="../style.css">
+
+<body>
+    <header><a href="/index.html">${siteTitle}</a></header>
+    <div class="content">
+
+        <article id="rendered">
+            <div>${date.getFullYear()}年${1 + date.getMonth()}月${1 + date.getDate()}日</div>
+            <h1 class="article-title">${mikan(metadata.title)}</h1>        
+            <p><a href="index.html">目次</a></p>
+            ${marked(emoji.emojify(source), { renderer: renderer })}
+        </article>
+    </div>
+
+    <footer>この文章を書いてる人: <a target="_blank" href="https://twitter.com/cubbit2">Aratama</a></footer>
+</body>

@@ -1,0 +1,130 @@
+<title>モナドのまほう　第２話『ゲームループとキー入力ができました』 - ちょっと小さいのはたしかですが。</title>
+<link rel="stylesheet" href="/res/highlight/styles/default.css">
+<script src="/res/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$']]}
+});
+</script>
+
+<link rel="stylesheet" href="../reset.css">
+<link rel="stylesheet" href="../style.css">
+
+<body>
+    <header><a href="/index.html">ちょっと小さいのはたしかですが。</a></header>
+    <div class="content">
+
+        <article id="rendered">
+            <div>2017年5月16日</div>
+            <h1 class="article-title"><span style="display:inline-block" role="presentation">モナドのまほう</span><span style="display:inline-block" role="presentation">　</span><span style="display:inline-block" role="presentation">第</span><span style="display:inline-block" role="presentation">２</span><span style="display:inline-block" role="presentation">話『ゲームループとキー入力ができました』</span></h1>        
+            <p><a href="index.html">目次</a></p>
+            <!-- {
+    "title": "モナドのまほう　第２話『ゲームループとキー入力ができました』"
+} -->
+<ul>
+<li><a href="http://qiita.com/hiruberuto/items/5321d8cebce7b87851f6">第一話　画像が表示できました</a>　←前回</li>
+</ul>
+<p>つづきです。</p>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>座標変換！👀</h1><p>前回は画像の読み込みと複数回の描画ができました。ここで<strong>急にクォータービューっぽく表示してみたくなった</strong>（思いつき）ので、そうしてみます！　<code>translate</code>とか<code>scale</code>とか<code>rotate</code>とかそういう座標変換の関数をそういう感じに呼びます！　アフィン変換について知らない人はゲームプログラミングの書籍なんかを読んでお勉強してみましょう！</p>
+<pre><code class="haskell">translate { translateX: 1280.0 * 0.5 , translateY: 720.0 * 0.5 } context
+scale { scaleX: 1.0, scaleY: 0.6 } context
+rotate (45.0 / 180.0 * pi) context</code></pre><p>これらの関数について、詳しくは<a href="https://developer.mozilla.org/ja/docs/Web/HTML/Canvas">Canvas API</a>をどうぞ。</p>
+<h1><a name="-code-save-code-code-restore-code-" class="anchor" href="#-code-save-code-code-restore-code-"><span class="header-link"></span></a><code>save</code>/<code>restore</code>！👮</h1><p>そして忘れてはいけないのが、コンテキストの<code>save</code>と<code>restore</code>。これを忘れるとゲームループが回るたびに座標変換が蓄積していってわけのわからないことになります。まあまだゲームループも実装していませんけど。もちろんPureScriptからでも問題なく<code>save</code>と<code>restore</code>を呼ぶことができます。</p>
+<pre><code class="haskell">save context
+pure unit   -- do something
+restore context</code></pre><p>でも、これじゃうっかり<code>restore</code>を書き忘れるかも……。そんなときは<code>withContext</code>っていう関数が用意されているので、これを使えば自動的に<code>save</code>と<code>restore</code>をしてくれるので楽ちん！</p>
+<pre><code class="haskell">withContext context do
+    pure unit -- do something</code></pre><p><code>save</code>のあとにこの一段インデントされた部分が実行され、それが終わると勝手に<code>restore</code>してくれます。それでは表示してみましょう。</p>
+<p><img src="https://qiita-image-store.s3.amazonaws.com/0/64695/da2f674d-b893-2934-6acd-96be3ececa69.png" alt="ss3.png"></p>
+<p>きっったあああああああああ！😈😈😈　クォータービュー🔸だ！　でも英語ではIsometric projectionっていうそうですよ！</p>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ゲームループとキー入力！👈</h1><p>静止画を表示しただけではゲームにはなりません。アニメーション、すなわち画面を時間にそって変化させることが必要ですが、そのためにはいわゆる<strong>ゲームループ</strong>が必要です。今はとくにゲームライブラリを使っていないので、ゲームループも自作する必要がありますが、この部分はJavaScriptで書きました（血涙）。イベントハンドラを仕掛けたりと多少DOMをいじらなくてはならないのですが、PureScriptの生DOMライブラリは死ぬほど面倒くさくて、はっきり言って使わないほうがよっぽどマシです。でもあんまりガチなUIフレームワークを使うほどではないので、代わりにJavaScriptでゲームループ関連のコードを書いて、それを<strong>外部関数インターフェイス</strong>を使ってPureScriptから呼び出すことにします。</p>
+<p>JavaScript側は適当にこんな感じに。PureScriptから呼び出されるJavaScriptコードはCommonJSモジュールとして書きます。呼び出されたらすぐに内容を実行するのではなく、いったん引数のない関数オブジェクトを返しているのが特徴です。PureScript側からもう一度その関数オブジェクトを呼び出すことで本体が実行されます。</p>
+<pre><code class="js:JavaScript">exports.gameloop = function(callback){
+    return function(){
+        function next(){
+            callback();
+            count += 1;
+            window.requestAnimationFrame(next);
+        }
+        var count = 0;
+        window.addEventListener("keydown", function(e){
+            if( ! keyTable.hasOwnProperty(e.keyCode)){
+                keyTable[e.keyCode] = count;
+            }
+        });
+        window.addEventListener("keyup", function(e){
+            delete keyTable[e.keyCode];
+        });
+        next();
+    };
+};</code></pre><p>PureScript側はこんな感じ。</p>
+<pre><code class="haskell:PureScript">foreign import gameloop :: forall eff . Eff (gameloop :: GameLoop, dom :: DOM | eff) Unit → Eff (dom :: DOM | eff) Unit</code></pre><p>この関数<code>gameloop</code>はこんな感じで呼び出します。</p>
+<pre><code class="haskell">gameloop do
+    withContext context do
+        translate { translateX: 1280.0 * 0.5 , translateY: 720.0 * 0.5 } context
+        scale { scaleX: 1.0, scaleY: pitch / 90.0 } context
+        rotate (45.0 / 180.0 * pi) context
+        translate { translateX: 36.0 * -2.0 , translateY: 36.0 * -2.0 } context
+
+        for (0 .. 9) \y → do
+            for (0 .. 9) \x → do
+                drawImage context grass (36.0 * toNumber x) (36.0 * toNumber y)
+        pure unit</code></pre><p>こうすると、<code>gameloop</code>からひとつインデントされた部分が<code>requestAnimationFrame</code>のタイミングで繰り返し実行されます。これで何度も再描画はされているのですが、何も表示が変わっていないのでアニメーションしているように見えません……😭😭😭</p>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>変更可能な領域！👽</h1><p>さて、PureScriptは<strong>純粋関数型プログラミング言語</strong>であり、<strong>すべての式が純粋</strong>です。噂には聞いたことがあるかもしれませんが、次のようにして変数を直接書き換えて状態を変更することができません。</p>
+<pre><code class="haskell">let counter = 0
+gameloop do
+    counter = counter + 1    -- こういうことはできない！</code></pre><p>なんてこった……😦　状態を変えられないとか、純粋関数型な言語じゃゲームにならないじゃないか……もう駄目だ……お終いだ……😰　いや！　まだだ！　まだ<strong><code>Ref</code></strong>がある！ 使い方は簡単で、<code>newRef</code>で変更可能な状態を作り、<code>readRef</code>で状態の読み取り、<code>writeRef</code>や<code>modifyRef</code>で状態の書き換えができます。</p>
+<pre><code class="haskell">ref ← newRef 0                -- 可変な領域を作成！　初期値は0！
+gameloop do
+    count ← readRef ref       -- 領域から値の読み取り！
+    writeRef ref (count + 1)  -- 領域への値の書き込み</code></pre><p>これで、ゲームループが回るたびにカウンターがひとつずつ増えていきます。状態を読み取る前に<code>readRef</code>を呼んで領域から現在の状態を取り出さなくてはならないのがちょっと面倒ですが、三匹の豚精神で乗り切ります。逆にいえば、DOMや外部のライブラリが持つ状態を除けば、<strong>アプリケーション自身の状態といえるものはこの<code>ref</code>の状態だけ</strong>であり、それ以外にはまったく状態を持たないのが保証されるので、アプリケーションの状態の管理がとても楽です。なんかゲームの状態がおかしくなったなあと思ったらこの<code>ref</code>の中だけ確認すればいいのです。</p>
+<p>それでは、さっき<code>gameloop</code>関数と一緒に定義した<code>getKey</code>関数で、キーの状態を取得し、現在の状態に反映させます。それからその状態を使って画面を再描画します。試しに、変更されている状態を、座標変換の回転量に使いましょうか。実行させてみるとこうなります。</p>
+<p><img src="https://qiita-image-store.s3.amazonaws.com/0/64695/ee9618f4-39b3-8157-59c2-535157fd4780.png" alt="ss4.png"></p>
+<p>あああああああ！　キー操作でくるくる回っているのに、静止画だから伝わらない！　詳しくは実際に動かしてみてください。</p>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>画像の読み込み(二回目)！📷</h1><p>現状の方法だと、読み込む画像が増えるたびにネストがどんどん増えていってしまいます。</p>
+<pre><code class="haskell">main = do
+    withImage "grass.png" \grass → do
+        withImage "foo.png" \foo → do
+            withImage "bar.png" \bar → do
+                pure unit</code></pre><p>これはキモいので、<strong>非同期処理モナド</strong>という謎の技術を使ってこれを平坦に書けるようにします(なお、PureScriptの非同期処理モナドについては、<a href="http://qiita.com/hiruberuto/items/98598af2b0e9a6206ef3">こちら</a>で筆者も紹介しています)。これを使って<code>loadImage</code>という関数を定義すると、こんなふうに書けるようになります。</p>
+<pre><code class="haskell">main = launchAff do
+    grass ← loadImage "grass.png"
+    foo ← loadImage "foo.png"
+    bar ← loadImage "bar.png"
+    pure unit</code></pre><p>よし！🌞　これでネストが増えていかない！🌵　え？　なんでこういうふうに書けるのかって？　そういう難しいことをあんまり気にしちゃだめです！</p>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>全体像!🐔</h1><p>今日のところはここまでにしておいてやる！👮　キャンバスを取得するところとかもちょっとリファクタリングして、こんなかんじです(再現)。</p>
+<pre><code class="haskell">main = launchAff do
+    grass ← loadImage "grass.png"
+    canvas ← getCanvas "canvas"
+    liftEff $ runST do
+        context ← getContext2D canvas
+        stateRef ← newSTRef (0 :: Int)
+
+        gameloop do
+            state ← readSTRef stateRef
+            let zeroOrOne key = maybe 0 (const 1) <$> getKey key
+            rx ← (-) <$> zeroOrOne 68 <*> zeroOrOne 65
+            writeSTRef stateRef (state + rx)
+
+            clearRect context { x: 0.0, y: 0.0, w: 1280.0, h: 720.0 }
+            withContext context do
+                translate { translateX: 1280.0 * 0.5 , translateY: 720.0 * 0.5 } context
+                scale { scaleX: 1.0, scaleY: 0.6 } context
+                rotate (45.0 / 180.0 * pi) context
+                for_ (0 .. (chunkSize - 1)) \y → do
+                    for_ (0 .. (chunkSize - 1)) \x → do
+                        drawImage context grass (36.0 * toNumber x) (36.0 * toNumber y)</code></pre><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>次のお話🐔</h1><ul>
+<li><a href="http://qiita.com/hiruberuto/items/5d3f61339e84d2715f71">第三話　オンラインゲームになりました</a></li>
+</ul>
+<hr>
+
+        </article>
+    </div>
+
+    <footer>この文章を書いてる人: <a target="_blank" href="https://twitter.com/cubbit2">Aratama</a></footer>
+</body>
