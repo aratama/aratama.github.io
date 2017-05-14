@@ -1,15 +1,18 @@
-var marked = require("marked");
-var glob = require("glob");
-var fs = require("fs");
-var path = require("path");
-var emoji = require('node-emoji');
+"use strict";
+
+const marked = require("marked");
+const glob = require("glob");
+const fs = require("fs");
+const path = require("path");
+const emoji = require('node-emoji');
 const mikan = require('mikanjs');
 
+// templetes
+const articleTemplete = fs.readFileSync("templete-article.html").toString();
+const templeteIndex = fs.readFileSync("templete-index.html").toString();
+
+// configurations
 const siteTitle = "ちょっと小さいのはたしかですが。";
-
-var articleTemplete = fs.readFileSync("templete-article.html").toString();
-
-var templeteIndex = fs.readFileSync("templete-index.html").toString();
 
 glob("raw/*.md", {}, (err, sources) => {
 
@@ -17,31 +20,31 @@ glob("raw/*.md", {}, (err, sources) => {
     sources.forEach(file => {
         console.log(`compiling ${file} ...`);
 
-        var renderer = new marked.Renderer();
+        const renderer = new marked.Renderer();
         renderer.heading = (text, level) => {
-            var escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
+            const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
             return `<h${level}><a name="${escapedText}" class="anchor" href="#${escapedText}"><span class="header-link"></span></a>${text}</h${level}>`;
         };
         renderer.code = (code, lang) => {
             return `<pre><code class="${lang}">${code}</code></pre>`;
         };
 
+        const source = fs.readFileSync(file).toString();
+        const metadataString = /^<!--((.|\s)*?)-->/g.exec(source);
+        const metadata = metadataString == null ? {} : JSON.parse(metadataString[1]);
+        const date = new Date(metadata.created_at);
+        const tags = metadata.tags.map(tag => `<a href="${tag.name}.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>${tag.name}</span></a>`).join("\n");
 
-
-        var source = fs.readFileSync(file).toString();
-        var metadataString = /^<!--((.|\s)*?)-->/g.exec(source);
-        var metadata = metadataString == null ? {} : JSON.parse(metadataString[1]);
-        var date = new Date();
-        var rendered = eval("`" + articleTemplete + "`");
+        const rendered = eval("`" + articleTemplete + "`");
         fs.writeFileSync(`blog/${path.basename(file, ".md")}.html`, rendered);
     });
 
     // generate an index file
-    var articles = sources.map(file => {
-        var source = fs.readFileSync(file).toString();
-        var metadataString = /^<!--((.|\s)*?)-->/g.exec(source);
+    const articles = sources.map(file => {
+        const source = fs.readFileSync(file).toString();
+        const metadataString = /^<!--((.|\s)*?)-->/g.exec(source);
         if(metadataString){
-            var metadata = JSON.parse(metadataString[1]);
+            const metadata = JSON.parse(metadataString[1]);
             return Object.assign({ url: `${path.basename(file, ".md")}.html` }, metadata);
         }else{
             return {
@@ -51,7 +54,7 @@ glob("raw/*.md", {}, (err, sources) => {
         }
     });
 
-    var items = articles.map(article => {
+    const items = articles.map(article => {
         return `<a href="${article.url}"><li class="article">${article.title}</li></a>`;
     }).join("\n");
     fs.writeFileSync("blog/index.html", eval("`" + templeteIndex + "`"));

@@ -1,9 +1,9 @@
 * {
     box-sizing: border-box;
-    /* line-height: 2.0em; */
-    text-align: justify;
     font-family: "Yu Mincho";
+}
 
+p {
     line-height: 2.0;
 }
 
@@ -54,24 +54,50 @@ h1 {
     font-size: xx-large;
     font-weight: bold;
     border-bottom: solid 1px rgba(0, 0, 0, 0.4);
-    margin-top: 3em;
+    margin-top: 2em;
+    line-height: 1.5;
 }
 
 h2 {
     font-size: xx-large;
     font-weight: bold;
     margin-top: 3em;
+    line-height: 1.5;
 }
 
+.tags .tag {
+    font-family: "Fira Code"; 
+    font-size: small;
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.tags a {
+    text-decoration: none; 
+}
+
+.tags a:hover {
+    text-decoration: underline;
+    text-decoration-color: rgba(0, 0, 0, 0.4);
+}
 
 article > h1.article-title {
     color: #8c87f3;
     margin: 1em;
-    border-bottom: solid 1px #8c87f3;
+    border-bottom: none;
+    font-size: 36px;
+}
+
+div.date {
+    text-align: right;
+    padding-right: 4em;
+    color: #7b5d56;
 }
 
 footer a {
     color: white;
+}
+
+code * {
 }
 
 code {
@@ -82,8 +108,8 @@ code {
 
 pre {
     background-color: #f3f3f3;
-
     padding: 10px;
+    line-height: 1.0;
 }
 
 blockquote {
@@ -151,4 +177,16 @@ a li.article {
 a:nth-child(odd) li.article{
     background-color: grey; 
     color: white;
+}
+
+
+
+.snsbuttons {
+    display: flex;
+    justify-content: center;
+}
+
+.snsbuttons * {
+    margin-left: 2px; 
+    margin-right: 2px; 
 }
