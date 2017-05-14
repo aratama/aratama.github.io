@@ -1,7 +1,61 @@
-article {
-    width: 960px;
+* {
+    box-sizing: border-box;
+    /* line-height: 2.0em; */
+    text-align: justify;
+    font-family: "Yu Mincho";
+}
+
+header {
+    background-color: #8c87f3;
+    height: 240px;
+}
+
+code {
+    font-family: "Fira Code";
+    background-color: #f3f3f3;
+    font-size: small;
+}
+
+pre {
+    background-color: #f3f3f3;
+
+    padding: 10px;
+}
+
+strong {
+    font-family: "Yu Gothic";
+    font-weight: bold;
+}
+
+body {
+    background-color: #f3f3f3;
+}
+
+div.content {
+    max-width: 960px;
+    min-height: 100%;
     margin-left: auto;
     margin-right: auto;
 }
 
+article {
 
+    background-color: white;
+    padding: 50px;
+}
+
+.togetter_widget {
+    width: calc(100% - 200px);
+    height: 400px;
+    overflow-y: scroll;
+    margin: 100px;
+}
+
+img {
+    max-width: calc(960px - 100px);
+}
+
+h1 {
+    border-bottom: solid 1px rgba(0, 0, 0, 0.4);
+    margin-top: 3em;
+}

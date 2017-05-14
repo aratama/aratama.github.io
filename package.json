@@ -1,0 +1,28 @@
+{
+  "name": "aratama.github.io",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node build.js", 
+    "debug": "node --inspect --debug-brk build.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aratama/aratama.github.io.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aratama/aratama.github.io/issues"
+  },
+  "homepage": "https://github.com/aratama/aratama.github.io#readme",
+  "devDependencies": {
+    "glob": "^7.1.1",
+    "marked": "^0.3.6"
+  },
+  "dependencies": {
+    "node-emoji": "^1.5.1"
+  }
+}
