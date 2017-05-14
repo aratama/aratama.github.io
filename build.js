@@ -13,6 +13,7 @@ const templeteIndex = fs.readFileSync("templete-index.html").toString();
 
 // configurations
 const siteTitle = "ちょっと小さいのはたしかですが。";
+const siteSubTitle = "プログラミングとかのブログ";
 
 glob("raw/*.md", {}, (err, sources) => {
 

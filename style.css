@@ -27,9 +27,7 @@ header {
     position: relative;
 }
 
-header a {
-    color: white;
-    text-decoration: none;
+header > div {
     margin: auto;
     top: 0;
     bottom: 0;
@@ -37,10 +35,26 @@ header a {
     right: 0;
     width: 960px;
     height: 1em;
-    display: block;
     position: absolute;
     text-align: center;
 }
+
+header > div a {
+    color: white;
+    text-decoration: none;
+}
+
+header .site-title {
+
+}
+
+header .sub-title {
+    opacity: 0.6;
+    font-size: 20px;
+    margin: 30px;
+}
+
+
 
 header a:hover {
     text-decoration: underline;
