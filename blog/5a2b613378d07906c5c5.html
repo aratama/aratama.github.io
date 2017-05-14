@@ -19,7 +19,7 @@ MathJax.Hub.Config({
 <link rel="stylesheet" href="../style.css">
 
 <body>
-    <header><a href="/index.html">ちょっと小さいのはたしかですが。</a></header>
+    <header><a href="index.html">ちょっと小さいのはたしかですが。</a></header>
     <div class="content">
 
         <article id="rendered">
@@ -72,7 +72,7 @@ pure unit   -- do something
 restore context</code></pre><p>でも、これじゃうっかり<code>restore</code>を書き忘れるかも……。そんなときは<code>withContext</code>っていう関数が用意されているので、これを使えば自動的に<code>save</code>と<code>restore</code>をしてくれるので楽ちん！</p>
 <pre><code class="haskell">withContext context do
     pure unit -- do something</code></pre><p><code>save</code>のあとにこの一段インデントされた部分が実行され、それが終わると勝手に<code>restore</code>してくれます。それでは表示してみましょう。</p>
-<p><img src="https://qiita-image-store.s3.amazonaws.com/0/64695/da2f674d-b893-2934-6acd-96be3ececa69.png" alt="ss3.png"></p>
+<p><a href="/img/da2f674d-b893-2934-6acd-96be3ececa69.png"><img src="/img/da2f674d-b893-2934-6acd-96be3ececa69.png"></img></a></p>
 <p>きっったあああああああああ！😈😈😈　クォータービュー🔸だ！　でも英語ではIsometric projectionっていうそうですよ！</p>
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ゲームループとキー入力！👈</h1><p>静止画を表示しただけではゲームにはなりません。アニメーション、すなわち画面を時間にそって変化させることが必要ですが、そのためにはいわゆる<strong>ゲームループ</strong>が必要です。今はとくにゲームライブラリを使っていないので、ゲームループも自作する必要がありますが、この部分はJavaScriptで書きました（血涙）。イベントハンドラを仕掛けたりと多少DOMをいじらなくてはならないのですが、PureScriptの生DOMライブラリは死ぬほど面倒くさくて、はっきり言って使わないほうがよっぽどマシです。でもあんまりガチなUIフレームワークを使うほどではないので、代わりにJavaScriptでゲームループ関連のコードを書いて、それを<strong>外部関数インターフェイス</strong>を使ってPureScriptから呼び出すことにします。</p>
 <p>JavaScript側は適当にこんな感じに。PureScriptから呼び出されるJavaScriptコードはCommonJSモジュールとして書きます。呼び出されたらすぐに内容を実行するのではなく、いったん引数のない関数オブジェクトを返しているのが特徴です。PureScript側からもう一度その関数オブジェクトを呼び出すことで本体が実行されます。</p>
@@ -116,7 +116,7 @@ gameloop do
     count ← readRef ref       -- 領域から値の読み取り！
     writeRef ref (count + 1)  -- 領域への値の書き込み</code></pre><p>これで、ゲームループが回るたびにカウンターがひとつずつ増えていきます。状態を読み取る前に<code>readRef</code>を呼んで領域から現在の状態を取り出さなくてはならないのがちょっと面倒ですが、三匹の豚精神で乗り切ります。逆にいえば、DOMや外部のライブラリが持つ状態を除けば、<strong>アプリケーション自身の状態といえるものはこの<code>ref</code>の状態だけ</strong>であり、それ以外にはまったく状態を持たないのが保証されるので、アプリケーションの状態の管理がとても楽です。なんかゲームの状態がおかしくなったなあと思ったらこの<code>ref</code>の中だけ確認すればいいのです。</p>
 <p>それでは、さっき<code>gameloop</code>関数と一緒に定義した<code>getKey</code>関数で、キーの状態を取得し、現在の状態に反映させます。それからその状態を使って画面を再描画します。試しに、変更されている状態を、座標変換の回転量に使いましょうか。実行させてみるとこうなります。</p>
-<p><img src="https://qiita-image-store.s3.amazonaws.com/0/64695/ee9618f4-39b3-8157-59c2-535157fd4780.png" alt="ss4.png"></p>
+<p><a href="/img/ee9618f4-39b3-8157-59c2-535157fd4780.png"><img src="/img/ee9618f4-39b3-8157-59c2-535157fd4780.png"></img></a></p>
 <p>あああああああ！　キー操作でくるくる回っているのに、静止画だから伝わらない！　詳しくは実際に動かしてみてください。</p>
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>画像の読み込み(二回目)！📷</h1><p>現状の方法だと、読み込む画像が増えるたびにネストがどんどん増えていってしまいます。</p>
 <pre><code class="haskell">main = do

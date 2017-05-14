@@ -1,4 +1,4 @@
-<title>${metadata.title} - ${siteTitle}</title>
+<title>記事一覧 - ちょっと小さいのはたしかですが。</title>
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -19,15 +19,26 @@ MathJax.Hub.Config({
 <link rel="stylesheet" href="../style.css">
 
 <body>
-    <header><a href="index.html">${siteTitle}</a></header>
+    <header><a href="index.html">ちょっと小さいのはたしかですが。</a></header>
     <div class="content">
 
         <article id="rendered">
-            <div class="date">${date.getFullYear()}年${1 + date.getMonth()}月${1 + date.getDate()}日</div>
-            <h1 class="article-title">${metadata.title}</h1>        
-            <p class="tags">${tags}</p>
+            <div class="date">2016年10月30日</div>
+            <h1 class="article-title">記事一覧</h1>        
+            <p class="tags"></p>
             <hr>
-            ${marked(emoji.emojify(source), { renderer: renderer })}
+            <!-- {
+  "id": "site",
+  "created_at": "2016-10-29T21:09:57+09:00",
+  "tags": [],
+  "title": "記事一覧"
+} -->
+<ul>
+<li><a href="https://aratama.github.io/purescript/">実例で学ぶPureScript</li>
+<li><a href="https://aratama.github.io/soundknot/"><del>Soundknot</del>もうメンテしてません</li>
+<li><a href="https://aratama.github.io/lazyscript/">LazyScript</li>
+</ul>
+
             <hr>
             <div class="snsbuttons">
 

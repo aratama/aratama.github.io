@@ -19,7 +19,7 @@ MathJax.Hub.Config({
 <link rel="stylesheet" href="../style.css">
 
 <body>
-    <header><a href="/index.html">ちょっと小さいのはたしかですが。</a></header>
+    <header><a href="index.html">ちょっと小さいのはたしかですが。</a></header>
     <div class="content">
 
         <article id="rendered">
@@ -89,10 +89,10 @@ MathJax.Hub.Config({
     state.players = snap.val();
 });</code></pre><pre><code class="haskell:PureScript">database firebase >>= ref "/users" >>= onValue \snap → void do
     modifySTRef stateRef _{ players = unsafeFromForeign (val snap) }</code></pre><p>ほら、JavaScriptもPureScriptもコードはあんまり変わらないでしょう？　『純粋関数型プログラミング言語では副作用の扱いが難しい』っていう噂は、純粋関数型をおとしめようとする闇の勢力👽の陰謀です！　さて、あとはFirebaseから送られた情報を元にそれぞれのキャラクターを描画します✏️   あと、詳しくは説明しませんが、キー入力でキャラクターが動きまわるようにしました。ちなみのこの裏で更に座標変換のために線形代数ライブラリを自分で書いたりとなにげに苦労しています（血涙）。それでは、２窓で開いてみると、一方が歩きまわるとちゃんと他方のウィンドウのキャラクターも連携して動き回ることが確認できました！🐾🐾🐾🐾</p>
-<p><img src="https://qiita-image-store.s3.amazonaws.com/0/64695/fa6f0e29-0cbd-f86e-9129-86a6de6eeabd.png" alt="ss5.png"></p>
+<p><a href="/img/fa6f0e29-0cbd-f86e-9129-86a6de6eeabd.png"><img src="/img/fa6f0e29-0cbd-f86e-9129-86a6de6eeabd.png"></img></a></p>
 <p>おおおおおおおオンラインゲームだ！😆😆😆　かがくのちからってすげー！　たったこれだけでオンラインゲームっぽく同期ができちゃうなんて🔥Firebase🔥最高だよアンタ！　多少の遅延は確認できますが、今回はFPSとか格ゲーじゃないのでそこまでシビアに考えなくていいと思います。</p>
 <p>Firebaseのコンソールを開くと、キャラクターが動き回るのに合わせてデータベース内のデータが変化しているのがリアルタイムに確認できます。新たに追加された値は$\color{green}{緑色}$、変更された値は$\color{orange}{黄色}$、削除された値は$\color{red}{赤色}$で表示されます。</p>
-<p><img src="https://qiita-image-store.s3.amazonaws.com/0/64695/b7721386-8854-82f9-4743-9ff688e38242.png" alt="firebase.png"></p>
+<p><a href="/img/b7721386-8854-82f9-4743-9ff688e38242.png"><img src="/img/b7721386-8854-82f9-4743-9ff688e38242.png"></img></a></p>
 <p>このときコンソールで直接データを編集することもでき、例えば<code>position</code>の値をいじると対応するキャラクターの位置もリアルタイムで移動したりします。たのしい！😝😝😝</p>
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>シーンの切り替え！🔃</h1><p>タイトル画面がないとゲームっぽくないですよね！　そんなわけで、タイトル画面とロード中画面、プレイ画面を切り替えられるようにします。さて、現在どの画面になっているかの状態を表すのに、<strong>代数的データ型</strong>を使いましょう！</p>
 <pre><code class="haskell">data Scene = Title | Loading | Playing State</code></pre><p>このデータ型では、</p>
@@ -145,7 +145,7 @@ auth firebase >>= onAuthStateChanged \userMaybe → case userMaybe of      -- ca
 <h1><a name="oauth-" class="anchor" href="#oauth-"><span class="header-link"></span></a>OAuthを利用したサインイン！🔑</h1><p><code>Firebase</code>ではOAuthを利用したサインインの処理も死ぬほど簡単です！ たとえばTwitterでサインインしたかったら、<code>newTwitterAuthProvider</code>(JavaScriptでは<code>new Firebase.TwitterAuthProvider()</code>)で使いたい認証プロバイダを表すオブジェクトを作成し、<code>signInWithPopup</code>を呼びだすだけ！　成功すると<code>onAuthStateChanged</code>がコールバックされます！　</p>
 <pre><code class="haskell">provider ← newTwitterAuthProvider
 auth firebase >>= signInWithPopup provider authObj onError onSuccess</code></pre><p>うひょおおおおおおおおおお!😁😁😁 コードとしては本当にこのくらい！　ちなみにこれを書いている時点で、匿名、Twitter🐦、GitHub:octocat:、Google🐊の４種類でログインできるようになっています。Firebaseでは普通にメールアドレスとパスワードで認証する方法も提供されているんですが、そんなの入力面倒くさくて誰も使いたがらないでしょうからゲームに実装する気はありません。Facebook👱📘は筆者が使っていないのでパス！</p>
-<p><img src="https://qiita-image-store.s3.amazonaws.com/0/64695/be5f00d7-9185-930d-5f1f-ccf28608ca13.png" alt="login.png"></p>
+<p><a href="/img/be5f00d7-9185-930d-5f1f-ccf28608ca13.png"><img src="/img/be5f00d7-9185-930d-5f1f-ccf28608ca13.png"></img></a></p>
 <p>これで面倒な登録作業なしでゲームを始められます！</p>
 <h1><a name="-firebase-" class="anchor" href="#-firebase-"><span class="header-link"></span></a>そういえばデプロイもFirebaseでやってます！☁️</h1><p>Firebaseには静的コンテンツのホスティングの機能もあるので、デプロイにはこれを使ってます。コマンドラインツールのfirebase-toolsを適当にインストールして設定したら、あとは<code>deploy</code>コマンド一発！</p>
 <pre><code class="bash">$ firebase deploy</code></pre><p>これだけで<code>public</code>ディレクトリに入ったプロジェクトがデプロイされます！　簡単すぎ！　自分の持っているドメインを接続することもできます。ウェブアプリケーションはもうこいつだけでいいんじゃないかな！😛😛😛</p>

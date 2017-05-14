@@ -12,15 +12,33 @@ function fetchArticle(itemId){
                 tags: json.tags, 
                 title: json.title
             }, null, 2)} -->\n${json.body}`);
+
+
+            const imgPattern = /!\[.*?\]\((.*?)\)/g;
+            var match;
+            while(match = imgPattern.exec(json.body)){
+                const imgPath = match[1];
+                const dest = `img/${path.basename(imgPath)}`;
+                if( ! fs.existsSync(dest)){
+                    console.log(`Fetching ${imgPath}...`);
+                    fetch(imgPath).then(res => {
+                        res.buffer().then(buffer => {
+                            fs.writeFileSync(`img/${path.basename(imgPath)}`, buffer);
+                        });
+                    });
+                }
+            }
         });
     });
 }
 
+function filterQiitaQrticle(xs){
+    return xs.filter(arg => arg.match(/[a-z0-9]{20}/));
+}
+
 const subcommand = process.argv[2];
 if(subcommand == "update"){
-    fs.readdirSync("raw").forEach(file => {
-        fetchArticle(path.basename(file, ".md"));
-    });
+    filterQiitaQrticle(fs.readdirSync("raw").map(file => path.basename(file, ".md"))).forEach(fetchArticle);
 }else{
-    process.argv.filter(arg => arg.match(/[a-z0-9]{20}/)).forEach(fetchArticle);
+    filterQiitaQrticle(process.argv).forEach(fetchArticle);
 }

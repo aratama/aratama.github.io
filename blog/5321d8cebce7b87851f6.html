@@ -19,7 +19,7 @@ MathJax.Hub.Config({
 <link rel="stylesheet" href="../style.css">
 
 <body>
-    <header><a href="/index.html">ちょっと小さいのはたしかですが。</a></header>
+    <header><a href="index.html">ちょっと小さいのはたしかですが。</a></header>
     <div class="content">
 
         <article id="rendered">
@@ -58,8 +58,8 @@ MathJax.Hub.Config({
   ],
   "title": "モナドのまほう　第１話『画像が表示できました』"
 } -->
-<p><img src="https://qiita-image-store.s3.amazonaws.com/0/64695/ea7d82ad-27d5-c99c-a386-9d44ce449d58.png" alt="shot1.png"></p>
-<p><img src="https://qiita-image-store.s3.amazonaws.com/0/64695/aa2860cb-2ac6-c7f0-e4be-65683156008c.png" alt="shot2.png"></p>
+<p><a href="/img/ea7d82ad-27d5-c99c-a386-9d44ce449d58.png"><img src="/img/ea7d82ad-27d5-c99c-a386-9d44ce449d58.png"></img></a></p>
+<p><a href="/img/aa2860cb-2ac6-c7f0-e4be-65683156008c.png"><img src="/img/aa2860cb-2ac6-c7f0-e4be-65683156008c.png"></img></a></p>
 <p>※画面は開発中のものです。実際の製品とはぜんぜん違います。</p>
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>各話一覧</h1><ul>
 <li><a href="http://qiita.com/hiruberuto/items/5321d8cebce7b87851f6">第１話『画像が表示できました』</a></li>
@@ -107,7 +107,7 @@ MathJax.Hub.Config({
 <pre><code class="js">widthImage("grass.png", function(grass){
     return;
 });</code></pre><p>PureScriptなのでやけに見た目がスカスカしてますが、落ち着いて読めば別に難しくもなんともないですね。ちなみに読み込んだ<code>grass.png</code>はこれ：</p>
-<p><img src="https://qiita-image-store.s3.amazonaws.com/0/64695/bdb459fb-b080-b7cf-b297-0184ea87ac14.png" alt="grass.png"></p>
+<p><a href="/img/bdb459fb-b080-b7cf-b297-0184ea87ac14.png"><img src="/img/bdb459fb-b080-b7cf-b297-0184ea87ac14.png"></img></a></p>
 <p>筆者が<a href="https://pixlr.com/editor/">pixlr</a>で10秒で描きました。超ハイクオリティ！✌️</p>
 <h1><a name="canvas-" class="anchor" href="#canvas-"><span class="header-link"></span></a>Canvasオブジェクトの取得！</h1><p>次は画像を描画するためのキャンバスオブジェクトを取ってきましょう。このライブラリには<code>getElementById</code>の簡単なラッパ<code>getCanvasElementById</code>が付属しているのでこれを使います。<code>canvas</code>というID(直球)を文字列で指定して呼び出すだけです。</p>
 <pre><code class="haskell">canvasMaybe ← getCanvasElementById "canvas"</code></pre><p>これで<code>getCanvasElementById</code>の結果が変数<code>canvasMaybe</code>に代入されます。それだけです。え？変な矢印<code>←</code>は何かって？PureScriptは変数に代入するときに<code>&lt;-</code>のほかに<code>←</code>も使えるんですよ。なんか見た目が可愛いので筆者は最近<code>←</code>を使うのがお気に入りなんです。Qiitaの構文ハイライトで思いっきり駄目出しされてますけど。</p>
@@ -124,7 +124,7 @@ MathJax.Hub.Config({
 <pre><code class="haskell">context ← canvas # getContext2D</code></pre><p>ほら！語順がひっくり返った！ これで『<code>canvas</code>に<code>getContext2D</code>のメッセージを送っている』とか言い張れるでしょ！　<code>#</code>演算子はほんとに関数と引数の位置をひっくり返すだけのための演算子です。PureScriptは演算子も自由に定義できるので、こんな工夫も簡単です。</p>
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>まずは画像をひとつだけ描画してみる！</h1><p>次は<code>drawImage</code>で画像を描画しましょう😎</p>
 <pre><code class="haskell">drawImage context grass 0.0 0.0</code></pre><p>よしできた！これでプログラムを実行すると、左上に画像が表示されるはずです！</p>
-<p><img src="https://qiita-image-store.s3.amazonaws.com/0/64695/bce7b41c-d178-209a-68a1-e1aa2cd1b8f6.png" alt="ss.png"></p>
+<p><a href="/img/bce7b41c-d178-209a-68a1-e1aa2cd1b8f6.png"><img src="/img/bce7b41c-d178-209a-68a1-e1aa2cd1b8f6.png"></img></a></p>
 <p>よっしゃああああああああ！😳😳😳　きたあああああああ！　<strong>『純粋関数型』</strong>なんていう変なジャンルのプログラミング言語でもグラフィックスのプログラミングできてるああああああ！😈😈😈　ちなみに画面サイズは<code>1280 * 720</code>ピクセル固定にしてます。</p>
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>繰り返し！</h1><p>芝生一枚じゃあまりに寂しい😞ので、繰り返し描画して、もっとたくさん縦横に並べましょう。Javascriptで言えば、forループを使ってこんな感じをやりたいわけです。</p>
 <pre><code class="js:JavaScript">for(var y = 0; y <= 15; y++){
@@ -136,7 +136,7 @@ MathJax.Hub.Config({
     for (0 .. 15) \x -> do
         drawImage context grass (36.0 * toNumber x) (36.0 * toNumber y)</code></pre><p>よしできた！😄<code>0 .. 15</code>は<code>0</code>から<code>15</code>までの<code>16</code>個の整数が格納された配列を表します。これに対して<code>for</code>関数で繰り返しを行っているわけです。</p>
 <p>PureScriptだと<code>toNumber</code>で型を明示的に変換しなくちゃいけないのがちょっと面倒ですが、ここも三匹の子豚精神🐽🐽🐽で乗り切ります。実行するとこんな感じに表示されます。</p>
-<p><img src="https://qiita-image-store.s3.amazonaws.com/0/64695/7dc2cb20-1954-b172-026d-c2e0f277690c.png" alt="ss2.png"></p>
+<p><a href="/img/7dc2cb20-1954-b172-026d-c2e0f277690c.png"><img src="/img/7dc2cb20-1954-b172-026d-c2e0f277690c.png"></img></a></p>
 <p>いやっっほおおおう！🌵ふっさふさ！🌵かなり草がふっさふさだよ！🌵🌵🌵　関数型プログラミングではあんまりループを使わない(?)と主張する人もいます。確かに<code>for</code>関数はあくまで関数であってループではないものの、<strong>コードの見た目や考え方としてはforループそのもの</strong>です。少なくとも筆者は<code>for</code>関数はforループの代わりくらいにしか思ってません。別に関数型プログラミングだからってそこまで脳みそを大幅に切り替える必要はないのです。</p>
 <p>つーか誰だよ！<strong>純粋関数型プログラミング言語は副作用を扱うのが難しいって大嘘</strong>をぶっこいた奴は！キャンバスに画像を描画するとか思いっっっっっきり副作用だけど、実際にコードを書いてみるとJavaScriptと大して変わらねーじゃねーか！　さっきも平気でコンソールに文字書いてたし！　これじゃあオブジェクト指向が絡んでくるJavaScriptのほうがよっぽど難しいだろ！😡</p>
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ここまでの全体像！</h1><pre><code class="haskell">main = do

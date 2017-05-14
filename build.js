@@ -28,6 +28,11 @@ glob("raw/*.md", {}, (err, sources) => {
         renderer.code = (code, lang) => {
             return `<pre><code class="${lang}">${code}</code></pre>`;
         };
+        renderer.image = (href, title, text) => {
+            const q = "https://qiita-image-store.s3.amazonaws.com/0/";
+            const href_ = href.startsWith(q) ? "/img/" + path.basename(href) : href;
+            return `<a href="${href_}"><img src="${href_}"></img></a>`;
+        };
 
         const source = fs.readFileSync(file).toString();
         const metadataString = /^<!--((.|\s)*?)-->/g.exec(source);
