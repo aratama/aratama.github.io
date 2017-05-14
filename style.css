@@ -1,6 +1,11 @@
+@font-face {
+    font-family: "SourceHanSerif-Light";
+    src: url("SourceHanSerif-Light.otf");
+}
+
 * {
     box-sizing: border-box;
-    font-family: "Yu Mincho";
+    font-family: "Yu Mincho", "SourceHanSerif-Light", serif;
 }
 
 p {
@@ -66,7 +71,7 @@ h2 {
 }
 
 .tags .tag {
-    font-family: "Fira Code"; 
+    font-family: "Fira Code", monospace; 
     font-size: small;
     color: rgba(0, 0, 0, 0.4);
 }
@@ -101,7 +106,7 @@ code * {
 }
 
 code {
-    font-family: "Fira Code";
+    font-family: "Fira Code", monospace;
     background-color: #f3f3f3;
     font-size: smaller;
 }
@@ -111,7 +116,7 @@ pre {
     padding: 10px;
     line-height: 1.0;
     font-size: small;
-    font-family: "Fira Code";
+    font-family: "Fira Code", monospace;
 }
 
 pre span {
