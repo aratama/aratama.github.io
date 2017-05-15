@@ -17,19 +17,23 @@ MathJax.Hub.Config({
 
 <link rel="stylesheet" href="../reset.css">
 <link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../article.css">
 
 <body>
     <header>
-        <div>
+        <div class="block-centered">
             <div class="site-title"><a href="index.html">ちょっと小さいのはたしかですが。</a></div>
-            <div class="sub-title">プログラミングとかのブログ</div>
+            <div class="sub-title">わたしのブログです。面白いかどうかは、わかりませんが。</div>
         </div>
     </header>
     <div class="content">
 
         <article id="rendered">
             <div class="date">2016年10月32日</div>
-            <h1 class="article-title">モナドのまほう　第３話『オンラインゲームになりました』</h1>        
+            <h1 class="article-title">
+                <!-- <i class="fa fa-coffee" aria-hidden="true"></i> -->
+                <a href="5d3f61339e84d2715f71.html">モナドのまほう　第３話『オンラインゲームになりました』<a>
+            </h1>        
             <p class="tags"><a href="JavaScript.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>JavaScript</span></a>
 <a href="purescript.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>purescript</span></a>
 <a href="オンラインゲーム.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>オンラインゲーム</span></a>
@@ -64,7 +68,7 @@ MathJax.Hub.Config({
   "title": "モナドのまほう　第３話『オンラインゲームになりました』"
 } -->
 <ul>
-<li><a href="http://qiita.com/hiruberuto/items/5a2b613378d07906c5c5">第二話</a>　←前回</li>
+<li><a href="5a2b613378d07906c5c5.html">第二話</a>　←前回</li>
 </ul>
 <p>つづきです。</p>
 <h1><a name="-firebase-" class="anchor" href="#-firebase-"><span class="header-link"></span></a>🔥Firebase🔥で一気にオンラインゲームに！</h1><p><strong>そろそろオンラインゲームっぽくしたくなった</strong>(思いつき)ので、オンラインゲームっぽくしておきましょう。なおPureScriptのFirebaseのバインディングは他の人が書いたものがあったんですが、それが古くて動かなかったので、筆者が自分で書きました。つらい。それではFirebaseに接続！　もちろんコードは基本的にJavaScriptとほとんど同じ！　雰囲気を知ってほしいので、JavaScript版のコードとPureScript版のコードを並べて書いてみます！ JavaScriptならこう！</p>
@@ -155,7 +159,7 @@ auth firebase >>= signInWithPopup provider authObj onError onSuccess</code></pre
 <h1><a name="-firebase-" class="anchor" href="#-firebase-"><span class="header-link"></span></a>そういえばデプロイもFirebaseでやってます！☁️</h1><p>Firebaseには静的コンテンツのホスティングの機能もあるので、デプロイにはこれを使ってます。コマンドラインツールのfirebase-toolsを適当にインストールして設定したら、あとは<code>deploy</code>コマンド一発！</p>
 <pre><code class="bash">$ firebase deploy</code></pre><p>これだけで<code>public</code>ディレクトリに入ったプロジェクトがデプロイされます！　簡単すぎ！　自分の持っているドメインを接続することもできます。ウェブアプリケーションはもうこいつだけでいいんじゃないかな！😛😛😛</p>
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>次のお話🐔</h1><ul>
-<li><a href="http://qiita.com/hiruberuto/items/44f118b649367f010cb0">第四話</a></li>
+<li><a href="44f118b649367f010cb0.html">第四話</a></li>
 </ul>
 
             <hr>
@@ -198,5 +202,22 @@ auth firebase >>= signInWithPopup provider authObj onError onSuccess</code></pre
         </article>
     </div>
 
-    <footer>この文章を書いてる人: <a target="_blank" href="https://twitter.com/cubbit2">Aratama</a></footer>
+    <footer>
+        <div class="block-centered footer-inner">
+            <p class="copy">&nbsp;</p>
+            <p class="author">このブログを書いてる人:&nbsp;&nbsp; <a target="_blank" href="https://twitter.com/cubbit2">兎沢</a><p>
+        </div>
+    </footer>
 </body>
+
+<script>
+const poem = [
+    "なんにもない毎日が、なによりの宝物。",
+    "今日という日を、何度でも繰り返したい。",
+    "世界を追いかけなくても、世界は私のまわりにある。", 
+    "速すぎる雑踏。のんびりとしたそよ風。", 
+    "明日の写真を飾る場所を、アルバムに空けておこう。", 
+    "落ち葉が地面に触れる音がした。"
+];
+document.querySelector(".copy").textContent = poem[Math.floor(poem.length * Math.random())];
+</script>

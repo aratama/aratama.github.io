@@ -13,7 +13,7 @@ const templeteIndex = fs.readFileSync("templete-index.html").toString();
 
 // configurations
 const siteTitle = "ちょっと小さいのはたしかですが。";
-const siteSubTitle = "プログラミングとかのブログ";
+const siteSubTitle = "わたしのブログです。面白いかどうかは、わかりませんが。";
 
 glob("raw/*.md", {}, (err, sources) => {
 
@@ -34,15 +34,21 @@ glob("raw/*.md", {}, (err, sources) => {
             const href_ = href.startsWith(q) ? "/img/" + path.basename(href) : href;
             return `<a href="${href_}"><img src="${href_}"></img></a>`;
         };
+        renderer.link = (href, title, text) => {
+            debugger;
+            var url = href.startsWith("http://qiita.com/hiruberuto/items/") ? path.basename(href) : href;
+            return `<a href="${url}.html">${text}</a>`;
+        };
 
         const source = fs.readFileSync(file).toString();
         const metadataString = /^<!--((.|\s)*?)-->/g.exec(source);
         const metadata = metadataString == null ? {} : JSON.parse(metadataString[1]);
         const date = new Date(metadata.created_at);
         const tags = metadata.tags.map(tag => `<a href="${tag.name}.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>${tag.name}</span></a>`).join("\n");
+        const basename = `${path.basename(file, ".md")}.html`;
 
         const rendered = eval("`" + articleTemplete + "`");
-        fs.writeFileSync(`blog/${path.basename(file, ".md")}.html`, rendered);
+        fs.writeFileSync(`blog/${basename}`, rendered);
     });
 
     // generate an index file

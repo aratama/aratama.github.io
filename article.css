@@ -1,0 +1,23 @@
+article {
+    background-color: white;
+    padding: 50px;
+}
+
+article > h1.article-title {
+    color: #9883ca;
+    margin: 1em;
+    border-bottom: none;
+    font-size: 36px;
+
+    border-left: solid 60px #9883ca;
+    padding-left: 10px;
+}
+
+article h1.article-title a {
+    color: #9883ca;
+    text-decoration: none; 
+}
+
+article h1.article-title a:hover {
+    text-decoration: underline; 
+}

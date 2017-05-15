@@ -25,9 +25,11 @@ header {
     color: white;
     font-size: 40px;
     position: relative;
+    box-shadow: 0 0 20px 0px rgba(0, 0, 0, 0.3);
 }
 
-header > div {
+
+.block-centered {
     margin: auto;
     top: 0;
     bottom: 0;
@@ -61,13 +63,34 @@ header a:hover {
 }
 
 footer {
-    background-color: #8c87f3;
-    height: 320px;
-    line-height: 320px;
     color: white;
+    background-color: #8c87f3;
+
+    height: 320px;
+    position: relative;    
+    line-height: 320px;
+
     text-align: center;
-    vertical-align: middle;
+    box-shadow: 0 0 20px 0px rgba(0, 0, 0, 0.3);
 }
+
+footer .block-centered {
+    height: 100px;
+}
+
+footer .copy {
+    font-size: 20px;
+}
+
+footer .author {
+    font-size: small;
+}
+
+footer a {
+    color: white;
+}
+
+
 
 h1 {
     font-size: xx-large;
@@ -99,12 +122,7 @@ h2 {
     text-decoration-color: rgba(0, 0, 0, 0.4);
 }
 
-article > h1.article-title {
-    color: #8c87f3;
-    margin: 1em;
-    border-bottom: none;
-    font-size: 36px;
-}
+
 
 div.date {
     text-align: right;
@@ -112,9 +130,6 @@ div.date {
     color: #7b5d56;
 }
 
-footer a {
-    color: white;
-}
 
 code * {
 }
@@ -159,11 +174,7 @@ div.content {
     margin-right: auto;
 }
 
-article {
 
-    background-color: white;
-    padding: 50px;
-}
 
 .togetter_widget {
     width: calc(100% - 200px);
@@ -224,3 +235,5 @@ a:nth-child(odd) li.article{
     margin-left: 2px; 
     margin-right: 2px; 
 }
+
+

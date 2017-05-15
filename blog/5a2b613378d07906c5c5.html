@@ -17,19 +17,23 @@ MathJax.Hub.Config({
 
 <link rel="stylesheet" href="../reset.css">
 <link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../article.css">
 
 <body>
     <header>
-        <div>
+        <div class="block-centered">
             <div class="site-title"><a href="index.html">ちょっと小さいのはたしかですが。</a></div>
-            <div class="sub-title">プログラミングとかのブログ</div>
+            <div class="sub-title">わたしのブログです。面白いかどうかは、わかりませんが。</div>
         </div>
     </header>
     <div class="content">
 
         <article id="rendered">
             <div class="date">2016年10月30日</div>
-            <h1 class="article-title">モナドのまほう　第２話『ゲームループとキー入力ができました』</h1>        
+            <h1 class="article-title">
+                <!-- <i class="fa fa-coffee" aria-hidden="true"></i> -->
+                <a href="5a2b613378d07906c5c5.html">モナドのまほう　第２話『ゲームループとキー入力ができました』<a>
+            </h1>        
             <p class="tags"><a href="JavaScript.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>JavaScript</span></a>
 <a href="purescript.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>purescript</span></a>
 <a href="オンラインゲーム.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>オンラインゲーム</span></a>
@@ -64,13 +68,13 @@ MathJax.Hub.Config({
   "title": "モナドのまほう　第２話『ゲームループとキー入力ができました』"
 } -->
 <ul>
-<li><a href="http://qiita.com/hiruberuto/items/5321d8cebce7b87851f6">第一話　画像が表示できました</a>　←前回</li>
+<li><a href="5321d8cebce7b87851f6.html">第一話　画像が表示できました</a>　←前回</li>
 </ul>
 <p>つづきです。</p>
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>座標変換！👀</h1><p>前回は画像の読み込みと複数回の描画ができました。ここで<strong>急にクォータービューっぽく表示してみたくなった</strong>（思いつき）ので、そうしてみます！　<code>translate</code>とか<code>scale</code>とか<code>rotate</code>とかそういう座標変換の関数をそういう感じに呼びます！　アフィン変換について知らない人はゲームプログラミングの書籍なんかを読んでお勉強してみましょう！</p>
 <pre><code class="haskell">translate { translateX: 1280.0 * 0.5 , translateY: 720.0 * 0.5 } context
 scale { scaleX: 1.0, scaleY: 0.6 } context
-rotate (45.0 / 180.0 * pi) context</code></pre><p>これらの関数について、詳しくは<a href="https://developer.mozilla.org/ja/docs/Web/HTML/Canvas">Canvas API</a>をどうぞ。</p>
+rotate (45.0 / 180.0 * pi) context</code></pre><p>これらの関数について、詳しくは<a href="https://developer.mozilla.org/ja/docs/Web/HTML/Canvas.html">Canvas API</a>をどうぞ。</p>
 <h1><a name="-code-save-code-code-restore-code-" class="anchor" href="#-code-save-code-code-restore-code-"><span class="header-link"></span></a><code>save</code>/<code>restore</code>！👮</h1><p>そして忘れてはいけないのが、コンテキストの<code>save</code>と<code>restore</code>。これを忘れるとゲームループが回るたびに座標変換が蓄積していってわけのわからないことになります。まあまだゲームループも実装していませんけど。もちろんPureScriptからでも問題なく<code>save</code>と<code>restore</code>を呼ぶことができます。</p>
 <pre><code class="haskell">save context
 pure unit   -- do something
@@ -128,7 +132,7 @@ gameloop do
     withImage "grass.png" \grass → do
         withImage "foo.png" \foo → do
             withImage "bar.png" \bar → do
-                pure unit</code></pre><p>これはキモいので、<strong>非同期処理モナド</strong>という謎の技術を使ってこれを平坦に書けるようにします(なお、PureScriptの非同期処理モナドについては、<a href="http://qiita.com/hiruberuto/items/98598af2b0e9a6206ef3">こちら</a>で筆者も紹介しています)。これを使って<code>loadImage</code>という関数を定義すると、こんなふうに書けるようになります。</p>
+                pure unit</code></pre><p>これはキモいので、<strong>非同期処理モナド</strong>という謎の技術を使ってこれを平坦に書けるようにします(なお、PureScriptの非同期処理モナドについては、<a href="98598af2b0e9a6206ef3.html">こちら</a>で筆者も紹介しています)。これを使って<code>loadImage</code>という関数を定義すると、こんなふうに書けるようになります。</p>
 <pre><code class="haskell">main = launchAff do
     grass ← loadImage "grass.png"
     foo ← loadImage "foo.png"
@@ -156,7 +160,7 @@ gameloop do
                 for_ (0 .. (chunkSize - 1)) \y → do
                     for_ (0 .. (chunkSize - 1)) \x → do
                         drawImage context grass (36.0 * toNumber x) (36.0 * toNumber y)</code></pre><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>次のお話🐔</h1><ul>
-<li><a href="http://qiita.com/hiruberuto/items/5d3f61339e84d2715f71">第三話　オンラインゲームになりました</a></li>
+<li><a href="5d3f61339e84d2715f71.html">第三話　オンラインゲームになりました</a></li>
 </ul>
 <hr>
 
@@ -200,5 +204,22 @@ gameloop do
         </article>
     </div>
 
-    <footer>この文章を書いてる人: <a target="_blank" href="https://twitter.com/cubbit2">Aratama</a></footer>
+    <footer>
+        <div class="block-centered footer-inner">
+            <p class="copy">&nbsp;</p>
+            <p class="author">このブログを書いてる人:&nbsp;&nbsp; <a target="_blank" href="https://twitter.com/cubbit2">兎沢</a><p>
+        </div>
+    </footer>
 </body>
+
+<script>
+const poem = [
+    "なんにもない毎日が、なによりの宝物。",
+    "今日という日を、何度でも繰り返したい。",
+    "世界を追いかけなくても、世界は私のまわりにある。", 
+    "速すぎる雑踏。のんびりとしたそよ風。", 
+    "明日の写真を飾る場所を、アルバムに空けておこう。", 
+    "落ち葉が地面に触れる音がした。"
+];
+document.querySelector(".copy").textContent = poem[Math.floor(poem.length * Math.random())];
+</script>
