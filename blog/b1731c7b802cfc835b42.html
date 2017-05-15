@@ -1,0 +1,134 @@
+<title>モナドのまほう　第10話『ゲッダン☆と謎の儀式《バッド・ノウハウ》』 - ちょっと小さいのはたしかですが。</title>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="/res/highlight/styles/default.css">
+<script src="/res/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$']]}
+});
+</script>
+
+<link rel="stylesheet" href="../reset.css">
+<link rel="stylesheet" href="../style.css">
+
+<body>
+    <header>
+        <div>
+            <div class="site-title"><a href="index.html">ちょっと小さいのはたしかですが。</a></div>
+            <div class="sub-title">プログラミングとかのブログ</div>
+        </div>
+    </header>
+    <div class="content">
+
+        <article id="rendered">
+            <div class="date">2016年12月9日</div>
+            <h1 class="article-title">モナドのまほう　第10話『ゲッダン☆と謎の儀式《バッド・ノウハウ》』</h1>        
+            <p class="tags"><a href="JavaScript.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>JavaScript</span></a>
+<a href="Blender.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>Blender</span></a>
+<a href="Babylon.js.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>Babylon.js</span></a>
+<a href="purescript.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>purescript</span></a></p>
+            <hr>
+            <!-- {
+  "id": "b1731c7b802cfc835b42",
+  "created_at": "2016-12-08T21:54:57+09:00",
+  "tags": [
+    {
+      "name": "JavaScript",
+      "versions": []
+    },
+    {
+      "name": "Blender",
+      "versions": []
+    },
+    {
+      "name": "Babylon.js",
+      "versions": []
+    },
+    {
+      "name": "purescript",
+      "versions": []
+    }
+  ],
+  "title": "モナドのまほう　第10話『ゲッダン☆と謎の儀式《バッド・ノウハウ》』"
+} -->
+<ul>
+<li><a href="http://qiita.com/hiruberuto/items/5321d8cebce7b87851f6">第１話　画像が表示できました</a>　←初回</li>
+<li><a href="http://qiita.com/hiruberuto/items/5962fc29e2c168671d3f">第９話　サウンドエフェクトの作業をしてコーディングで荒んだ心を癒やします</a>　←前回</li>
+</ul>
+<p>人喰いの大鷲トリコ面白そうですね。ゲームもやりたいですが、私は粛々と自分のゲームを作ります。</p>
+<h1><a name="blender-ruby-rt-rt-ruby-" class="anchor" href="#blender-ruby-rt-rt-ruby-"><span class="header-link"></span></a>Blenderのエクスポートと<ruby>謎の儀式<rt>バッドノウハウ</rt><ruby></h1><p>Babylon.jsのBlenderエクスポータを使っていると、とくにアニメーション周りでさまざまなバグが発生します。何がきっかけかさっぱりわからないのですが、エクスポートしてゲーム内で表示するとときどきこんな感じになります。</p>
+<p><a href="/img/a54919ce-1772-43d9-22b4-7d9c575059d5.png"><img src="/img/a54919ce-1772-43d9-22b4-7d9c575059d5.png"></img></a></p>
+<p>ああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ！<a href="http://www.nicovideo.jp/watch/sm602860">ゲッダン</a>として知られる現象です。頭部はほとんどの頂点がひとつのボーンの上に乗っているため、各部のボーン行列がぶっ壊れても頭部だけは壊れないのが逆にホラー。これを回避するためのバッドノウハウを幾つか発見したので、メモしておきます。BlenderとBabylon.jsを使いたい人は覚えておくと役に立つかもしれません。</p>
+<ul>
+<li><code>0</code>フレーム目以前の位置にキーを置いてはいけません。モーションが崩れます。キーを置くのは<code>1</code>フレーム目からです。みるからにエクスポータの実装の穴です</li>
+<li>すべてのボーンの変換をクリアしたニュートラルなポーズで立ち続けるだけのアクションを用意して、これが最後のアクションになるような名前(たとえば<code>zzz</code>とか)にしましょう。</li>
+<li>モーションをエクスポートするときは、この<code>zzz</code>アクションを選択した状態にし、ポーズをニュートラルにしてからエクスポートします。</li>
+<li>なお、このときボーンは必ず表示しておきます。非表示にするとエクスポート時にエラーになります</li>
+<li>前回も紹介しましたが、頂点のウェイトは４つまでなので気をつけましょう。5つ以上のウェイトを持った頂点があっても警告が出るだけでエクスポートは成功したように見えますが、どう考えてもモーションは崩れます</li>
+<li>すべてのアクションはひとつに連結されて出力されるのですが、アクションを再生しているときに順番で隣り合っている別のアクションが１フレームだけ見えてしまうときがあります。Babylonのエンジン側のバグですが、これを回避するためにダミーのアクションをそれぞれのアクションの間に挟むといいです</li>
+</ul>
+<p>もうバッドノウハウの塊です。一応は筆者もエクスポータのスクリプトも追ってみましたが、動的型付けのPythonでは可読性が低すぎて自分でバグフィックスできるとは思えませんでした。この謎儀式でなぜBlender神の怒りが収まるのかはまったくわかりませんが、まあそういうものです。つらい。動的型付けの言語は自分だけが使う書き捨てのスクリプトだけにしましょう。多人数が継続してメンテするアプリケーションはもちろん、エクスポータのような小さめのスクリプトだって動的型付けの言語で書くべきではありません。やっぱり静的型付けがあったほうが便利だということに最近になってPythonユーザも気づいたらしく、<a href="http://qiita.com/t2y/items/f95f6efe163b29be59af">Pythonにも型ヒントを取り入れようとする動き</a>はあるようですが、もういろいろだいぶ手遅れだと思います。型システムはプログラミング言語の根本をなすものあって、後付けでどうにかなるものではありません。</p>
+<p>こういうことが起こるのは、３Dモデルを扱うためのファイルフォーマットが統一されず、各オーサリングツールやエクスポータ、そしてゲームライブラリのファイル交換の部分の完成度がちっとも高まらないことが一因だと思います。XOF、VRML、X3D、Collada、FBX……。いろいろなフォーマットが現れては消えていき、標準的といえるようなフォーマットは一向に定着しません。３Dグラフィックスに求められるものがあまりに複雑すぎ、膨大すぎ、そして変化が早すぎるのでしょう。そしてこのたび<a href="http://qiita.com/emadurandal/items/1a034c4addd7ff8b5184">glTF</a>というものが新たに提案されているとか。筆者としても早くこの状況が良くなって欲しいと思います。</p>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>キャラクターのモーションを増やしました</h1><p>いままで『立ち』と『走り』の二種類しかモーションがなかったんですが、新たに『ジャンプ』（というか『空中』）と『着地』のふたつを増やしました。ジャンプのモーションがないと空中で足をジタバタすることになってすごく不自然でしたし、高いところから飛び降りたときにストっと立ったままになるのもあまりに変でした。最低限この４つがあれば、移動はそこそこ自然に見える気がします。</p>
+<p><a href="/img/1160113f-d505-b821-80ed-0a2b9ac54cba.png"><img src="/img/1160113f-d505-b821-80ed-0a2b9ac54cba.png"></img></a></p>
+<p>あと階段ブロックを追加した時には階段を駆け登るモーション、はしごを登るモーションなんかも必要かもしれませんね。それにブロックを置いたりブロックを削るアクションですね。このへんはゲームの世界観やキャラクター性に関わってきます。マインクラフトやドラゴンクエストビルダーズは１辺１メートルほどのブロックを軽々持ち上げてポンポンおいてますが、よく考えると変ですからね。「ゲームだから」で押し通すか、なんらかの理由付けをするか……。先にシナリオを書かなくてはならないかもです。最初はSF的な世界観を考えていたんですが、やっぱりゴシックファンタジーはとにかくどんなユーザにも普遍的に人気があるので使いやすいですし、いろんなことを「魔法だから」で辻褄をつけられるので便利です。何千個ものブロックを懐から取り出しても「魔法」のひとことですべて説明がついてしまいますからね。SFだと一応科学っぽい用語を使って理屈をつけなくてはならず、それはそれで楽しいんですけど難しさもあります。エクスポータのバグはつらいですが、今回一番楽しいのはBlenderでの作業かもしれません。</p>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ゲームプログラミングは難しすぎる</h1><p>ゲーム開発って難しいですよね。とにかく要求される知識の幅が多すぎます。2D/3Dグラフィックスはもちろん、オーディオ、ネットワーク、ユーザインターフェイスと、幅広い分野について知らなくてはなりません。さらには30ミリ秒ほどで処理を終わらせなくてはならないという効率上の制限の厳しさ。オンラインゲームでは不安定なネットワークをなんとかコントロールして接続を続けなければなりません。プログラミング言語ひとつとっても、今回はJavaScript/PureScript/GLSLの三種を使い分け、さらにBabylongJSがTypeScriptで書かれている関係でそれもある程度は理解する必要がありました。そしてHTML/CSSももちろん使いますし(『プログラミング言語』ではありませんが)、さらにBlenderのエクスポータの問題を把握するためにPythonも読む必要が生じました。この時点で7種類の言語の知識が必要になっています。つらい。</p>
+<p>プログラミングのほかにもイラストレーションや3DCGモデリングといったグラフィックの作業もあります。モーション付けでは物理学や人体構造をよく理解していなければなりませんし、キャラクターの衣装を考えるようなときにはファッションセンスすら問われます。さらにシナリオライティングまで。整合性を保ちながら盛り上がる物語を作るのってすっごい難しいんですよ。これがまだ『開発』の部分だけの話で、いろんな人に遊んでもらうには更に広報活動なんかも必要になるかもしれないわけで、プロモーション動画制作なんかも……必要なスキルが多すぎます……。</p>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ユーザインターフェイス</h1><p>あと、最初のスクリーンショットを見るとわかりますが、ユーザインターフェイスももう少しゲームっぽくしてみました。左上にハートを並べましたが、これは単なるダミーです。ゼルダの伝説っぽくしたかったんです。下の部分には『ホットバー』を設置して、置くブロックを切り替えられるようにしました。『時のオカリナ』は３Dアクションゲームのひとつの完成形として参考にしてます。</p>
+<p>それで、そろそろゲームシステムもどうするのか考えなくてはなりません。一応ブロックを置くスタイルのサンドボックスゲームであることだけは決まっているのですが、マインクラフトみたいに完全にユーザ任せでフリーダムなシステムもありますし、ドラゴンクエストビルダーズのようにRPGに近いシナリオやステージを用意する形式もあります。緩やかな目的だけを与えて、シナリオを追いたい人はシナリオをやってもいいし、シナリオを放り出して建築に専念してもいいという感じが、開発している側としてはやりやすい感じもします。</p>
+<p>ドラゴンクエストビルダーズを見て思ったのは、建築をする上で住人がいるのは雰囲気がいいなと。マインクラフトは基本的に村人の比重が小さいのであまり村人のために街を作るという感じではないですし、出来上がった街は非常に綺麗でも人影がないので閑散としています。住人がいて住人のために街を作っていくという物語があるとプレイしていてすごく盛り上がるんじゃないかと思います。ただ、住人を用意するのがすごく大変なんですよね。たったひとりのキャラクターを用意するだけでもこんなに大変なのに、街をにぎわすほどの住民を用意するとなるとどんなに大変なことになるやら……。実現可能な範囲は意識しなければなりません。</p>
+<p>最近絵文字をぜんぜん使ってないですね。このシリーズの第一回では楽しい雰囲気を無理やり演出するために絵文字を多用したんですが、絵文字探すのつらいんですよ。ゲームのインタフェイスでアイコンを探すのは楽しいんですが……。そういえば、ゲームのインターフェイスのアイコンにはFont Awesomeを使っています。効果音とかもいくつか付け加えました。カメラもなるべく壁に入り込まないようにしています。変更点多すぎて書ききれません。</p>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>次のお話</h1><ul>
+<li><a href="http://qiita.com/hiruberuto/items/d057a411bfd10a0b7924">第11話</a>
+　　　　</li>
+</ul>
+
+            <hr>
+            <div class="snsbuttons">
+
+                <!-- Hatena -->
+                <div>
+                    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+                </div>
+
+                <!-- line -->
+                <div>
+                    <div class="line-it-button" style="display: none;" data-type="share-a" data-lang="ja" ></div>
+                    <script src="//scdn.line-apps.com/n/line_it/thirdparty/loader.min.js" async="async" defer="defer" ></script>
+                </div>
+
+                <!--facebook -->
+                <div>
+                    <div id="fb-root"></div>
+                    <script>(function(d, s, id) {
+                    var js, fjs = d.getElementsByTagName(s)[0];
+                    if (d.getElementById(id)) return;
+                    js = d.createElement(s); js.id = id;
+                    js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.8";
+                    fjs.parentNode.insertBefore(js, fjs);
+                    }(document, 'script', 'facebook-jssdk'));</script>
+                    <div class="fb-like" data-href="https://aratama.github.io/blog/b1731c7b802cfc835b42.md" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="false"></div>
+                </div>
+
+                <!-- google+ -->
+                <div>
+                    <script src="https://apis.google.com/js/platform.js" async defer>
+                    {lang: 'ja'}
+                    </script>
+                    <div class="g-plusone" data-size="medium"></div>
+                </div>
+
+            </div>
+
+        </article>
+    </div>
+
+    <footer>この文章を書いてる人: <a target="_blank" href="https://twitter.com/cubbit2">Aratama</a></footer>
+</body>
