@@ -12,6 +12,7 @@ const articleTemplete = fs.readFileSync("template/article.html").toString();
 const templeteIndex = fs.readFileSync("template/index.html").toString();
 const header = fs.readFileSync("template/header.html").toString();
 const footer = fs.readFileSync("template/footer.html").toString();
+const sns = fs.readFileSync("template/sns.html").toString();
 
 // configurations
 const siteTitle = "ちょっと小さいのはたしかですが。";
@@ -42,7 +43,7 @@ glob("raw/*.md", {}, (err, sources) => {
         renderer.link = (href, title, text) => {
             debugger;
             var url = href.startsWith("http://qiita.com/hiruberuto/items/") ? path.basename(href) : href;
-            return `<a href="${url}.html">${text}</a>`;
+            return `<a href="/blog/${url}.html">${text}</a>`;
         };
 
         const source = fs.readFileSync(file).toString();
@@ -80,7 +81,7 @@ glob("raw/*.md", {}, (err, sources) => {
 
     const items = articles.map(article => {
         const date = new Date(article.created_at);
-        return `<a href="${article.url}">
+        return `<a href="/blog/${article.url}">
                     <li class="article-entry">
                         <div class="thumbnail" style="background-image: url(${article.thumbnail})"></div>
                         <div class="date">${date.getFullYear()}年${1 + date.getMonth()}月${date.getDate()}日</div>
@@ -89,6 +90,6 @@ glob("raw/*.md", {}, (err, sources) => {
                 </a>`;
     }).join("\n");
     const pageTitle = siteTitle;
-    fs.writeFileSync("blog/index.html", `<title>${pageTitle}</title>` + eval("`" + header + templeteIndex + footer + "`"));
+    fs.writeFileSync("index.html", `<title>${pageTitle}</title>` + eval("`" + header + templeteIndex + footer + "`"));
 });
 

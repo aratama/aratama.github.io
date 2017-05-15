@@ -1,8 +1,10 @@
-<title>モナドのまほう　第10話『ゲッダン☆と謎の儀式《バッド・ノウハウ》』 - ちょっと小さいのはたしかですが。</title>
+<title>モナドのまほう　第10話『ゲッダン☆と謎の儀式《バッド・ノウハウ》』 - ちょっと小さいのはたしかですが。</title><!DOCTYPE html>
+<meta charset="UTF-8">
+<link type="text/css" rel="stylesheet" href="style.css">
 
 <header>
     <div class="block-centered">
-        <div class="site-title"><a href="index.html">ちょっと小さいのはたしかですが。</a></div>
+        <div class="site-title"><a href="/index.html">ちょっと小さいのはたしかですが。</a></div>
         <div class="sub-title">わたしのブログです。面白いかどうかは、わかりませんが。</div>
     </div>
 </header>
@@ -63,13 +65,13 @@ MathJax.Hub.Config({
   "title": "モナドのまほう　第10話『ゲッダン☆と謎の儀式《バッド・ノウハウ》』"
 } -->
 <ul>
-<li><a href="5321d8cebce7b87851f6.html">第１話　画像が表示できました</a>　←初回</li>
-<li><a href="5962fc29e2c168671d3f.html">第９話　サウンドエフェクトの作業をしてコーディングで荒んだ心を癒やします</a>　←前回</li>
+<li><a href="/blog/5321d8cebce7b87851f6.html">第１話　画像が表示できました</a>　←初回</li>
+<li><a href="/blog/5962fc29e2c168671d3f.html">第９話　サウンドエフェクトの作業をしてコーディングで荒んだ心を癒やします</a>　←前回</li>
 </ul>
 <p>人喰いの大鷲トリコ面白そうですね。ゲームもやりたいですが、私は粛々と自分のゲームを作ります。</p>
 <h1><a name="blender-ruby-rt-rt-ruby-" class="anchor" href="#blender-ruby-rt-rt-ruby-"><span class="header-link"></span></a>Blenderのエクスポートと<ruby>謎の儀式<rt>バッドノウハウ</rt><ruby></h1><p>Babylon.jsのBlenderエクスポータを使っていると、とくにアニメーション周りでさまざまなバグが発生します。何がきっかけかさっぱりわからないのですが、エクスポートしてゲーム内で表示するとときどきこんな感じになります。</p>
 <p><a href="/img/a54919ce-1772-43d9-22b4-7d9c575059d5.png"><img src="/img/a54919ce-1772-43d9-22b4-7d9c575059d5.png"></img></a></p>
-<p>ああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ！<a href="http://www.nicovideo.jp/watch/sm602860.html">ゲッダン</a>として知られる現象です。頭部はほとんどの頂点がひとつのボーンの上に乗っているため、各部のボーン行列がぶっ壊れても頭部だけは壊れないのが逆にホラー。これを回避するためのバッドノウハウを幾つか発見したので、メモしておきます。BlenderとBabylon.jsを使いたい人は覚えておくと役に立つかもしれません。</p>
+<p>ああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ！<a href="/blog/http://www.nicovideo.jp/watch/sm602860.html">ゲッダン</a>として知られる現象です。頭部はほとんどの頂点がひとつのボーンの上に乗っているため、各部のボーン行列がぶっ壊れても頭部だけは壊れないのが逆にホラー。これを回避するためのバッドノウハウを幾つか発見したので、メモしておきます。BlenderとBabylon.jsを使いたい人は覚えておくと役に立つかもしれません。</p>
 <ul>
 <li><code>0</code>フレーム目以前の位置にキーを置いてはいけません。モーションが崩れます。キーを置くのは<code>1</code>フレーム目からです。みるからにエクスポータの実装の穴です</li>
 <li>すべてのボーンの変換をクリアしたニュートラルなポーズで立ち続けるだけのアクションを用意して、これが最後のアクションになるような名前(たとえば<code>zzz</code>とか)にしましょう。</li>
@@ -78,8 +80,8 @@ MathJax.Hub.Config({
 <li>前回も紹介しましたが、頂点のウェイトは４つまでなので気をつけましょう。5つ以上のウェイトを持った頂点があっても警告が出るだけでエクスポートは成功したように見えますが、どう考えてもモーションは崩れます</li>
 <li>すべてのアクションはひとつに連結されて出力されるのですが、アクションを再生しているときに順番で隣り合っている別のアクションが１フレームだけ見えてしまうときがあります。Babylonのエンジン側のバグですが、これを回避するためにダミーのアクションをそれぞれのアクションの間に挟むといいです</li>
 </ul>
-<p>もうバッドノウハウの塊です。一応は筆者もエクスポータのスクリプトも追ってみましたが、動的型付けのPythonでは可読性が低すぎて自分でバグフィックスできるとは思えませんでした。この謎儀式でなぜBlender神の怒りが収まるのかはまったくわかりませんが、まあそういうものです。つらい。動的型付けの言語は自分だけが使う書き捨てのスクリプトだけにしましょう。多人数が継続してメンテするアプリケーションはもちろん、エクスポータのような小さめのスクリプトだって動的型付けの言語で書くべきではありません。やっぱり静的型付けがあったほうが便利だということに最近になってPythonユーザも気づいたらしく、<a href="http://qiita.com/t2y/items/f95f6efe163b29be59af.html">Pythonにも型ヒントを取り入れようとする動き</a>はあるようですが、もういろいろだいぶ手遅れだと思います。型システムはプログラミング言語の根本をなすものあって、後付けでどうにかなるものではありません。</p>
-<p>こういうことが起こるのは、３Dモデルを扱うためのファイルフォーマットが統一されず、各オーサリングツールやエクスポータ、そしてゲームライブラリのファイル交換の部分の完成度がちっとも高まらないことが一因だと思います。XOF、VRML、X3D、Collada、FBX……。いろいろなフォーマットが現れては消えていき、標準的といえるようなフォーマットは一向に定着しません。３Dグラフィックスに求められるものがあまりに複雑すぎ、膨大すぎ、そして変化が早すぎるのでしょう。そしてこのたび<a href="http://qiita.com/emadurandal/items/1a034c4addd7ff8b5184.html">glTF</a>というものが新たに提案されているとか。筆者としても早くこの状況が良くなって欲しいと思います。</p>
+<p>もうバッドノウハウの塊です。一応は筆者もエクスポータのスクリプトも追ってみましたが、動的型付けのPythonでは可読性が低すぎて自分でバグフィックスできるとは思えませんでした。この謎儀式でなぜBlender神の怒りが収まるのかはまったくわかりませんが、まあそういうものです。つらい。動的型付けの言語は自分だけが使う書き捨てのスクリプトだけにしましょう。多人数が継続してメンテするアプリケーションはもちろん、エクスポータのような小さめのスクリプトだって動的型付けの言語で書くべきではありません。やっぱり静的型付けがあったほうが便利だということに最近になってPythonユーザも気づいたらしく、<a href="/blog/http://qiita.com/t2y/items/f95f6efe163b29be59af.html">Pythonにも型ヒントを取り入れようとする動き</a>はあるようですが、もういろいろだいぶ手遅れだと思います。型システムはプログラミング言語の根本をなすものあって、後付けでどうにかなるものではありません。</p>
+<p>こういうことが起こるのは、３Dモデルを扱うためのファイルフォーマットが統一されず、各オーサリングツールやエクスポータ、そしてゲームライブラリのファイル交換の部分の完成度がちっとも高まらないことが一因だと思います。XOF、VRML、X3D、Collada、FBX……。いろいろなフォーマットが現れては消えていき、標準的といえるようなフォーマットは一向に定着しません。３Dグラフィックスに求められるものがあまりに複雑すぎ、膨大すぎ、そして変化が早すぎるのでしょう。そしてこのたび<a href="/blog/http://qiita.com/emadurandal/items/1a034c4addd7ff8b5184.html">glTF</a>というものが新たに提案されているとか。筆者としても早くこの状況が良くなって欲しいと思います。</p>
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>キャラクターのモーションを増やしました</h1><p>いままで『立ち』と『走り』の二種類しかモーションがなかったんですが、新たに『ジャンプ』（というか『空中』）と『着地』のふたつを増やしました。ジャンプのモーションがないと空中で足をジタバタすることになってすごく不自然でしたし、高いところから飛び降りたときにストっと立ったままになるのもあまりに変でした。最低限この４つがあれば、移動はそこそこ自然に見える気がします。</p>
 <p><a href="/img/1160113f-d505-b821-80ed-0a2b9ac54cba.png"><img src="/img/1160113f-d505-b821-80ed-0a2b9ac54cba.png"></img></a></p>
 <p>あと階段ブロックを追加した時には階段を駆け登るモーション、はしごを登るモーションなんかも必要かもしれませんね。それにブロックを置いたりブロックを削るアクションですね。このへんはゲームの世界観やキャラクター性に関わってきます。マインクラフトやドラゴンクエストビルダーズは１辺１メートルほどのブロックを軽々持ち上げてポンポンおいてますが、よく考えると変ですからね。「ゲームだから」で押し通すか、なんらかの理由付けをするか……。先にシナリオを書かなくてはならないかもです。最初はSF的な世界観を考えていたんですが、やっぱりゴシックファンタジーはとにかくどんなユーザにも普遍的に人気があるので使いやすいですし、いろんなことを「魔法だから」で辻褄をつけられるので便利です。何千個ものブロックを懐から取り出しても「魔法」のひとことですべて説明がついてしまいますからね。SFだと一応科学っぽい用語を使って理屈をつけなくてはならず、それはそれで楽しいんですけど難しさもあります。エクスポータのバグはつらいですが、今回一番楽しいのはBlenderでの作業かもしれません。</p>
@@ -90,46 +92,50 @@ MathJax.Hub.Config({
 <p>ドラゴンクエストビルダーズを見て思ったのは、建築をする上で住人がいるのは雰囲気がいいなと。マインクラフトは基本的に村人の比重が小さいのであまり村人のために街を作るという感じではないですし、出来上がった街は非常に綺麗でも人影がないので閑散としています。住人がいて住人のために街を作っていくという物語があるとプレイしていてすごく盛り上がるんじゃないかと思います。ただ、住人を用意するのがすごく大変なんですよね。たったひとりのキャラクターを用意するだけでもこんなに大変なのに、街をにぎわすほどの住民を用意するとなるとどんなに大変なことになるやら……。実現可能な範囲は意識しなければなりません。</p>
 <p>最近絵文字をぜんぜん使ってないですね。このシリーズの第一回では楽しい雰囲気を無理やり演出するために絵文字を多用したんですが、絵文字探すのつらいんですよ。ゲームのインタフェイスでアイコンを探すのは楽しいんですが……。そういえば、ゲームのインターフェイスのアイコンにはFont Awesomeを使っています。効果音とかもいくつか付け加えました。カメラもなるべく壁に入り込まないようにしています。変更点多すぎて書ききれません。</p>
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>次のお話</h1><ul>
-<li><a href="d057a411bfd10a0b7924.html">第11話</a>
+<li><a href="/blog/d057a411bfd10a0b7924.html">第11話</a>
 　　　　</li>
 </ul>
 
-            <hr>
-            <div class="snsbuttons">
 
-                <!-- Hatena -->
-                <div>
-                    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
-                </div>
 
-                <!-- line -->
-                <div>
-                    <div class="line-it-button" style="display: none;" data-type="share-a" data-lang="ja" ></div>
-                    <script src="//scdn.line-apps.com/n/line_it/thirdparty/loader.min.js" async="async" defer="defer" ></script>
-                </div>
+            
+<hr style="margin-top: 200px;">
 
-                <!--facebook -->
-                <div>
-                    <div id="fb-root"></div>
-                    <script>(function(d, s, id) {
-                    var js, fjs = d.getElementsByTagName(s)[0];
-                    if (d.getElementById(id)) return;
-                    js = d.createElement(s); js.id = id;
-                    js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.8";
-                    fjs.parentNode.insertBefore(js, fjs);
-                    }(document, 'script', 'facebook-jssdk'));</script>
-                    <div class="fb-like" data-href="https://aratama.github.io/blog/b1731c7b802cfc835b42.md" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="false"></div>
-                </div>
+<div class="snsbuttons">
 
-                <!-- google+ -->
-                <div>
-                    <script src="https://apis.google.com/js/platform.js" async defer>
-                    {lang: 'ja'}
-                    </script>
-                    <div class="g-plusone" data-size="medium"></div>
-                </div>
+    <!-- Hatena -->
+    <div>
+        <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </div>
 
-            </div>
+    <!-- line -->
+    <div>
+        <div class="line-it-button" style="display: none;" data-type="share-a" data-lang="ja" ></div>
+        <script src="//scdn.line-apps.com/n/line_it/thirdparty/loader.min.js" async="async" defer="defer" ></script>
+    </div>
+
+    <!--facebook -->
+    <div>
+        <div id="fb-root"></div>
+        <script>(function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.8";
+        fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
+        <div class="fb-like" data-href="https://aratama.github.io/blog/${metadata.id}.md" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="false"></div>
+    </div>
+
+    <!-- google+ -->
+    <div>
+        <script src="https://apis.google.com/js/platform.js" async defer>
+        {lang: 'ja'}
+        </script>
+        <div class="g-plusone" data-size="medium"></div>
+    </div>
+
+</div>
 
         </article>
     </div>

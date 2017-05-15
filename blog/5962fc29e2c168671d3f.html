@@ -1,8 +1,10 @@
-<title>モナドのまほう　第９話『サウンドエフェクトの作業をしてコーディングで荒んだ心を癒やします』 - ちょっと小さいのはたしかですが。</title>
+<title>モナドのまほう　第９話『サウンドエフェクトの作業をしてコーディングで荒んだ心を癒やします』 - ちょっと小さいのはたしかですが。</title><!DOCTYPE html>
+<meta charset="UTF-8">
+<link type="text/css" rel="stylesheet" href="style.css">
 
 <header>
     <div class="block-centered">
-        <div class="site-title"><a href="index.html">ちょっと小さいのはたしかですが。</a></div>
+        <div class="site-title"><a href="/index.html">ちょっと小さいのはたしかですが。</a></div>
         <div class="sub-title">わたしのブログです。面白いかどうかは、わかりませんが。</div>
     </div>
 </header>
@@ -68,16 +70,16 @@ MathJax.Hub.Config({
   "title": "モナドのまほう　第９話『サウンドエフェクトの作業をしてコーディングで荒んだ心を癒やします』"
 } -->
 <ul>
-<li><a href="5321d8cebce7b87851f6.html">第一話　画像が表示できました</a>　←初回</li>
-<li><a href="c1017d61978afbce6cc5.html">第八話　たまにはデモします</a>　←前回</li>
+<li><a href="/blog/5321d8cebce7b87851f6.html">第一話　画像が表示できました</a>　←初回</li>
+<li><a href="/blog/c1017d61978afbce6cc5.html">第八話　たまにはデモします</a>　←前回</li>
 </ul>
 <p>ゲームを作る日記です。オーディオ作業は難しい理屈とか要らなくてフィーリングだけでできるので心が癒されます。</p>
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>環境音</h1><p>音がないとどうも寂しいということで、森の中っぽい環境音をつけることにしました。さすがにサウンドエフェクトまで自分で録音してくるというわけにはいかなかったので、フリーの素材を探します。<a href="http://www.freesound.org.html">freesound</a>がいろいろな素材があっていい感じです。このなかからCreateive Commons Attribution 3.0 Unportedなライセンスのものを借りることにします。</p>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>環境音</h1><p>音がないとどうも寂しいということで、森の中っぽい環境音をつけることにしました。さすがにサウンドエフェクトまで自分で録音してくるというわけにはいかなかったので、フリーの素材を探します。<a href="/blog/http://www.freesound.org.html">freesound</a>がいろいろな素材があっていい感じです。このなかからCreateive Commons Attribution 3.0 Unportedなライセンスのものを借りることにします。</p>
 <ul>
-<li><a href="https://www.freesound.org/people/HerbertBoland/sounds/28239/.html">https://www.freesound.org/people/HerbertBoland/sounds/28239/</a></li>
+<li><a href="/blog/https://www.freesound.org/people/HerbertBoland/sounds/28239/.html">https://www.freesound.org/people/HerbertBoland/sounds/28239/</a></li>
 </ul>
 <p>説明によると初夏のイギリスのカントリーハウスで採ったものだとか。おしゃれですね。ただ、これはあくまで「素材」であって、実際にゲーム内で使うためにはいろいろと加工が必要です。この素材の場合は、一部に虫の羽音が入っていたり、トンという何かの物音（鳥追い用の銃声？）が入っていたので、これを除去します。</p>
-<p><a href="http://www.reaper.fm/.html">Reaper</a>でファイルを再生しながらノイズを探します。「トン」というノイズがあったところの波形をみると、確かにちょっとだけ波形に山があるのがわかりました。</p>
+<p><a href="/blog/http://www.reaper.fm/.html">Reaper</a>でファイルを再生しながらノイズを探します。「トン」というノイズがあったところの波形をみると、確かにちょっとだけ波形に山があるのがわかりました。</p>
 <p><a href="/img/dadb4c03-2d12-85f4-1d08-09ea1a1f8b84.png"><img src="/img/dadb4c03-2d12-85f4-1d08-09ea1a1f8b84.png"></img></a></p>
 <p>それではオペを始めます。よろしくお願いします。Item -&gt; Split item at cursorsで該当部分に切れ目を切れます。それから患部を切除します。</p>
 <p><a href="/img/b78b7652-810c-ad8d-90b4-a92b1f7ec6fd.png"><img src="/img/b78b7652-810c-ad8d-90b4-a92b1f7ec6fd.png"></img></a></p>
@@ -86,16 +88,16 @@ MathJax.Hub.Config({
 <p><a href="/img/b088e7fb-7456-b2cc-ec65-8e34c98c2692.png"><img src="/img/b088e7fb-7456-b2cc-ec65-8e34c98c2692.png"></img></a></p>
 <p>本当はコンプレッサをかけて音量調節なんかもしたほうがいいですが、とりあえずはこれで問題なさそうなのでこれで。あとはMP3形式で書き出してフィニッシュ。ちょっとファイルサイズが大きいですが、そのあたりはまたいつか調整しようと思います。</p>
 <p>babylonjsに音声再生の機能があるので、プログラミングの方も簡単です。<code>BABYLON.Sound</code>クラスのコンストラクタをラップした<code>loadSound</code>関数を用意したので、音声を読み込むにはこれを呼ぶだけです。<code>autoplay</code>オプションを指定しているので、読み込みが完了したら自動的に再生が始まります。また<code>loop</code>オプションを指定しているので、再生が終わったら自動的にループします。しかもこの関数は非同期処理モナド<code>Aff</code>のモナディックな作用になっていて、音声の読み込みが完了するまでゲームの開始を待機する処理が簡単に書けます。</p>
-<pre><code class="haskell">forestSound <- loadSound "forest.mp3" "forest.mp3" scene defaultCreateSoundOptions { autoplay = true, loop = true }</code></pre><p>実際にこの環境音を聴いてみたい人は<a href="https://aratama.github.io/cubbit/.html">前回出したデモ</a>をどうぞ。</p>
+<pre><code class="haskell">forestSound <- loadSound "forest.mp3" "forest.mp3" scene defaultCreateSoundOptions { autoplay = true, loop = true }</code></pre><p>実際にこの環境音を聴いてみたい人は<a href="/blog/https://aratama.github.io/cubbit/.html">前回出したデモ</a>をどうぞ。</p>
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>一人称視点</h1><p>一人称視点も実装しました。Pointer Lock APIを使って、FPSのゲームみたいにマウスで直接向きを変えながら操作できます。一人称視点は直感的ではあるんですが、キャラクターの動きを見せられないのがちょっと残念です。マインクラフトみたいに割りきって完全にストーリーを省く場合は、キャラクター性がなくてもいいとは思うのですが……。</p>
 <p>First Person Shooterのようなゲームでの操作に慣れている人が多いので、一人称視点ではWASDで移動、マウスムーブで向きの変更という操作にせざるを得ません。その場合画面上に配置したボタンをマウスで押せなくなるので、いろんなモードの切替がちょっと不便です。その一方で、三人称視点では向きを変更しなくてもある程度自分の周囲の状況がわかるので、向きの変更がそれほど頻繁には必要なくなります。そのためマウスポインタをロックしなくても大丈夫で、マウスポインタを画面上のボタンを操作するために使えます。</p>
 <p>また、ブロック建築ではとくに三人称のほうが便利です。一人称だと、足元のブロックの奥の面が見えにくいので、水平にブロックを継ぎ足して伸ばしていくのがやりにくいのです。操作性にもいろいろとこだわりたいです。</p>
-<h1><a name="ui-" class="anchor" href="#ui-"><span class="header-link"></span></a>UIライブラリ</h1><p>グラフィックは見た目はあまり変わっていませんが、プログラムの中身のほうは大幅なリファクタリングが行われています。一番大きい変化は、UIがすべて<a href="https://github.com/slamdata/purescript-halogen.html">purescript-halogen</a>というライブラリ上へと移行したことです。今まではいきあたりばったりにFFIを呼んでDOMを動かしていたんですが、今後ユーザインターフェイスが複雑化するのを見込んですべて書き換えました。</p>
+<h1><a name="ui-" class="anchor" href="#ui-"><span class="header-link"></span></a>UIライブラリ</h1><p>グラフィックは見た目はあまり変わっていませんが、プログラムの中身のほうは大幅なリファクタリングが行われています。一番大きい変化は、UIがすべて<a href="/blog/https://github.com/slamdata/purescript-halogen.html">purescript-halogen</a>というライブラリ上へと移行したことです。今まではいきあたりばったりにFFIを呼んでDOMを動かしていたんですが、今後ユーザインターフェイスが複雑化するのを見込んですべて書き換えました。</p>
 <p>ゲーム向けという特殊な利用に耐えられるのか心配でしたが、なんとかなりそうです。UIの状態が変更されるとDOMの再描画が走ってしまうので、ゲーム向けでは毎フレームDOMの再描画が起きてしまいかねないので効率に問題がありそうな気がしていたんですが、UIの状態とリアルタイムで変化する状態を分離することでうまくいきそうです。UIの状態は基本的にクリックなどのユーザ入力のときだけ変更されるようになっています。</p>
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>輪郭線</h1><p>キャラクターに輪郭線を表示してみました。<a href="http://www.4gamer.net/games/216/G021678/20140703095/index_2.html.html">背面法</a>という古典的な方法を使っています。少しキャラクターの印象が引き締まるのはいいのですが、このゲームではいまのところカメラが引いている場面が多いので、それほど印象が変わるわけではないように思いました。輪郭線なしでも見栄えは問題ない気がします。たしかにアニメっぽくはあるのですが、アニメの再現を目指しているわけでもないですし。どんどんモデルが重くなっていく……。</p>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>輪郭線</h1><p>キャラクターに輪郭線を表示してみました。<a href="/blog/http://www.4gamer.net/games/216/G021678/20140703095/index_2.html.html">背面法</a>という古典的な方法を使っています。少しキャラクターの印象が引き締まるのはいいのですが、このゲームではいまのところカメラが引いている場面が多いので、それほど印象が変わるわけではないように思いました。輪郭線なしでも見栄えは問題ない気がします。たしかにアニメっぽくはあるのですが、アニメの再現を目指しているわけでもないですし。どんどんモデルが重くなっていく……。</p>
 <p><a href="/img/6a5684c8-ef66-417f-394f-aff999ac128e.png"><img src="/img/6a5684c8-ef66-417f-394f-aff999ac128e.png"></img></a></p>
 <p>あと、Blenderでモデルを作ってbabylonjsに書き出したい人は、以下のTipsは必ず読んでおいたほうがいいと思います。知らないとモデルの表示が崩れてハマります。要するに、ひとつの頂点は最大４つのボーンからの影響しか受けられないのですが、それを超える頂点があったとしても警告が出るだけで書き出しが成功したように見えます。でもボーンを動かすとウェイトが足りないのでぐにゃっとモデルが崩れます。もうこれ警告じゃなくてエラーでいいと思うんですけどね。</p>
-<p><a href="https://doc.babylonjs.com/exporters/Blender_Tips.html">https://doc.babylonjs.com/exporters/Blender_Tips</a></p>
+<p><a href="/blog/https://doc.babylonjs.com/exporters/Blender_Tips.html">https://doc.babylonjs.com/exporters/Blender_Tips</a></p>
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>今後の(ずさんな)計画</h1><ul>
 <li>まずはコードをリファクタリングしまくる（めんどくさい）</li>
 <li>自動化されたテストが欲しいです(ぶっちゃけ最優先で必要だけと、いい方法が思いつかない)</li>
@@ -107,45 +109,49 @@ MathJax.Hub.Config({
 <li>シングルプレイモードとマルチプレイモードを用意したい（願望）</li>
 </ul>
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>次のお話</h1><ul>
-<li><a href="b1731c7b802cfc835b42.html">第10話 ゲッダン☆と謎の儀式《バッド・ノウハウ》</a></li>
+<li><a href="/blog/b1731c7b802cfc835b42.html">第10話 ゲッダン☆と謎の儀式《バッド・ノウハウ》</a></li>
 </ul>
 
-            <hr>
-            <div class="snsbuttons">
 
-                <!-- Hatena -->
-                <div>
-                    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
-                </div>
 
-                <!-- line -->
-                <div>
-                    <div class="line-it-button" style="display: none;" data-type="share-a" data-lang="ja" ></div>
-                    <script src="//scdn.line-apps.com/n/line_it/thirdparty/loader.min.js" async="async" defer="defer" ></script>
-                </div>
+            
+<hr style="margin-top: 200px;">
 
-                <!--facebook -->
-                <div>
-                    <div id="fb-root"></div>
-                    <script>(function(d, s, id) {
-                    var js, fjs = d.getElementsByTagName(s)[0];
-                    if (d.getElementById(id)) return;
-                    js = d.createElement(s); js.id = id;
-                    js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.8";
-                    fjs.parentNode.insertBefore(js, fjs);
-                    }(document, 'script', 'facebook-jssdk'));</script>
-                    <div class="fb-like" data-href="https://aratama.github.io/blog/5962fc29e2c168671d3f.md" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="false"></div>
-                </div>
+<div class="snsbuttons">
 
-                <!-- google+ -->
-                <div>
-                    <script src="https://apis.google.com/js/platform.js" async defer>
-                    {lang: 'ja'}
-                    </script>
-                    <div class="g-plusone" data-size="medium"></div>
-                </div>
+    <!-- Hatena -->
+    <div>
+        <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </div>
 
-            </div>
+    <!-- line -->
+    <div>
+        <div class="line-it-button" style="display: none;" data-type="share-a" data-lang="ja" ></div>
+        <script src="//scdn.line-apps.com/n/line_it/thirdparty/loader.min.js" async="async" defer="defer" ></script>
+    </div>
+
+    <!--facebook -->
+    <div>
+        <div id="fb-root"></div>
+        <script>(function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.8";
+        fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
+        <div class="fb-like" data-href="https://aratama.github.io/blog/${metadata.id}.md" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="false"></div>
+    </div>
+
+    <!-- google+ -->
+    <div>
+        <script src="https://apis.google.com/js/platform.js" async defer>
+        {lang: 'ja'}
+        </script>
+        <div class="g-plusone" data-size="medium"></div>
+    </div>
+
+</div>
 
         </article>
     </div>

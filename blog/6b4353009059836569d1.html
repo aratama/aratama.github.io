@@ -1,8 +1,10 @@
-<title>モナドのまほう　第15話『babylon.jsの水面マテリアルの流れは絶えずして』 - ちょっと小さいのはたしかですが。</title>
+<title>モナドのまほう　第15話『babylon.jsの水面マテリアルの流れは絶えずして』 - ちょっと小さいのはたしかですが。</title><!DOCTYPE html>
+<meta charset="UTF-8">
+<link type="text/css" rel="stylesheet" href="style.css">
 
 <header>
     <div class="block-centered">
-        <div class="site-title"><a href="index.html">ちょっと小さいのはたしかですが。</a></div>
+        <div class="site-title"><a href="/index.html">ちょっと小さいのはたしかですが。</a></div>
         <div class="sub-title">わたしのブログです。面白いかどうかは、わかりませんが。</div>
     </div>
 </header>
@@ -67,7 +69,7 @@ MathJax.Hub.Config({
   ],
   "title": "モナドのまほう　第15話『babylon.jsの水面マテリアルの流れは絶えずして』"
 } -->
-<p><a href="5321d8cebce7b87851f6.html">第一話</a> / <a href="910354220d14d597b876.html">前回</a> / <a href="https://aratama.github.io/cubbit/.html">デモ</a> / <a href="http://magicofstella.com/.html">ステま</a></p>
+<p><a href="/blog/5321d8cebce7b87851f6.html">第一話</a> / <a href="/blog/910354220d14d597b876.html">前回</a> / <a href="/blog/https://aratama.github.io/cubbit/.html">デモ</a> / <a href="/blog/http://magicofstella.com/.html">ステま</a></p>
 <p>ゲームを作る日記です。ステラのまほうのアニメの続きを観たすぎたので、この記事のタイトルを変えました。</p>
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>水面マテリアルを移植しました</h1><p>バグで動かなかったbabylonjsの水面マテリアルですが、悪さをしていたデコレータの部分をコメントアウトし、バグを回避する形にして無理やり使えるようにしました。ソフトウェア開発なんてどうせ最後はこういう力技です。</p>
 <p><a href="/img/daacae26-e650-1dc8-859c-38107335864b.png"><img src="/img/daacae26-e650-1dc8-859c-38107335864b.png"></img></a></p>
@@ -77,12 +79,12 @@ MathJax.Hub.Config({
 <p>テキストデータはハードコーディングされています。編集には再コンパイルが必要ですが、まあ書くのはどうせぜんぶ私なので問題はないでしょう。最初にアクセスしたときに<code>navigator.language</code>プロパティを読み取って言語を判定し、デフォルト値として使用しています。</p>
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>アツマールのメモ</h1><p>ニコニコのRPGアツマールのAPIドキュメントが公開されたようです。自分で調べる必要なかったですね。</p>
 <ul>
-<li><a href="http://ch.nicovideo.jp/indies-game/blomaga/ar1163608.html">ニコニコ自作ゲームフェス
+<li><a href="/blog/http://ch.nicovideo.jp/indies-game/blomaga/ar1163608.html">ニコニコ自作ゲームフェス
 RPGアツマール ゲームAPI仕様書</a></li>
 </ul>
-<p><a href="http://html5.nicogame.jp/core/player/js/rpgatsumaru.js.html">rpgatsumaru.js</a>ってのがAPIを提供しているみたいですが、このあたりを眺めただけじゃ使い方はよくわからないです。そのうちコメント対応の実験してみます。</p>
+<p><a href="/blog/http://html5.nicogame.jp/core/player/js/rpgatsumaru.js.html">rpgatsumaru.js</a>ってのがAPIを提供しているみたいですが、このあたりを眺めただけじゃ使い方はよくわからないです。そのうちコメント対応の実験してみます。</p>
 <ul>
-<li><a href="http://blog.nicovideo.jp/atsumaru/2016/12/post-1.html.html">【ゲーム企画支援】全力ゲーミング!!!参加募集開始</a></li>
+<li><a href="/blog/http://blog.nicovideo.jp/atsumaru/2016/12/post-1.html.html">【ゲーム企画支援】全力ゲーミング!!!参加募集開始</a></li>
 </ul>
 <p>ふむふむ。企画書書いて採用されれば３０万円くれて、他にもいろいろ特典があるみたいです。私はプロモーション活動はすごく苦手なので、プロモーション打ってくれるなら嬉しいですね。</p>
 <blockquote>
@@ -108,51 +110,55 @@ RPGアツマール ゲームAPI仕様書</a></li>
 </ul>
 <h4><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>シングルプレイヤーモード</h4><ul>
 <li>RPGアツマールのコメント機能対応実験（簡単）</li>
-<li>表情アニメーション（難しい）（具体的には<a href="http://www.jp.square-enix.com/info/images/image_technical_seminar2014_06/pdf/SQEX_DevCon_sugimoto.pdf.html">スクストのコレ</a>を実装したいです）</li>
+<li>表情アニメーション（難しい）（具体的には<a href="/blog/http://www.jp.square-enix.com/info/images/image_technical_seminar2014_06/pdf/SQEX_DevCon_sugimoto.pdf.html">スクストのコレ</a>を実装したいです）</li>
 <li>フルモーションシーン（プログラミング側は簡単だがBlender側が大変)</li>
 <li>シナリオ執筆（わりと難しい。フルモーションシーンが流せるようになってから？）</li>
 </ul>
 <p>前に買ったゲームパッド、どこ行ったんだろ……。</p>
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>次のお話</h1><ul>
-<li><a href="02cea526f5487d579cec.html">第16話</a></li>
+<li><a href="/blog/02cea526f5487d579cec.html">第16話</a></li>
 </ul>
 
-            <hr>
-            <div class="snsbuttons">
 
-                <!-- Hatena -->
-                <div>
-                    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
-                </div>
 
-                <!-- line -->
-                <div>
-                    <div class="line-it-button" style="display: none;" data-type="share-a" data-lang="ja" ></div>
-                    <script src="//scdn.line-apps.com/n/line_it/thirdparty/loader.min.js" async="async" defer="defer" ></script>
-                </div>
+            
+<hr style="margin-top: 200px;">
 
-                <!--facebook -->
-                <div>
-                    <div id="fb-root"></div>
-                    <script>(function(d, s, id) {
-                    var js, fjs = d.getElementsByTagName(s)[0];
-                    if (d.getElementById(id)) return;
-                    js = d.createElement(s); js.id = id;
-                    js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.8";
-                    fjs.parentNode.insertBefore(js, fjs);
-                    }(document, 'script', 'facebook-jssdk'));</script>
-                    <div class="fb-like" data-href="https://aratama.github.io/blog/6b4353009059836569d1.md" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="false"></div>
-                </div>
+<div class="snsbuttons">
 
-                <!-- google+ -->
-                <div>
-                    <script src="https://apis.google.com/js/platform.js" async defer>
-                    {lang: 'ja'}
-                    </script>
-                    <div class="g-plusone" data-size="medium"></div>
-                </div>
+    <!-- Hatena -->
+    <div>
+        <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </div>
 
-            </div>
+    <!-- line -->
+    <div>
+        <div class="line-it-button" style="display: none;" data-type="share-a" data-lang="ja" ></div>
+        <script src="//scdn.line-apps.com/n/line_it/thirdparty/loader.min.js" async="async" defer="defer" ></script>
+    </div>
+
+    <!--facebook -->
+    <div>
+        <div id="fb-root"></div>
+        <script>(function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.8";
+        fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
+        <div class="fb-like" data-href="https://aratama.github.io/blog/${metadata.id}.md" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="false"></div>
+    </div>
+
+    <!-- google+ -->
+    <div>
+        <script src="https://apis.google.com/js/platform.js" async defer>
+        {lang: 'ja'}
+        </script>
+        <div class="g-plusone" data-size="medium"></div>
+    </div>
+
+</div>
 
         </article>
     </div>

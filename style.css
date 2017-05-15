@@ -216,3 +216,9 @@ a:nth-child(odd) li.article{
 li {
     margin: 0.8em;
 }
+
+
+.snsbuttons {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}

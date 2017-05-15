@@ -1,8 +1,10 @@
-<title>モナドのまほう　第13話『ネオアームストロングCannon.js砲じゃねえか完成度高けーなオイ』 - ちょっと小さいのはたしかですが。</title>
+<title>モナドのまほう　第13話『ネオアームストロングCannon.js砲じゃねえか完成度高けーなオイ』 - ちょっと小さいのはたしかですが。</title><!DOCTYPE html>
+<meta charset="UTF-8">
+<link type="text/css" rel="stylesheet" href="style.css">
 
 <header>
     <div class="block-centered">
-        <div class="site-title"><a href="index.html">ちょっと小さいのはたしかですが。</a></div>
+        <div class="site-title"><a href="/index.html">ちょっと小さいのはたしかですが。</a></div>
         <div class="sub-title">わたしのブログです。面白いかどうかは、わかりませんが。</div>
     </div>
 </header>
@@ -47,15 +49,15 @@ MathJax.Hub.Config({
   ],
   "title": "モナドのまほう　第13話『ネオアームストロングCannon.js砲じゃねえか完成度高けーなオイ』"
 } -->
-<p><a href="5321d8cebce7b87851f6.html">第一話</a> / <a href="cdf2a7bb66fdcbf1a78c.html">前回</a></p>
+<p><a href="/blog/5321d8cebce7b87851f6.html">第一話</a> / <a href="/blog/cdf2a7bb66fdcbf1a78c.html">前回</a></p>
 <p>ゲームを作る日記です。古代の宗教家の誕生日に世間は沸いているようですが、私は無宗教なので特に感慨はないです。</p>
 <h1><a name="purescript-by-example-" class="anchor" href="#purescript-by-example-"><span class="header-link"></span></a>PureScript By Exampleスペイン語版</h1><p><blockquote class="twitter-tweet" data-lang="ja"><p lang="en" dir="ltr">A big thanks to Jorge Acereda for translating the PureScript book into Spanish!<a href="https://t.co/eq6Lg6MSOE">https://t.co/eq6Lg6MSOE</a></p>&mdash; Phil Freeman (@paf31) <a href="https://twitter.com/paf31/status/811702284732100608">2016年12月21日</a></blockquote></p>
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-<p>我々PureScripterの聖典たる&quot;PureScript By Example&quot;に、スペイン語版が登場したようです。スペイン語は四億人以上の話者がいて、割合では<a href="https://ja.wikipedia.org/wiki/%E3%82%A4%E3%83%B3%E3%82%BF%E3%83%BC%E3%83%8D%E3%83%83%E3%83%88%E3%81%AB%E3%81%8A%E3%81%91%E3%82%8B%E8%A8%80%E8%AA%9E%E3%81%AE%E4%BD%BF%E7%94%A8.html">インターネット全体の8%</a>。英語、中国語に次いで第3位だそうです。これを機にもっとユーザが増えるといいですね。</p>
+<p>我々PureScripterの聖典たる&quot;PureScript By Example&quot;に、スペイン語版が登場したようです。スペイン語は四億人以上の話者がいて、割合では<a href="/blog/https://ja.wikipedia.org/wiki/%E3%82%A4%E3%83%B3%E3%82%BF%E3%83%BC%E3%83%8D%E3%83%83%E3%83%88%E3%81%AB%E3%81%8A%E3%81%91%E3%82%8B%E8%A8%80%E8%AA%9E%E3%81%AE%E4%BD%BF%E7%94%A8.html">インターネット全体の8%</a>。英語、中国語に次いで第3位だそうです。これを機にもっとユーザが増えるといいですね。</p>
 <h1><a name="cannon-js-" class="anchor" href="#cannon-js-"><span class="header-link"></span></a>Cannon.jsを導入しました</h1><p>衝突判定にCannon.jsを導入しました。今まではテキトーに実装したガバガバ判定だったので、簡単に地面にめり込んだりジャンプもせずに段差にぴょんと飛び乗ったりしていましたが、これでキャラクターが地形にめり込んだりしなくなりました。地形にめり込むと上方に弾き飛ばすという実装になっていたので、以前は地下に潜ると壁にぶつかっただけで地上にはじき出されたりしていたんですが、これでちゃんと地底探検ができるようになりました。</p>
 <p>一方で高いところから飛び降りて着地すると反発係数がゼロなのにぴょんと跳ね返ったりとか、自分がいる場所にブロックを置くとキャラクターが弾き飛ばされて上空高く吹っ飛んだり、Havok神ならぬCannon神の威光を感じさせます。見た目に変化はないのでスクリーンショットはありません。</p>
-<p>Cannon.jsのサンプルにちょうど<a href="http://schteppe.github.io/cannon.js/examples/threejs_voxel_fps.html.html">ボクセル形状のフィールドを歩きまわるサンプル</a>があったので、これをそっくり借りて改造して使っています。1チャンクが16<em>16</em>16ですから、それぞれのボクセルについて一対一で衝突形状を生成してしまうと、たった1チャンクで最大で4096個もの立方体形状を使う可能性があります。平均的には半分の2000程度でしょうか。これはあまりに多すぎますが、このサンプルでは近傍のボクセル同士を連結して形状を減らす仕組みが使われていて、1チャンクあたり30～50個程度と衝突形状の数を大きく削減できます。それでも3<em>3</em>3個のチャンクについて物理シミュレーションを行うので、500個程度の衝突形状が衝突判定に使われ、かなり重いというのは確かです。もう少しチューニングを加えないと快適にプレイできないと思います。cannon本体側でボトルネックになっていそうな部分も見かけたので、もしかしたらcannon.js本体に手を入れてチューニングする必要があるかもしれません。それでも効率面は今のところなんとかなりそうな気がします。ゲーム開発は本当にチューニングがつらいです。</p>
+<p>Cannon.jsのサンプルにちょうど<a href="/blog/http://schteppe.github.io/cannon.js/examples/threejs_voxel_fps.html.html">ボクセル形状のフィールドを歩きまわるサンプル</a>があったので、これをそっくり借りて改造して使っています。1チャンクが16<em>16</em>16ですから、それぞれのボクセルについて一対一で衝突形状を生成してしまうと、たった1チャンクで最大で4096個もの立方体形状を使う可能性があります。平均的には半分の2000程度でしょうか。これはあまりに多すぎますが、このサンプルでは近傍のボクセル同士を連結して形状を減らす仕組みが使われていて、1チャンクあたり30～50個程度と衝突形状の数を大きく削減できます。それでも3<em>3</em>3個のチャンクについて物理シミュレーションを行うので、500個程度の衝突形状が衝突判定に使われ、かなり重いというのは確かです。もう少しチューニングを加えないと快適にプレイできないと思います。cannon本体側でボトルネックになっていそうな部分も見かけたので、もしかしたらcannon.js本体に手を入れてチューニングする必要があるかもしれません。それでも効率面は今のところなんとかなりそうな気がします。ゲーム開発は本当にチューニングがつらいです。</p>
 <p>Cannon.jsの使いかたは難しくありません。まずは<code>World</code>オブジェクトと<code>Body</code>オブジェクトを作り、<code>Body</code>を<code>World</code>に追加します。<code>mass</code>プロパティは文字通り質量ですが、デフォルト値の<code>0</code>にすると一切移動しない静的な物体になり、ゼロより大きい値にすると重力に引かれてたりして力を受けると動くようになります。適当にサンプルコードっぽいもので示せばこんなかんじです。</p>
 <pre><code class="js">// ワールドを作る
 var world = new CANNON.World();
@@ -105,9 +107,9 @@ gameloop(function(){
 <p>頂点カラーなしだと平面が同じ色でベターッとなってしまい、凹凸がよくわからなくなってしまいます（これはテクスチャをちゃんと描いていないせいでもありますが）。頂点カラーで凹凸を強調すると形状がだいぶわかりやすくなりますし、シャドウはキャラクターの足元の位置を示すという役割もあります。ジャンプした時の着地点の目安なんかにもなるので必要です。</p>
 <h1><a name="-mv-" class="anchor" href="#-mv-"><span class="header-link"></span></a>ツクールMV下調べメモ</h1><p>RPGアツマールでの公開を検討するためのメモ：</p>
 <ul>
-<li><a href="http://qiita.com/sifue/items/517a443e6a05a1737b3d.html">RPGツクールMVのプラグイン開発環境の作り方</a></li>
-<li><a href="http://fanblogs.jp/tabirpglab/archive/130/0.html">RPGツクールMVでアプリリリースを目指す開発室</a></li>
-<li><a href="https://docs.google.com/spreadsheets/d/1-Oa0cRGpjC8L5JO8vdMwOaYMKO75dtfKDOetnvh7OHs/edit#gid=0.html">RMMV Script Calls</a> </li>
+<li><a href="/blog/http://qiita.com/sifue/items/517a443e6a05a1737b3d.html">RPGツクールMVのプラグイン開発環境の作り方</a></li>
+<li><a href="/blog/http://fanblogs.jp/tabirpglab/archive/130/0.html">RPGツクールMVでアプリリリースを目指す開発室</a></li>
+<li><a href="/blog/https://docs.google.com/spreadsheets/d/1-Oa0cRGpjC8L5JO8vdMwOaYMKO75dtfKDOetnvh7OHs/edit#gid=0.html">RMMV Script Calls</a> </li>
 </ul>
 <p>たとえば、メッセージを表示するには<code>$gameMessage.add</code>でいいみたいです。公式のAPIドキュメントが見当たらないのですが、どうも本体にも付属していないらしく、有志がコードを直接読んで解読しているようです。公式ドキュメントくださいよ！</p>
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>純粋関数型プログラミング言語の効率について</h1><p>PureScriptはすべてのデータ型が不変な純粋関数型プログラミング言語であり、オブジェクトの状態を変更したいときは、オブジェクトを直接変更するのではなく新しい状態のオブジェクトを新たに作成します。これを聞くとかなり効率面が心配になる人も多いと思います。</p>
@@ -147,45 +149,49 @@ gameloop(function(){
 
 -->
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>次のお話</h1><ul>
-<li><a href="910354220d14d597b876.html">第14話</a></li>
+<li><a href="/blog/910354220d14d597b876.html">第14話</a></li>
 </ul>
 
-            <hr>
-            <div class="snsbuttons">
 
-                <!-- Hatena -->
-                <div>
-                    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
-                </div>
 
-                <!-- line -->
-                <div>
-                    <div class="line-it-button" style="display: none;" data-type="share-a" data-lang="ja" ></div>
-                    <script src="//scdn.line-apps.com/n/line_it/thirdparty/loader.min.js" async="async" defer="defer" ></script>
-                </div>
+            
+<hr style="margin-top: 200px;">
 
-                <!--facebook -->
-                <div>
-                    <div id="fb-root"></div>
-                    <script>(function(d, s, id) {
-                    var js, fjs = d.getElementsByTagName(s)[0];
-                    if (d.getElementById(id)) return;
-                    js = d.createElement(s); js.id = id;
-                    js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.8";
-                    fjs.parentNode.insertBefore(js, fjs);
-                    }(document, 'script', 'facebook-jssdk'));</script>
-                    <div class="fb-like" data-href="https://aratama.github.io/blog/c9701d80db46b7850f58.md" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="false"></div>
-                </div>
+<div class="snsbuttons">
 
-                <!-- google+ -->
-                <div>
-                    <script src="https://apis.google.com/js/platform.js" async defer>
-                    {lang: 'ja'}
-                    </script>
-                    <div class="g-plusone" data-size="medium"></div>
-                </div>
+    <!-- Hatena -->
+    <div>
+        <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </div>
 
-            </div>
+    <!-- line -->
+    <div>
+        <div class="line-it-button" style="display: none;" data-type="share-a" data-lang="ja" ></div>
+        <script src="//scdn.line-apps.com/n/line_it/thirdparty/loader.min.js" async="async" defer="defer" ></script>
+    </div>
+
+    <!--facebook -->
+    <div>
+        <div id="fb-root"></div>
+        <script>(function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.8";
+        fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
+        <div class="fb-like" data-href="https://aratama.github.io/blog/${metadata.id}.md" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="false"></div>
+    </div>
+
+    <!-- google+ -->
+    <div>
+        <script src="https://apis.google.com/js/platform.js" async defer>
+        {lang: 'ja'}
+        </script>
+        <div class="g-plusone" data-size="medium"></div>
+    </div>
+
+</div>
 
         </article>
     </div>
