@@ -8,8 +8,10 @@ const emoji = require('node-emoji');
 const mikan = require('mikanjs');
 
 // templetes
-const articleTemplete = fs.readFileSync("templete-article.html").toString();
-const templeteIndex = fs.readFileSync("templete-index.html").toString();
+const articleTemplete = fs.readFileSync("template/article.html").toString();
+const templeteIndex = fs.readFileSync("template/index.html").toString();
+const header = fs.readFileSync("template/header.html").toString();
+const footer = fs.readFileSync("template/footer.html").toString();
 
 // configurations
 const siteTitle = "ちょっと小さいのはたしかですが。";
@@ -49,8 +51,9 @@ glob("raw/*.md", {}, (err, sources) => {
         const date = new Date(metadata.created_at);
         const tags = metadata.tags.map(tag => `<a href="${tag.name}.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>${tag.name}</span></a>`).join("\n");
         const basename = `${path.basename(file, ".md")}.html`;
+        const pageTitle = metadata.title + " - " + siteTitle;
 
-        const rendered = eval("`" + articleTemplete + "`");
+        const rendered = `<title>${pageTitle}</title>` + eval("`" + header + articleTemplete + footer + "`");
         fs.writeFileSync(`blog/${basename}`, rendered);
 
         return { file, images }
@@ -59,7 +62,7 @@ glob("raw/*.md", {}, (err, sources) => {
     // generate an index file
     const articles = entries.map(entry => {
         const file = entry.file;
-        const thumbnail = entry.images[0];
+        const thumbnail = entry.images.length > 0 ? entry.images[0] : "/res/empty.png";
         const source = fs.readFileSync(file).toString();
         const metadataString = /^<!--((.|\s)*?)-->/g.exec(source);
         if(metadataString){
@@ -73,18 +76,19 @@ glob("raw/*.md", {}, (err, sources) => {
                 created_at: ""
             }
         }
-    });
+    }).sort((x, y)=> new Date(y.created_at) - new Date(x.created_at));
 
     const items = articles.map(article => {
         const date = new Date(article.created_at);
         return `<a href="${article.url}">
                     <li class="article-entry">
                         <div class="thumbnail" style="background-image: url(${article.thumbnail})"></div>
-                        <div class="date">${date.getFullYear()}年${1 + date.getMonth()}月${1 + date.getDate()}日</div>
+                        <div class="date">${date.getFullYear()}年${1 + date.getMonth()}月${date.getDate()}日</div>
                         <div class="title">${article.title}</div>
                     </li>
                 </a>`;
     }).join("\n");
-    fs.writeFileSync("blog/index.html", eval("`" + templeteIndex + "`"));
+    const pageTitle = siteTitle;
+    fs.writeFileSync("blog/index.html", `<title>${pageTitle}</title>` + eval("`" + header + templeteIndex + footer + "`"));
 });
 

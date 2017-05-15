@@ -169,7 +169,7 @@ strong {
 
 div.content {
     max-width: 960px;
-    min-height: 100%;
+    min-height: 10em;
     margin-left: auto;
     margin-right: auto;
 }
@@ -215,3 +215,6 @@ a:nth-child(odd) li.article{
 }
 
 
+li {
+    margin: 0.8em;
+}

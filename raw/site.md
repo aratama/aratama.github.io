@@ -1,9 +1,17 @@
 <!-- {
   "id": "site",
-  "created_at": "2016-10-29T21:09:57+09:00",
+  "created_at": "2525-04-01T00:00:00+09:00",
   "tags": [],
-  "title": "記事一覧"
+  "title": "このサイトについて"
 } -->
+
+このサイトは、わたしのブログです。たいしたおもてなしはできませんが、どうぞおくつろぎください。
+
+# れんらくさき
+
+* [ツイッター](https://twitter.com/cubbit2)
+
+# そのほかのコンテンツ
 
 * <a href="https://aratama.github.io/purescript/">実例で学ぶPureScript
 * <a href="https://aratama.github.io/soundknot/"><del>Soundknot</del>もうメンテしてません
