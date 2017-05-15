@@ -195,29 +195,7 @@ p {
     text-indent: 1em;
 }
 
-ul {
-    max-width: 960px;
-    transition-property: all;
-    transition-duration: 0.3s;
-    margin: 1em;
-}
 
-li {
-    margin: 0.5em;
-    line-height: 2.0em;
-}
-
-a li.article {
-    width: calc(320px - 20px * 2 - 10px * 2 - 1px * 2);
-    height: 200px; 
-    border: solid 1px grey;
-    list-style-type: none;
-    margin: 20px;
-    padding: 10px;
-    float: left;
-    transition-property: all;
-    transition-duration: 0.3s;    
-}
 
 a:nth-child(odd) li.article{
     background-color: grey; 

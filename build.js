@@ -18,8 +18,10 @@ const siteSubTitle = "わたしのブログです。面白いかどうかは、�
 glob("raw/*.md", {}, (err, sources) => {
 
     // generate articles
-    sources.forEach(file => {
+    const entries = sources.map(file => {
         console.log(`compiling ${file} ...`);
+
+        const images = [];
 
         const renderer = new marked.Renderer();
         renderer.heading = (text, level) => {
@@ -32,6 +34,7 @@ glob("raw/*.md", {}, (err, sources) => {
         renderer.image = (href, title, text) => {
             const q = "https://qiita-image-store.s3.amazonaws.com/0/";
             const href_ = href.startsWith(q) ? "/img/" + path.basename(href) : href;
+            images.push(href_);
             return `<a href="${href_}"><img src="${href_}"></img></a>`;
         };
         renderer.link = (href, title, text) => {
@@ -49,25 +52,38 @@ glob("raw/*.md", {}, (err, sources) => {
 
         const rendered = eval("`" + articleTemplete + "`");
         fs.writeFileSync(`blog/${basename}`, rendered);
+
+        return { file, images }
     });
 
     // generate an index file
-    const articles = sources.map(file => {
+    const articles = entries.map(entry => {
+        const file = entry.file;
+        const thumbnail = entry.images[0];
         const source = fs.readFileSync(file).toString();
         const metadataString = /^<!--((.|\s)*?)-->/g.exec(source);
         if(metadataString){
             const metadata = JSON.parse(metadataString[1]);
-            return Object.assign({ url: `${path.basename(file, ".md")}.html` }, metadata);
+            return Object.assign({ url: `${path.basename(file, ".md")}.html`, thumbnail }, metadata);
         }else{
             return {
                 title: file, 
-                url: file
+                url: file,
+                thumbnail: null,
+                created_at: ""
             }
         }
     });
 
     const items = articles.map(article => {
-        return `<a href="${article.url}"><li class="article">${article.title}</li></a>`;
+        const date = new Date(article.created_at);
+        return `<a href="${article.url}">
+                    <li class="article-entry">
+                        <div class="thumbnail" style="background-image: url(${article.thumbnail})"></div>
+                        <div class="date">${date.getFullYear()}年${1 + date.getMonth()}月${1 + date.getDate()}日</div>
+                        <div class="title">${article.title}</div>
+                    </li>
+                </a>`;
     }).join("\n");
     fs.writeFileSync("blog/index.html", eval("`" + templeteIndex + "`"));
 });

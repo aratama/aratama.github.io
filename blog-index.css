@@ -3,3 +3,72 @@ article {
     margin-right: auto;
     width: 960px;
 }
+
+
+ul {
+    max-width: 960px;
+    transition-property: all;
+    transition-duration: 0.3s;
+    margin: 1em;
+}
+
+li {
+    margin: 0.5em;
+    line-height: 2.0em;
+}
+
+ul a li.article-entry {
+    width: calc(320px - 20px * 2 - 10px * 2 - 1px * 2);
+    height: 200px; 
+    /* border: solid 1px grey; */
+    list-style-type: none;
+    margin: 20px;
+    padding: 10px;
+    position: relative;
+    float: left;
+    transition-property: all;
+    transition-duration: 0.3s;    
+
+    overflow: hidden;
+
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4); 
+}
+
+ul a li.article-entry:hover {
+    transform: translate(0px, -7px);
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.4); 
+}
+
+.article-entry .thumbnail {
+    background-size: cover;
+    background-position: center center;
+    width: 100%;
+    height: 100%;
+}
+
+.article-entry .title {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0.85);
+    padding: 10px;
+    line-height: 1.4em;
+    color: dimgray;
+    transition-property: all; 
+    transition-duration: 0.3s;
+}
+
+
+.article-entry .date {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0.85);
+    padding: 0px;
+    text-align: right;
+    line-height: 1.4em;
+    font-size: small;
+    color: dimgray;
+}
