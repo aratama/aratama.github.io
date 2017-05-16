@@ -74,31 +74,31 @@ MathJax.Hub.Config({
 </ul>
 <p>つづきです。</p>
 <h1><a name="-firebase-" class="anchor" href="#-firebase-"><span class="header-link"></span></a>🔥Firebase🔥で一気にオンラインゲームに！</h1><p><strong>そろそろオンラインゲームっぽくしたくなった</strong>(思いつき)ので、オンラインゲームっぽくしておきましょう。なおPureScriptのFirebaseのバインディングは他の人が書いたものがあったんですが、それが古くて動かなかったので、筆者が自分で書きました。つらい。それではFirebaseに接続！　もちろんコードは基本的にJavaScriptとほとんど同じ！　雰囲気を知ってほしいので、JavaScript版のコードとPureScript版のコードを並べて書いてみます！ JavaScriptならこう！</p>
-<pre><code class="haskell:JavaScript">var firebaseApp = firebase.initializeApp({
+<pre><code class="haskell">var firebaseApp = firebase.initializeApp({
     apiKey: "AIzaSasdfasdfasfiTNu3gGRNgqRsadlR0",
     authDomain: "zombie-c5857.firebaseapp.com",
     databaseURL: "https://zombie-c5857.firebaseio.com/",
     storageBucket: "zombie-c5857.appspot.com",
     messagingSenderId: "135964071397"
 });</code></pre><p>PureScriptならこう！</p>
-<pre><code class="haskell:PureScript">firebaseApp ← initializeApp {
+<pre><code class="haskell">firebaseApp ← initializeApp {
     apiKey: "AIzaSasdfasdfasfiTNu3gGRNgqRsadlR0",
     authDomain: "zombie-c5857.firebaseapp.com",
     databaseURL: "https://zombie-c5857.firebaseio.com/",
     storageBucket: "zombie-c5857.appspot.com",
     messagingSenderId: "135964071397"
 }</code></pre><p>いやっほおおおおう！😝😝😝　Firebaseきたああああああ！　接続ができたら<code>signInAnonymously</code>で適当に匿名サインイン！:metal:</p>
-<pre><code class="js:JavaScript">firebase.auth().signInAnonymously();</code></pre><pre><code class="haskell:PureScript">auth firebase >>= signInAnonymously</code></pre><p>そして<code>onAuthStateChanged</code>を仕掛けておくと、サインインが成功したらコールバックで知らせてくれます。このとき<code>User</code>オブジェクトが手に入るので、適当にユーザIDとかを保存！🏦</p>
-<pre><code class="js:JavaScript">firebase.auth().onAuthStateChanged(function(user){
+<pre><code class="js">firebase.auth().signInAnonymously();</code></pre><pre><code class="haskell">auth firebase >>= signInAnonymously</code></pre><p>そして<code>onAuthStateChanged</code>を仕掛けておくと、サインインが成功したらコールバックで知らせてくれます。このとき<code>User</code>オブジェクトが手に入るので、適当にユーザIDとかを保存！🏦</p>
+<pre><code class="js">firebase.auth().onAuthStateChanged(function(user){
     state.userID = user.uid;
     console.log("signed-in to firebase anonymously. Your id is " + uid user.uid)
-})</code></pre><pre><code class="haskell:PureScript">auth firebase >>= onAuthStateChanged \user → do
+})</code></pre><pre><code class="haskell">auth firebase >>= onAuthStateChanged \user → do
     modifySTRef stateRef _{ userID = uid user }
     log ("signed-in to firebase anonymously. Your id is " <> uid user)</code></pre><p>自分のキャラの位置が変更されたら<code>set</code>でFirebaseのデータを更新！📝 このときに先ほど保存しておいたユーザIDをキーに使っています。<code>foo</code>っていうIDを持つキャラクターは<code>/users/foo/position</code>っていう位置に保存するっていう感じ。</p>
-<pre><code class="js:JavaScript">firebase.database().ref("/users/" + state.userID + "/position").set(state.player.position)</code></pre><pre><code class="haskell:PureScript">database firebase >>= ref ("/users/" <> state.userID <> "/position") >>= set (toForeign state.player.position)</code></pre><p>あとは<code>on(&#39;value&#39;, callback)</code>を仕掛けて待ち構えます！🐢　値が更新されるとコールバックされて新しい値が降ってきますから、それを現在の状態に設定します。</p>
-<pre><code class="js:JavaScript">firebase.database().ref("/users").on("value", function(snap){
+<pre><code class="js">firebase.database().ref("/users/" + state.userID + "/position").set(state.player.position)</code></pre><pre><code class="haskell">database firebase >>= ref ("/users/" <> state.userID <> "/position") >>= set (toForeign state.player.position)</code></pre><p>あとは<code>on(&#39;value&#39;, callback)</code>を仕掛けて待ち構えます！🐢　値が更新されるとコールバックされて新しい値が降ってきますから、それを現在の状態に設定します。</p>
+<pre><code class="js">firebase.database().ref("/users").on("value", function(snap){
     state.players = snap.val();
-});</code></pre><pre><code class="haskell:PureScript">database firebase >>= ref "/users" >>= onValue \snap → void do
+});</code></pre><pre><code class="haskell">database firebase >>= ref "/users" >>= onValue \snap → void do
     modifySTRef stateRef _{ players = unsafeFromForeign (val snap) }</code></pre><p>ほら、JavaScriptもPureScriptもコードはあんまり変わらないでしょう？　『純粋関数型プログラミング言語では副作用の扱いが難しい』っていう噂は、純粋関数型をおとしめようとする闇の勢力👽の陰謀です！　さて、あとはFirebaseから送られた情報を元にそれぞれのキャラクターを描画します✏️   あと、詳しくは説明しませんが、キー入力でキャラクターが動きまわるようにしました。ちなみのこの裏で更に座標変換のために線形代数ライブラリを自分で書いたりとなにげに苦労しています（血涙）。それでは、２窓で開いてみると、一方が歩きまわるとちゃんと他方のウィンドウのキャラクターも連携して動き回ることが確認できました！🐾🐾🐾🐾</p>
 <p><a href="/img/fa6f0e29-0cbd-f86e-9129-86a6de6eeabd.png"><img src="/img/fa6f0e29-0cbd-f86e-9129-86a6de6eeabd.png"></img></a></p>
 <p>おおおおおおおオンラインゲームだ！😆😆😆　かがくのちからってすげー！　たったこれだけでオンラインゲームっぽく同期ができちゃうなんて🔥Firebase🔥最高だよアンタ！　多少の遅延は確認できますが、今回はFPSとか格ゲーじゃないのでそこまでシビアに考えなくていいと思います。</p>
@@ -214,7 +214,7 @@ auth firebase >>= signInWithPopup provider authObj onError onSuccess</code></pre
 <footer>
     <div class="block-centered footer-inner">
         <p class="copy">&nbsp;</p>
-        <p class="author">このブログを書いてる人:&nbsp;&nbsp; <a target="_blank" href="https://twitter.com/cubbit2">兎沢</a><p>
+        <p class="author">このブログを書いてる人:&nbsp;&nbsp; 兎沢<p>
     </div>
 
     <script>
@@ -223,11 +223,14 @@ auth firebase >>= signInWithPopup provider authObj onError onSuccess</code></pre
             "今日という日を、何度でも繰り返したい。",
             "世界を追いかけなくても、世界は私のまわりにある。", 
             "速すぎる雑踏。鼻先をくすぐる春風。", 
-            "明日の写真を飾る場所を、アルバムに空けておこう。", 
+            "明日撮る写真を飾る場所を、アルバムに空けておこう。", 
             "落ち葉が地面に、触れる音がした。", 
             "明日は、明日の楽しさが待っている。", 
             "風が泣いている。この想いを紡ぐ言葉を持たないから。", 
-            "もうここには何もない。はじまりの時が来た。"
+            "もうここには何もない。つまり、はじまりの時が来た。", 
+            "もう此処にはこないだろう。そう言って私は過去に背を向けた。", 
+            "散りゆくからこそ、美しい。私は桜の花びらをかかとで踏みしめた。", 
+            "思い出はいつだって輝いてる。"
         ];
     document.querySelector(".copy").textContent = poem[Math.floor(poem.length * Math.random())];
     </script>

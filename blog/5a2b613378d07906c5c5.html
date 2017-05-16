@@ -87,7 +87,7 @@ restore context</code></pre><p>でも、これじゃうっかり<code>restore</c
 <p>きっったあああああああああ！😈😈😈　クォータービュー🔸だ！　でも英語ではIsometric projectionっていうそうですよ！</p>
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ゲームループとキー入力！👈</h1><p>静止画を表示しただけではゲームにはなりません。アニメーション、すなわち画面を時間にそって変化させることが必要ですが、そのためにはいわゆる<strong>ゲームループ</strong>が必要です。今はとくにゲームライブラリを使っていないので、ゲームループも自作する必要がありますが、この部分はJavaScriptで書きました（血涙）。イベントハンドラを仕掛けたりと多少DOMをいじらなくてはならないのですが、PureScriptの生DOMライブラリは死ぬほど面倒くさくて、はっきり言って使わないほうがよっぽどマシです。でもあんまりガチなUIフレームワークを使うほどではないので、代わりにJavaScriptでゲームループ関連のコードを書いて、それを<strong>外部関数インターフェイス</strong>を使ってPureScriptから呼び出すことにします。</p>
 <p>JavaScript側は適当にこんな感じに。PureScriptから呼び出されるJavaScriptコードはCommonJSモジュールとして書きます。呼び出されたらすぐに内容を実行するのではなく、いったん引数のない関数オブジェクトを返しているのが特徴です。PureScript側からもう一度その関数オブジェクトを呼び出すことで本体が実行されます。</p>
-<pre><code class="js:JavaScript">exports.gameloop = function(callback){
+<pre><code class="js">exports.gameloop = function(callback){
     return function(){
         function next(){
             callback();
@@ -106,7 +106,7 @@ restore context</code></pre><p>でも、これじゃうっかり<code>restore</c
         next();
     };
 };</code></pre><p>PureScript側はこんな感じ。</p>
-<pre><code class="haskell:PureScript">foreign import gameloop :: forall eff . Eff (gameloop :: GameLoop, dom :: DOM | eff) Unit → Eff (dom :: DOM | eff) Unit</code></pre><p>この関数<code>gameloop</code>はこんな感じで呼び出します。</p>
+<pre><code class="haskell">foreign import gameloop :: forall eff . Eff (gameloop :: GameLoop, dom :: DOM | eff) Unit → Eff (dom :: DOM | eff) Unit</code></pre><p>この関数<code>gameloop</code>はこんな感じで呼び出します。</p>
 <pre><code class="haskell">gameloop do
     withContext context do
         translate { translateX: 1280.0 * 0.5 , translateY: 720.0 * 0.5 } context
@@ -216,7 +216,7 @@ gameloop do
 <footer>
     <div class="block-centered footer-inner">
         <p class="copy">&nbsp;</p>
-        <p class="author">このブログを書いてる人:&nbsp;&nbsp; <a target="_blank" href="https://twitter.com/cubbit2">兎沢</a><p>
+        <p class="author">このブログを書いてる人:&nbsp;&nbsp; 兎沢<p>
     </div>
 
     <script>
@@ -225,11 +225,14 @@ gameloop do
             "今日という日を、何度でも繰り返したい。",
             "世界を追いかけなくても、世界は私のまわりにある。", 
             "速すぎる雑踏。鼻先をくすぐる春風。", 
-            "明日の写真を飾る場所を、アルバムに空けておこう。", 
+            "明日撮る写真を飾る場所を、アルバムに空けておこう。", 
             "落ち葉が地面に、触れる音がした。", 
             "明日は、明日の楽しさが待っている。", 
             "風が泣いている。この想いを紡ぐ言葉を持たないから。", 
-            "もうここには何もない。はじまりの時が来た。"
+            "もうここには何もない。つまり、はじまりの時が来た。", 
+            "もう此処にはこないだろう。そう言って私は過去に背を向けた。", 
+            "散りゆくからこそ、美しい。私は桜の花びらをかかとで踏みしめた。", 
+            "思い出はいつだって輝いてる。"
         ];
     document.querySelector(".copy").textContent = poem[Math.floor(poem.length * Math.random())];
     </script>

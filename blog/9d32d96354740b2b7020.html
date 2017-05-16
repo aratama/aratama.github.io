@@ -1,0 +1,259 @@
+<title>PureScriptで型レベル計算ドリル - ちょっと小さいのはたしかですが。</title><!DOCTYPE html>
+<meta charset="UTF-8">
+<link type="text/css" rel="stylesheet" href="style.css">
+
+<header>
+    <div class="block-centered">
+        <div class="site-title"><a href="/">ちょっと小さいのはたしかですが。</a></div>
+        <div class="sub-title">わたしのブログです。面白いかどうかは、わかりませんが。</div>
+    </div>
+</header>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="/res/highlight/styles/default.css">
+<script src="/res/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$']]}
+});
+</script>
+
+<link rel="stylesheet" href="../reset.css">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../article.css">
+
+
+    <div class="content">
+
+        <article id="rendered">
+            <div class="date">2016年12月13日</div>
+            <h1 class="article-title">
+                <!-- <i class="fa fa-coffee" aria-hidden="true"></i> -->
+                <a href="9d32d96354740b2b7020.html">PureScriptで型レベル計算ドリル<a>
+            </h1>        
+            <p class="tags"><a href="Haskell.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>Haskell</span></a>
+<a href="purescript.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>purescript</span></a></p>
+            <hr>
+            <!-- {
+  "id": "9d32d96354740b2b7020",
+  "created_at": "2016-12-13T19:58:13+09:00",
+  "tags": [
+    {
+      "name": "Haskell",
+      "versions": []
+    },
+    {
+      "name": "purescript",
+      "versions": []
+    }
+  ],
+  "title": "PureScriptで型レベル計算ドリル"
+} -->
+<p>型レベル計算は、プログラミング言語の型システムを<del>悪用</del>有効活用して、実行時ではなく<strong>コンパイル時に</strong>任意の計算を可能にするものです。型レベル計算はチューリング完全であり、理論上どんな計算でもできることが知られていて、うまく使うといろいろと便利なことができるようです。私も練習してみます。言語はPureScriptですが、Haskellでも事情はだいたい同じだと思います。</p>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>型レベル計算　基礎編</h1><h2><a name="emptydatadecls" class="anchor" href="#emptydatadecls"><span class="header-link"></span></a>EmptyDataDecls</h2><p>代数的データ型では通常、<code>=</code>のあとに<code>|</code>で区切ってその型に含まれるデータを列挙して定義します。</p>
+<pre><code class="haskell">data Bool = True | False</code></pre><pre><code class="haskell">data Nat = Zero | Succ Nat</code></pre><pre><code class="haskell">data Tuple a b = Tuple a b</code></pre><p>実行時計算がデータを計算の対象にするのに対して、<strong>型レベル計算では型そのものが計算の対象になります</strong>。必要なのは型だけであってデータは不要ですから、代数的データ型では何もデータのない型を定義することもできるようになっています。型レベルの真偽値や自然数などを定義してみます。</p>
+<pre><code class="haskell">data True
+
+data False</code></pre><pre><code class="haskell">data Zero
+
+data Succ a</code></pre><pre><code class="haskell">data Tuple a b</code></pre><p>型レベル計算をするときにデータのある型を使っても構わないのですが、空の型にしたほうが型レベル計算のための型であるという意図がわかりやすいです。</p>
+<h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>種</h2><p>実行時計算ではデータを計算の対象とし、型レベル計算では型を計算の対象とします。そして、実行時計算ではデータを型によって分類しますが、それと同じように型レベル計算では型を<strong>種</strong>によって分類して扱います。通常の型は<code>*</code>という種で表されます。また<code>* -&gt; *</code>という種を持つものは<strong>型コンストラクタ</strong>であり、これは実行時計算におけるデータコンストラクタに相当するものであると考えればいいでしょう。他にも<code>Symbol</code>という型レベルの文字列を表す種が存在します。また、<code>::</code>を使うと、実行時の式に型を<code>::</code>を与えるような感じで、型レベルでのそれぞれの計算の対象について、種を示すことができます。</p>
+<pre><code class="haskell">True :: *
+
+False :: *
+
+Zero :: *
+
+Succ :: * -> *
+
+Tuple :: * -> * -> *
+
+TypeString :: * -> Symbol
+
+TypeConcat :: Symbol -> Symbol -> Symbol
+
+"Hello" :: Symbol
+
+Fail :: Symbol -> *</code></pre><p>組み込みの種として<code>*</code>、<code>* -&gt; *</code>、<code>Symbol</code>が存在しますが、それ以外の種を自分で新たに定義することはできません。種<code>*</code>を持つ型はみんなひとくくりです。と思ったら、<a href="/blog/https://github.com/purescript/purescript/issues/919.html">種のユーザ定義</a>まで導入を検討されているみたいです。</p>
+<h2><a name="-code-type-code-" class="anchor" href="#-code-type-code-"><span class="header-link"></span></a><code>type</code></h2><p>実行時計算で変数を使って値に名前を付けられるように、型レベル計算では<code>type</code>を使って型に名前をつけることができます。</p>
+<pre><code class="haskell">one :: Nat
+one = Succ Zero
+
+two :: Nat
+two = Succ One
+
+three :: Nat
+three = Succ Two</code></pre><pre><code class="haskell">type One = Succ Zero
+
+type Two = Succ One
+
+type Three = Succ Two</code></pre><h2><a name="-code-symbol-code-" class="anchor" href="#-code-symbol-code-"><span class="header-link"></span></a><code>Symbol</code></h2><p><code>Symbol</code>は言語に組み込みの種で、型レベルの文字列を表しています。型のなかに置かれた文字列リテラルがシンボルになります。</p>
+<pre><code class="haskell">type Foo = "Foo" :: Symbol</code></pre><h2><a name="-code-typestring-code-" class="anchor" href="#-code-typestring-code-"><span class="header-link"></span></a><code>TypeString</code></h2><p>組み込みの型コンストラクタ<code>TypeString</code>を使うと、型からシンボルを作り出すことができます。</p>
+<pre><code class="haskell">TypeString :: * -> Symbol</code></pre><h2><a name="-code-typeconcat-code-" class="anchor" href="#-code-typeconcat-code-"><span class="header-link"></span></a><code>TypeConcat</code></h2><p><code>TypeConcat</code>は組み込みの型コンストラクタで、シンボル同士を連結することができます。型レベル計算に於ける文字列の連結です。</p>
+<pre><code class="haskell">TypeConcat :: Symbol -> Symbol -> Symbol</code></pre><p>型コンストラクタに別名をつけることもできますので、実行時計算での文字列の連結に使う<code>&lt;&gt;</code>と同じように、型レベルでの文字列結合演算子として<code>&lt;&gt;</code>を定義してみます。</p>
+<pre><code class="undefined">infixl 6 type TypeConcat as <></code></pre><p>これを使うと、任意のシンボル同士を連結することができます。</p>
+<pre><code class="undefined">type HelloWorld = "Hello" <> "World"</code></pre><h2><a name="proxy" class="anchor" href="#proxy"><span class="header-link"></span></a>Proxy</h2><p><code>Proxy</code>を使うと、データのないデータ型に代理の実行時データを与えて、実行時の計算に使うことができます。</p>
+<pre><code class="haskell">data Proxy a = Proxy</code></pre><p><code>Proxy a</code>には<code>a</code>という型変数があるのに、データ自体には<code>a</code>のデータを持っていません。このように、型変数があるのにその型変数が表すデータを実際には持っていないようなデータ型を<strong>Phantom Type</strong>といいます。データコンストラクタ<code>Proxy</code>は実際には<code>a</code>のデータを受け取るわけではないので、データの存在しない<code>Zero</code>のような型に対しても<code>Proxy Zero</code>という型を持つデータを作り出せます。</p>
+<pre><code class="haskell">zero :: Proxy Zero
+zero = Proxy</code></pre><p><code>Zero</code>の型を持つデータは存在しませんが、<code>Proxy Zero</code>のデータならいつでも作ることができるというわけです。具体的な応用については、このあとの実践編をごらんください。</p>
+<h2><a name="sproxy" class="anchor" href="#sproxy"><span class="header-link"></span></a>SProxy</h2><p><code>Proxy</code>は汎用のプロキシですが、<code>SProxy</code>というシンボル専用のプロキシもあります。この<code>SProxy</code>なデータを用意してそれに<code>reflectSymbol</code>という関数を適用すると、任意のシンボルから実行時の文字列データを取得することができます。例えば次のようにすれば、型レベル計算でシンボル&quot;foo&quot;とシンボル&quot;bar&quot;を<code>&lt;&gt;</code>演算子で連結し、そのシンボルを<code>SProxy</code>で仮の実行時の肉体を与え、それに<code>reflectSymbol</code>を適用することで、型レベルで計算した&quot;foobar&quot;という文字列を<code>log</code>で実行時に出力できます。</p>
+<pre><code class="haskell">foobar :: SProxy ("foo" <> "bar")
+foobar = SProxy
+
+main :: forall e. Eff (console :: CONSOLE | e) Unit
+main = log (reflectSymbol foobar)</code></pre><h2><a name="fail" class="anchor" href="#fail"><span class="header-link"></span></a>Fail</h2><p><code>Fail</code>は言語に組み込みの型コンストラクタで、シンボルを受け取って型を返します。しかしこの型はコンパイラによって特別に扱われ、コンパイルしようとするとエラーになります。</p>
+<pre><code class="haskell">Fail :: Symbol -> *</code></pre><p>要するに型レベル計算におけるエラー表現です。コンパイルエラーになったときのメッセージをカスタマイズするのに使えるようです。</p>
+<h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>型レベル計算における関数</h2><p>型レベル計算で、型を別の型に対応させるには、型クラスを使えばいいようです。たとえば、</p>
+<pre><code class="haskell">class Not a b | a -> b
+instance notTrue :: Not True False
+instance notFalse :: Not False True</code></pre><p>この<code>a -&gt; b</code>というのがfunctional dependencyというもので、型<code>a</code>がわかれば型<code>b</code>が決まるという型どうしの対応関係を示すものであるようです。</p>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>型レベル計算　実践編</h1><p>真偽値を用意しました。</p>
+<pre><code class="haskell">data True
+
+data False</code></pre><p>これらの真偽値の値をシンボルに変換する型レベルの『関数』のようなクラスを定義します。<code>b</code>に<code>b :: Symbol</code>という制約を加えるのと、<code>a -&gt; b</code>という対応を書くのがポイント。</p>
+<pre><code class="haskell">class Show a (b :: Symbol) | a -> b</code></pre><p>先ほどの真偽値をそれぞれシンボルに対応させるインスタンスを書くことで、『型レベルの関数』を実装します。</p>
+<pre><code class="haskell">instance showTrue :: Show True "True"
+instance showFalse :: Show False "False"</code></pre><p>この『型レベルの関数』を適用するには、それを制約として持つような型を定義します。この後で</p>
+<pre><code class="haskell">foo :: forall a. Show True a => SProxy a
+foo = SProxy</code></pre><p><code>forall a</code>で変数<code>a</code>を定義し、<code>Show True a</code>で<code>True</code>に<code>Show</code>を適用した結果を<code>a</code>に代入する、みたいなイメージです。</p>
+<pre><code class="haskell">main :: forall e. Eff (console :: CONSOLE | e) Unit
+main = log (reflectSymbol foo)</code></pre><p>これで<code>foo</code>の型が型推論されますが、<code>Show True a</code>には<code>Show True &quot;True&quot;</code>というインスタンスが存在するので、<code>foo :: SProxy &quot;True&quot;</code>であると型推論されます。この<code>foo</code>に<code>reflectSymbol</code>を適用すれば、実行時の値である<code>&quot;True&quot; :: String</code>が取得できるので、これを<code>log</code>で実行時に出力することができます。</p>
+<p>こんどは真偽値を反転させてから出力してみます。<code>Not :: * -&gt; *</code>を定義して、それぞれの値を反転させて対応させるようにインスタンスを書きます。</p>
+<pre><code class="haskell">class Not a b | a -> b
+instance notTrue :: Not True False
+instance notFalse :: Not False True</code></pre><p>さっきの<code>Show</code>と組み合わせてみます。</p>
+<pre><code class="haskell">bar :: forall a b. (Not True a, Show a b) => SProxy b
+bar = SProxy</code></pre><p>これがコンパイルされると、まず型システムが<code>Not True a</code>のインスタンスがないか探し、<code>instance notTrue :: Not True False</code>を見つけて<code>a</code>が<code>False</code>であると特定します。それから更に<code>Show a b</code>つまり<code>Show False b</code>のインスタンスを探しますが、<code>instance showFalse :: Show False &quot;False&quot;</code>が見つかるので<code>b</code>が<code>&quot;False&quot;</code>になります。これで、<code>a</code>が<code>False</code>、<code>b</code>が<code>&quot;False&quot;</code>のときにこの関数が存在し、その値の型は<code>SProxy &quot;False&quot;</code>であるとわかります。したがって、この<code>bar</code>を<code>reflectSymbol</code>と<code>log</code>で出力させると、<code>&quot;False&quot;</code>が出力されます。型レベルで定義した<code>True</code>を<code>Not</code>で反転し、<code>Show</code>でシンボルに変換するという計算ができました。</p>
+<p>さらにXorを実装してみます。</p>
+<pre><code class="haskell">class Xor a b c | a b -> c
+instance xorTT :: Xor True True False
+instance xorFT :: Xor False True True
+instance xorTF :: Xor True False True
+instance xorFF :: Xor False False False</code></pre><p>せっかくなので、さっきの<code>Not</code>と組み合わせてみます。</p>
+<pre><code class="haskell">xor :: forall a b c. (Xor True False a, Not a b, Show b c) => SProxy c
+xor = SProxy</code></pre><p><code>True</code>と<code>False</code>を<code>Xor</code>して、それから<code>Not</code>したものは、<code>False</code>であるとわかりました。ふむふむ。</p>
+<p>自然数も扱ってみます。<a href="/blog/https://wiki.haskell.org/Type_arithmetic.html">Type_arithmetic</a>で紹介されている方法をすこし改造して使いました。</p>
+<pre><code class="haskell">numPred :: forall a. Proxy (Succ a) -> Proxy a
+numPred = const Proxy
+
+class Number a where
+    numValue :: Proxy a -> Int
+
+instance numberZero :: Number Zero where
+    numValue = const 0
+
+instance numberSucc :: Number x => Number (Succ x) where
+    numValue x = numValue (numPred x) + 1
+
+three :: Proxy Three
+three = Proxy
+
+main :: forall e. Eff (console :: CONSOLE | e) Unit
+main = logShow (numValue three)</code></pre><p>これで<code>3</code>が出力されます。<code>Succ a</code>からそれが表す実行時の数値を計算するには、<code>Proxy (Succ a)</code>をかわりに使って計算するわけです。ややこしいですね。リストとかもやろうかと思いましたが、めんどうくさくなりました。</p>
+<p><code>TypeString</code>がうまく動いていない気がします。<code>Fail</code>に<code>TypeString True</code>を与えた時は動くのですが、次のように<code>reflectSymbol</code>で<code>SProxy (TypeString True)</code>を出力しようとするとエラーになります。</p>
+<pre><code class="haskell">s :: SProxy (TypeString True)
+s = SProxy
+
+main :: forall e. Eff (console :: CONSOLE | e) Unit
+main = log (reflectSymbol s)</code></pre><p>github全体で探しても<code>TypeString</code>の使用例が<a href="/blog/https://github.com/search?q=TypeString+PureScript+&amp;type=Code&amp;utf8=%E2%9C%93.html">非常に稀</a>なので、これはバグである気がします。まともに使っている例も<a href="/blog/https://github.com/purescript/purescript/blob/ebd7c3cfb2b7ad1133c05bf5b1fd5a3f266413b4/examples/failing/ProgrammableTypeErrorsTypeString.purs.html">これ</a>がほとんど唯一。よくわかりません。</p>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>型レベル計算のためのライブラリとか</h1><ul>
+<li><a href="/blog/https://github.com/bodil/purescript-typelevel.html">purescript-typelevel</a> 型レベルの自然数と真偽値</li>
+<li><a href="/blog/https://github.com/LiamGoodacre/purescript-type-lang.html">purescript-type-lang</a> 型レベルのラムダ計算</li>
+<li><a href="/blog/https://github.com/LiamGoodacre/purescript-type-map/.html">purescript-type-map</a> 型レベルのマップ</li>
+</ul>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>さいごに</h1><p>ふーん……。型システムだけでこれだけ計算できるのは、すごいといえばすごいですけど、役に立つ場面は相当に限られそうです。ベクトル型に型レベルで要素数を与えてベクトルどうしを加算するときに同じ要素数であることを保証する、みたいな応用例があるみたいですが、他の応用例があんまり思いつきません。</p>
+<p>コンパイル時計算ではその計算の過程をデバッガで追うといったようなことができなくて不便きわまりないですし、マクロやテンプレートメタプログラミング、Templete Haskellとかもそうですが、コンパイル時計算なんて好き好んでやるものじゃないと思います。コンパイル時に何か計算を走らせたかったら、型レベル計算なんてしなくてもビルドスクリプトから普通のプログラムを適当に走らせればいいわけで。ただ、コード生成は型安全でないコーディングをしているようなものですし、コンパイル時により多くの静的な検証を行うには型レベル計算が役に立つのは確かです。でも……他の人が書いてくれたライブラリを使うぶんには嬉しいのですが、型レベル計算を多用したライブラリを自分で書きたいとは思いません。変態性が高すぎます。正直あんまり好きではないです。</p>
+<p>今回書いたコードはgistに貼り付けておきました。</p>
+<ul>
+<li><a href="/blog/https://gist.github.com/aratama/fa1c2b51753c0dd15ff162b36b9bd48d.html">https://gist.github.com/aratama/fa1c2b51753c0dd15ff162b36b9bd48d</a></li>
+<li><a href="/blog/https://gist.github.com/aratama/316e796a5792a7da040be6754fc51938.html">https://gist.github.com/aratama/316e796a5792a7da040be6754fc51938</a></li>
+</ul>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>参考文献</h1><ul>
+<li><a href="/blog/https://wiki.haskell.org/Type_arithmetic.html">https://wiki.haskell.org/Type_arithmetic</a> 型レベル計算についての一般的な情報や例は、これが一番参考になりました</li>
+<li><a href="/blog/https://github.com/paf31/24-days-of-purescript-2016/blob/master/11.markdown.html">https://github.com/paf31/24-days-of-purescript-2016/blob/master/11.markdown</a> PureScriptに於ける型レベル計算についてはコレと</li>
+<li><a href="/blog/https://github.com/paf31/24-days-of-purescript-2016/blob/master/21.markdown.html">https://github.com/paf31/24-days-of-purescript-2016/blob/master/21.markdown</a> コレが参考になります</li>
+<li><a href="/blog/https://wiki.haskell.org/Phantom_type.html">https://wiki.haskell.org/Phantom_type</a> Phantom型</li>
+<li><a href="/blog/https://wiki.haskell.org/Functional_dependencies.html">https://wiki.haskell.org/Functional_dependencies</a> fundep拡張</li>
+<li><p><a href="/blog/https://github.com/purescript/purescript-symbols.html">https://github.com/purescript/purescript-symbols</a></p>
+</li>
+<li><p><a href="/blog/https://pursuit.purescript.org/packages/purescript-proxy/1.0.0/docs/Type.Proxy.html">https://pursuit.purescript.org/packages/purescript-proxy/1.0.0/docs/Type.Proxy</a></p>
+</li>
+</ul>
+
+
+
+            
+<hr style="margin-top: 200px;">
+
+<div class="snsbuttons">
+
+    <!-- Twitter -->
+    <a href="https://twitter.com/share" class="twitter-share-button" data-related="cubbit2">Tweet</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+    <!-- Hatena -->
+    <div>
+        <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </div>
+
+    <!-- line -->
+    <div>
+        <div class="line-it-button" style="display: none;" data-type="share-a" data-lang="ja" ></div>
+        <script src="//scdn.line-apps.com/n/line_it/thirdparty/loader.min.js" async="async" defer="defer" ></script>
+    </div>
+
+    <!--facebook -->
+    <div>
+        <div id="fb-root"></div>
+        <script>(function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.8";
+        fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
+        <div class="fb-like" data-href="https://aratama.github.io/blog/${metadata.id}.md" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="false"></div>
+    </div>
+
+    <!-- google+ -->
+    <div>
+        <script src="https://apis.google.com/js/platform.js" async defer>
+        {lang: 'ja'}
+        </script>
+        <div class="g-plusone" data-size="medium"></div>
+    </div>
+
+</div>
+
+        </article>
+    </div>
+
+<footer>
+    <div class="block-centered footer-inner">
+        <p class="copy">&nbsp;</p>
+        <p class="author">このブログを書いてる人:&nbsp;&nbsp; 兎沢<p>
+    </div>
+
+    <script>
+        const poem = [
+            "なんにもない毎日が、なによりの宝物。",
+            "今日という日を、何度でも繰り返したい。",
+            "世界を追いかけなくても、世界は私のまわりにある。", 
+            "速すぎる雑踏。鼻先をくすぐる春風。", 
+            "明日撮る写真を飾る場所を、アルバムに空けておこう。", 
+            "落ち葉が地面に、触れる音がした。", 
+            "明日は、明日の楽しさが待っている。", 
+            "風が泣いている。この想いを紡ぐ言葉を持たないから。", 
+            "もうここには何もない。つまり、はじまりの時が来た。", 
+            "もう此処にはこないだろう。そう言って私は過去に背を向けた。", 
+            "散りゆくからこそ、美しい。私は桜の花びらをかかとで踏みしめた。", 
+            "思い出はいつだって輝いてる。"
+        ];
+    document.querySelector(".copy").textContent = poem[Math.floor(poem.length * Math.random())];
+    </script>
+</footer>
+

@@ -32,7 +32,9 @@ glob("raw/*.md", {}, (err, sources) => {
             return `<h${level}><a name="${escapedText}" class="anchor" href="#${escapedText}"><span class="header-link"></span></a>${text}</h${level}>`;
         };
         renderer.code = (code, lang) => {
-            return `<pre><code class="${lang}">${code}</code></pre>`;
+            const match = /(.+?):(.+?)/.exec(lang);
+            const lang_ = match ? match[1] : lang;
+            return `<pre><code class="${lang_}">${code}</code></pre>`;
         };
         renderer.image = (href, title, text) => {
             const q = "https://qiita-image-store.s3.amazonaws.com/0/";
@@ -91,5 +93,6 @@ glob("raw/*.md", {}, (err, sources) => {
     }).join("\n");
     const pageTitle = siteTitle;
     fs.writeFileSync("index.html", `<title>${pageTitle}</title>` + eval("`" + header + templeteIndex + footer + "`"));
+    fs.writeFileSync("entries.json", JSON.stringify(articles, null, 2));    
 });
 

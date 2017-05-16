@@ -5,10 +5,10 @@
 
 * {
     box-sizing: border-box;
-    font-family: "Yu Mincho", "SourceHanSerif-Light", serif;
+    font-family: "Yu Mincho", /* "SourceHanSerif-Light", */ serif;
 }
 
-p {
+li, p {
     line-height: 2.0;
 }
 
@@ -97,6 +97,7 @@ h1 {
     font-weight: bold;
     border-bottom: solid 1px rgba(0, 0, 0, 0.4);
     margin-top: 2em;
+    margin-bottom: 1em;
     line-height: 1.5;
 }
 

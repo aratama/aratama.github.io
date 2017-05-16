@@ -1,0 +1,343 @@
+<title>ミーリマシンで遊ぼう - ちょっと小さいのはたしかですが。</title><!DOCTYPE html>
+<meta charset="UTF-8">
+<link type="text/css" rel="stylesheet" href="style.css">
+
+<header>
+    <div class="block-centered">
+        <div class="site-title"><a href="/">ちょっと小さいのはたしかですが。</a></div>
+        <div class="sub-title">わたしのブログです。面白いかどうかは、わかりませんが。</div>
+    </div>
+</header>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="/res/highlight/styles/default.css">
+<script src="/res/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$']]}
+});
+</script>
+
+<link rel="stylesheet" href="../reset.css">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../article.css">
+
+
+    <div class="content">
+
+        <article id="rendered">
+            <div class="date">2017年1月21日</div>
+            <h1 class="article-title">
+                <!-- <i class="fa fa-coffee" aria-hidden="true"></i> -->
+                <a href="f4c7028d481258b2b64f.html">ミーリマシンで遊ぼう<a>
+            </h1>        
+            <p class="tags"><a href="RxJS.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>RxJS</span></a>
+<a href="Rx.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>Rx</span></a>
+<a href="purescript.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>purescript</span></a>
+<a href="redux.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>redux</span></a></p>
+            <hr>
+            <!-- {
+  "id": "f4c7028d481258b2b64f",
+  "created_at": "2017-01-21T23:31:48+09:00",
+  "tags": [
+    {
+      "name": "RxJS",
+      "versions": []
+    },
+    {
+      "name": "Rx",
+      "versions": []
+    },
+    {
+      "name": "purescript",
+      "versions": []
+    },
+    {
+      "name": "redux",
+      "versions": []
+    }
+  ],
+  "title": "ミーリマシンで遊ぼう"
+} -->
+<p>にわかに<a href="/blog/115f6f6ea5a22abf9204.html">Reduxミーリ・マシン説</a>が浮上したので、ミーリ・マシンが実用上どのように役立つのかを調べるため、ミーリ・マシンについてもう少し詳しくお勉強することにしました。</p>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ミーリ・マシンの定義</h1><p>何か抽象的なものを学ぶときは、最初に定義をさらっと眺めておくといいです。もちろん定義を眺めたからといってすぐに理解できるわけがないのですが、ぼんやりと手掛かりが得られることもよくあります。<a href="/blog/https://ja.wikipedia.org/wiki/%E3%83%9F%E3%83%BC%E3%83%AA%E3%83%BB%E3%83%9E%E3%82%B7%E3%83%B3.html">ウィキペディア</a>から拝借：</p>
+<p>定義：ミーリ・マシンとは、 $\rm (S, Σ, Λ, T, G, s)$ をいう。ここで、</p>
+<ul>
+<li>状態の有限集合 $\rm S$</li>
+<li>入力文字列の有限集合 $\rm Σ$</li>
+<li>出力文字列の有限集合 $\rm Λ$</li>
+<li>遷移関数 $\rm T : S × Σ → S$</li>
+<li>出力関数 $\rm G : S × Σ → Λ$</li>
+<li>開始状態 $\rm s ∈ S$</li>
+</ul>
+<p>(´・ω・｀)？</p>
+<p>よくわかりませんが、何か入力したら内部で何か状態が変わって何かが出力されるモノ、ということのようです。手続きの抽象化というところでしょうか。普通のプログラミング言語では手続きが作用や内部的な状態を持つのは当たり前のことなので、わざわざこんな堅苦しく述べるようなことでもない気がします。</p>
+<p>数学的な定義はおいておいて、今回使うライブラリのほうでもミーリ・マシンの定義も確認しておきます。まあどうせすぐにはピンとこないんですけどね。言語はPureScriptを使っていますが、別に他の言語でも簡単に同じことができるはずです。</p>
+<ul>
+<li><a href="/blog/https://github.com/purescript-contrib/purescript-machines.html">purescript-contrib/purescript-machines</a></li>
+</ul>
+<pre><code class="haskell">newtype MealyT f s a = MealyT (s -> f (Step f s a))</code></pre><p>このミーリ・マシン<code>MealyT</code>は、ただひとつの関数<code>s -&gt; f (Step f s a)</code>で表現されています。あれ？状態を表現する型変数がありませんね。また、出力関数も見当たりません。ミーリ・マシンは内部に状態を持っているはずですし、出力関数もあるはずなのですが、なぜか入力関数らしきものしかありません。謎です。<code>MealyT</code>には<code>Step f s a</code>という型も含まれるので、簡単に確認しておきます。</p>
+<pre><code class="haskell">data Step f s a = Emit a (MealyT f s a) | Halt</code></pre><p><code>Emit a m</code>は文字通り出力を示すんでしょうが、ここでまた<code>MealyT f s a</code>が再帰的に出てきます。ややこしくて頭がどうにかなりそうです。しかも<code>Halt</code>？　字面から察すればミーリ・マシンの実行を停止できる操作のようですが、そんなことはウィキペディアの定義には書かれていませんでしたし、何か実用上の都合なのでしょう。もし<code>Halt</code>の操作がないとしたら、<code>Step f s a</code>は単に<code>s</code>と<code>MealyT f s a</code>の組ですから、こんな感じになると思います。</p>
+<pre><code class="haskell">newtype MealyT f s a = MealyT (s -> f (Tuple a (MealyT f s a)))</code></pre><p>気持ち的にはクライスリ射<code>newtype Kleisli f s a = Kleisli (s -&gt; f a)</code>に近い気がしますが、出力だけじゃなくて状態も陽に触れるみたいな感じなんでしょうか。たしかに、単なる<code>Kleisli f s a</code>ではタイムトラベリングとかはできない気もします。この時点では謎が多いですが、まあどうせ考えてもわかりはしませんので、あとは実践あるのみです。</p>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>とりあえずライブラリを動かそう</h1><p>なんかよくわかんないライブラリを動かすときは、もちろんまずサンプルコードをコピペです。しかし、このライブラリ、サンプルコードやテストすらついていません。そこで、以下のドキュメントを参照しました。これがこのライブラリについて解説しているほとんんど唯一のテキストだと思います。</p>
+<ul>
+<li><a href="/blog/https://github.com/paf31/24-days-of-purescript-2014/blob/master/8.markdown.html">24-days-of-purescript-2014 8. purescript-machines</a> </li>
+</ul>
+<p>PureScriptは昨日今日出来たばかりの言語なので、バージョンアップしまくりで当たり前のようにコンパイルが通りません。手直ししたものがこちら：</p>
+<pre><code class="haskell">main = runMealy machine
+  where
+    machine = take 100 (loop (pure "Merry Christmas!")) >>> sink log</code></pre><p><code>pure &quot;Merry Christmas!&quot;</code>が文字列&quot;Merry Christmas!&quot;を出力するミーリ・マシンで、それに<code>loop</code>関数を適用すると、無限に&quot;Merry Christmas!&quot;と出力を繰り返すミーリ・マシンになります。それから<code>take 100</code>を適用すると、その無限の出力のうち先頭100個だけを取り出して出力しから終了するミーリ・マシンになります。無限のデータから<code>take</code>でその一部を取り出すとか、なんだか遅延リストみたいですね。</p>
+<p>また、<code>sink</code>関数は任意の作用をミーリ・マシンに変換することができ、<code>sink log</code>は文字列の入力を受け取って標準出力するミーリ・マシンになります。シンクってお台所に付いているあのシンクです。データをだーっと流しこむイメージです。そして、ミーリ・マシンどうしは<code>&gt;&gt;&gt;</code>で合成できるということです。このため、マシン全体としては、&quot;Merry Christmas!&quot;を100回出力するミーリ・マシンになるようです。ミーリ・マシンを実際に実行するには、<code>runMealy</code>関数に与えればＯｋです。実行してみます。</p>
+<pre><code class="undefined">Merry Christmas!
+Merry Christmas!
+Merry Christmas!
+Merry Christmas!
+Merry Christmas!
+Merry Christmas!
+Merry Christmas!
+Merry Christmas!
+Merry Christmas!
+Merry Christmas!
+Merry Christmas!
+Merry Christmas!
+Merry Christmas!
+...</code></pre><p>どわっ！　やかましいわ！　クリスマスは家族と静かに祝う行事なんやぞ！　恋人といちゃつくイベントちゃうんやぞ！　年末くらいもう少し静かに過ごせんのか！</p>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ソースとシンク</h1><p>とりあえず、ミーリ・マシンを作って<code>&gt;&gt;&gt;</code>で接続すればそれっぽく動くことがわかりました。さて、さっきは<code>sink</code>でデータをドバっと流しこむシンクを作りましたが、それに対応するものとして、データがドバっと流れ出してくる『ソース』もあり、ソースは<code>source</code>で作ることができます。シグネチャはそれぞれこんな感じです。</p>
+<pre><code class="haskell">source :: forall f s. (Monad f) => f s -> Source f s
+
+sink :: forall f a. (Monad f) => (a -> f Unit) -> Sink f a</code></pre><p><code>Source f s</code>は<code>s</code>がドバドバ噴き出してくるマシンで、<code>Sink f a</code>は<code>a</code>がドバっと流れこんで消費していくマシンです。なるほど、適当な作用<code>f s</code>を与えればソースになるわけですね。そんなわけで、標準入力の作用<code>readLine</code>を用意して、次のように連結してみます。</p>
+<pre><code class="haskell">machine = source readLine >>> sink log</code></pre><p>標準入力から入力したら、それをそのまま標準出力に注ぎ込む感じです。実行してみます。</p>
+<pre><code class="undefined">> 42
+42
+> foo
+foo
+> akane
+akane
+> aoi
+aoi
+></code></pre><p>おお！　入力をそのまま出力するエコーなプログラムが完成しました。ctrl+cで止めない限りずっと続きます。</p>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ディレイ</h1><p>次は、入力を一回分遅らせてから出力する<code>delay</code>マシンを作ってみることにします。このマシンは<strong>前回の入力を状態として持つ</strong>のがポイントですが、ミーリ・マシンに状態を持たせるにはどうすればいいんでしょうか。ちょっと頭を捻って、次のように書けることがわかりました。関数からミーリ・マシンをつくる<code>mealy</code>関数を使います。</p>
+<pre><code class="haskell">delay :: forall s m. s -> (Applicative m) => MealyT m s s
+delay v = mealy \s -> pure (Emit v (delay s))</code></pre><p>ややこしいですが、前回の状態をクロージャに持ってそれを参照しているわけです。まあ細かいことは気にしない！　さっきのエコーマシンの真ん中に<code>delay</code>を挟みんでみます。</p>
+<pre><code class="haskell">machine = source readLine >>> delay mempty >>> sink log</code></pre><p>それから実行してみます。</p>
+<pre><code class="undefined">> Hi
+
+> あれ？
+Hi
+> 声が
+あれ？
+> 遅れて
+声が
+> 聞こえて
+遅れて
+> くるよ？
+聞こえて
+></code></pre><p>最初の入力では空文字列が出力されますが、それ以降は直前ではなく、更にひとつまえの入力が出力されます。ミーリ・マシンがその前の入力をしっかり覚えていてくれているわけですね！　状態を扱うことができて、なんかいよいよマシンっぽくなってきました。</p>
+<p>Rxのイベントストリームとかシグナルにも似てますね。でも、ミーリマシンは一般には非同期的であるとも限らず、同期的かもしれませんし、まったく純粋かもしれません。また、常に一個の入力と一個の出力が対応しており、ひとつの入力に対して複数の出力があることはないです。実入りがあると出力するからミーリ・マシンと呼ばれているわけですね。なるほどなあ。</p>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>プーリング</h1><p>今度は入力をプーリングする機構を作ってみます。入力があってもそれをすぐには吐き出さずに代わりにひとまず空文字を出力し、特定の入力があったときにぞれまでの入力を一気にドバーッと放出するという振る舞いです。</p>
+<pre><code class="haskell">data Command s = Add s | Flush
+
+pool :: forall s m. Monoid s => s -> (Applicative m) => MealyT m (Command s) s
+pool v = mealy \cmd -> pure case cmd of
+    Add s -> Emit mempty (pool (v <> s))
+    Flush -> Emit v (pool mempty)</code></pre><p>こんな感じ。<code>Add s</code>を送り続けると、それを状態として蓄積していきますが、そのときは空っぽの値<code>mempty</code>を出力します。でも<code>Flush</code>を送るとそれまで溜めたモノをドバーっと一気に放出します。これだけだとコマンドラインから指示できないので、コマンドラインの入力をこの<code>Command</code>へと翻訳するマシンも作りました。</p>
+<pre><code class="haskell">interplet :: forall m. (Monad m) => MealyT m String (Command String)
+interplet = mealy case _ of
+    "flush" -> pure (Emit Flush interplet)
+    s -> pure (Emit (Add s) interplet)</code></pre><p>この<code>interplet</code>マシンは、通常の文字列は<code>Add s</code>コマンドに変換して送りますが、&quot;flush&quot;という文字列が来たときだけ<code>Flush</code>コマンドを送ります。マシンを組み立てます。</p>
+<pre><code class="haskell">machine = source readLine >>> interplet >>> pool mempty >>> sink log</code></pre><p>では実行してみます。</p>
+<pre><code class="undefined">> だめだ
+
+> まだ吐くな
+
+> こらえるんだ
+
+> ｵｴｰｯ!
+
+> flush
+だめだまだ吐くなこらえるんだｵｴｰｯ!
+></code></pre><p>いよいよRxっぽいですね。こんな感じで、入力を送るたびに内部状態を変化させ、同時に記号を出力するということが、ミーリ・マシンではできるようです。</p>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>外部から入力する</h1><p>今までは<code>source</code>でソースのマシンを作って入力を発生させていましたが、次はマシンの外部から入力をしてみます。といっても<code>stepMealy</code>関数を適用するだけです。たとえば、入力を大文字にするマシン<code>upper</code>を作って、</p>
+<pre><code class="haskell">upper :: forall m. (Monad m) => MealyT m String String
+upper = mealy \s -> pure (Emit (toUpper s) upper)</code></pre><p>あとは<code>stepMealy</code>で値を投げ込みます。ただし、結果は<code>Step f s a</code>で返ってきますから、<code>Emit</code>した場合と<code>Halt</code>で停止した場合について分岐をします。</p>
+<pre><code class="haskell">step <- stepMealy "Hello" upper
+case step of
+    Emit o m' -> log o
+    Halt -> pure unit</code></pre><p>実行すると、<code>HELLO</code>が出力されます。値を投げ入れてミーリ・マシンを外部から駆動するという感じで、これはなんだかRedux-Sagaっぽいですね。<code>put</code>でReduxに値を投げ入れるように、<code>stepMealy</code>を使うというという違いだけです。でも、結果のマシン<code>m&#39;</code>が明示的に出てくるのがちょっと違いますか。</p>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ほかにもいろいろやってみます</h1><p>配列の値を次々流しこむ<code>fromArray</code>もあります。</p>
+<pre><code class="haskell">machine = fromArray [0, 1, 2, 4, 5, 6, 7] >>> sink logShow</code></pre><p>実行すると</p>
+<pre><code class="undefined">0
+1
+2
+4
+5
+6
+7</code></pre><p>Rxの<code>range</code>っぽいですね。</p>
+<p><code>take n</code>が先頭<code>n</code>個だけを取り出すマシンですが、先頭の<code>n</code>個を捨てる<code>drop</code>もあります。</p>
+<pre><code class="haskell">machine = drop 3 (fromArray [0, 1, 2, 4, 5, 6, 7]) >>> sink logShow</code></pre><p><code>zipWith</code>でふたつのミーリ・マシンからひとつづつ取り出して処理したり</p>
+<pre><code class="haskell">machine = zipWith Tuple (fromArray ["春香", "ゆず", "コトネ"]) (fromArray ["優", "楓", "しずく"]) >>> sink logShow</code></pre><pre><code class="undefined">(Tuple "春香" "優")
+(Tuple "ゆず" "楓")
+(Tuple "コトネ" "しずく")</code></pre><p><code>interleave</code>で交互に出したりもできます。</p>
+<pre><code class="haskell">machine = interleave (fromArray ["春香", "ゆず", "コトネ"]) (fromArray ["優", "楓", "しずく"]) >>> sink log</code></pre><pre><code class="undefined">春香
+優
+ゆず
+楓
+コトネ
+しずく</code></pre><p>Rxが好きな人はこの辺りでほぼイキかけるんじゃないでしょうか。すみません。</p>
+<p>入力されたら<code>n</code>ミリ秒待ってから出力する<code>wait</code>マシーンも作ってみました。</p>
+<pre><code class="haskell">wait :: forall a eff. Int -> MealyT (Aff (Effects eff)) a a</code></pre><p>マシンの間に挟むと</p>
+<pre><code class="haskell">machine = source readLine >>> wait 500 >>> sink log</code></pre><pre><code class="undefined">> そんなことは
+そんなことは
+> ナン　ノブ　マイ　ビジネス
+ナン　ノブ　マイ　ビジネス
+> （夜に影を探すようなもの）
+（夜に影を探すようなもの）
+> です
+です
+></code></pre><p>字面ではわかりませんが、動かすと入力してから出力するまでにちょっともたつく感じになります。</p>
+<p>あとは、乱数をドバドバ放出し続けるマシンとか</p>
+<pre><code class="haskell">random :: forall eff m. (MonadEff (random :: RANDOM | eff) m) => MealyT m Unit Number
+random = mealy \_ -> do
+    r <- liftEff Random.random
+    pure (Emit r random)</code></pre><pre><code class="haskell">machine5 = random >>> sink logShow</code></pre><pre><code class="haskell">0.8077749259343008
+0.843892567634853
+0.24019024441745174
+0.3026528383375737
+0.02644466353948971
+0.5897859494813793
+0.8602703304837029
+0.7307064885220147
+0.706604323773312
+0.8734853221998418
+0.8062628648977004
+0.3400836400233571
+0.16986491173524798
+0.5245064121019869
+...</code></pre><p>オブジェクト指向絶許マシーンとか</p>
+<pre><code class="haskell">executeOOP :: forall m. MealyT m Unit String
+executeOOP = loop (pure "オブジェクト指向はｼｮｹｰですよｼｮｹｰ！")</code></pre><pre><code class="undefined">オブジェクト指向はｼｮｹｰですよｼｮｹｰ！
+オブジェクト指向はｼｮｹｰですよｼｮｹｰ！
+オブジェクト指向はｼｮｹｰですよｼｮｹｰ！
+オブジェクト指向はｼｮｹｰですよｼｮｹｰ！
+オブジェクト指向はｼｮｹｰですよｼｮｹｰ！
+...</code></pre><p>でもこれ『ループ』を続けるとスタックオーバーフローします。ぜんぜんループじゃないですね。なるほど、これでは今の装備では殺しきれん。そんなわけで、<code>MonadRec</code>というスタックセーフなループを提供する型クラスを使ってみました。</p>
+<pre><code class="haskell">loopRec :: forall f s a b. (MonadRec f) => MealyT f s a -> MealyT f s b
+loopRec m0 = do
+    mealy \s -> do
+        tailRecM (\m -> do
+            stepMealy s m >>= case _ of
+                Halt -> pure (Loop m0)
+                Emit s' m' -> pure (Loop m')
+        ) m0
+    loopRec m0</code></pre><p>この関数<code>loopRec</code>で作られたマシーンは、一度<code>Halt</code>で停止しても最初のマシーン<code>m0</code>を使って復活させて動き続けます。でも元の<code>loop</code>とはちょっと使い方が異なっていて、ループしたい全体を<code>loopRec</code>で囲まないといけません。</p>
+<pre><code class="haskell">machine = loopRec (executeOOP >>> sink log)</code></pre><p>一般性がなくて、なんか違う感じがします。何かうまい方法はあるんでしょうか。まだ思いつきません。</p>
+<p>そういえば、Rxにはなんであんなに関数がたくさんあるのかとみんな思っているでしょうが、<strong>Rxを作ってる人の気持がだんだんわかってきました</strong>。要するになんでもできるので、あれもできそう！これもできそう！って思いつく端から作っていくと、機能がモリモリ増えていってしまうんです。たぶんRxを作っている人も、<a href="/blog/http://www.slideshare.net/tikibou1/rxjs-67070374.html">それRxでできるよ</a>ってやり続けてあんな巨大になっちゃったんだと思います。そりゃあRxで『も』できますが、そんなに色々あっても覚えきれないし使われないんですけどね。それはRxでもできますが、それをRxでやるべきかどうかはまた別の話です。早すぎる抽象化というやつで、ミーリ・マシンも普遍的すぎてどこまでミーリ・マシンでやるべきなのかよくわからない感じです。</p>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ミーリマシンの圏</h1><p>ところで脱線しますが、ミーリ・マシンは<strong>圏</strong>でもあるようです。『関数型プログラミング』の話でたまに出てくる『圏論』の『圏』です。『ミーリ・マシンが圏をなす』というのは難しいことを言っているわけではなくて、ミーリ・マシンは<code>&gt;&gt;&gt;</code>演算子で合成できるし、入力をそのまま出力する素通りマシン<code>id</code>も使えると、ということを言っているだけです。試しに<code>id</code>ミーリ・マシンを使ってみましょう。</p>
+<pre><code class="haskell">machine = source readLine >>> id >>> sink log</code></pre><p>実行してみます。</p>
+<pre><code class="undefined">> そんなことは
+そんなことは
+> ナン　ノブ　マイ　ビジネス</code></pre><p>おや。<code>id</code>は入力を左から右に素通りさせるだけですが、それは１回だけで、２回めに通そうとするとそこで<code>Halt</code>で停止してしまうというマシンのようです。これ、ちょっとだけ予想外の振る舞いでした。実装も確かにそうなっています。</p>
+<pre><code class="haskell">instance categoryMealy :: (Monad f) => Category (MealyT f) where
+  id = pureMealy $ \t -> Emit t halt</code></pre><p>そういえば、<code>pure &quot;Merry Christmas!&quot;</code>は&quot;Merry Christmas!&quot;を一度出力して停止するミーリ・マシンでしたし、それを<code>loop</code>することで無限に叫び続けるミーリ・マシンになってました。なんかいちいち停止しなければいけない理由があるんです？このへんがまだよくわかりません。</p>
+<p>プログラミングにおける代表的な圏といえば関数の圏で、関数は合成できるし、引数をそのまま返す『恒等関数』が存在します。ミーリ・マシンが提供する手続きも、同じように合成と恒等射という構造を持つということですね。こんなところにも圏がひょっこり出てきてちょっとおもしろいなと思いました。</p>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>まとめ</h1><p>まだ他にもいろいろできますが、というか何でもできると思っていいでしょうが、なんかトラベリングデバッガとかホットリロードみたいな具体的な機能として使ってみないと、まだそこまで便利な抽象だという感じではないです。そこまで考えて気付いたんですが、このライブラリの実装では、マシンの状態を取得して永続化する一般的な方法がありません。そのため、タイムトラベリングはともかく、ホットリローディングの実装には使えないと思います。だめじゃん！</p>
+<p>今回使ったpurescript-machinesではありませんが、<a href="/blog/https://github.com/slamdata/purescript-halogen-vdom/blob/master/GUIDE.md.html">purescript-halogen-vdom</a>っていうライブラリはVDomを入力して<code>Node</code>を吐くミーリ・マシンになっているよ、とガイドに書いてあります。こんな応用もあるんですね。</p>
+<p>ミーリ・マシンは入力があって状態が変化して出力するというだけのものですから、プログラムとしては当たり前のことをしているだけっていう感じもします。その一方で、いろんなものをミーリ・マシンで表現してそれを合成するというのは新たなプログラミングスタイルの一種なのかもしれません。Rxのスタイルをリアクティブプログラミングなどと格好いい名前で呼ぶなら、ミーリ・マシンを合成するこのスタイルも何か格好いい名前があってもいいかもしれませんね。ミーリ・マシン自体はただの関数一個で表現できますし、他の言語でもミーリ・マシンを抽象化するのは簡単だと思うので、トライしてみたら面白んじゃないでしょうか。</p>
+<p>今回書いたまとまっていないコード：</p>
+<ul>
+<li><a href="/blog/https://gist.github.com/aratama/5130e2ecf540d0ea6e4ce29e4b223f01.html">https://gist.github.com/aratama/5130e2ecf540d0ea6e4ce29e4b223f01</a></li>
+</ul>
+<p>ミーリ・マシンは：</p>
+<ul>
+<li>ただの手続きっぽい</li>
+<li>が、合成可能なので</li>
+<li>遅延リストっぽいところもあり</li>
+<li>Rxのイベントストリームっぽいところもあり</li>
+<li>Redux/Redux-Sagaっぽいところもあり</li>
+<li>要するに変化する内部状態と入力と出力を持った手続きなのでとても普遍的な構造っぽい</li>
+<li>普遍的すぎて逆にどう使ったらいいかわかんないです</li>
+<li>Rxの気持ちがわかる</li>
+</ul>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>参考文献</h1><ul>
+<li><a href="/blog/https://ja.wikipedia.org/wiki/%E3%83%9F%E3%83%BC%E3%83%AA%E3%83%BB%E3%83%9E%E3%82%B7%E3%83%B3.html">ミーリ・マシン - Wikipedia</a></li>
+<li><a href="/blog/https://github.com/paf31/24-days-of-purescript-2014/blob/master/8.markdown.html">24-days-of-purescript-2014 8. purescript-machines</a> </li>
+<li><a href="/blog/https://github.com/purescript-contrib/purescript-machines.html">purescript-contrib/purescript-machines</a></li>
+</ul>
+
+
+
+            
+<hr style="margin-top: 200px;">
+
+<div class="snsbuttons">
+
+    <!-- Twitter -->
+    <a href="https://twitter.com/share" class="twitter-share-button" data-related="cubbit2">Tweet</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+    <!-- Hatena -->
+    <div>
+        <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </div>
+
+    <!-- line -->
+    <div>
+        <div class="line-it-button" style="display: none;" data-type="share-a" data-lang="ja" ></div>
+        <script src="//scdn.line-apps.com/n/line_it/thirdparty/loader.min.js" async="async" defer="defer" ></script>
+    </div>
+
+    <!--facebook -->
+    <div>
+        <div id="fb-root"></div>
+        <script>(function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.8";
+        fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
+        <div class="fb-like" data-href="https://aratama.github.io/blog/${metadata.id}.md" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="false"></div>
+    </div>
+
+    <!-- google+ -->
+    <div>
+        <script src="https://apis.google.com/js/platform.js" async defer>
+        {lang: 'ja'}
+        </script>
+        <div class="g-plusone" data-size="medium"></div>
+    </div>
+
+</div>
+
+        </article>
+    </div>
+
+<footer>
+    <div class="block-centered footer-inner">
+        <p class="copy">&nbsp;</p>
+        <p class="author">このブログを書いてる人:&nbsp;&nbsp; 兎沢<p>
+    </div>
+
+    <script>
+        const poem = [
+            "なんにもない毎日が、なによりの宝物。",
+            "今日という日を、何度でも繰り返したい。",
+            "世界を追いかけなくても、世界は私のまわりにある。", 
+            "速すぎる雑踏。鼻先をくすぐる春風。", 
+            "明日撮る写真を飾る場所を、アルバムに空けておこう。", 
+            "落ち葉が地面に、触れる音がした。", 
+            "明日は、明日の楽しさが待っている。", 
+            "風が泣いている。この想いを紡ぐ言葉を持たないから。", 
+            "もうここには何もない。つまり、はじまりの時が来た。", 
+            "もう此処にはこないだろう。そう言って私は過去に背を向けた。", 
+            "散りゆくからこそ、美しい。私は桜の花びらをかかとで踏みしめた。", 
+            "思い出はいつだって輝いてる。"
+        ];
+    document.querySelector(".copy").textContent = poem[Math.floor(poem.length * Math.random())];
+    </script>
+</footer>
+
