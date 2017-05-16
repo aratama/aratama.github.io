@@ -52,9 +52,11 @@ co(function*(){
         }
     }else if(subcommand == "user"){
         const userName = process.argv[3];
-        const resUser = yield fetch(`http://qiita.com/api/v2/${userName}/hiruberuto`);
+        console.log(`fetching articles for user ${userName}...`);
+        const resUser = yield fetch(`http://qiita.com/api/v2/users/${userName}`);
         const jsonUser = yield resUser.json(); 
         var articles = [];
+        console.log(jsonUser.items_count);        
         for(var page = 1; articles.length < jsonUser.items_count; page++){
             const res = yield fetch(`http://qiita.com/api/v2/users/${userName}/items?per_page=100&page=${page}`);
             const json = yield res.json();
