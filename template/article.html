@@ -1,22 +1,24 @@
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<link rel="stylesheet" href="/res/highlight/styles/default.css">
-<script src="/res/highlight/highlight.pack.js"></script>
+<!--
+<link rel="stylesheet" href="/lib/highlight/styles/default.css">
+<script src="/lib/highlight/highlight.pack.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
+-->
 
-
-
+<!--
 <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
   tex2jax: {inlineMath: [['$','$']]}
 });
 </script>
+-->
 
-<link rel="stylesheet" href="../reset.css">
-<link rel="stylesheet" href="../style.css">
-<link rel="stylesheet" href="../article.css">
+<link rel="stylesheet" href="/res/reset.css">
+<link rel="stylesheet" href="/res/style.css">
+<link rel="stylesheet" href="/res/article.css">
 
 
     <div class="content">
@@ -29,11 +31,8 @@ MathJax.Hub.Config({
             </h1>        
             <p class="tags">${tags}</p>
             <hr>
-            ${marked(emoji.emojify(source), { renderer: renderer })}
-
-
+            ${content}
             ${sns}
-
         </article>
     </div>
 

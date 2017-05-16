@@ -1,6 +1,6 @@
 <title>モナドのまほう　第１話『画像が表示できました』 - ちょっと小さいのはたしかですが。</title><!DOCTYPE html>
 <meta charset="UTF-8">
-<link type="text/css" rel="stylesheet" href="style.css">
+<link type="text/css" rel="stylesheet" href="/res/style.css">
 
 <header>
     <div class="block-centered">
@@ -10,22 +10,24 @@
 </header>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<link rel="stylesheet" href="/res/highlight/styles/default.css">
-<script src="/res/highlight/highlight.pack.js"></script>
+<!--
+<link rel="stylesheet" href="/lib/highlight/styles/default.css">
+<script src="/lib/highlight/highlight.pack.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
+-->
 
-
-
+<!--
 <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
   tex2jax: {inlineMath: [['$','$']]}
 });
 </script>
+-->
 
-<link rel="stylesheet" href="../reset.css">
-<link rel="stylesheet" href="../style.css">
-<link rel="stylesheet" href="../article.css">
+<link rel="stylesheet" href="/res/reset.css">
+<link rel="stylesheet" href="/res/style.css">
+<link rel="stylesheet" href="/res/article.css">
 
 
     <div class="content">
@@ -69,10 +71,7 @@ MathJax.Hub.Config({
   ],
   "title": "モナドのまほう　第１話『画像が表示できました』"
 } -->
-<p><a href="/img/ea7d82ad-27d5-c99c-a386-9d44ce449d58.png"><img src="/img/ea7d82ad-27d5-c99c-a386-9d44ce449d58.png"></img></a></p>
-<p><a href="/img/aa2860cb-2ac6-c7f0-e4be-65683156008c.png"><img src="/img/aa2860cb-2ac6-c7f0-e4be-65683156008c.png"></img></a></p>
-<p>※画面は開発中のものです。実際の製品とはぜんぜん違います。</p>
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>各話一覧</h1><ul>
+<p><a href="/img/ea7d82ad-27d5-c99c-a386-9d44ce449d58.png"><img src="/img/ea7d82ad-27d5-c99c-a386-9d44ce449d58.png"></img></a></p><p><a href="/img/aa2860cb-2ac6-c7f0-e4be-65683156008c.png"><img src="/img/aa2860cb-2ac6-c7f0-e4be-65683156008c.png"></img></a></p><p>※画面は開発中のものです。実際の製品とはぜんぜん違います。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>各話一覧</h1><ul>
 <li><a href="/blog/5321d8cebce7b87851f6.html">第１話『画像が表示できました』</a></li>
 <li><a href="/blog/5a2b613378d07906c5c5.html">第２話『ゲームループとキー入力ができました』</a></li>
 <li><a href="/blog/5d3f61339e84d2715f71.html">第３話『オンラインゲームになりました』</a></li>
@@ -93,64 +92,32 @@ MathJax.Hub.Config({
 <li>(以下続刊)</li>
 </ul>
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>デモとリポジトリ</h1><ul>
-<li><p><a href="/blog/https://aratama.github.io/cubbit/.html">https://aratama.github.io/cubbit/</a> ←現状のデモはこっちです。<strong>BGMが流れる</strong>のでボリュームを最大にして爆音でお聴きください。わりと読み込みに時間がかかるので、画面下のプログレスバーが伸びるまで気長にお待ちください。Chrome推奨です。FirefoxやEdgeでもたぶん動きますが、Firefoxだとホイールの挙動が違う問題があるのと、Edgeでも一人称視点モードでPointer Lockがちゃんと効いていないようです。WASDで移動、スペースでジャンプ、マウス右ドラッグやホイールで視点の変更です。画面下にあるホットバーのボタンを押すとブロックを置くモードになり、マウスクリックでブロックを置いたり取り除いたりできるようになります。</p>
-</li>
-<li><p><a href="/blog/https://github.com/aratama/cubbit.html">https://github.com/aratama/cubbit</a> ←コードのリポジトリはこっちに移動です</p>
-</li>
+<li><p><a href="/blog/https://aratama.github.io/cubbit/.html">https://aratama.github.io/cubbit/</a> ←現状のデモはこっちです。<strong>BGMが流れる</strong>のでボリュームを最大にして爆音でお聴きください。わりと読み込みに時間がかかるので、画面下のプログレスバーが伸びるまで気長にお待ちください。Chrome推奨です。FirefoxやEdgeでもたぶん動きますが、Firefoxだとホイールの挙動が違う問題があるのと、Edgeでも一人称視点モードでPointer Lockがちゃんと効いていないようです。WASDで移動、スペースでジャンプ、マウス右ドラッグやホイールで視点の変更です。画面下にあるホットバーのボタンを押すとブロックを置くモードになり、マウスクリックでブロックを置いたり取り除いたりできるようになります。</p></li>
+<li><p><a href="/blog/https://github.com/aratama/cubbit.html">https://github.com/aratama/cubbit</a> ←コードのリポジトリはこっちに移動です</p></li>
 </ul>
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>というわけで、オンラインゲームを作ることにします！😇</h1><p>現状のコンセプトはこんな感じです。開発当初の目論見からずいぶん変わりました。</p>
-<ul>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>というわけで、オンラインゲームを作ることにします！😇</h1><p>現状のコンセプトはこんな感じです。開発当初の目論見からずいぶん変わりました。</p><ul>
 <li>開発途中でもワクワク感がありそうなので、プレイヤーが広大なフィールドを自由にうろうろできる<strong>オープンワールド</strong>🌐でマインクラフトっぽい<strong>サンドボックスゲーム</strong>⛳️な感じで！　周囲数十キロメートルを自由に散策できます。地下や天空も数キロの高度まで移動可能。まだ地形生成が単純なので、どこまで行っても同じような風景ですが。</li>
 <li>簡単にアクセスできるように、ブラウザで動きます</li>
 <li>グラフィックスは<strong>WebGL</strong>💎を使ったガチ3Dだよ！　3Dのゲームは作るのが大変ですが、<strong>babylonjs</strong>がきっとなんとかしてくれる！　キャラクターの3Dポリゴンモデルも<strong>Blender</strong>🎨で筆者が自分で作ってるよ！</li>
 <li><strong>Firebase</strong>🔥を使ってマルチプレイヤーなオンラインゲームにします！(無謀)　オンラインゲームは大変ですが、Firebaseがきっとなんとかしてくれる！</li>
 <li>コードは<strong>PureScript</strong>😇という純粋関数型プログラミング言語で！　この筆者がJavaScriptなんかで書くわけないだろ！　いいかげんにしろ！</li>
 </ul>
-<p>このエントリはゲーム制作過程の日記的なものです。今回はとにかく自分が✨✨　$ {\bf {\Huge \color{orange}楽\color{lime}し\color{aqua}く} }$　✨✨開発するのが目標！　ゲームを作りたくなったから作る！　Firebase使ってみたいから使う！　PureScriptが好きだから使う！　WebGL使いたくないけど使う！　そんな感じで、このエントリは勢いだけで書きます！　ついてこれる奴だけついてこいッ!!😈😈😈</p>
-<p><del>ちなみにプロジェクト名がzombieなのはゾンビが出てくる的なゲームにしようかと検討しているからです。どうせみんなゾンビ好きでしょ！(偏見)。某潜入アクションゲームだって遂にゾンビアクションゲームになっちゃったし。まあ行き当たりばったりに作っているので、ゲームの方向性はまたそのうち変わると思います。</del> 開発当初に比べてもう完全にゲームの方向性が変わっていて、メルヘンな感じになってます。どこに向かっているのかは筆者にもよくわかりません。</p>
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>プログラムのエントリポイント！⚡️</h1><p>プログラムは<code>main</code>から始まり<code>main</code>に終わる！　基本中の基本！</p>
-<pre><code class="haskell">main = do
-    pure unit</code></pre><p>よし出来た！　ちなみに、<code>pure unit</code>というのは『何もしない』ってことです。ここまで書けたら、とりあえずビルドできることを確認！　よしOK!　次っ！</p>
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>画像の読み込み！📷</h1><p>次はタイルチップ用の画像を読み込みます。今使っているライブラリでは<code>withImage</code>という関数で画像を読み込めるので、これを使いましょう。最初に引数に画像のパス、ふたつめの引数に読み込んだ画像を受け取るためのコールバック関数を渡せばOK!</p>
-<pre><code class="haskell">main = do
+<p>このエントリはゲーム制作過程の日記的なものです。今回はとにかく自分が✨✨　$ {\bf {\Huge \color{orange}楽\color{lime}し\color{aqua}く} }$　✨✨開発するのが目標！　ゲームを作りたくなったから作る！　Firebase使ってみたいから使う！　PureScriptが好きだから使う！　WebGL使いたくないけど使う！　そんな感じで、このエントリは勢いだけで書きます！　ついてこれる奴だけついてこいッ!!😈😈😈</p><p><del>ちなみにプロジェクト名がzombieなのはゾンビが出てくる的なゲームにしようかと検討しているからです。どうせみんなゾンビ好きでしょ！(偏見)。某潜入アクションゲームだって遂にゾンビアクションゲームになっちゃったし。まあ行き当たりばったりに作っているので、ゲームの方向性はまたそのうち変わると思います。</del> 開発当初に比べてもう完全にゲームの方向性が変わっていて、メルヘンな感じになってます。どこに向かっているのかは筆者にもよくわかりません。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>プログラムのエントリポイント！⚡️</h1><p>プログラムは<code>main</code>から始まり<code>main</code>に終わる！　基本中の基本！</p><pre><code class="haskell">main = do
+    pure unit</code></pre><p>よし出来た！　ちなみに、<code>pure unit</code>というのは『何もしない』ってことです。ここまで書けたら、とりあえずビルドできることを確認！　よしOK!　次っ！</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>画像の読み込み！📷</h1><p>次はタイルチップ用の画像を読み込みます。今使っているライブラリでは<code>withImage</code>という関数で画像を読み込めるので、これを使いましょう。最初に引数に画像のパス、ふたつめの引数に読み込んだ画像を受け取るためのコールバック関数を渡せばOK!</p><pre><code class="haskell">main = do
     withImage "grass.png" \grass → do
-        pure unit</code></pre><p>よし出来た！<code>grass.png</code>という芝生っぽいタイルチップ画像を読み込んで、画像オブジェクトを変数<code>grass</code>で受け取っています。ここでやっているのは、JavaScriptで言えばこんな感じのコードです。</p>
-<pre><code class="js">widthImage("grass.png", function(grass){
+        pure unit</code></pre><p>よし出来た！<code>grass.png</code>という芝生っぽいタイルチップ画像を読み込んで、画像オブジェクトを変数<code>grass</code>で受け取っています。ここでやっているのは、JavaScriptで言えばこんな感じのコードです。</p><pre><code class="js">widthImage("grass.png", function(grass){
     return;
-});</code></pre><p>PureScriptなのでやけに見た目がスカスカしてますが、落ち着いて読めば別に難しくもなんともないですね。ちなみに読み込んだ<code>grass.png</code>はこれ：</p>
-<p><a href="/img/bdb459fb-b080-b7cf-b297-0184ea87ac14.png"><img src="/img/bdb459fb-b080-b7cf-b297-0184ea87ac14.png"></img></a></p>
-<p>筆者が<a href="/blog/https://pixlr.com/editor/.html">pixlr</a>で10秒で描きました。超ハイクオリティ！✌️</p>
-<h1><a name="canvas-" class="anchor" href="#canvas-"><span class="header-link"></span></a>Canvasオブジェクトの取得！</h1><p>次は画像を描画するためのキャンバスオブジェクトを取ってきましょう。このライブラリには<code>getElementById</code>の簡単なラッパ<code>getCanvasElementById</code>が付属しているのでこれを使います。<code>canvas</code>というID(直球)を文字列で指定して呼び出すだけです。</p>
-<pre><code class="haskell">canvasMaybe ← getCanvasElementById "canvas"</code></pre><p>これで<code>getCanvasElementById</code>の結果が変数<code>canvasMaybe</code>に代入されます。それだけです。え？変な矢印<code>←</code>は何かって？PureScriptは変数に代入するときに<code>&lt;-</code>のほかに<code>←</code>も使えるんですよ。なんか見た目が可愛いので筆者は最近<code>←</code>を使うのがお気に入りなんです。Qiitaの構文ハイライトで思いっきり駄目出しされてますけど。</p>
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>場合分け！</h1><p>しかしここで筆者は大ピンチ！😨なんと<code>getCanvasElementById</code>の結果<code>canvasMaybe</code>はキャンバスオブジェクトそのものではありません。<code>getElementById</code>とは別モノじゃないか！　指定したIDの<code>canvas</code>要素があるかどうかはわからないので、取得が成功した場合と失敗した場合で<strong>場合分け</strong>をしなくてはならないのです。場合分けには<strong><code>case</code>文</strong>を使います。</p>
-<pre><code class="haskell">case canvasMaybe of
+});</code></pre><p>PureScriptなのでやけに見た目がスカスカしてますが、落ち着いて読めば別に難しくもなんともないですね。ちなみに読み込んだ<code>grass.png</code>はこれ：</p><p><a href="/img/bdb459fb-b080-b7cf-b297-0184ea87ac14.png"><img src="/img/bdb459fb-b080-b7cf-b297-0184ea87ac14.png"></img></a></p><p>筆者が<a href="/blog/https://pixlr.com/editor/.html">pixlr</a>で10秒で描きました。超ハイクオリティ！✌️</p><h1><a name="canvas-" class="anchor" href="#canvas-"><span class="header-link"></span></a>Canvasオブジェクトの取得！</h1><p>次は画像を描画するためのキャンバスオブジェクトを取ってきましょう。このライブラリには<code>getElementById</code>の簡単なラッパ<code>getCanvasElementById</code>が付属しているのでこれを使います。<code>canvas</code>というID(直球)を文字列で指定して呼び出すだけです。</p><pre><code class="haskell">canvasMaybe ← getCanvasElementById "canvas"</code></pre><p>これで<code>getCanvasElementById</code>の結果が変数<code>canvasMaybe</code>に代入されます。それだけです。え？変な矢印<code>←</code>は何かって？PureScriptは変数に代入するときに<code>&lt;-</code>のほかに<code>←</code>も使えるんですよ。なんか見た目が可愛いので筆者は最近<code>←</code>を使うのがお気に入りなんです。Qiitaの構文ハイライトで思いっきり駄目出しされてますけど。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>場合分け！</h1><p>しかしここで筆者は大ピンチ！😨なんと<code>getCanvasElementById</code>の結果<code>canvasMaybe</code>はキャンバスオブジェクトそのものではありません。<code>getElementById</code>とは別モノじゃないか！　指定したIDの<code>canvas</code>要素があるかどうかはわからないので、取得が成功した場合と失敗した場合で<strong>場合分け</strong>をしなくてはならないのです。場合分けには<strong><code>case</code>文</strong>を使います。</p><pre><code class="haskell">case canvasMaybe of
      Nothing → pure unit
-     Just canvas → pure unit</code></pre><p>よし出来た！失敗した時は<code>Nothing</code>、成功した時は<code>Just</code>のほうが実行され、<code>Just</code>のすぐ後ろにある変数<code>canvas</code>にキャンバスオブジェクトが入っています。まだ分岐後に何もしていない(<code>pure unit</code>)ですけどね。JavaScriptだと別に場合分けの必要はないですし、PureScriptのほうがちょっとだけ面倒ですが、ここは三匹の子豚精神🐷で乗り切ります。生き残るのは苦労して<ruby>🐺<rt>エラー</ruby>に備えた奴なのです！<ruby>🐺<rt>エラー</ruby>への備えを怠る🐷は食われてしまえばいいのです。</p>
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>標準出力！</h1><p>さて、エラーを握りつぶしてしまってはいけないので、エラー時にはコンソールにエラーの内容を出力しておきましょう。コンソールに文字を書くには、<code>log</code>関数を使います。要するに<code>console.log</code>と同じものです。</p>
-<pre><code class="haskell">case canvasMaybe of
+     Just canvas → pure unit</code></pre><p>よし出来た！失敗した時は<code>Nothing</code>、成功した時は<code>Just</code>のほうが実行され、<code>Just</code>のすぐ後ろにある変数<code>canvas</code>にキャンバスオブジェクトが入っています。まだ分岐後に何もしていない(<code>pure unit</code>)ですけどね。JavaScriptだと別に場合分けの必要はないですし、PureScriptのほうがちょっとだけ面倒ですが、ここは三匹の子豚精神🐷で乗り切ります。生き残るのは苦労して<ruby>🐺<rt>エラー</ruby>に備えた奴なのです！<ruby>🐺<rt>エラー</ruby>への備えを怠る🐷は食われてしまえばいいのです。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>標準出力！</h1><p>さて、エラーを握りつぶしてしまってはいけないので、エラー時にはコンソールにエラーの内容を出力しておきましょう。コンソールに文字を書くには、<code>log</code>関数を使います。要するに<code>console.log</code>と同じものです。</p><pre><code class="haskell">case canvasMaybe of
     Nothing → log "canvas not found."
-    Just canvas → pure unit</code></pre><p>よしできた！それだけ！😀</p>
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>グラフィックコンテキストの取得！</h1><p>今使っているライブラリはHTML5 Canvas APIの薄いラッパなので、APIもほとんど同じです。キャンバスオブジェクトを取得できたら、次はグラフィックコンテキストを取得しましょう。JavaScriptでは<code>canvas.getContext(&#39;2d&#39;)</code>というように<code>getContext</code>メソッドを呼ぶところですが、<strong>よく考えたらPureScriptはオブジェクト指向プログラミング言語じゃない……！</strong>😱😱😱　それじゃあ<code>canvas</code>オブジェクトの<code>getContext</code>メソッドを呼べないじゃないですか！　もうだめだぁ……おしまいだぁ……😭でも諦めるのはまだ早い！　実は普通に<code>getContext</code>メソッドのラッパである<code>getContext2D</code>関数を呼ぶだけでOK！</p>
-<pre><code class="haskell">context ← getContext2D canvas</code></pre><p>なあんだ。え？これじゃあ語順的に<code>canvas</code>の<code>getContext</code>メソッドを読んでいるように見えない？だったら<strong><code>#</code>演算子</strong>を使えばいいんです！</p>
-<pre><code class="haskell">context ← canvas # getContext2D</code></pre><p>ほら！語順がひっくり返った！ これで『<code>canvas</code>に<code>getContext2D</code>のメッセージを送っている』とか言い張れるでしょ！　<code>#</code>演算子はほんとに関数と引数の位置をひっくり返すだけのための演算子です。PureScriptは演算子も自由に定義できるので、こんな工夫も簡単です。</p>
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>まずは画像をひとつだけ描画してみる！</h1><p>次は<code>drawImage</code>で画像を描画しましょう😎</p>
-<pre><code class="haskell">drawImage context grass 0.0 0.0</code></pre><p>よしできた！これでプログラムを実行すると、左上に画像が表示されるはずです！</p>
-<p><a href="/img/bce7b41c-d178-209a-68a1-e1aa2cd1b8f6.png"><img src="/img/bce7b41c-d178-209a-68a1-e1aa2cd1b8f6.png"></img></a></p>
-<p>よっしゃああああああああ！😳😳😳　きたあああああああ！　<strong>『純粋関数型』</strong>なんていう変なジャンルのプログラミング言語でもグラフィックスのプログラミングできてるああああああ！😈😈😈　ちなみに画面サイズは<code>1280 * 720</code>ピクセル固定にしてます。</p>
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>繰り返し！</h1><p>芝生一枚じゃあまりに寂しい😞ので、繰り返し描画して、もっとたくさん縦横に並べましょう。Javascriptで言えば、forループを使ってこんな感じをやりたいわけです。</p>
-<pre><code class="js">for(var y = 0; y <= 15; y++){
+    Just canvas → pure unit</code></pre><p>よしできた！それだけ！😀</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>グラフィックコンテキストの取得！</h1><p>今使っているライブラリはHTML5 Canvas APIの薄いラッパなので、APIもほとんど同じです。キャンバスオブジェクトを取得できたら、次はグラフィックコンテキストを取得しましょう。JavaScriptでは<code>canvas.getContext(&#39;2d&#39;)</code>というように<code>getContext</code>メソッドを呼ぶところですが、<strong>よく考えたらPureScriptはオブジェクト指向プログラミング言語じゃない……！</strong>😱😱😱　それじゃあ<code>canvas</code>オブジェクトの<code>getContext</code>メソッドを呼べないじゃないですか！　もうだめだぁ……おしまいだぁ……😭でも諦めるのはまだ早い！　実は普通に<code>getContext</code>メソッドのラッパである<code>getContext2D</code>関数を呼ぶだけでOK！</p><pre><code class="haskell">context ← getContext2D canvas</code></pre><p>なあんだ。え？これじゃあ語順的に<code>canvas</code>の<code>getContext</code>メソッドを読んでいるように見えない？だったら<strong><code>#</code>演算子</strong>を使えばいいんです！</p><pre><code class="haskell">context ← canvas # getContext2D</code></pre><p>ほら！語順がひっくり返った！ これで『<code>canvas</code>に<code>getContext2D</code>のメッセージを送っている』とか言い張れるでしょ！　<code>#</code>演算子はほんとに関数と引数の位置をひっくり返すだけのための演算子です。PureScriptは演算子も自由に定義できるので、こんな工夫も簡単です。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>まずは画像をひとつだけ描画してみる！</h1><p>次は<code>drawImage</code>で画像を描画しましょう😎</p><pre><code class="haskell">drawImage context grass 0.0 0.0</code></pre><p>よしできた！これでプログラムを実行すると、左上に画像が表示されるはずです！</p><p><a href="/img/bce7b41c-d178-209a-68a1-e1aa2cd1b8f6.png"><img src="/img/bce7b41c-d178-209a-68a1-e1aa2cd1b8f6.png"></img></a></p><p>よっしゃああああああああ！😳😳😳　きたあああああああ！　<strong>『純粋関数型』</strong>なんていう変なジャンルのプログラミング言語でもグラフィックスのプログラミングできてるああああああ！😈😈😈　ちなみに画面サイズは<code>1280 * 720</code>ピクセル固定にしてます。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>繰り返し！</h1><p>芝生一枚じゃあまりに寂しい😞ので、繰り返し描画して、もっとたくさん縦横に並べましょう。Javascriptで言えば、forループを使ってこんな感じをやりたいわけです。</p><pre><code class="js">for(var y = 0; y <= 15; y++){
     for(var y = 0; y <= 15; y++){
         context.drawImage(grass, 36 * x, 36 * y);
     }
-}</code></pre><p>でも……噂によれば関数型言語にはループがなくて、繰り返しには<strong>再帰</strong>を使うらしいじゃないですか……。ひいいいい！　再帰とか難しすぎる😱😱😱……ダメだぁ……お終いだぁ……。でも諦めるのはまだ早い！　PureScriptには<strong><code>for</code>関数</strong>という<strong>見た目も使い方も<code>for</code>文そのまんまの関数</strong>があります。<code>for</code>文というよりは、イメージ的にはJavaScriptの<code>Array.prototype.forEach</code>メソッドに近いでしょうか。コードはこんな感じ。</p>
-<pre><code class="haskell">for (0 .. 15) \y -> do
+}</code></pre><p>でも……噂によれば関数型言語にはループがなくて、繰り返しには<strong>再帰</strong>を使うらしいじゃないですか……。ひいいいい！　再帰とか難しすぎる😱😱😱……ダメだぁ……お終いだぁ……。でも諦めるのはまだ早い！　PureScriptには<strong><code>for</code>関数</strong>という<strong>見た目も使い方も<code>for</code>文そのまんまの関数</strong>があります。<code>for</code>文というよりは、イメージ的にはJavaScriptの<code>Array.prototype.forEach</code>メソッドに近いでしょうか。コードはこんな感じ。</p><pre><code class="haskell">for (0 .. 15) \y -> do
     for (0 .. 15) \x -> do
-        drawImage context grass (36.0 * toNumber x) (36.0 * toNumber y)</code></pre><p>よしできた！😄<code>0 .. 15</code>は<code>0</code>から<code>15</code>までの<code>16</code>個の整数が格納された配列を表します。これに対して<code>for</code>関数で繰り返しを行っているわけです。</p>
-<p>PureScriptだと<code>toNumber</code>で型を明示的に変換しなくちゃいけないのがちょっと面倒ですが、ここも三匹の子豚精神🐽🐽🐽で乗り切ります。実行するとこんな感じに表示されます。</p>
-<p><a href="/img/7dc2cb20-1954-b172-026d-c2e0f277690c.png"><img src="/img/7dc2cb20-1954-b172-026d-c2e0f277690c.png"></img></a></p>
-<p>いやっっほおおおう！🌵ふっさふさ！🌵かなり草がふっさふさだよ！🌵🌵🌵　関数型プログラミングではあんまりループを使わない(?)と主張する人もいます。確かに<code>for</code>関数はあくまで関数であってループではないものの、<strong>コードの見た目や考え方としてはforループそのもの</strong>です。少なくとも筆者は<code>for</code>関数はforループの代わりくらいにしか思ってません。別に関数型プログラミングだからってそこまで脳みそを大幅に切り替える必要はないのです。</p>
-<p>つーか誰だよ！<strong>純粋関数型プログラミング言語は副作用を扱うのが難しいって大嘘</strong>をぶっこいた奴は！キャンバスに画像を描画するとか思いっっっっっきり副作用だけど、実際にコードを書いてみるとJavaScriptと大して変わらねーじゃねーか！　さっきも平気でコンソールに文字書いてたし！　これじゃあオブジェクト指向が絡んでくるJavaScriptのほうがよっぽど難しいだろ！😡</p>
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ここまでの全体像！</h1><pre><code class="haskell">main = do
+        drawImage context grass (36.0 * toNumber x) (36.0 * toNumber y)</code></pre><p>よしできた！😄<code>0 .. 15</code>は<code>0</code>から<code>15</code>までの<code>16</code>個の整数が格納された配列を表します。これに対して<code>for</code>関数で繰り返しを行っているわけです。</p><p>PureScriptだと<code>toNumber</code>で型を明示的に変換しなくちゃいけないのがちょっと面倒ですが、ここも三匹の子豚精神🐽🐽🐽で乗り切ります。実行するとこんな感じに表示されます。</p><p><a href="/img/7dc2cb20-1954-b172-026d-c2e0f277690c.png"><img src="/img/7dc2cb20-1954-b172-026d-c2e0f277690c.png"></img></a></p><p>いやっっほおおおう！🌵ふっさふさ！🌵かなり草がふっさふさだよ！🌵🌵🌵　関数型プログラミングではあんまりループを使わない(?)と主張する人もいます。確かに<code>for</code>関数はあくまで関数であってループではないものの、<strong>コードの見た目や考え方としてはforループそのもの</strong>です。少なくとも筆者は<code>for</code>関数はforループの代わりくらいにしか思ってません。別に関数型プログラミングだからってそこまで脳みそを大幅に切り替える必要はないのです。</p><p>つーか誰だよ！<strong>純粋関数型プログラミング言語は副作用を扱うのが難しいって大嘘</strong>をぶっこいた奴は！キャンバスに画像を描画するとか思いっっっっっきり副作用だけど、実際にコードを書いてみるとJavaScriptと大して変わらねーじゃねーか！　さっきも平気でコンソールに文字書いてたし！　これじゃあオブジェクト指向が絡んでくるJavaScriptのほうがよっぽど難しいだろ！😡</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ここまでの全体像！</h1><pre><code class="haskell">main = do
     withImage "grass.png" \grass → do
         canvasMaybe ← getCanvasElementById "canvas"
         case canvasMaybe of
@@ -159,13 +126,9 @@ MathJax.Hub.Config({
                 context ← getContext2D canvas
                 for (0 .. 9) \y → do
                     for (0 .. 9) \x → do
-                        drawImage context grass (36.0 * toNumber x) (36.0 * toNumber y)</code></pre><p>モジュールのインポートの部分とかは省略しました。まだ1０行です。</p>
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>今後の方針ですが🐔</h1><p>開発方針は完全に勢いだけ＆いきあたりばったりです！　またまだ続きます！　最初はもっと簡単なミニゲームを作ろうかと思ったんですが、そういう簡単なゲームって正直遊んでも一瞬で飽きるんですよね。ゲームを作るからには、ある程度は継続的に楽しく遊べてほしいわけです。その点、こういうオープンなワールドなゲームなら、後付けで幾らでも機能を実装し続けられます。それに、ゲームとしての機能やバランスがガバガバでも、フィールドをうろうろしているだけで何となくワクワク感がありますからね。何より作っていて楽しいです！🐔🐔🐔　</p>
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>次のお話🐔</h1><ul>
+                        drawImage context grass (36.0 * toNumber x) (36.0 * toNumber y)</code></pre><p>モジュールのインポートの部分とかは省略しました。まだ1０行です。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>今後の方針ですが🐔</h1><p>開発方針は完全に勢いだけ＆いきあたりばったりです！　またまだ続きます！　最初はもっと簡単なミニゲームを作ろうかと思ったんですが、そういう簡単なゲームって正直遊んでも一瞬で飽きるんですよね。ゲームを作るからには、ある程度は継続的に楽しく遊べてほしいわけです。その点、こういうオープンなワールドなゲームなら、後付けで幾らでも機能を実装し続けられます。それに、ゲームとしての機能やバランスがガバガバでも、フィールドをうろうろしているだけで何となくワクワク感がありますからね。何より作っていて楽しいです！🐔🐔🐔　</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>次のお話🐔</h1><ul>
 <li><a href="/blog/5a2b613378d07906c5c5.html">第二話　ゲームループとキー入力ができました</a></li>
 </ul>
-
-
 
             
 <hr style="margin-top: 200px;">
@@ -208,7 +171,6 @@ MathJax.Hub.Config({
     </div>
 
 </div>
-
         </article>
     </div>
 

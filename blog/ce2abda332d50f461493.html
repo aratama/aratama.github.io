@@ -1,6 +1,6 @@
 <title>モナドのまほう　第17話『ｱｶﾈﾁｬﾝｶﾜｲｲﾔｯﾀｰ!』 - ちょっと小さいのはたしかですが。</title><!DOCTYPE html>
 <meta charset="UTF-8">
-<link type="text/css" rel="stylesheet" href="style.css">
+<link type="text/css" rel="stylesheet" href="/res/style.css">
 
 <header>
     <div class="block-centered">
@@ -10,22 +10,24 @@
 </header>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<link rel="stylesheet" href="/res/highlight/styles/default.css">
-<script src="/res/highlight/highlight.pack.js"></script>
+<!--
+<link rel="stylesheet" href="/lib/highlight/styles/default.css">
+<script src="/lib/highlight/highlight.pack.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
+-->
 
-
-
+<!--
 <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
   tex2jax: {inlineMath: [['$','$']]}
 });
 </script>
+-->
 
-<link rel="stylesheet" href="../reset.css">
-<link rel="stylesheet" href="../style.css">
-<link rel="stylesheet" href="../article.css">
+<link rel="stylesheet" href="/res/reset.css">
+<link rel="stylesheet" href="/res/style.css">
+<link rel="stylesheet" href="/res/article.css">
 
 
     <div class="content">
@@ -64,25 +66,7 @@ MathJax.Hub.Config({
   ],
   "title": "モナドのまほう　第17話『ｱｶﾈﾁｬﾝｶﾜｲｲﾔｯﾀｰ!』"
 } -->
-<p><a href="/blog/5321d8cebce7b87851f6.html">第一話</a> / <a href="/blog/02cea526f5487d579cec.html">前回</a> / <a href="/blog/https://aratama.github.io/cubbit/.html">デモ</a></p>
-<p>黙々とゲームを作る日記です。今回は完全に脱線しています。Blender回です。</p>
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>病ンデる琴葉姉妹</h1><p>まだキャラが一人しかいなくてちょっとさみしいから、新キャラ作るで！　ワイは<a href="/blog/http://seiga.nicovideo.jp/seiga/im5274301.html">病ンデる琴葉姉妹</a>が出てくるゲーム実況動画がほんに好きなんやけど、それで関西弁ボイスロイド<a href="/blog/https://www.ah-soft.com/voiceroid/kotonoha/.html">琴葉茜ちゃん</a>作ることにしたわ。琴葉姉妹はカラーリングが紅白でめでたいしな。新年のお祝いや。それにな、ゲームが完成したらプロモ動画作って茜ちゃんにナレーターしてもらおうと思うんや。夢が広がりんぐやな。</p>
-<p>そんなわけで、いつものアレから作り始めることにするわ。</p>
-<p><a href="/img/20eb39b8-0665-a4b7-0012-6ac59121be0d.png"><img src="/img/20eb39b8-0665-a4b7-0012-6ac59121be0d.png"></img></a></p>
-<p>そういえば、このあいだプレイヤーキャラクターのモデルを作った時にはなんか半端に肘を曲げたポーズでエクスポートしていたんやけど、この腕を水平に伸ばしたブーンのポーズのほうがあとあと編集しやすいことに気づいたんや。そういうことはな、先に教えて欲しかったわ。じゃあ下絵を読み込むで。</p>
-<p><a href="/img/adf7e873-dbfa-1536-04e2-a765a0c2c9c2.png"><img src="/img/adf7e873-dbfa-1536-04e2-a765a0c2c9c2.png"></img></a></p>
-<p>まずは元画像の茜ちゃんをじっくり観察してモチベーションを高めるんや！　今回の下絵は真正面じゃないからちょっと厄介やけどな、下絵を自分で描き直す根性はないしな。それからさっきの素体を読み込んで、下絵に重ねて身長や大まかな体型を合わせる。プロポーショナル編集ツールを使うとええぞ。まさに<ruby>体型<rt>プロポーション</rt></ruby>を編集するためのツールやな、ってやかましいわ。</p>
-<p><a href="/img/3327b67d-2a98-df39-0291-51935e2f587c.png"><img src="/img/3327b67d-2a98-df39-0291-51935e2f587c.png"></img></a></p>
-<p>全裸やないかい！　こんな格好で外を出歩いたらお巡りさんに捕まるかもわからんで！　とりあえずなんか着ーや。</p>
-<p><a href="/img/1acadee7-94ad-b27c-6aa7-98e02e20bc7a.png"><img src="/img/1acadee7-94ad-b27c-6aa7-98e02e20bc7a.png"></img></a></p>
-<p>……しっかしなんやねん、このぶっさい子は！　こんなん琴葉茜ちゃんとちゃうで！足だけ妙に色っぽくて逆に気持ち悪いわ！　顔もアカンわ。顔面は全部作り直しやわ。</p>
-<p><a href="/img/f9f673d8-bf61-e330-8c16-08ce354dfc35.png"><img src="/img/f9f673d8-bf61-e330-8c16-08ce354dfc35.png"></img></a></p>
-<p>あかん……あかんで葵！　似てるのは色だけやで！　ちゃんと画像から色を拾って材質を設定しているからな。この、完成型がまったく見えてこない状況でひたすら微調整を繰り返す作業が一番しんどいわ。腱鞘炎寸前やわ。</p>
-<p>数時間後。</p>
-<p><a href="/img/c496595a-8fe2-99b1-df53-c851a9c6c46d.png"><img src="/img/c496595a-8fe2-99b1-df53-c851a9c6c46d.png"></img></a></p>
-<p>どうや？　これはもうほとんど至るところで茜ちゃんやろ。ｱｶﾈﾁｬﾝｶﾜｲｲﾔｯﾀｰ!　BlenderにFreestyleっていう輪郭線書いてくれる機能があってな、これ使うとかなりイラストっぽくなるんや。まだソックスのくしゅっと感が足りんし、テクスチャもちゃんと影やグラデーションをつけていないから立体感が足りてへんわ。もうちょい調整したらゲームの中に出すわ。妹の琴葉葵ちゃんもつくろか。左右反転して色変えるだけやから、わりと簡単や。一体で二度美味しいとはさすが双子姉妹やな。まあ版権モノやから、最終的には削除するかもわからんけどな。茜ちゃんが見守ってくれて開発中のモチベーション上がればそれで構へんのや。やっぱBlenderが一番楽しいんや。もうプログラムとか誰か代わりに書いてくれひんやろか。あとで<a href="/blog/http://3d.nicovideo.jp/.html">ニコニ立体</a>なんかにも投稿できたらええな。</p>
-<p>ゲームのノンフォトリアリスティックな表現では、やっぱ一番すごいのはGUILTY GEAR Xrdやな。あれ作ってるアーティストさんすごいわ。集中線とかの演出面も含めてもうパッと見で完全にアニメやし、それでいてカメラをブンブン振り回すから迫力が半端無いんや。</p>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/NKGPhKu3jNg" frameborder="0" allowfullscreen></iframe>
+<p><a href="/blog/5321d8cebce7b87851f6.html">第一話</a> / <a href="/blog/02cea526f5487d579cec.html">前回</a> / <a href="/blog/https://aratama.github.io/cubbit/.html">デモ</a></p><p>黙々とゲームを作る日記です。今回は完全に脱線しています。Blender回です。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>病ンデる琴葉姉妹</h1><p>まだキャラが一人しかいなくてちょっとさみしいから、新キャラ作るで！　ワイは<a href="/blog/http://seiga.nicovideo.jp/seiga/im5274301.html">病ンデる琴葉姉妹</a>が出てくるゲーム実況動画がほんに好きなんやけど、それで関西弁ボイスロイド<a href="/blog/https://www.ah-soft.com/voiceroid/kotonoha/.html">琴葉茜ちゃん</a>作ることにしたわ。琴葉姉妹はカラーリングが紅白でめでたいしな。新年のお祝いや。それにな、ゲームが完成したらプロモ動画作って茜ちゃんにナレーターしてもらおうと思うんや。夢が広がりんぐやな。</p><p>そんなわけで、いつものアレから作り始めることにするわ。</p><p><a href="/img/20eb39b8-0665-a4b7-0012-6ac59121be0d.png"><img src="/img/20eb39b8-0665-a4b7-0012-6ac59121be0d.png"></img></a></p><p>そういえば、このあいだプレイヤーキャラクターのモデルを作った時にはなんか半端に肘を曲げたポーズでエクスポートしていたんやけど、この腕を水平に伸ばしたブーンのポーズのほうがあとあと編集しやすいことに気づいたんや。そういうことはな、先に教えて欲しかったわ。じゃあ下絵を読み込むで。</p><p><a href="/img/adf7e873-dbfa-1536-04e2-a765a0c2c9c2.png"><img src="/img/adf7e873-dbfa-1536-04e2-a765a0c2c9c2.png"></img></a></p><p>まずは元画像の茜ちゃんをじっくり観察してモチベーションを高めるんや！　今回の下絵は真正面じゃないからちょっと厄介やけどな、下絵を自分で描き直す根性はないしな。それからさっきの素体を読み込んで、下絵に重ねて身長や大まかな体型を合わせる。プロポーショナル編集ツールを使うとええぞ。まさに<ruby>体型<rt>プロポーション</rt></ruby>を編集するためのツールやな、ってやかましいわ。</p><p><a href="/img/3327b67d-2a98-df39-0291-51935e2f587c.png"><img src="/img/3327b67d-2a98-df39-0291-51935e2f587c.png"></img></a></p><p>全裸やないかい！　こんな格好で外を出歩いたらお巡りさんに捕まるかもわからんで！　とりあえずなんか着ーや。</p><p><a href="/img/1acadee7-94ad-b27c-6aa7-98e02e20bc7a.png"><img src="/img/1acadee7-94ad-b27c-6aa7-98e02e20bc7a.png"></img></a></p><p>……しっかしなんやねん、このぶっさい子は！　こんなん琴葉茜ちゃんとちゃうで！足だけ妙に色っぽくて逆に気持ち悪いわ！　顔もアカンわ。顔面は全部作り直しやわ。</p><p><a href="/img/f9f673d8-bf61-e330-8c16-08ce354dfc35.png"><img src="/img/f9f673d8-bf61-e330-8c16-08ce354dfc35.png"></img></a></p><p>あかん……あかんで葵！　似てるのは色だけやで！　ちゃんと画像から色を拾って材質を設定しているからな。この、完成型がまったく見えてこない状況でひたすら微調整を繰り返す作業が一番しんどいわ。腱鞘炎寸前やわ。</p><p>数時間後。</p><p><a href="/img/c496595a-8fe2-99b1-df53-c851a9c6c46d.png"><img src="/img/c496595a-8fe2-99b1-df53-c851a9c6c46d.png"></img></a></p><p>どうや？　これはもうほとんど至るところで茜ちゃんやろ。ｱｶﾈﾁｬﾝｶﾜｲｲﾔｯﾀｰ!　BlenderにFreestyleっていう輪郭線書いてくれる機能があってな、これ使うとかなりイラストっぽくなるんや。まだソックスのくしゅっと感が足りんし、テクスチャもちゃんと影やグラデーションをつけていないから立体感が足りてへんわ。もうちょい調整したらゲームの中に出すわ。妹の琴葉葵ちゃんもつくろか。左右反転して色変えるだけやから、わりと簡単や。一体で二度美味しいとはさすが双子姉妹やな。まあ版権モノやから、最終的には削除するかもわからんけどな。茜ちゃんが見守ってくれて開発中のモチベーション上がればそれで構へんのや。やっぱBlenderが一番楽しいんや。もうプログラムとか誰か代わりに書いてくれひんやろか。あとで<a href="/blog/http://3d.nicovideo.jp/.html">ニコニ立体</a>なんかにも投稿できたらええな。</p><p>ゲームのノンフォトリアリスティックな表現では、やっぱ一番すごいのはGUILTY GEAR Xrdやな。あれ作ってるアーティストさんすごいわ。集中線とかの演出面も含めてもうパッと見で完全にアニメやし、それでいてカメラをブンブン振り回すから迫力が半端無いんや。</p><iframe width="560" height="315" src="https://www.youtube.com/embed/NKGPhKu3jNg" frameborder="0" allowfullscreen></iframe>
 
 
 
@@ -91,26 +75,16 @@ MathJax.Hub.Config({
 
 
 
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ゲームはテスト自動化できないらしい</h1><p>テストをどうしようかいろいろ考えていたら、下の記事にたどり着きました。</p>
-<ul>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ゲームはテスト自動化できないらしい</h1><p>テストをどうしようかいろいろ考えていたら、下の記事にたどり着きました。</p><ul>
 <li><a href="/blog/http://qiita.com/sisomoti/items/e9d1b4dc756300f75abf.html">ゲーム業界のテスト事情</a></li>
 </ul>
-<p>結局のところ、ゲームのテストを自動化することはできない、ということのようです。よく考えたら、今作っているゲームはフレームレートが可変になっているので、結果が決定的ではありません。つまり、ゲームを開始してからずっと方向キーを右に入れて歩き続けると100フレーム目には必ずこの位置に来ている、というようには言い切れず、どうしてもある程度の誤差が出てしまいます。そのためゲーム全体を通しての自動化されたテストというのがやりにくいのです。しかも先に仕様が決まっているわけではなくて、完全に行き当たりばったりで調整が繰り返されます。だってプレイしてみないと面白いかどうかなんてわかりませんからね。仕方ないのでテストは今後も人力です。</p>
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>謎構文エラー</h1><p>Opera 12.18, Windows 8という環境で構文エラーが出ているみたいです。構文エラー……？</p>
-<pre><code class="undefined">Syntax error at line 14918 while loading: FunctionDeclaration in Statement context</code></pre><p>OperaはだいたいChromeと同じように動くと思っていたんですが、謎エラーが出ています。筆者の手元のOperaではちゃんと動いているんですが……？謎。</p>
-<p>Safari9.1.2/Mac OS X10.11.6という環境でも。</p>
-<pre><code class="undefined">SyntaxError
-Strict mode does not allow function declarations in a lexically nested statement.</code></pre><p>こっちはStrict modeのせいということで、まだエラーの内容が想像つきますね。行番号はまったく明後日の場所を指していますけど。うーん？何なんでしょうか。実機がないとよくわかりません。sentryのほうで何かミスをしているのかも……？</p>
-<h1><a name="uncurrying-optimization" class="anchor" href="#uncurrying-optimization"><span class="header-link"></span></a>uncurrying optimization</h1><p>PureScriptの関数はすべてカリー化されて表現されているのですが、これをカリー化されていない関数へと最適化してくれるツールをRollupで作っている人がいるようです。</p>
-<ul>
+<p>結局のところ、ゲームのテストを自動化することはできない、ということのようです。よく考えたら、今作っているゲームはフレームレートが可変になっているので、結果が決定的ではありません。つまり、ゲームを開始してからずっと方向キーを右に入れて歩き続けると100フレーム目には必ずこの位置に来ている、というようには言い切れず、どうしてもある程度の誤差が出てしまいます。そのためゲーム全体を通しての自動化されたテストというのがやりにくいのです。しかも先に仕様が決まっているわけではなくて、完全に行き当たりばったりで調整が繰り返されます。だってプレイしてみないと面白いかどうかなんてわかりませんからね。仕方ないのでテストは今後も人力です。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>謎構文エラー</h1><p>Opera 12.18, Windows 8という環境で構文エラーが出ているみたいです。構文エラー……？</p><pre><code class="undefined">Syntax error at line 14918 while loading: FunctionDeclaration in Statement context</code></pre><p>OperaはだいたいChromeと同じように動くと思っていたんですが、謎エラーが出ています。筆者の手元のOperaではちゃんと動いているんですが……？謎。</p><p>Safari9.1.2/Mac OS X10.11.6という環境でも。</p><pre><code class="undefined">SyntaxError
+Strict mode does not allow function declarations in a lexically nested statement.</code></pre><p>こっちはStrict modeのせいということで、まだエラーの内容が想像つきますね。行番号はまったく明後日の場所を指していますけど。うーん？何なんでしょうか。実機がないとよくわかりません。sentryのほうで何かミスをしているのかも……？</p><h1><a name="uncurrying-optimization" class="anchor" href="#uncurrying-optimization"><span class="header-link"></span></a>uncurrying optimization</h1><p>PureScriptの関数はすべてカリー化されて表現されているのですが、これをカリー化されていない関数へと最適化してくれるツールをRollupで作っている人がいるようです。</p><ul>
 <li><a href="/blog/https://github.com/purescript/purescript/issues/2207#issuecomment-271081592.html">https://github.com/purescript/purescript/issues/2207#issuecomment-271081592</a></li>
 </ul>
-<p>カリー化のオーバーヘッドはかなり大きく、PureScriptの最大の欠点といえるかもしれません。実際にこの問題のせいで一部をJavaScriptで書きなおすハメになったので、もし実用的になればすごく嬉しい機能です。ただかなり場当たり的な方法なので、何か思わぬ落とし穴があるかもと心配になります。</p>
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>次のお話</h1><ul>
+<p>カリー化のオーバーヘッドはかなり大きく、PureScriptの最大の欠点といえるかもしれません。実際にこの問題のせいで一部をJavaScriptで書きなおすハメになったので、もし実用的になればすごく嬉しい機能です。ただかなり場当たり的な方法なので、何か思わぬ落とし穴があるかもと心配になります。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>次のお話</h1><ul>
 <li>(まだです)</li>
 </ul>
-
-
 
             
 <hr style="margin-top: 200px;">
@@ -153,7 +127,6 @@ Strict mode does not allow function declarations in a lexically nested statement
     </div>
 
 </div>
-
         </article>
     </div>
 

@@ -1,6 +1,6 @@
 <title>【短編ポエム】Haskell/PureScriptの関数呼び出しはRuby/Python/JavaScriptよりイケている - ちょっと小さいのはたしかですが。</title><!DOCTYPE html>
 <meta charset="UTF-8">
-<link type="text/css" rel="stylesheet" href="style.css">
+<link type="text/css" rel="stylesheet" href="/res/style.css">
 
 <header>
     <div class="block-centered">
@@ -10,22 +10,24 @@
 </header>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<link rel="stylesheet" href="/res/highlight/styles/default.css">
-<script src="/res/highlight/highlight.pack.js"></script>
+<!--
+<link rel="stylesheet" href="/lib/highlight/styles/default.css">
+<script src="/lib/highlight/highlight.pack.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
+-->
 
-
-
+<!--
 <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
   tex2jax: {inlineMath: [['$','$']]}
 });
 </script>
+-->
 
-<link rel="stylesheet" href="../reset.css">
-<link rel="stylesheet" href="../style.css">
-<link rel="stylesheet" href="../article.css">
+<link rel="stylesheet" href="/res/reset.css">
+<link rel="stylesheet" href="/res/style.css">
+<link rel="stylesheet" href="/res/article.css">
 
 
     <div class="content">
@@ -73,10 +75,8 @@ MathJax.Hub.Config({
 <li><a href="/blog/http://qiita.com/ocadaruma/items/4c66422cb7761f99e0fe.html">「Rubyのここがイケてない」を論破したい</a></li>
 </ul>
 <blockquote>
-<p>Proc#callがださい</p>
-</blockquote>
-<p>たとえば、ふたつの引数の和を出力する関数<code>add</code>や<code>sum</code>について考えてみます。PythonやJavaScriptなら次のようなコードを書くことができます。</p>
-<pre><code class="py">def add(x, y):
+<p>Proc#callがださい</p></blockquote>
+<p>たとえば、ふたつの引数の和を出力する関数<code>add</code>や<code>sum</code>について考えてみます。PythonやJavaScriptなら次のようなコードを書くことができます。</p><pre><code class="py">def add(x, y):
     print(x + y)
 
 sum = add    # そのまま代入できる
@@ -89,16 +89,14 @@ sum(1, 2)    # addとsumの呼び出し方に違いはない</code></pre><pre><c
 sum = add    // そのまま代入できる
 
 add(1, 2) 
-sum(1, 2)    // addとsumの呼び出し方に違いはない</code></pre><p>しかし、Rubyではメソッドをそのまま他の変数に代入したりはできず、<code>proc</code>や<code>lambda</code>で<code>Proc</code>オブジェクトを作ってから渡さなければなりませんし、受け取った側も<code>call</code>をつかって呼ぶ必要があります。これは<code>apply</code>メソッドを呼ばなければならないJavaあたりでも同じですね。</p>
-<pre><code class="ruby">def add(x, y)
+sum(1, 2)    // addとsumの呼び出し方に違いはない</code></pre><p>しかし、Rubyではメソッドをそのまま他の変数に代入したりはできず、<code>proc</code>や<code>lambda</code>で<code>Proc</code>オブジェクトを作ってから渡さなければなりませんし、受け取った側も<code>call</code>をつかって呼ぶ必要があります。これは<code>apply</code>メソッドを呼ばなければならないJavaあたりでも同じですね。</p><pre><code class="ruby">def add(x, y)
     puts (x + y)
 end
 
 sum = proc{|x, y| add(x, y)}  # procやlambdaで包む必要がある
 
 add 1, 2          
-sum.call 1, 2                 #callで呼び出す必要があり、addとsumの使い方が異なってしまう</code></pre><p>なるほどこれはダサい。でもこれにはRuby側の反論もあって、Rubyでは引数がないときはメソッド呼び出しで括弧を省略できるという利点もあります。</p>
-<pre><code class="js">function answer(){
+sum.call 1, 2                 #callで呼び出す必要があり、addとsumの使い方が異なってしまう</code></pre><p>なるほどこれはダサい。でもこれにはRuby側の反論もあって、Rubyでは引数がないときはメソッド呼び出しで括弧を省略できるという利点もあります。</p><pre><code class="js">function answer(){
     console.log(42)
 }
 
@@ -107,11 +105,8 @@ answer()        // 括弧がいる</code></pre><pre><code class="ruby">def answe
 end
 
 answer            # 括弧がいらない</code></pre><blockquote>
-<p>私もちょっとダサい、っつーか扱い辛いと感じることがあります。が、これは文中にも書いてある通り、Rubyに価値を与えている独特なスタイルとのトレードオフでしょう。</p>
-</blockquote>
-<p>JavaScriptやPythonにこのような括弧の省略を導入しようとしても、関数オブジェクトそのものを表す構文と衝突してしまうので不可能です。そんなわけで、これを見る限り必ずしもどちらがいいと言い切れないようにみえるのですが……。</p>
-<h1><a name="haskell-purescript-" class="anchor" href="#haskell-purescript-"><span class="header-link"></span></a>Haskell/PureScriptでは</h1><p>Haskell/PureScriptでは、このジレンマが解決します。</p>
-<pre><code class="haskell">add x y = logShow (x + y)    -- addには引数があります
+<p>私もちょっとダサい、っつーか扱い辛いと感じることがあります。が、これは文中にも書いてある通り、Rubyに価値を与えている独特なスタイルとのトレードオフでしょう。</p></blockquote>
+<p>JavaScriptやPythonにこのような括弧の省略を導入しようとしても、関数オブジェクトそのものを表す構文と衝突してしまうので不可能です。そんなわけで、これを見る限り必ずしもどちらがいいと言い切れないようにみえるのですが……。</p><h1><a name="haskell-purescript-" class="anchor" href="#haskell-purescript-"><span class="header-link"></span></a>Haskell/PureScriptでは</h1><p>Haskell/PureScriptでは、このジレンマが解決します。</p><pre><code class="haskell">add x y = logShow (x + y)    -- addには引数があります
 
 sum = add                    -- 関数は第一級なので、普通に代入できます
 
@@ -123,17 +118,10 @@ main = do
     add 1 2                  -- 3が出力されます。引数がある場合はもちろん普通に呼び出せます
     sum 1 2                  -- 3が出力されます。addとsumに呼び出しかたの違いはありません
     answer                   -- 42が出力されます。引数がない場合も、もちろん括弧はありません
-    fortyTwo                 -- 42が出力されます。fortyTwoとanswerは同じものを指しているからです</code></pre><p>Rubyの『引数のない関数呼び出しで括弧を省略できる』という利点と、Python/JavaScriptの『通常の関数呼び出しと、関数オブジェクトの呼び出しを区別しない』という利点の、ふたつの利点が両立しています。ふしぎ！Haskell/PureScriptでは何故こんなことができるのか、上のコードの各部はどういう意味なのか、どんな順序で実行が進んでいくのか、自分で考えてみると面白いかもしれません<a href="/blog/もっとも、Haskell/PureScriptを知らない人は絶対にわからないと思いますが。なお、これはPureScriptのコードなので、実行の順序がぐちゃぐちゃになるHaskell特有の変態仕様『遅延評価』は関係がありません.html">^sample</a>。</p>
-<p>それに、上のPureScriptのコードを良く見ると、ピリオドもなければコロンもないし、カンマのひとつすら存在しません。予約語はコードブロックの始まりを告げる<code>do</code>のみ。Pythonのようにインデントでブロックが表現されているなど、異様なまでにコードの見た目がスッキリしているのがわかると思います。これもHaskell/PureScriptのコードの特徴です。極限まで構文上のノイズが絞られていて筆者はすごく読みやすいと思うのですが、何故か読みにくいと言われることもあります。</p>
-<blockquote>
-<p>これは文法の問題なので、もしかしたらこれらを両立させる文法をもった言語が将来開発されるかもしれません。</p>
-</blockquote>
-<p>15年以上前からあります。使っている人が少なすぎて、あまり知られていませんが……。</p>
-<p>引数がないときの括弧を省こうとするなど、Rubyを使う人はそういう構文上のオーバーヘッドを嫌う人が多いのかもしれません。Haskell/PureScriptはとにかく構文が簡潔ですから、Rubyが好きな人にも向いているんじゃないかと。このような細かいところは正直どうでもいいと私は思うのですが、私は普段『同期的な作用と非同期な作用をモナドで抽象化すると一貫性が生まれて便利だよ』みたいな重大なポイントについて利点の説明をしては『意味わかんねーよ文章長えよカス！』という感じで罵られているので、今回は『関数の引数の有無や第一級かどうかについて便利さと単純さが両立するよ』という、わかりやすいポイントについてなるべく簡潔に説明をしました。</p>
-<hr>
-
-
-
+    fortyTwo                 -- 42が出力されます。fortyTwoとanswerは同じものを指しているからです</code></pre><p>Rubyの『引数のない関数呼び出しで括弧を省略できる』という利点と、Python/JavaScriptの『通常の関数呼び出しと、関数オブジェクトの呼び出しを区別しない』という利点の、ふたつの利点が両立しています。ふしぎ！Haskell/PureScriptでは何故こんなことができるのか、上のコードの各部はどういう意味なのか、どんな順序で実行が進んでいくのか、自分で考えてみると面白いかもしれません<a class="link-footnote" href="#footnote-sample" name="link-sample">※</a>。</p><p>それに、上のPureScriptのコードを良く見ると、ピリオドもなければコロンもないし、カンマのひとつすら存在しません。予約語はコードブロックの始まりを告げる<code>do</code>のみ。Pythonのようにインデントでブロックが表現されているなど、異様なまでにコードの見た目がスッキリしているのがわかると思います。これもHaskell/PureScriptのコードの特徴です。極限まで構文上のノイズが絞られていて筆者はすごく読みやすいと思うのですが、何故か読みにくいと言われることもあります。</p><blockquote>
+<p>これは文法の問題なので、もしかしたらこれらを両立させる文法をもった言語が将来開発されるかもしれません。</p></blockquote>
+<p>15年以上前からあります。使っている人が少なすぎて、あまり知られていませんが……。</p><p>引数がないときの括弧を省こうとするなど、Rubyを使う人はそういう構文上のオーバーヘッドを嫌う人が多いのかもしれません。Haskell/PureScriptはとにかく構文が簡潔ですから、Rubyが好きな人にも向いているんじゃないかと。このような細かいところは正直どうでもいいと私は思うのですが、私は普段『同期的な作用と非同期な作用をモナドで抽象化すると一貫性が生まれて便利だよ』みたいな重大なポイントについて利点の説明をしては『意味わかんねーよ文章長えよカス！』という感じで罵られているので、今回は『関数の引数の有無や第一級かどうかについて便利さと単純さが両立するよ』という、わかりやすいポイントについてなるべく簡潔に説明をしました。</p><hr>
+<p class="footnote"><a href="#link-sample" name="footnote-sample">^</a>  もっとも、Haskell/PureScriptを知らない人は絶対にわからないと思いますが。なお、これはPureScriptのコードなので、実行の順序がぐちゃぐちゃになるHaskell特有の変態仕様『遅延評価』は関係がありません</p>
             
 <hr style="margin-top: 200px;">
 
@@ -175,7 +163,6 @@ main = do
     </div>
 
 </div>
-
         </article>
     </div>
 

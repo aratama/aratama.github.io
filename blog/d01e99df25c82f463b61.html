@@ -1,6 +1,6 @@
 <title>rollup-plugin-pursでPureScriptのモジュールを結合する(インライン化、デッドコード排除) - ちょっと小さいのはたしかですが。</title><!DOCTYPE html>
 <meta charset="UTF-8">
-<link type="text/css" rel="stylesheet" href="style.css">
+<link type="text/css" rel="stylesheet" href="/res/style.css">
 
 <header>
     <div class="block-centered">
@@ -10,22 +10,24 @@
 </header>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<link rel="stylesheet" href="/res/highlight/styles/default.css">
-<script src="/res/highlight/highlight.pack.js"></script>
+<!--
+<link rel="stylesheet" href="/lib/highlight/styles/default.css">
+<script src="/lib/highlight/highlight.pack.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
+-->
 
-
-
+<!--
 <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
   tex2jax: {inlineMath: [['$','$']]}
 });
 </script>
+-->
 
-<link rel="stylesheet" href="../reset.css">
-<link rel="stylesheet" href="../style.css">
-<link rel="stylesheet" href="../article.css">
+<link rel="stylesheet" href="/res/reset.css">
+<link rel="stylesheet" href="/res/style.css">
+<link rel="stylesheet" href="/res/article.css">
 
 
     <div class="content">
@@ -54,20 +56,15 @@ MathJax.Hub.Config({
   ],
   "title": "rollup-plugin-pursでPureScriptのモジュールを結合する(インライン化、デッドコード排除)"
 } -->
-<p>現状のPureScriptでは、コンパイル後のモジュールを結合するのに</p>
-<ul>
+<p>現状のPureScriptでは、コンパイル後のモジュールを結合するのに</p><ul>
 <li>browserifyやwebpackを使って通常のCommonjsモジュールとして結合する方法（でかい）</li>
 <li>psc-bundleを使って結合する方法（デッドコード削除が効くので、こっちのほうが断然結合後のファイルサイズが小さい。ただしかなり遅いし、PureScriptから出力されたCommonjsモジュールしか結合できないので、それ以外のCommonJSモジュールを結合するにはさらにwebpackなどをキメる必要がある）</li>
 </ul>
-<p>の2種類があります。ここで、新たに<a href="/blog/https://github.com/rollup/rollup.html">rollup</a>のプラグイン<a href="/blog/https://github.com/Pauan/rollup-plugin-purs.html">rollup-plugin-purs</a>を使う方法が加わったようです。特徴としては、</p>
-<ul>
+<p>の2種類があります。ここで、新たに<a href="/blog/https://github.com/rollup/rollup.html">rollup</a>のプラグイン<a href="/blog/https://github.com/Pauan/rollup-plugin-purs.html">rollup-plugin-purs</a>を使う方法が加わったようです。特徴としては、</p><ul>
 <li>psc-bundleと同様のデッドコード排除が効きます</li>
 <li>さらにインライン化もある程度効くようで、結合後のファイルサイズのさらなる削減とともに、実行効率の向上も期待できます</li>
 </ul>
-<p>となんだかとても良さげです。使い方はrollupをインストールして、</p>
-<pre><code class="undefined">$ npm install -g rollup</code></pre><p>rollup-plugin-pursをインストールして、</p>
-<pre><code class="undefined">$ npm install --save-dev rollup-plugin-purs</code></pre><p>なんかこんな感じに<code>rollup.config.js</code>を書いて、</p>
-<pre><code class="js">import purs from "rollup-plugin-purs";
+<p>となんだかとても良さげです。使い方はrollupをインストールして、</p><pre><code class="undefined">$ npm install -g rollup</code></pre><p>rollup-plugin-pursをインストールして、</p><pre><code class="undefined">$ npm install --save-dev rollup-plugin-purs</code></pre><p>なんかこんな感じに<code>rollup.config.js</code>を書いて、</p><pre><code class="js">import purs from "rollup-plugin-purs";
 
 export default {
   entry: "src/Main.purs",
@@ -77,31 +74,22 @@ export default {
   plugins: [
     purs()
   ]
-};</code></pre><p>rollupを実行するだけです。</p>
-<pre><code class="undefined">$ rollup --config</code></pre><p>たとえば、</p>
-<pre><code class="haskell">sum x y = x + y
+};</code></pre><p>rollupを実行するだけです。</p><pre><code class="undefined">$ rollup --config</code></pre><p>たとえば、</p><pre><code class="haskell">sum x y = x + y
 
-main = logShow (sum 20 22)</code></pre><p>こんなかんじのコードをpsc-bundleで結合すると、</p>
-<pre><code class="js">  var sum = function (dictSemiring) {
+main = logShow (sum 20 22)</code></pre><p>こんなかんじのコードをpsc-bundleで結合すると、</p><pre><code class="js">  var sum = function (dictSemiring) {
       return function (x) {
           return function (y) {
               return Data_Semiring.add(dictSemiring)(x)(y);
           };
       };
   };
-  var main = Control_Monad_Eff_Console.logShow(Data_Show.showInt)(sum(Data_Semiring.semiringInt)(20)(22));</code></pre><p>こんな感じのコードがそのまま結合されるのですが、rollup-plugin-pursで結合した場合は、</p>
-<pre><code class="js">  var _main = _logShow_uncurried(_showInt, ((_semiringInt.add)(20)(22)));</code></pre><p>だけが吐かれて、<code>sum</code>の呼び出しがインライン化されて消滅してるのが確認できました。また、<code>_logShow_uncurried</code>という関数が見えますが、これは関数<code>_logShow</code>のカリー化を解除したバージョンで、次のような関数がrollup-plugin-pursによって自動的に定義されます。</p>
-<pre><code class="js">  var _logShow_uncurried = function (_dictShow, _a) {
+  var main = Control_Monad_Eff_Console.logShow(Data_Show.showInt)(sum(Data_Semiring.semiringInt)(20)(22));</code></pre><p>こんな感じのコードがそのまま結合されるのですが、rollup-plugin-pursで結合した場合は、</p><pre><code class="js">  var _main = _logShow_uncurried(_showInt, ((_semiringInt.add)(20)(22)));</code></pre><p>だけが吐かれて、<code>sum</code>の呼び出しがインライン化されて消滅してるのが確認できました。また、<code>_logShow_uncurried</code>という関数が見えますが、これは関数<code>_logShow</code>のカリー化を解除したバージョンで、次のような関数がrollup-plugin-pursによって自動的に定義されます。</p><pre><code class="js">  var _logShow_uncurried = function (_dictShow, _a) {
     return _log2((_dictShow.show)(_a));
-  };</code></pre><p>そして、引数がすべて与えられた場合はカリー化が解除されたバージョンが使われるようになるようです。PureScriptは関数がデフォルトでカリー化されるので関数呼び出しが多くなり効率上のオーバーヘッドが大きいのですが、これで少しはオーバーヘッドが低減できそうです。ただし、私が試した範囲ではエラーが出て結合できないモジュールもありました。なんかシングルクォーテーションがついた名前の関数がお気に召さないようです。まだ実用的な完成度とまでは言えませんが、メリットが多いので今後に期待したいところです。</p>
-<p>まだ議論の最中のようですが、pscも将来的にはES6モジュールを吐くようになるかもしれません。また、ブラウザ環境などでもES6 modulesが使えるようになれば、psc-bundleのようなツールで結合する必要自体がなくなるかもしれません。つーかES6 Modulesはやくしろよ！今どきモジュールがない言語なんてアホくさくて使ってられんわ！</p>
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>参考</h1><ul>
+  };</code></pre><p>そして、引数がすべて与えられた場合はカリー化が解除されたバージョンが使われるようになるようです。PureScriptは関数がデフォルトでカリー化されるので関数呼び出しが多くなり効率上のオーバーヘッドが大きいのですが、これで少しはオーバーヘッドが低減できそうです。ただし、私が試した範囲ではエラーが出て結合できないモジュールもありました。なんかシングルクォーテーションがついた名前の関数がお気に召さないようです。まだ実用的な完成度とまでは言えませんが、メリットが多いので今後に期待したいところです。</p><p>まだ議論の最中のようですが、pscも将来的にはES6モジュールを吐くようになるかもしれません。また、ブラウザ環境などでもES6 modulesが使えるようになれば、psc-bundleのようなツールで結合する必要自体がなくなるかもしれません。つーかES6 Modulesはやくしろよ！今どきモジュールがない言語なんてアホくさくて使ってられんわ！</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>参考</h1><ul>
 <li><a href="/blog/https://github.com/Pauan/rollup-plugin-purs/issues/6.html">https://github.com/Pauan/rollup-plugin-purs/issues/6</a> 一部のコードでエラーが起こるのは、acornの既知の問題っぽいです。すでに修正されているので、rollupがバージョンアップされれば直るかも</li>
 <li><a href="/blog/https://github.com/purescript/purescript/issues/2574#issuecomment-277434874.html">https://github.com/purescript/purescript/issues/2574#issuecomment-277434874</a> </li>
 <li><a href="/blog/https://github.com/Pauan/rollup-plugin-purs.html">https://github.com/Pauan/rollup-plugin-purs</a></li>
 </ul>
-
-
 
             
 <hr style="margin-top: 200px;">
@@ -144,7 +132,6 @@ main = logShow (sum 20 22)</code></pre><p>こんなかんじのコードをpsc-b
     </div>
 
 </div>
-
         </article>
     </div>
 

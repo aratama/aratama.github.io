@@ -1,6 +1,6 @@
 <title>PureScriptを使ってJSONの型安全な読み書きを自動化する - ちょっと小さいのはたしかですが。</title><!DOCTYPE html>
 <meta charset="UTF-8">
-<link type="text/css" rel="stylesheet" href="style.css">
+<link type="text/css" rel="stylesheet" href="/res/style.css">
 
 <header>
     <div class="block-centered">
@@ -10,22 +10,24 @@
 </header>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<link rel="stylesheet" href="/res/highlight/styles/default.css">
-<script src="/res/highlight/highlight.pack.js"></script>
+<!--
+<link rel="stylesheet" href="/lib/highlight/styles/default.css">
+<script src="/lib/highlight/highlight.pack.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
+-->
 
-
-
+<!--
 <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
   tex2jax: {inlineMath: [['$','$']]}
 });
 </script>
+-->
 
-<link rel="stylesheet" href="../reset.css">
-<link rel="stylesheet" href="../style.css">
-<link rel="stylesheet" href="../article.css">
+<link rel="stylesheet" href="/res/reset.css">
+<link rel="stylesheet" href="/res/style.css">
+<link rel="stylesheet" href="/res/article.css">
 
 
     <div class="content">
@@ -54,19 +56,15 @@ MathJax.Hub.Config({
   ],
   "title": "PureScriptを使ってJSONの型安全な読み書きを自動化する"
 } -->
-<h1><a name="tl-dr-version" class="anchor" href="#tl-dr-version"><span class="header-link"></span></a>TL;DR Version</h1><p>JSONファイルを読み書きするには、<a href="/blog/https://github.com/paf31/purescript-foreign-generic.html">purescript-foreign-generic</a>が便利です。</p>
-<h1><a name="json-" class="anchor" href="#json-"><span class="header-link"></span></a>JSONめんどうくさい</h1><p>いまゲームを作っているんですが、実行環境ごとに適切な値が異なったり、実際にプレイしてみないと適切な値がわからないパラメータがたくさんあります。それで、コンパイルなしで細かい調節をできるようにしようといろんなパラメータをJSONのオプションファイルにくくり出しました。たとえばこんな感じです。</p>
-<pre><code class="json">{
+<h1><a name="tl-dr-version" class="anchor" href="#tl-dr-version"><span class="header-link"></span></a>TL;DR Version</h1><p>JSONファイルを読み書きするには、<a href="/blog/https://github.com/paf31/purescript-foreign-generic.html">purescript-foreign-generic</a>が便利です。</p><h1><a name="json-" class="anchor" href="#json-"><span class="header-link"></span></a>JSONめんどうくさい</h1><p>いまゲームを作っているんですが、実行環境ごとに適切な値が異なったり、実際にプレイしてみないと適切な値がわからないパラメータがたくさんあります。それで、コンパイルなしで細かい調節をできるようにしようといろんなパラメータをJSONのオプションファイルにくくり出しました。たとえばこんな感じです。</p><pre><code class="json">{
     "loadDistance": 6,
     "fogDensity": 0.005,
     "maximumLoadedChunks": 2197
-}</code></pre><p>静的型付けの言語であるPureScriptで書いているので、このオプションファイルを読み取って次のような型のデータとして受け取りたいです。</p>
-<pre><code class="haskell">newtype Options = Options {
+}</code></pre><p>静的型付けの言語であるPureScriptで書いているので、このオプションファイルを読み取って次のような型のデータとして受け取りたいです。</p><pre><code class="haskell">newtype Options = Options {
     loadDistance :: Int,
     fogDensity :: Number,
     maximumLoadedChunks :: Int
-}</code></pre><p>さて、<a href="/blog/https://github.com/slamdata/purescript-affjax.html">purescript-affjax</a>パッケージを使ってオプションファイルをajaxで<code>get</code>すると、その結果の<code>response</code>プロパティは<code>Json</code>、<code>ArrayBuffer</code>、<code>Unit</code>、<code>String</code>、<code>Foreign</code>、<code>Document</code>、<code>Blob</code>のうちの任意の型で受け取ることができます。JSONを読み取った時はこのうち<code>Foreign</code>か<code>Json</code>を使うことになりますが、<code>Foreign</code>を使った場合はこんな感じになります。</p>
-<pre><code class="haskell">readOptions :: Foreign -> F Options
+}</code></pre><p>さて、<a href="/blog/https://github.com/slamdata/purescript-affjax.html">purescript-affjax</a>パッケージを使ってオプションファイルをajaxで<code>get</code>すると、その結果の<code>response</code>プロパティは<code>Json</code>、<code>ArrayBuffer</code>、<code>Unit</code>、<code>String</code>、<code>Foreign</code>、<code>Document</code>、<code>Blob</code>のうちの任意の型で受け取ることができます。JSONを読み取った時はこのうち<code>Foreign</code>か<code>Json</code>を使うことになりますが、<code>Foreign</code>を使った場合はこんな感じになります。</p><pre><code class="haskell">readOptions :: Foreign -> F Options
 readOptions value = do
     loadDistance <- readProp "loadDistance" value
     fogDensity <- readProp "fogDensity" value
@@ -75,9 +73,7 @@ readOptions value = do
         loadDistance,
         fogDensity,
         maximumLoadedChunks
-    }</code></pre><p><code>Foreign</code>は<a href="/blog/https://github.com/purescript/purescript-foreign.html">purescript-foreign</a>というパッケージで定義されているデータ型で、PureScriptで外部から何かのデータを受け取った時によく使われます。<code>Foreign</code>はJavaScriptの任意のデータを表していて、<code>readProp</code>関数を使うと<code>Foreign</code>なデータからプロパティを読み取ることができますので、<code>readProp</code>でプロパティを読み取っては変数に移し、最後にオブジェクトでまとめて返します。同じような式の繰り返しなので複雑というわけではありませんが、なんかちょっと冗長です。ちなみに、<code>Json</code>のほうで受け取ったとしても、<code>readProp</code>の代わりに<code>.?</code>という演算子でプロパティを読み取ることになるだけで、コーディングの手間としてはあんまり変わらなかったりします。</p>
-<p>オプションが３つくらいならどうということはないのですが、開発が進むにつれてオプションがもりもりと増えてきてしまい、それに伴って読み取る部分のコードももりもり増えてきてしまいました。</p>
-<pre><code class="haskell">newtype Options = Options {
+    }</code></pre><p><code>Foreign</code>は<a href="/blog/https://github.com/purescript/purescript-foreign.html">purescript-foreign</a>というパッケージで定義されているデータ型で、PureScriptで外部から何かのデータを受け取った時によく使われます。<code>Foreign</code>はJavaScriptの任意のデータを表していて、<code>readProp</code>関数を使うと<code>Foreign</code>なデータからプロパティを読み取ることができますので、<code>readProp</code>でプロパティを読み取っては変数に移し、最後にオブジェクトでまとめて返します。同じような式の繰り返しなので複雑というわけではありませんが、なんかちょっと冗長です。ちなみに、<code>Json</code>のほうで受け取ったとしても、<code>readProp</code>の代わりに<code>.?</code>という演算子でプロパティを読み取ることになるだけで、コーディングの手間としてはあんまり変わらなかったりします。</p><p>オプションが３つくらいならどうということはないのですが、開発が進むにつれてオプションがもりもりと増えてきてしまい、それに伴って読み取る部分のコードももりもり増えてきてしまいました。</p><pre><code class="haskell">newtype Options = Options {
     loadDistance :: Int,
     fogDensity :: Number,
     maximumLoadedChunks :: Int,
@@ -164,25 +160,15 @@ readOptions value = do
         pointerVerticalSensitivity,
         landingVelocityLimit,
         landingDuration
-    }</code></pre><p>ぎゃあああああああああああああああああああああ！　オプションの名前がコードの中にそれぞれの4回も登場していて、これはなかなかつらいボイラープレイートです。まだ序盤でコレですから、さらに開発が進んだらどんなことになるやら。弱い型付けのJavaScriptならこんな手間はないわけで、こんなことをやっていてはやっぱり強い型付けの言語はめんどうくさいねと言われても仕方ありません。</p>
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ジェネリックプログラミングは便利です</h1><p>これではあんまりなので何かいい方法がないか探したんですが、そういえば最近PureScriptは<strong>ジェネリックプログラミング</strong>に力を入れていることを思い出しました。コンパイル時にデータ型の定義からいろいろなコードを自動的に生成してくれる便利なやつで、<code>Generic</code>というクラスのインスタンスを自動導出できるようになったのです。なお、<code>Generic</code>という名前のクラスは<a href="/blog/https://pursuit.purescript.org/packages/purescript-generics/3.3.0/docs/Data.Generic#t:Generic.html"><code>purescript-generics</code>パッケージの<code>Data.Generic.Generic</code></a>と<a href="/blog/https://pursuit.purescript.org/packages/purescript-generics-rep/4.0.0/docs/Data.Generic.Rep#t:Generic.html"><code>purescript-generics-rep</code>パッケージの<code>Data.Generic.Rep.Generics</code>クラス</a>の2種類があって微妙に違います。<code>Data.Generic.Generic</code>は古いパッケージで、新しい<code>Data.Generic.Rep.Generics</code>パッケージのほうは古いパッケージに比べて少し制約が強くなり型安全性が向上しています。現在では古い<code>Data.Generic.Generics</code>を使う必要はなく、常に新しい方である<code>Data.Generic.Rep.Generics</code>を使えばいいみたいです。</p>
-<p><code>Data.Generic.Rep.Generics</code>を使えば自動的にJSONを読み取ることができるのは見当がつきましたが、きっと誰かがすでにそういうライブラリを作っているはずです。筆者は面倒くさがりなので、なるべくなら自分でライブラリを書きたくありません。探したら<a href="/blog/https://github.com/paf31/purescript-foreign-generic.html">purescript-foreign-generic</a>パッケージがありました。これの使い方は簡単で、まずは<code>derive instance</code>で<code>Generic</code>のインスタンスを自動導出します。</p>
-<pre><code class="haskell">derive instance genericOptions :: Generic Options _</code></pre><p>これで<code>readGeneric</code>という関数が使えるようになるので、これを呼び出すだけです。</p>
-<pre><code class="haskell">readOptions :: Foreign -> F Options
-readOptions = readGeneric defaultOptions { unwrapSingleConstructors = true }</code></pre><p><code>readOptions</code>が恐ろしく簡単になりました。今までの苦労はなんだったんだ……。これだけでJSONを完全に型安全に読み取ることができますし、新たなオプションを追加したい時は、もう<code>readOptions</code>関数をいじる必要はありません。オプションファイル<code>options.json</code>に値を追加し、<code>Options</code>の型にプロパティの定義を追加するだけです。<a href="/blog/https://github.com/purescript-contrib/purescript-argonaut.html">purescript-argonaut</a>、もう要らない子じゃん。</p>
-<p>後になって、<code>readOptions</code>のような専用の関数を与えるのではなく、<code>IsForeign</code>クラスや<code>AsForeign</code>クラスのインスタンスにしたほうが何かと便利なことにも気が付きました。</p>
-<pre><code class="haskell">instance isForeignOptions :: IsForeign Options where
+    }</code></pre><p>ぎゃあああああああああああああああああああああ！　オプションの名前がコードの中にそれぞれの4回も登場していて、これはなかなかつらいボイラープレイートです。まだ序盤でコレですから、さらに開発が進んだらどんなことになるやら。弱い型付けのJavaScriptならこんな手間はないわけで、こんなことをやっていてはやっぱり強い型付けの言語はめんどうくさいねと言われても仕方ありません。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ジェネリックプログラミングは便利です</h1><p>これではあんまりなので何かいい方法がないか探したんですが、そういえば最近PureScriptは<strong>ジェネリックプログラミング</strong>に力を入れていることを思い出しました。コンパイル時にデータ型の定義からいろいろなコードを自動的に生成してくれる便利なやつで、<code>Generic</code>というクラスのインスタンスを自動導出できるようになったのです。なお、<code>Generic</code>という名前のクラスは<a href="/blog/https://pursuit.purescript.org/packages/purescript-generics/3.3.0/docs/Data.Generic#t:Generic.html"><code>purescript-generics</code>パッケージの<code>Data.Generic.Generic</code></a>と<a href="/blog/https://pursuit.purescript.org/packages/purescript-generics-rep/4.0.0/docs/Data.Generic.Rep#t:Generic.html"><code>purescript-generics-rep</code>パッケージの<code>Data.Generic.Rep.Generics</code>クラス</a>の2種類があって微妙に違います。<code>Data.Generic.Generic</code>は古いパッケージで、新しい<code>Data.Generic.Rep.Generics</code>パッケージのほうは古いパッケージに比べて少し制約が強くなり型安全性が向上しています。現在では古い<code>Data.Generic.Generics</code>を使う必要はなく、常に新しい方である<code>Data.Generic.Rep.Generics</code>を使えばいいみたいです。</p><p><code>Data.Generic.Rep.Generics</code>を使えば自動的にJSONを読み取ることができるのは見当がつきましたが、きっと誰かがすでにそういうライブラリを作っているはずです。筆者は面倒くさがりなので、なるべくなら自分でライブラリを書きたくありません。探したら<a href="/blog/https://github.com/paf31/purescript-foreign-generic.html">purescript-foreign-generic</a>パッケージがありました。これの使い方は簡単で、まずは<code>derive instance</code>で<code>Generic</code>のインスタンスを自動導出します。</p><pre><code class="haskell">derive instance genericOptions :: Generic Options _</code></pre><p>これで<code>readGeneric</code>という関数が使えるようになるので、これを呼び出すだけです。</p><pre><code class="haskell">readOptions :: Foreign -> F Options
+readOptions = readGeneric defaultOptions { unwrapSingleConstructors = true }</code></pre><p><code>readOptions</code>が恐ろしく簡単になりました。今までの苦労はなんだったんだ……。これだけでJSONを完全に型安全に読み取ることができますし、新たなオプションを追加したい時は、もう<code>readOptions</code>関数をいじる必要はありません。オプションファイル<code>options.json</code>に値を追加し、<code>Options</code>の型にプロパティの定義を追加するだけです。<a href="/blog/https://github.com/purescript-contrib/purescript-argonaut.html">purescript-argonaut</a>、もう要らない子じゃん。</p><p>後になって、<code>readOptions</code>のような専用の関数を与えるのではなく、<code>IsForeign</code>クラスや<code>AsForeign</code>クラスのインスタンスにしたほうが何かと便利なことにも気が付きました。</p><pre><code class="haskell">instance isForeignOptions :: IsForeign Options where
     read = readGeneric defaultOptions { unwrapSingleConstructors = true }
 
 instance asForeignOptions :: AsForeign Options where
-    write = toForeignGeneric defaultOptions { unwrapSingleConstructors = true }</code></pre><p>これで、コンパイルが通る限りは<code>write</code>で確実にJSONへと変換できますし、<code>read</code>でJSONから安全に読み取ることができます。うっかり<code>Options</code>の定義を間違えてJSONには変換できないようなデータ、たとえば関数をプロパティにを加えてしまった場合は確実にコンパイルエラーが出ます。JavaScriptで<code>JSON.stringidy</code>とかを通すとJSONに変換できないデータは無視されるので、受け取った側でデータが欠落していてぎょっとすることがたまにありますが、そういうミスもコンパイル時に検知できます。</p>
-<p>もっとも、型安全に取り扱えるような堅実な設計のJSONばかりではないでしょうし、<code>number</code>や<code>string</code>の両方を取りうるようなプロパティを持つJSONもあるでしょう。そういう静的型付けでは扱いにくいJSONを読み取るには、<code>Foreign</code>や<code>argonaut</code>を使ってプロパティをひとつひとつ丁寧に読み取っていくしかありません。</p>
-<h1><a name="json-web-api-" class="anchor" href="#json-web-api-"><span class="header-link"></span></a>JSONなWeb APIを叩く</h1><p>手順は同じようなものですが、GithubのAPIを叩くサンプルも作ってみました。<a href="/blog/39e4126f470d8b84b291.html">以前の記事</a>のために書いたコードを流用したものです。</p>
-<ul>
+    write = toForeignGeneric defaultOptions { unwrapSingleConstructors = true }</code></pre><p>これで、コンパイルが通る限りは<code>write</code>で確実にJSONへと変換できますし、<code>read</code>でJSONから安全に読み取ることができます。うっかり<code>Options</code>の定義を間違えてJSONには変換できないようなデータ、たとえば関数をプロパティにを加えてしまった場合は確実にコンパイルエラーが出ます。JavaScriptで<code>JSON.stringidy</code>とかを通すとJSONに変換できないデータは無視されるので、受け取った側でデータが欠落していてぎょっとすることがたまにありますが、そういうミスもコンパイル時に検知できます。</p><p>もっとも、型安全に取り扱えるような堅実な設計のJSONばかりではないでしょうし、<code>number</code>や<code>string</code>の両方を取りうるようなプロパティを持つJSONもあるでしょう。そういう静的型付けでは扱いにくいJSONを読み取るには、<code>Foreign</code>や<code>argonaut</code>を使ってプロパティをひとつひとつ丁寧に読み取っていくしかありません。</p><h1><a name="json-web-api-" class="anchor" href="#json-web-api-"><span class="header-link"></span></a>JSONなWeb APIを叩く</h1><p>手順は同じようなものですが、GithubのAPIを叩くサンプルも作ってみました。<a href="/blog/39e4126f470d8b84b291.html">以前の記事</a>のために書いたコードを流用したものです。</p><ul>
 <li><a href="/blog/https://github.com/aratama/example-followbox.html">https://github.com/aratama/example-followbox</a></li>
 </ul>
-<p>簡単に手順をまとめてみます。</p>
-<h3><a name="1-" class="anchor" href="#1-"><span class="header-link"></span></a>1. データ型を定義する</h3><pre><code class="haskell">newtype User = User {
+<p>簡単に手順をまとめてみます。</p><h3><a name="1-" class="anchor" href="#1-"><span class="header-link"></span></a>1. データ型を定義する</h3><pre><code class="haskell">newtype User = User {
     login :: String,
     avatar_url :: String,
     html_url :: String
@@ -200,20 +186,12 @@ fetchUsers since = do
     liftEx $ read res.response
 
 liftEx :: forall m e. (MonadError Error m, Show e) => ExceptT e Identity ~> m
-liftEx = either (throwError <<< error <<< show) pure <<< runExcept</code></pre><p>これだけです。なお、<code>read</code>の失敗を表現する型は<code>ExceptT</code>というデータ型なのですが、それに対して<code>Aff</code>の内部で使われているエラー表現の<code>err :: EXCEPTION</code>はJavaScriptの<code>Error</code>オブジェクトベースのものなので、実はエラーの内部的な表現が異なります。<code>liftEx</code>という補助的な関数は、<code>ExceptT</code>を<code>Aff</code>へと変換してこのギャップを埋め合わせるためのものです。</p>
-<p>また、ネットワークの不調などで失敗することも多いと思いますが、エラーハンドリングをどうするべきかはアプリケーションによってまちまちなので、ここでは特に細かいエラーハンドリングはしていません。</p>
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>型安全でない方法</h1><p>なお、型安全でなくていいのなら<a href="/blog/https://pursuit.purescript.org/packages/purescript-foreign/3.0.1/docs/Data.Foreign#v:unsafeFromForeign.html"><code>unsafeFromForeign</code></a>を使うか、あるいはもっとワイルドに<a href="/blog/https://pursuit.purescript.org/packages/purescript-unsafe-coerce/2.0.0/docs/Unsafe.Coerce#v:unsafeCoerce.html"><code>unsafeCoerce</code></a>で型を変換してしまえばOKです。PureScriptのデータ型はJavaScriptのものとちゃんと対応しているので、実行時のデータがどうなっているのかちゃんと理解していれば問題なく動きます。そっちのほうが効率面でも有利です。</p>
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>さいごに</h1><p>これでも動的型付けのプログラミング言語ならもっと簡単だと思うかもしれませんが、こういうオプションファイルを作ったらどんなオプションがあるのかドキュメントに書かなくてはいけませんから手間は結局同じことです。というかドキュメントに書いてもどうせ修正を忘れてコードとドキュメントの内容がズレ始めるに決まっているので、静的型付けの言語を使って型の定義として書いたほうがよほどマシです。</p>
-<p>PureScriptのジェネリックプログラミングはまだHaskellほど強力ではないものの、最近のバージョンアップでジェネリックプログラミング関連の機能がどんどん追加されていてずいぶん便利になっています。それに伴って型レベルの計算も強力にサポートされるようになり、<a href="/blog/https://github.com/LiamGoodacre/purescript-type-map/blob/master/src/Type/Map.purs.html">型レベル計算でマップを実装する</a>というような変態行為が可能なくらいにまでなっているみたいです。</p>
-<p>なんか最近ほんとPureScriptのことしか書いていないです。firebaseとかvirtual-domとかWebGL/Babylonjsとか他にもお勧めしたいものはいろいろあるのですが、そっちは誰か他の人が紹介を書いてくれそうなので私はあんまり書く気がおきません。PureScriptはほんとにいいスクリプト言語なので、みんなもっと記事を書いてくれたらいいなと思います。アドベントカレンダーとか作ればよかったでしょうか。<a href="/blog/http://qiita.com/advent-calendar/2016/typescript.html">TypeScriptのアドベントカレンダーすら過疎っている</a>し、PureScriptではもっと人が集まらないでしょうね……。</p>
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>参考文献</h1><ul>
+liftEx = either (throwError <<< error <<< show) pure <<< runExcept</code></pre><p>これだけです。なお、<code>read</code>の失敗を表現する型は<code>ExceptT</code>というデータ型なのですが、それに対して<code>Aff</code>の内部で使われているエラー表現の<code>err :: EXCEPTION</code>はJavaScriptの<code>Error</code>オブジェクトベースのものなので、実はエラーの内部的な表現が異なります。<code>liftEx</code>という補助的な関数は、<code>ExceptT</code>を<code>Aff</code>へと変換してこのギャップを埋め合わせるためのものです。</p><p>また、ネットワークの不調などで失敗することも多いと思いますが、エラーハンドリングをどうするべきかはアプリケーションによってまちまちなので、ここでは特に細かいエラーハンドリングはしていません。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>型安全でない方法</h1><p>なお、型安全でなくていいのなら<a href="/blog/https://pursuit.purescript.org/packages/purescript-foreign/3.0.1/docs/Data.Foreign#v:unsafeFromForeign.html"><code>unsafeFromForeign</code></a>を使うか、あるいはもっとワイルドに<a href="/blog/https://pursuit.purescript.org/packages/purescript-unsafe-coerce/2.0.0/docs/Unsafe.Coerce#v:unsafeCoerce.html"><code>unsafeCoerce</code></a>で型を変換してしまえばOKです。PureScriptのデータ型はJavaScriptのものとちゃんと対応しているので、実行時のデータがどうなっているのかちゃんと理解していれば問題なく動きます。そっちのほうが効率面でも有利です。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>さいごに</h1><p>これでも動的型付けのプログラミング言語ならもっと簡単だと思うかもしれませんが、こういうオプションファイルを作ったらどんなオプションがあるのかドキュメントに書かなくてはいけませんから手間は結局同じことです。というかドキュメントに書いてもどうせ修正を忘れてコードとドキュメントの内容がズレ始めるに決まっているので、静的型付けの言語を使って型の定義として書いたほうがよほどマシです。</p><p>PureScriptのジェネリックプログラミングはまだHaskellほど強力ではないものの、最近のバージョンアップでジェネリックプログラミング関連の機能がどんどん追加されていてずいぶん便利になっています。それに伴って型レベルの計算も強力にサポートされるようになり、<a href="/blog/https://github.com/LiamGoodacre/purescript-type-map/blob/master/src/Type/Map.purs.html">型レベル計算でマップを実装する</a>というような変態行為が可能なくらいにまでなっているみたいです。</p><p>なんか最近ほんとPureScriptのことしか書いていないです。firebaseとかvirtual-domとかWebGL/Babylonjsとか他にもお勧めしたいものはいろいろあるのですが、そっちは誰か他の人が紹介を書いてくれそうなので私はあんまり書く気がおきません。PureScriptはほんとにいいスクリプト言語なので、みんなもっと記事を書いてくれたらいいなと思います。アドベントカレンダーとか作ればよかったでしょうか。<a href="/blog/http://qiita.com/advent-calendar/2016/typescript.html">TypeScriptのアドベントカレンダーすら過疎っている</a>し、PureScriptではもっと人が集まらないでしょうね……。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>参考文献</h1><ul>
 <li><a href="/blog/http://www.purescript.org/learn/generic/.html">Generic Programming</a></li>
 <li><a href="/blog/https://github.com/paf31/24-days-of-purescript-2016/blob/master/11.markdown.html">11. Generic Deriving - 24-days-of-purescript-2016</a> 24-days-of-purescript-2016でもちょうどジェネリックプログラミングの話題でした</li>
 <li><a href="/blog/http://qiita.com/alpha22jp/items/4cc65f128962e11811fb.html">AesonでJSONをパース・生成する方法まとめ</a> Haskellだとこんなかんじです</li>
 <li><a href="/blog/https://github.com/purescript/purescript/issues/2416#issuecomment-266621928.html">https://github.com/purescript/purescript/issues/2416#issuecomment-266621928</a> ほんとはtypeにしたかったのですが、コンパイルが通らなかったのでnewtypeにしてます。これはバグかもしれません</li>
 </ul>
-
-
 
             
 <hr style="margin-top: 200px;">
@@ -256,7 +234,6 @@ liftEx = either (throwError <<< error <<< show) pure <<< runExcept</code></pre><
     </div>
 
 </div>
-
         </article>
     </div>
 

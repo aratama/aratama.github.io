@@ -5,7 +5,7 @@ article {
 }
 
 
-ul {
+.article-container {
     max-width: 960px;
     transition-property: all;
     transition-duration: 0.3s;
@@ -17,7 +17,7 @@ li {
     line-height: 2.0em;
 }
 
-ul a li.article-entry {
+.article-entry {
     width: calc(320px - 20px * 2 - 10px * 2 - 1px * 2);
     height: 200px; 
     /* border: solid 1px grey; */
@@ -34,7 +34,7 @@ ul a li.article-entry {
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4); 
 }
 
-ul a li.article-entry:hover {
+.article-entry:hover {
     transform: translate(0px, -7px);
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.4); 
 }
@@ -71,4 +71,13 @@ ul a li.article-entry:hover {
     line-height: 1.4em;
     font-size: small;
     color: dimgray;
+}
+
+
+h2 {
+    opacity: 0.4; 
+    border-bottom: solid 1px grey;
+    clear: both;
+    font-size: 12px;
+    letter-spacing: 0.5em;
 }

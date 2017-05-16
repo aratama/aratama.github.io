@@ -11,6 +11,8 @@ article > h1.article-title {
 
     border-left: solid 60px #9883ca;
     padding-left: 10px;
+
+    text-align: justify;
 }
 
 article h1.article-title a {
@@ -23,3 +25,18 @@ article h1.article-title a:hover {
     text-decoration: underline; 
 }
 
+
+
+.link-footnote {
+    vertical-align: super;
+    font-size: small;
+    text-decoration: none;
+}
+
+.footnote {
+    font-size: small;
+}
+
+.footnote a {
+    text-decoration: none;
+}

@@ -17,8 +17,9 @@ const sns = fs.readFileSync("template/sns.html").toString();
 // configurations
 const siteTitle = "ちょっと小さいのはたしかですが。";
 const siteSubTitle = "わたしのブログです。面白いかどうかは、わかりませんが。";
+const sourceDir = "src";
 
-glob("raw/*.md", {}, (err, sources) => {
+glob(`${sourceDir}/*.md`, {}, (err, sources) => {
 
     // generate articles
     const entries = sources.map(file => {
@@ -43,10 +44,20 @@ glob("raw/*.md", {}, (err, sources) => {
             return `<a href="${href_}"><img src="${href_}"></img></a>`;
         };
         renderer.link = (href, title, text) => {
-            debugger;
             var url = href.startsWith("http://qiita.com/hiruberuto/items/") ? path.basename(href) : href;
             return `<a href="/blog/${url}.html">${text}</a>`;
         };
+        renderer.paragraph = (text) => {
+            const match = /^\s*\[\^(.*?)\]\:(.*)/g.exec(text);
+            if(match){
+                footnotes.push(`<p class="footnote"><a name="footnote-${match[1]}" href="#${match[1]}">^</a>${match[2]}</p>`);
+                return "";
+            }else{
+                return `<p>${text}</p>`;
+            }
+        };
+
+        var footnotes = [];
 
         const source = fs.readFileSync(file).toString();
         const metadataString = /^<!--((.|\s)*?)-->/g.exec(source);
@@ -56,7 +67,16 @@ glob("raw/*.md", {}, (err, sources) => {
         const basename = `${path.basename(file, ".md")}.html`;
         const pageTitle = metadata.title + " - " + siteTitle;
 
+        const emojified = emoji.emojify(source);
+        const footnoted = emojified.replace(/\[\^(.*?)\]:(.*)/g, (match, name, text) => {
+            footnotes.push(`<p class="footnote"><a href="#link-${name}" name="footnote-${name}">^</a> ${emoji.emojify(text)}</p>`);
+            return "";
+        }).replace(/\[\^(.*?)\]/g, (match, name) => {
+            return `<a class="link-footnote" href="#footnote-${name}" name="link-${name}">※</a>`;
+        });
+        const content = marked(footnoted, { renderer: renderer }) + footnotes.join("\n");
         const rendered = `<title>${pageTitle}</title>` + eval("`" + header + articleTemplete + footer + "`");
+
         fs.writeFileSync(`blog/${basename}`, rendered);
 
         return { file, images }
@@ -79,18 +99,25 @@ glob("raw/*.md", {}, (err, sources) => {
                 created_at: ""
             }
         }
-    }).sort((x, y)=> new Date(y.created_at) - new Date(x.created_at));
+    });
 
-    const items = articles.map(article => {
-        const date = new Date(article.created_at);
-        return `<a href="/blog/${article.url}">
-                    <li class="article-entry">
-                        <div class="thumbnail" style="background-image: url(${article.thumbnail})"></div>
-                        <div class="date">${date.getFullYear()}年${1 + date.getMonth()}月${date.getDate()}日</div>
-                        <div class="title">${article.title}</div>
-                    </li>
-                </a>`;
-    }).join("\n");
+    const pinned = articles.filter(_ => _.pinned).sort((x, y)=> new Date(y.created_at) - new Date(x.created_at));
+    const history = articles.filter(_ => ! _.pinned).sort((x, y)=> new Date(y.created_at) - new Date(x.created_at));    
+
+    function render(xs){
+        return xs.map(article => {
+            const date = new Date(article.created_at);
+            return `<a href="/blog/${article.url}">
+                        <div class="article-entry">
+                            <div class="thumbnail" style="background-image: url(${article.thumbnail})"></div>
+                            <div class="date">${date.getFullYear()}年${1 + date.getMonth()}月${date.getDate()}日</div>
+                            <div class="title">${article.title}</div>
+                        </div>
+                    </a>`;
+        }).join("\n");        
+    }
+
+    const items = `<h2>注目の投稿</h2>` + render(pinned) + `<h2 style="clear:both">最近の投稿</h2>` + render(history);
     const pageTitle = siteTitle;
     fs.writeFileSync("index.html", `<title>${pageTitle}</title>` + eval("`" + header + templeteIndex + footer + "`"));
     fs.writeFileSync("entries.json", JSON.stringify(articles, null, 2));    

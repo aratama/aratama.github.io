@@ -1,6 +1,6 @@
 <title>逆引きLensサンプルコード - ちょっと小さいのはたしかですが。</title><!DOCTYPE html>
 <meta charset="UTF-8">
-<link type="text/css" rel="stylesheet" href="style.css">
+<link type="text/css" rel="stylesheet" href="/res/style.css">
 
 <header>
     <div class="block-centered">
@@ -10,22 +10,24 @@
 </header>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<link rel="stylesheet" href="/res/highlight/styles/default.css">
-<script src="/res/highlight/highlight.pack.js"></script>
+<!--
+<link rel="stylesheet" href="/lib/highlight/styles/default.css">
+<script src="/lib/highlight/highlight.pack.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
+-->
 
-
-
+<!--
 <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
   tex2jax: {inlineMath: [['$','$']]}
 });
 </script>
+-->
 
-<link rel="stylesheet" href="../reset.css">
-<link rel="stylesheet" href="../style.css">
-<link rel="stylesheet" href="../article.css">
+<link rel="stylesheet" href="/res/reset.css">
+<link rel="stylesheet" href="/res/style.css">
+<link rel="stylesheet" href="/res/article.css">
 
 
     <div class="content">
@@ -54,8 +56,7 @@ MathJax.Hub.Config({
   ],
   "title": "逆引きLensサンプルコード"
 } -->
-<p>複雑なデータ構造の内部への読み書きを抽象化するライブラリ<a href="/blog/https://github.com/ekmett/lens.html">Lens</a>の練習メモです。言語はPureScriptを使っています。この記事はHaskellな人も読めなくはないと思いますが、PureScriptとHaskellでは異なる部分が結構あるので注意してください。パッケージは<a href="/blog/https://github.com/purescript-contrib/purescript-profunctor-lenses.html"><code>purescript-profunctor-lenses</code></a>を使っています<a href="/blog/`purescript-lens`というライブラリもあるのですが、こちらは古いライブラリでもう使われていないようです。.html">^lib</a>。</p>
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>単純なオブジェクトのプロパティの読み書き</h1><pre><code class="hs">-- 読み書きしたいデータの型
+<p>複雑なデータ構造の内部への読み書きを抽象化するライブラリ<a href="/blog/https://github.com/ekmett/lens.html">Lens</a>の練習メモです。言語はPureScriptを使っています。この記事はHaskellな人も読めなくはないと思いますが、PureScriptとHaskellでは異なる部分が結構あるので注意してください。パッケージは<a href="/blog/https://github.com/purescript-contrib/purescript-profunctor-lenses.html"><code>purescript-profunctor-lenses</code></a>を使っています<a class="link-footnote" href="#footnote-lib" name="link-lib">※</a>。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>単純なオブジェクトのプロパティの読み書き</h1><pre><code class="hs">-- 読み書きしたいデータの型
 type Task = { name :: String, completed :: Boolean }</code></pre><pre><code class="hs">-- サンプルデータ
 task :: Task
 task = { name: "meeting", completed: false }</code></pre><pre><code class="hs">-- Lensの定義
@@ -258,20 +259,14 @@ xml # (element <<< children <<< ix 1 <<< text)　.~ "See you"
 -- Element { name: "div", attributes: empty, children: [
 --    Element { name: "hr", attributes: empty, children: [] },
 --    Text "See you"
--- ] }</code></pre><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>さいごに</h1><p>自分はTemplate Haskellみたいな黒魔術は好きじゃないし、PureScriptにはJavaScriptに似たオブジェクト型があって構文が多少マシなのでLensなしでもいいかと思っていましたが、このあいだLensには単なるプロパティアクセス以外の面白い使い方があることを知って少し興味がわいたので、自分も練習してみることにしました。</p>
-<p>Lensはあまりに抽象的すぎるので、APIドキュメントや定義そのものとにらめっこしても使い方は理解できないと思います。そういうライブラリは、とにかく具体的な使用例をたくさん覚えていくのがいいのではないでしょうか。もちろん定義が理解に役に立たないというわけではなく、Lensのさまざまな関数の使い方がわかったあとで定義を見返してみると理解が深まります。それに、使い道のない抽象化は、数学ならともかくプログラミングでは意味がありません。コードをどのように改善するのかという具体的な比較があってこそ、このライブラリは役に立つといえるわけです。</p>
-<p>ただこのライブラリ、抽象的な型クラスが多すぎ、型の別名が多すぎ、型変数が多すぎ、抽象的すぎてドキュメント見ても関数の使い方がわからなすぎと、とにかく難易度が凄まじいライブラリです。自分が今まで触ったライブラリの中でも軽々トップ３には入るであろう難易度だと思います。うかつに手を出すと手首ごと食いちぎられます。その難易度のわりにコードの改善は局所的ですし、別にLensを使わなくてもちょっとコードが冗長で少し可読性が落ちるだけの話ですし、別にコードの型安全性などには変化はないし、アプリケーション全体の設計に影響するようなライブラリでもありません。Lensより優先して学ぶべきライブラリは他にたくさんあると思います。</p>
-<p>PureScriptだと手作業でLensやPrismを定義する面倒さはもとより、型推論でちょっとハマる場面があったのもつらみを感じました。上で比較したとおり明らかに構文は改善されるので使ってみる価値はあると思いますが、他にお勧めしたいライブラリはいくらでもあるので、Lensに取り組むのは目ぼしいライブラリにひと通り触れてからでいいと思います。上で試した以外にも大量の関数や型が用意されているので、また理解が進み次第追記していこうかと思います。</p>
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>参考文献</h1><ul>
+-- ] }</code></pre><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>さいごに</h1><p>自分はTemplate Haskellみたいな黒魔術は好きじゃないし、PureScriptにはJavaScriptに似たオブジェクト型があって構文が多少マシなのでLensなしでもいいかと思っていましたが、このあいだLensには単なるプロパティアクセス以外の面白い使い方があることを知って少し興味がわいたので、自分も練習してみることにしました。</p><p>Lensはあまりに抽象的すぎるので、APIドキュメントや定義そのものとにらめっこしても使い方は理解できないと思います。そういうライブラリは、とにかく具体的な使用例をたくさん覚えていくのがいいのではないでしょうか。もちろん定義が理解に役に立たないというわけではなく、Lensのさまざまな関数の使い方がわかったあとで定義を見返してみると理解が深まります。それに、使い道のない抽象化は、数学ならともかくプログラミングでは意味がありません。コードをどのように改善するのかという具体的な比較があってこそ、このライブラリは役に立つといえるわけです。</p><p>ただこのライブラリ、抽象的な型クラスが多すぎ、型の別名が多すぎ、型変数が多すぎ、抽象的すぎてドキュメント見ても関数の使い方がわからなすぎと、とにかく難易度が凄まじいライブラリです。自分が今まで触ったライブラリの中でも軽々トップ３には入るであろう難易度だと思います。うかつに手を出すと手首ごと食いちぎられます。その難易度のわりにコードの改善は局所的ですし、別にLensを使わなくてもちょっとコードが冗長で少し可読性が落ちるだけの話ですし、別にコードの型安全性などには変化はないし、アプリケーション全体の設計に影響するようなライブラリでもありません。Lensより優先して学ぶべきライブラリは他にたくさんあると思います。</p><p>PureScriptだと手作業でLensやPrismを定義する面倒さはもとより、型推論でちょっとハマる場面があったのもつらみを感じました。上で比較したとおり明らかに構文は改善されるので使ってみる価値はあると思いますが、他にお勧めしたいライブラリはいくらでもあるので、Lensに取り組むのは目ぼしいライブラリにひと通り触れてからでいいと思います。上で試した以外にも大量の関数や型が用意されているので、また理解が進み次第追記していこうかと思います。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>参考文献</h1><ul>
 <li><a href="/blog/https://github.com/ekmett/lens/wiki/Overview.html">https://github.com/ekmett/lens/wiki/Overview</a></li>
 <li><a href="/blog/http://tokiwoousaka.github.io/takahashi/contents/20150530LensPrism.html.html">http://tokiwoousaka.github.io/takahashi/contents/20150530LensPrism.html</a></li>
 <li><a href="/blog/http://stackoverflow.com/questions/29742634/could-someone-explain-the-diagram-about-the-lens-library.html">http://stackoverflow.com/questions/29742634/could-someone-explain-the-diagram-about-the-lens-library</a></li>
 <li><a href="/blog/http://stackoverflow.com/questions/18414177/what-is-the-difference-between-ix-and-at-in-the-lens-library-of-haskell.html">http://stackoverflow.com/questions/18414177/what-is-the-difference-between-ix-and-at-in-the-lens-library-of-haskell</a></li>
 <li><a href="/blog/http://www.haskellforall.com/2013/05/program-imperatively-using-haskell.html.html">http://www.haskellforall.com/2013/05/program-imperatively-using-haskell.html</a></li>
 </ul>
-
-
-
+<p class="footnote"><a href="#link-lib" name="footnote-lib">^</a>  `purescript-lens`というライブラリもあるのですが、こちらは古いライブラリでもう使われていないようです。</p>
             
 <hr style="margin-top: 200px;">
 
@@ -313,7 +308,6 @@ xml # (element <<< children <<< ix 1 <<< text)　.~ "See you"
     </div>
 
 </div>
-
         </article>
     </div>
 
