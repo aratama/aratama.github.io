@@ -75,13 +75,13 @@ co(function*(){
         console.log(`
 Usage:
 
-    node fetch.js item <item-id>
+    node qfetch.js item <item-id>
         fetch the article.
 
-    node fetch.js user <user-id>
+    node qfetch.js user <user-id>
         fetch all articles and images of the user.
 
-    node fetch.js update
+    node qfetch.js update
         update exists article sources.
 `);
     }
