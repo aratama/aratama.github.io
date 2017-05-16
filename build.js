@@ -4,6 +4,7 @@ const marked = require("marked");
 const glob = require("glob");
 const fs = require("fs");
 const path = require("path");
+const url = require("url");
 const emoji = require('node-emoji');
 const mikan = require('mikanjs');
 
@@ -18,6 +19,7 @@ const sns = fs.readFileSync("template/sns.html").toString();
 const siteTitle = "ちょっと小さいのはたしかですが。";
 const siteSubTitle = "わたしのブログです。面白いかどうかは、わかりませんが。";
 const sourceDir = "src";
+const site = "https://aratama.github.io/";
 
 glob(`${sourceDir}/*.md`, {}, (err, sources) => {
 
@@ -67,6 +69,7 @@ glob(`${sourceDir}/*.md`, {}, (err, sources) => {
         const basename = `${path.basename(file, ".md")}.html`;
         const pageTitle = metadata.title + " - " + siteTitle;
 
+
         const emojified = emoji.emojify(source);
         const footnoted = emojified.replace(/\[\^(.*?)\]:(.*)/g, (match, name, text) => {
             footnotes.push(`<p class="footnote"><a href="#link-${name}" name="footnote-${name}">^</a> ${emoji.emojify(text)}</p>`);
@@ -75,7 +78,9 @@ glob(`${sourceDir}/*.md`, {}, (err, sources) => {
             return `<a class="link-footnote" href="#footnote-${name}" name="link-${name}">※</a>`;
         });
         const content = marked(footnoted, { renderer: renderer }) + footnotes.join("\n");
-        const rendered = `<title>${pageTitle}</title>` + eval("`" + header + articleTemplete + footer + "`");
+        const renderedContent = eval("`" + articleTemplete + "`");
+        const thumbnail = url.resolve(site, 0 < images.length ? images[0] : `res/empty.png` );
+        const rendered = eval("`" + header + "`") + renderedContent + eval("`" + footer + "`");
 
         fs.writeFileSync(`blog/${basename}`, rendered);
 
@@ -85,7 +90,7 @@ glob(`${sourceDir}/*.md`, {}, (err, sources) => {
     // generate an index file
     const articles = entries.map(entry => {
         const file = entry.file;
-        const thumbnail = entry.images.length > 0 ? entry.images[0] : "/res/empty.png";
+        const thumbnail = url.resolve(site, entry.images.length > 0 ? entry.images[0] : "res/empty.png");
         const source = fs.readFileSync(file).toString();
         const metadataString = /^<!--((.|\s)*?)-->/g.exec(source);
         if(metadataString){
@@ -119,7 +124,8 @@ glob(`${sourceDir}/*.md`, {}, (err, sources) => {
 
     const items = `<h2>注目の投稿</h2>` + render(pinned) + `<h2 style="clear:both">最近の投稿</h2>` + render(history);
     const pageTitle = siteTitle;
-    fs.writeFileSync("index.html", `<title>${pageTitle}</title>` + eval("`" + header + templeteIndex + footer + "`"));
+    const thumbnail = url.resolve(site, "res/empty.png");
+    fs.writeFileSync("index.html", eval("`" + header + templeteIndex + footer + "`"));
     fs.writeFileSync("entries.json", JSON.stringify(articles, null, 2));    
 });
 
