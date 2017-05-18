@@ -20,6 +20,7 @@ const siteTitle = "ちょっと小さいのはたしかですが。";
 const siteSubTitle = "わたしのブログです。面白いかどうかは、わかりませんが。";
 const sourceDir = "src";
 const site = "https://aratama.github.io/";
+const pinned = ["site", "463219b158d74668e7d9", "2316b58162cfec150460"];
 
 glob(`${sourceDir}/*.md`, {}, (err, sources) => {
 
@@ -106,8 +107,8 @@ glob(`${sourceDir}/*.md`, {}, (err, sources) => {
         }
     });
 
-    const pinned = articles.filter(_ => _.pinned).sort((x, y)=> new Date(y.created_at) - new Date(x.created_at));
-    const history = articles.filter(_ => ! _.pinned).sort((x, y)=> new Date(y.created_at) - new Date(x.created_at));    
+    const pinnedArticles = articles.filter(a => pinned.includes(a.id)).sort((x, y)=> new Date(y.created_at) - new Date(x.created_at));
+    const history = articles.filter(a => ! pinned.includes(a.id)).sort((x, y)=> new Date(y.created_at) - new Date(x.created_at));    
 
     function render(xs){
         return xs.map(article => {
@@ -122,7 +123,7 @@ glob(`${sourceDir}/*.md`, {}, (err, sources) => {
         }).join("\n");        
     }
 
-    const items = `<h2>注目の投稿</h2>` + render(pinned) + `<h2 style="clear:both">最近の投稿</h2>` + render(history);
+    const items = `<h2>ピックアップ</h2>` + render(pinnedArticles) + `<h2 style="clear:both">最近の投稿</h2>` + render(history);
     const pageTitle = siteTitle;
     const thumbnail = url.resolve(site, "res/empty.png");
     fs.writeFileSync("index.html", eval("`" + header + templeteIndex + footer + "`"));
