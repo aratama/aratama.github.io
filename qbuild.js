@@ -22,6 +22,11 @@ const sourceDir = "src";
 const site = "https://aratama.github.io/";
 const pinned = ["site", "463219b158d74668e7d9", "2316b58162cfec150460"];
 
+function toLocalName(href){
+    const q = "https://qiita-image-store.s3.amazonaws.com/0/";
+    return href.startsWith(q) ? "/img/" + path.basename(href) : href;  
+}
+
 glob(`${sourceDir}/*.md`, {}, (err, sources) => {
 
     // generate articles
@@ -41,8 +46,7 @@ glob(`${sourceDir}/*.md`, {}, (err, sources) => {
             return `<pre><code class="${lang_}">${code}</code></pre>`;
         };
         renderer.image = (href, title, text) => {
-            const q = "https://qiita-image-store.s3.amazonaws.com/0/";
-            const href_ = href.startsWith(q) ? "/img/" + path.basename(href) : href;
+            const href_ = toLocalName(href);
             images.push(href_);
             return `<a href="${href_}"><img src="${href_}"></img></a>`;
         };
@@ -91,7 +95,7 @@ glob(`${sourceDir}/*.md`, {}, (err, sources) => {
     // generate an index file
     const articles = entries.map(entry => {
         const file = entry.file;
-        const thumbnail = url.resolve(site, entry.images.length > 0 ? entry.images[0] : "res/empty.png");
+        const thumbnail = toLocalName(entry.images.length > 0 ? entry.images[0] : "res/empty.png");
         const source = fs.readFileSync(file).toString();
         const metadataString = /^<!--((.|\s)*?)-->/g.exec(source);
         if(metadataString){
@@ -113,9 +117,10 @@ glob(`${sourceDir}/*.md`, {}, (err, sources) => {
     function render(xs){
         return xs.map(article => {
             const date = new Date(article.created_at);
+            const imageURL = toLocalName(article.thumbnail);
             return `<a href="/blog/${article.url}">
                         <div class="article-entry">
-                            <div class="thumbnail" style="background-image: url(${article.thumbnail})"></div>
+                            <div class="thumbnail" style="background-image: url(${imageURL})"></div>
                             <div class="date">${date.getFullYear()}年${1 + date.getMonth()}月${date.getDate()}日</div>
                             <div class="title">${article.title}</div>
                         </div>
@@ -125,7 +130,7 @@ glob(`${sourceDir}/*.md`, {}, (err, sources) => {
 
     const items = `<h2>ピックアップ</h2>` + render(pinnedArticles) + `<h2 style="clear:both">最近の投稿</h2>` + render(history);
     const pageTitle = siteTitle;
-    const thumbnail = url.resolve(site, "res/empty.png");
+    const thumbnail = "/res/empty.png";
     fs.writeFileSync("index.html", eval("`" + header + templeteIndex + footer + "`"));
     fs.writeFileSync("entries.json", JSON.stringify(articles, null, 2));    
 });
