@@ -215,8 +215,8 @@ main = do
     putStrLn ("copy " ++ from ++ " to " ++ to) 
     contents <- readFile from        
     writeFile to contents</code></pre><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>モナドのはじめかた</h1><p>自分がモナドを理解できたかどうか確かめる唯一の方法は、自分で実際にコードを書いてみることだけです。<strong>もしモナドをなかなか理解できないなら、その最大の原因は自分でモナドを使ったコードを書こうとしていないから</strong>だと思います。啓蒙的な記事ばかりを幾つ読み漁ったところで、モナドは理解できません。なぜなら、自分でモナドを使ったコードを書いていないからです。モナドの定義を穴が空くまで眺めても、モナドは理解できません。なぜなら、自分でモナドを使ったコードを書いていないからです。多分この記事を開いたひとはみんなモナドを理解したいんだろうと思います。まずはコードを書いてみましょう。</p><h3><a name="haskell" class="anchor" href="#haskell"><span class="header-link"></span></a>Haskell</h3><p>Haskellのインストールは、現状はStack一択です。インストールも難しくないのでさくっとインストールしてしまいましょう。</p><ul>
-<li><a href="http://qiita.com/tanakh/items/6866d0f570d0547df026">Haskellのビルドツール&quot;stack&quot;の紹介</a></li>
-<li><a href="http://qiita.com/philopon/items/879c2011ce8744c838de">Haskell環境構築<em>20151226</em>最新版<em>4</em>投稿済み_stack-1.0.0対応版.md</a></li>
+<li><a href="/blog/6866d0f570d0547df026.html">Haskellのビルドツール&quot;stack&quot;の紹介</a></li>
+<li><a href="/blog/879c2011ce8744c838de.html">Haskell環境構築<em>20151226</em>最新版<em>4</em>投稿済み_stack-1.0.0対応版.md</a></li>
 </ul>
 <h3><a name="purescript" class="anchor" href="#purescript"><span class="header-link"></span></a>PureScript</h3><p>PureScriptのインストールはnpmが入っていれば<code>npm install purescript</code>で一発です。ただし素のコンパイラは色々下準備が大変なので、pulpというツールを使ってビルドするのが一番手っ取り早いと思います。</p><ul>
 <li><a href="http://fits.hatenablog.com/entry/2016/01/05/005307">pulp を使った PureScript の開発</a></li>

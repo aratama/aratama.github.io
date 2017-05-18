@@ -21,6 +21,7 @@ const siteSubTitle = "Admittedly something small.";
 const sourceDir = "src";
 const site = "https://aratama.github.io/";
 const pinned = ["site", "463219b158d74668e7d9", "2316b58162cfec150460"];
+const userName = "hiruberuto";
 
 function toLocalName(href){
     const q = "https://qiita-image-store.s3.amazonaws.com/0/";
@@ -51,7 +52,7 @@ glob(`${sourceDir}/*.md`, {}, (err, sources) => {
             return `<a href="${href_}"><img src="${href_}"></img></a>`;
         };
         renderer.link = (href, title, text) => {
-            var url = href.startsWith("http://qiita.com/hiruberuto/items/") ? `/blog/${path.basename(href)}.html` : href;
+            var url = href.match(/^http:\/\/qiita\.com\/[_a-zA-Z0-9]+\/items\//) ? `/blog/${path.basename(href)}.html` : href;
             return `<a href="${url}">${text}</a>`;
         };
         renderer.paragraph = (text) => {

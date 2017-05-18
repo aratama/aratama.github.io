@@ -91,7 +91,7 @@ MathJax.Hub.Config({
 
 
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ゲームはテスト自動化できないらしい</h1><p>テストをどうしようかいろいろ考えていたら、下の記事にたどり着きました。</p><ul>
-<li><a href="http://qiita.com/sisomoti/items/e9d1b4dc756300f75abf">ゲーム業界のテスト事情</a></li>
+<li><a href="/blog/e9d1b4dc756300f75abf.html">ゲーム業界のテスト事情</a></li>
 </ul>
 <p>結局のところ、ゲームのテストを自動化することはできない、ということのようです。よく考えたら、今作っているゲームはフレームレートが可変になっているので、結果が決定的ではありません。つまり、ゲームを開始してからずっと方向キーを右に入れて歩き続けると100フレーム目には必ずこの位置に来ている、というようには言い切れず、どうしてもある程度の誤差が出てしまいます。そのためゲーム全体を通しての自動化されたテストというのがやりにくいのです。しかも先に仕様が決まっているわけではなくて、完全に行き当たりばったりで調整が繰り返されます。だってプレイしてみないと面白いかどうかなんてわかりませんからね。仕方ないのでテストは今後も人力です。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>謎構文エラー</h1><p>Opera 12.18, Windows 8という環境で構文エラーが出ているみたいです。構文エラー……？</p><pre><code class="undefined">Syntax error at line 14918 while loading: FunctionDeclaration in Statement context</code></pre><p>OperaはだいたいChromeと同じように動くと思っていたんですが、謎エラーが出ています。筆者の手元のOperaではちゃんと動いているんですが……？謎。</p><p>Safari9.1.2/Mac OS X10.11.6という環境でも。</p><pre><code class="undefined">SyntaxError
 Strict mode does not allow function declarations in a lexically nested statement.</code></pre><p>こっちはStrict modeのせいということで、まだエラーの内容が想像つきますね。行番号はまったく明後日の場所を指していますけど。うーん？何なんでしょうか。実機がないとよくわかりません。sentryのほうで何かミスをしているのかも……？</p><h1><a name="uncurrying-optimization" class="anchor" href="#uncurrying-optimization"><span class="header-link"></span></a>uncurrying optimization</h1><p>PureScriptの関数はすべてカリー化されて表現されているのですが、これをカリー化されていない関数へと最適化してくれるツールをRollupで作っている人がいるようです。</p><ul>
