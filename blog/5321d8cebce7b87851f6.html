@@ -6,7 +6,7 @@
 <meta name="twitter:site" content="@cubbit2">
 <meta name="twitter:creator" content="@cubbit2">
 <meta name="twitter:title" content="モナドのまほう　第１話『画像が表示できました』 - ちょっと小さいのはたしかですが。">
-<meta name="twitter:description" content="わたしのブログです。面白いかどうかは、わかりませんが。">
+<meta name="twitter:description" content="Admittedly something small.">
 <meta name="twitter:image" content="https://aratama.github.io/img/ea7d82ad-27d5-c99c-a386-9d44ce449d58.png">
 
 <link rel="icon" type="image/png" href="icon.png">
@@ -18,7 +18,7 @@
 <header>
     <div class="block-centered">
         <div class="site-title"><a href="/">ちょっと小さいのはたしかですが。</a></div>
-        <div class="sub-title">わたしのブログです。面白いかどうかは、わかりませんが。</div>
+        <div class="sub-title">Admittedly something small.</div>
     </div>
 </header>
 
@@ -107,8 +107,8 @@ MathJax.Hub.Config({
 <li>(以下続刊)</li>
 </ul>
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>デモとリポジトリ</h1><ul>
-<li><p><a href="/blog/https://aratama.github.io/cubbit/.html">https://aratama.github.io/cubbit/</a> ←現状のデモはこっちです。<strong>BGMが流れる</strong>のでボリュームを最大にして爆音でお聴きください。わりと読み込みに時間がかかるので、画面下のプログレスバーが伸びるまで気長にお待ちください。Chrome推奨です。FirefoxやEdgeでもたぶん動きますが、Firefoxだとホイールの挙動が違う問題があるのと、Edgeでも一人称視点モードでPointer Lockがちゃんと効いていないようです。WASDで移動、スペースでジャンプ、マウス右ドラッグやホイールで視点の変更です。画面下にあるホットバーのボタンを押すとブロックを置くモードになり、マウスクリックでブロックを置いたり取り除いたりできるようになります。</p></li>
-<li><p><a href="/blog/https://github.com/aratama/cubbit.html">https://github.com/aratama/cubbit</a> ←コードのリポジトリはこっちに移動です</p></li>
+<li><p><a href="https://aratama.github.io/cubbit/">https://aratama.github.io/cubbit/</a> ←現状のデモはこっちです。<strong>BGMが流れる</strong>のでボリュームを最大にして爆音でお聴きください。わりと読み込みに時間がかかるので、画面下のプログレスバーが伸びるまで気長にお待ちください。Chrome推奨です。FirefoxやEdgeでもたぶん動きますが、Firefoxだとホイールの挙動が違う問題があるのと、Edgeでも一人称視点モードでPointer Lockがちゃんと効いていないようです。WASDで移動、スペースでジャンプ、マウス右ドラッグやホイールで視点の変更です。画面下にあるホットバーのボタンを押すとブロックを置くモードになり、マウスクリックでブロックを置いたり取り除いたりできるようになります。</p></li>
+<li><p><a href="https://github.com/aratama/cubbit">https://github.com/aratama/cubbit</a> ←コードのリポジトリはこっちに移動です</p></li>
 </ul>
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>というわけで、オンラインゲームを作ることにします！😇</h1><p>現状のコンセプトはこんな感じです。開発当初の目論見からずいぶん変わりました。</p><ul>
 <li>開発途中でもワクワク感がありそうなので、プレイヤーが広大なフィールドを自由にうろうろできる<strong>オープンワールド</strong>🌐でマインクラフトっぽい<strong>サンドボックスゲーム</strong>⛳️な感じで！　周囲数十キロメートルを自由に散策できます。地下や天空も数キロの高度まで移動可能。まだ地形生成が単純なので、どこまで行っても同じような風景ですが。</li>
@@ -122,7 +122,7 @@ MathJax.Hub.Config({
     withImage "grass.png" \grass → do
         pure unit</code></pre><p>よし出来た！<code>grass.png</code>という芝生っぽいタイルチップ画像を読み込んで、画像オブジェクトを変数<code>grass</code>で受け取っています。ここでやっているのは、JavaScriptで言えばこんな感じのコードです。</p><pre><code class="js">widthImage("grass.png", function(grass){
     return;
-});</code></pre><p>PureScriptなのでやけに見た目がスカスカしてますが、落ち着いて読めば別に難しくもなんともないですね。ちなみに読み込んだ<code>grass.png</code>はこれ：</p><p><a href="/img/bdb459fb-b080-b7cf-b297-0184ea87ac14.png"><img src="/img/bdb459fb-b080-b7cf-b297-0184ea87ac14.png"></img></a></p><p>筆者が<a href="/blog/https://pixlr.com/editor/.html">pixlr</a>で10秒で描きました。超ハイクオリティ！✌️</p><h1><a name="canvas-" class="anchor" href="#canvas-"><span class="header-link"></span></a>Canvasオブジェクトの取得！</h1><p>次は画像を描画するためのキャンバスオブジェクトを取ってきましょう。このライブラリには<code>getElementById</code>の簡単なラッパ<code>getCanvasElementById</code>が付属しているのでこれを使います。<code>canvas</code>というID(直球)を文字列で指定して呼び出すだけです。</p><pre><code class="haskell">canvasMaybe ← getCanvasElementById "canvas"</code></pre><p>これで<code>getCanvasElementById</code>の結果が変数<code>canvasMaybe</code>に代入されます。それだけです。え？変な矢印<code>←</code>は何かって？PureScriptは変数に代入するときに<code>&lt;-</code>のほかに<code>←</code>も使えるんですよ。なんか見た目が可愛いので筆者は最近<code>←</code>を使うのがお気に入りなんです。Qiitaの構文ハイライトで思いっきり駄目出しされてますけど。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>場合分け！</h1><p>しかしここで筆者は大ピンチ！😨なんと<code>getCanvasElementById</code>の結果<code>canvasMaybe</code>はキャンバスオブジェクトそのものではありません。<code>getElementById</code>とは別モノじゃないか！　指定したIDの<code>canvas</code>要素があるかどうかはわからないので、取得が成功した場合と失敗した場合で<strong>場合分け</strong>をしなくてはならないのです。場合分けには<strong><code>case</code>文</strong>を使います。</p><pre><code class="haskell">case canvasMaybe of
+});</code></pre><p>PureScriptなのでやけに見た目がスカスカしてますが、落ち着いて読めば別に難しくもなんともないですね。ちなみに読み込んだ<code>grass.png</code>はこれ：</p><p><a href="/img/bdb459fb-b080-b7cf-b297-0184ea87ac14.png"><img src="/img/bdb459fb-b080-b7cf-b297-0184ea87ac14.png"></img></a></p><p>筆者が<a href="https://pixlr.com/editor/">pixlr</a>で10秒で描きました。超ハイクオリティ！✌️</p><h1><a name="canvas-" class="anchor" href="#canvas-"><span class="header-link"></span></a>Canvasオブジェクトの取得！</h1><p>次は画像を描画するためのキャンバスオブジェクトを取ってきましょう。このライブラリには<code>getElementById</code>の簡単なラッパ<code>getCanvasElementById</code>が付属しているのでこれを使います。<code>canvas</code>というID(直球)を文字列で指定して呼び出すだけです。</p><pre><code class="haskell">canvasMaybe ← getCanvasElementById "canvas"</code></pre><p>これで<code>getCanvasElementById</code>の結果が変数<code>canvasMaybe</code>に代入されます。それだけです。え？変な矢印<code>←</code>は何かって？PureScriptは変数に代入するときに<code>&lt;-</code>のほかに<code>←</code>も使えるんですよ。なんか見た目が可愛いので筆者は最近<code>←</code>を使うのがお気に入りなんです。Qiitaの構文ハイライトで思いっきり駄目出しされてますけど。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>場合分け！</h1><p>しかしここで筆者は大ピンチ！😨なんと<code>getCanvasElementById</code>の結果<code>canvasMaybe</code>はキャンバスオブジェクトそのものではありません。<code>getElementById</code>とは別モノじゃないか！　指定したIDの<code>canvas</code>要素があるかどうかはわからないので、取得が成功した場合と失敗した場合で<strong>場合分け</strong>をしなくてはならないのです。場合分けには<strong><code>case</code>文</strong>を使います。</p><pre><code class="haskell">case canvasMaybe of
      Nothing → pure unit
      Just canvas → pure unit</code></pre><p>よし出来た！失敗した時は<code>Nothing</code>、成功した時は<code>Just</code>のほうが実行され、<code>Just</code>のすぐ後ろにある変数<code>canvas</code>にキャンバスオブジェクトが入っています。まだ分岐後に何もしていない(<code>pure unit</code>)ですけどね。JavaScriptだと別に場合分けの必要はないですし、PureScriptのほうがちょっとだけ面倒ですが、ここは三匹の子豚精神🐷で乗り切ります。生き残るのは苦労して<ruby>🐺<rt>エラー</ruby>に備えた奴なのです！<ruby>🐺<rt>エラー</ruby>への備えを怠る🐷は食われてしまえばいいのです。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>標準出力！</h1><p>さて、エラーを握りつぶしてしまってはいけないので、エラー時にはコンソールにエラーの内容を出力しておきましょう。コンソールに文字を書くには、<code>log</code>関数を使います。要するに<code>console.log</code>と同じものです。</p><pre><code class="haskell">case canvasMaybe of
     Nothing → log "canvas not found."
@@ -192,7 +192,7 @@ MathJax.Hub.Config({
 <footer>
     <div class="block-centered footer-inner">
         <p class="copy">&nbsp;</p>
-        <p class="author">このブログを書いてる人:&nbsp;&nbsp; 兎沢<p>
+        <p class="author">このブログを書いてる人:&nbsp;&nbsp; 羽佐田<p>
     </div>
 
     <script>

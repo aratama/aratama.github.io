@@ -6,7 +6,7 @@
 <meta name="twitter:site" content="@cubbit2">
 <meta name="twitter:creator" content="@cubbit2">
 <meta name="twitter:title" content="モナドのまほう　第15話『babylon.jsの水面マテリアルの流れは絶えずして』 - ちょっと小さいのはたしかですが。">
-<meta name="twitter:description" content="わたしのブログです。面白いかどうかは、わかりませんが。">
+<meta name="twitter:description" content="Admittedly something small.">
 <meta name="twitter:image" content="https://aratama.github.io/img/daacae26-e650-1dc8-859c-38107335864b.png">
 
 <link rel="icon" type="image/png" href="icon.png">
@@ -18,7 +18,7 @@
 <header>
     <div class="block-centered">
         <div class="site-title"><a href="/">ちょっと小さいのはたしかですが。</a></div>
-        <div class="sub-title">わたしのブログです。面白いかどうかは、わかりませんが。</div>
+        <div class="sub-title">Admittedly something small.</div>
     </div>
 </header>
 
@@ -86,12 +86,12 @@ MathJax.Hub.Config({
   ],
   "title": "モナドのまほう　第15話『babylon.jsの水面マテリアルの流れは絶えずして』"
 } -->
-<p><a href="/blog/5321d8cebce7b87851f6.html">第一話</a> / <a href="/blog/910354220d14d597b876.html">前回</a> / <a href="/blog/https://aratama.github.io/cubbit/.html">デモ</a> / <a href="/blog/http://magicofstella.com/.html">ステま</a></p><p>ゲームを作る日記です。ステラのまほうのアニメの続きを観たすぎたので、この記事のタイトルを変えました。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>水面マテリアルを移植しました</h1><p>バグで動かなかったbabylonjsの水面マテリアルですが、悪さをしていたデコレータの部分をコメントアウトし、バグを回避する形にして無理やり使えるようにしました。ソフトウェア開発なんてどうせ最後はこういう力技です。</p><p><a href="/img/daacae26-e650-1dc8-859c-38107335864b.png"><img src="/img/daacae26-e650-1dc8-859c-38107335864b.png"></img></a></p><p>おーキレイキレイ。風で水面にさざ波が立っていて、デモを動かすとわかると思いますがちゃんとアニメーションもしています。本作のややディフォルメされたグラフィックデザインの中にあってはちょっとわざとらしい感もありますが、以前のゼリーみたいな水面とは段違いです。そしてかなり重いです。水面のレンダリングリストに入っているのがスカイボックスだけならまあなんとかというところなんですが、周囲の地形まで水面に反映させようとすると重くてゲームになりません。すごいグラボのマシンを持っているひとならいいのかもしれませんが……。あと何か微妙に反射が変な部分がありますし、設定をオフにしても再読込するまで重いままになるバグがあります。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>多言語化しました</h1><p>多言語化しました。コンフィグ画面で日本語と英語を切り替えることができます。英語だってだけで敬遠する人も多いでしょうし、私も英語でキャラクターのセリフを書くのはさすがにキツいです。シナリオはたぶん一旦日本語で書いてから英語に翻訳する形になりそうです。</p><p><a href="/img/bc490cbd-f286-eaf5-3526-f855fa0cee55.png"><img src="/img/bc490cbd-f286-eaf5-3526-f855fa0cee55.png"></img></a></p><p>テキストデータはハードコーディングされています。編集には再コンパイルが必要ですが、まあ書くのはどうせぜんぶ私なので問題はないでしょう。最初にアクセスしたときに<code>navigator.language</code>プロパティを読み取って言語を判定し、デフォルト値として使用しています。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>アツマールのメモ</h1><p>ニコニコのRPGアツマールのAPIドキュメントが公開されたようです。自分で調べる必要なかったですね。</p><ul>
-<li><a href="/blog/http://ch.nicovideo.jp/indies-game/blomaga/ar1163608.html">ニコニコ自作ゲームフェス
+<p><a href="/blog/5321d8cebce7b87851f6.html">第一話</a> / <a href="/blog/910354220d14d597b876.html">前回</a> / <a href="https://aratama.github.io/cubbit/">デモ</a> / <a href="http://magicofstella.com/">ステま</a></p><p>ゲームを作る日記です。ステラのまほうのアニメの続きを観たすぎたので、この記事のタイトルを変えました。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>水面マテリアルを移植しました</h1><p>バグで動かなかったbabylonjsの水面マテリアルですが、悪さをしていたデコレータの部分をコメントアウトし、バグを回避する形にして無理やり使えるようにしました。ソフトウェア開発なんてどうせ最後はこういう力技です。</p><p><a href="/img/daacae26-e650-1dc8-859c-38107335864b.png"><img src="/img/daacae26-e650-1dc8-859c-38107335864b.png"></img></a></p><p>おーキレイキレイ。風で水面にさざ波が立っていて、デモを動かすとわかると思いますがちゃんとアニメーションもしています。本作のややディフォルメされたグラフィックデザインの中にあってはちょっとわざとらしい感もありますが、以前のゼリーみたいな水面とは段違いです。そしてかなり重いです。水面のレンダリングリストに入っているのがスカイボックスだけならまあなんとかというところなんですが、周囲の地形まで水面に反映させようとすると重くてゲームになりません。すごいグラボのマシンを持っているひとならいいのかもしれませんが……。あと何か微妙に反射が変な部分がありますし、設定をオフにしても再読込するまで重いままになるバグがあります。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>多言語化しました</h1><p>多言語化しました。コンフィグ画面で日本語と英語を切り替えることができます。英語だってだけで敬遠する人も多いでしょうし、私も英語でキャラクターのセリフを書くのはさすがにキツいです。シナリオはたぶん一旦日本語で書いてから英語に翻訳する形になりそうです。</p><p><a href="/img/bc490cbd-f286-eaf5-3526-f855fa0cee55.png"><img src="/img/bc490cbd-f286-eaf5-3526-f855fa0cee55.png"></img></a></p><p>テキストデータはハードコーディングされています。編集には再コンパイルが必要ですが、まあ書くのはどうせぜんぶ私なので問題はないでしょう。最初にアクセスしたときに<code>navigator.language</code>プロパティを読み取って言語を判定し、デフォルト値として使用しています。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>アツマールのメモ</h1><p>ニコニコのRPGアツマールのAPIドキュメントが公開されたようです。自分で調べる必要なかったですね。</p><ul>
+<li><a href="http://ch.nicovideo.jp/indies-game/blomaga/ar1163608">ニコニコ自作ゲームフェス
 RPGアツマール ゲームAPI仕様書</a></li>
 </ul>
-<p><a href="/blog/http://html5.nicogame.jp/core/player/js/rpgatsumaru.js.html">rpgatsumaru.js</a>ってのがAPIを提供しているみたいですが、このあたりを眺めただけじゃ使い方はよくわからないです。そのうちコメント対応の実験してみます。</p><ul>
-<li><a href="/blog/http://blog.nicovideo.jp/atsumaru/2016/12/post-1.html.html">【ゲーム企画支援】全力ゲーミング!!!参加募集開始</a></li>
+<p><a href="http://html5.nicogame.jp/core/player/js/rpgatsumaru.js">rpgatsumaru.js</a>ってのがAPIを提供しているみたいですが、このあたりを眺めただけじゃ使い方はよくわからないです。そのうちコメント対応の実験してみます。</p><ul>
+<li><a href="http://blog.nicovideo.jp/atsumaru/2016/12/post-1.html">【ゲーム企画支援】全力ゲーミング!!!参加募集開始</a></li>
 </ul>
 <p>ふむふむ。企画書書いて採用されれば３０万円くれて、他にもいろいろ特典があるみたいです。私はプロモーション活動はすごく苦手なので、プロモーション打ってくれるなら嬉しいですね。</p><blockquote>
 <p>・制作方法はRPGアツマールに投稿できるHTML5ゲーム形式であれば自由です。ツクールMVである必要はありません。</p></blockquote>
@@ -111,7 +111,7 @@ RPGアツマール ゲームAPI仕様書</a></li>
 </ul>
 <h4><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>シングルプレイヤーモード</h4><ul>
 <li>RPGアツマールのコメント機能対応実験（簡単）</li>
-<li>表情アニメーション（難しい）（具体的には<a href="/blog/http://www.jp.square-enix.com/info/images/image_technical_seminar2014_06/pdf/SQEX_DevCon_sugimoto.pdf.html">スクストのコレ</a>を実装したいです）</li>
+<li>表情アニメーション（難しい）（具体的には<a href="http://www.jp.square-enix.com/info/images/image_technical_seminar2014_06/pdf/SQEX_DevCon_sugimoto.pdf">スクストのコレ</a>を実装したいです）</li>
 <li>フルモーションシーン（プログラミング側は簡単だがBlender側が大変)</li>
 <li>シナリオ執筆（わりと難しい。フルモーションシーンが流せるようになってから？）</li>
 </ul>
@@ -166,7 +166,7 @@ RPGアツマール ゲームAPI仕様書</a></li>
 <footer>
     <div class="block-centered footer-inner">
         <p class="copy">&nbsp;</p>
-        <p class="author">このブログを書いてる人:&nbsp;&nbsp; 兎沢<p>
+        <p class="author">このブログを書いてる人:&nbsp;&nbsp; 羽佐田<p>
     </div>
 
     <script>

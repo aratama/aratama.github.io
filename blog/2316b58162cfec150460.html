@@ -6,7 +6,7 @@
 <meta name="twitter:site" content="@cubbit2">
 <meta name="twitter:creator" content="@cubbit2">
 <meta name="twitter:title" content="純粋関数型スクリプト言語PureScriptのはじめかた。コンパイラの使いかたからサーバサイド/クライアントサイドアプリケーション開発まで - ちょっと小さいのはたしかですが。">
-<meta name="twitter:description" content="わたしのブログです。面白いかどうかは、わかりませんが。">
+<meta name="twitter:description" content="Admittedly something small.">
 <meta name="twitter:image" content="https://aratama.github.io/res/empty.png">
 
 <link rel="icon" type="image/png" href="icon.png">
@@ -18,7 +18,7 @@
 <header>
     <div class="block-centered">
         <div class="site-title"><a href="/">ちょっと小さいのはたしかですが。</a></div>
-        <div class="sub-title">わたしのブログです。面白いかどうかは、わかりませんが。</div>
+        <div class="sub-title">Admittedly something small.</div>
     </div>
 </header>
 
@@ -83,7 +83,7 @@ MathJax.Hub.Config({
 } -->
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>はじめに</h1><p><blockquote class="twitter-tweet" data-lang="ja"><p lang="en" dir="ltr">&quot;PureScript is more like Haskell than Haskell itself.&quot; – `<a href="https://twitter.com/thebeardedzug">@thebeardedzug</a></p>&mdash; Rahul Goma Phulore (@missingfaktor) <a href="https://twitter.com/missingfaktor/status/845400837841195009">2017年3月24日</a></blockquote></p><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-<p>スクリプト言語<strong><a href="/blog/http://www.purescript.org/.html">PureScript</a></strong>の開発環境構築手順を紹介します。PureScriptには<strong>AltJS</strong>としての側面があり、ブラウザ環境やNode環境での実行が主眼に置かれており、JavaScriptでは難しかった大規模な開発に耐えうる極めて高い堅牢性や可読性を備えています。また、JavaScriptに変換されるため、膨大なJavaScriptの資産を比較的簡単に活用できるほか、PureScriptのソースコードとそこから出力されるJavaScriptコードを対比させながら学べるという利点もあります。</p><p>PureScriptは最高級の機能を備える<strong>関数型プログラミング言語</strong>としての側面も持ちます。関数型プログラミング言語の代名詞的存在であるHaskellは、互換性を保つためにその長い歴史の中で数々の欠陥を抱え込んできました。PureScriptはHaskellのコンセプトを更に洗練して、新規の言語としてすべてを作り直すもので、<strong>PureScriptはHaskellよりもHaskellらしい</strong>とすら言われることもあります。しかも、Haskellの最大の難点であった『遅延評価』を取り除くことで、Haskellに習熟していない開発者でも馴染みやすい言語仕様になっています。</p><p>この記事では、Nodeのコマンドライン環境のような基本的なターゲットだけではなく、ウェブのシングルページアプリケーションのような実用性の高いアプリケーションを作って試せるように、Halogenというユーザインターフェイスのフレームワークや、Hyperというサーバサイドフレームワークを動かすところまでを紹介します。ブラウザ環境で動けば、ウェブページに組み込んで自分が作ったアプリケーションを簡単に他の人に見せられますし、<a href="/blog/http://electron.atom.io/.html">Electron</a>を使って単独で動くウィンドウアプリケーションなんかも作ることができるなど夢が広がりますね。</p><h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>前提となる知識</h2><ul>
+<p>スクリプト言語<strong><a href="http://www.purescript.org/">PureScript</a></strong>の開発環境構築手順を紹介します。PureScriptには<strong>AltJS</strong>としての側面があり、ブラウザ環境やNode環境での実行が主眼に置かれており、JavaScriptでは難しかった大規模な開発に耐えうる極めて高い堅牢性や可読性を備えています。また、JavaScriptに変換されるため、膨大なJavaScriptの資産を比較的簡単に活用できるほか、PureScriptのソースコードとそこから出力されるJavaScriptコードを対比させながら学べるという利点もあります。</p><p>PureScriptは最高級の機能を備える<strong>関数型プログラミング言語</strong>としての側面も持ちます。関数型プログラミング言語の代名詞的存在であるHaskellは、互換性を保つためにその長い歴史の中で数々の欠陥を抱え込んできました。PureScriptはHaskellのコンセプトを更に洗練して、新規の言語としてすべてを作り直すもので、<strong>PureScriptはHaskellよりもHaskellらしい</strong>とすら言われることもあります。しかも、Haskellの最大の難点であった『遅延評価』を取り除くことで、Haskellに習熟していない開発者でも馴染みやすい言語仕様になっています。</p><p>この記事では、Nodeのコマンドライン環境のような基本的なターゲットだけではなく、ウェブのシングルページアプリケーションのような実用性の高いアプリケーションを作って試せるように、Halogenというユーザインターフェイスのフレームワークや、Hyperというサーバサイドフレームワークを動かすところまでを紹介します。ブラウザ環境で動けば、ウェブページに組み込んで自分が作ったアプリケーションを簡単に他の人に見せられますし、<a href="http://electron.atom.io/">Electron</a>を使って単独で動くウィンドウアプリケーションなんかも作ることができるなど夢が広がりますね。</p><h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>前提となる知識</h2><ul>
 <li>HTML/CSS/JavaScript</li>
 <li>Node環境でのJavaScript開発。CommonJSモジュール</li>
 <li>パッケージマネージャ。NPM/Bower</li>
@@ -97,7 +97,7 @@ import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 
 main :: Eff (console :: CONSOLE) Unit
-main = log "Hello, world!"</code></pre><h2><a name="purescript-" class="anchor" href="#purescript-"><span class="header-link"></span></a>PureScriptパッケージのインストール</h2><p>PureScriptコンパイラには一切のライブラリが付属しておらず、コンパイラのみでは標準出力はおろか足し算すらできません。すべてのライブラリがコンパイラから完全に分離されているので、まずはプロジェクトにbowerで必要なPureScriptパッケージをインストールしなければなりません。標準出力を行うには<a href="/blog/https://pursuit.purescript.org/packages/purescript-console.html"><code>purescript-console</code>パッケージ</a>を使いますので、インストールしておきましょう。<code>bower install</code>でパッケージ名を指定するだけです。</p><pre><code class="bash">$ bower install --save purescript-console</code></pre><p>このように、プロジェクトで必要になるたびにbowerでパッケージを集めてきます。開発が進むと他にもいろいろなパッケージが欲しくなると思いますが、PureScriptのパッケージを探すには、<a href="/blog/https://pursuit.purescript.org/.html">pursuit</a>というドキュメント検索サービスを使うか、<a href="/blog/https://bower.io/search/.html">bowerのサイト</a>で&quot;purescript&quot;というキーワードで検索するといいと思います。bowerに登録されていないライブラリも結構あるので、<a href="/blog/https://github.com/search?utf8=%E2%9C%93&amp;q=purescript.html">githubで探してみる</a>のもいいと思います。</p><h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>コンパイル</h2><p>PureScriptのツール群は<code>purs</code>という単一の実行可能ファイルにまとめられており、この<code>purs</code>に続いて任意のコマンドを入力することでそれぞれのツールを起動します。PureScriptソースコードをコンパイルするには<strong><code>purs compile</code>コマンド</strong>を実行しますが、引数にはコンパイルに必要なソースファイルのパスをすべて列挙して与えます。パスにはglobが効きますので、<code>purs compile &quot;**/*.purs&quot;</code>のように指定すれば、<code>.purs</code>の拡張子を持つファイルを片っ端から見つけ出してまとめてコンパイルできます。ただしそのコマンドでは、複数のパッケージをインストールした時に、テスト用のコードのモジュール名が衝突してコンパイルに失敗するケースがあります。基本的には次のようにして、<code>src</code>ディレクトリだけを対象に含めるように指定するといいと思います。</p><pre><code class="bash">$ purs compile "bower_components/purescript-*/src/**/*.purs" "src/**/*.purs"</code></pre><p>また、パスをダブルクォーテーションで囲まずに渡すと、環境によってはシェルがパスのワイルドカードを勝手に展開してしまい、それがpscのglobの挙動と微妙に異なっているためコンパイルが通らないことがありました。psc自身にglobが備わっているので、シェルにワイルドカードを展開されないようにしてください。</p><p>成功すれば、<code>output</code>ディレクトリ以下にコンパイルされたJavaScriptコードが出力されているはずです。例として、<code>Main.purs</code>がコンパイルされた結果の<code>output/Main/index.js</code>を掲載しておきます。</p><pre><code class="js">// Generated by psc version 0.10.5
+main = log "Hello, world!"</code></pre><h2><a name="purescript-" class="anchor" href="#purescript-"><span class="header-link"></span></a>PureScriptパッケージのインストール</h2><p>PureScriptコンパイラには一切のライブラリが付属しておらず、コンパイラのみでは標準出力はおろか足し算すらできません。すべてのライブラリがコンパイラから完全に分離されているので、まずはプロジェクトにbowerで必要なPureScriptパッケージをインストールしなければなりません。標準出力を行うには<a href="https://pursuit.purescript.org/packages/purescript-console"><code>purescript-console</code>パッケージ</a>を使いますので、インストールしておきましょう。<code>bower install</code>でパッケージ名を指定するだけです。</p><pre><code class="bash">$ bower install --save purescript-console</code></pre><p>このように、プロジェクトで必要になるたびにbowerでパッケージを集めてきます。開発が進むと他にもいろいろなパッケージが欲しくなると思いますが、PureScriptのパッケージを探すには、<a href="https://pursuit.purescript.org/">pursuit</a>というドキュメント検索サービスを使うか、<a href="https://bower.io/search/">bowerのサイト</a>で&quot;purescript&quot;というキーワードで検索するといいと思います。bowerに登録されていないライブラリも結構あるので、<a href="https://github.com/search?utf8=%E2%9C%93&amp;q=purescript">githubで探してみる</a>のもいいと思います。</p><h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>コンパイル</h2><p>PureScriptのツール群は<code>purs</code>という単一の実行可能ファイルにまとめられており、この<code>purs</code>に続いて任意のコマンドを入力することでそれぞれのツールを起動します。PureScriptソースコードをコンパイルするには<strong><code>purs compile</code>コマンド</strong>を実行しますが、引数にはコンパイルに必要なソースファイルのパスをすべて列挙して与えます。パスにはglobが効きますので、<code>purs compile &quot;**/*.purs&quot;</code>のように指定すれば、<code>.purs</code>の拡張子を持つファイルを片っ端から見つけ出してまとめてコンパイルできます。ただしそのコマンドでは、複数のパッケージをインストールした時に、テスト用のコードのモジュール名が衝突してコンパイルに失敗するケースがあります。基本的には次のようにして、<code>src</code>ディレクトリだけを対象に含めるように指定するといいと思います。</p><pre><code class="bash">$ purs compile "bower_components/purescript-*/src/**/*.purs" "src/**/*.purs"</code></pre><p>また、パスをダブルクォーテーションで囲まずに渡すと、環境によってはシェルがパスのワイルドカードを勝手に展開してしまい、それがpscのglobの挙動と微妙に異なっているためコンパイルが通らないことがありました。psc自身にglobが備わっているので、シェルにワイルドカードを展開されないようにしてください。</p><p>成功すれば、<code>output</code>ディレクトリ以下にコンパイルされたJavaScriptコードが出力されているはずです。例として、<code>Main.purs</code>がコンパイルされた結果の<code>output/Main/index.js</code>を掲載しておきます。</p><pre><code class="js">// Generated by psc version 0.10.5
 "use strict";
 var Prelude = require("../Prelude");
 var Control_Monad_Eff = require("../Control.Monad.Eff");
@@ -110,7 +110,7 @@ module.exports = {
 undefined
 > Main.main()
 Hello, world!
-{}</code></pre><h1><a name="hyper-" class="anchor" href="#hyper-"><span class="header-link"></span></a>Hyperによるサーバーサイドアプリケーションの開発</h1><p>次は、<a href="/blog/https://github.com/owickstrom/hyper.html"><strong>Hyper</strong></a>というかなり本格的なサーバサイドアプリケーション開発用のライブラリを使って、アクセスすると<code>Hello</code>とだけ返す簡単なサーバサイドウェブアプリケーションを作ってみましょう。サンプルコードを<a href="/blog/https://github.com/owickstrom/hyper/blob/master/examples/HelloHyper.purs.html">こちら</a>からコピペしてきました。</p><pre><code class="haskell">module Examples.HelloHyper where
+{}</code></pre><h1><a name="hyper-" class="anchor" href="#hyper-"><span class="header-link"></span></a>Hyperによるサーバーサイドアプリケーションの開発</h1><p>次は、<a href="https://github.com/owickstrom/hyper"><strong>Hyper</strong></a>というかなり本格的なサーバサイドアプリケーション開発用のライブラリを使って、アクセスすると<code>Hello</code>とだけ返す簡単なサーバサイドウェブアプリケーションを作ってみましょう。サンプルコードを<a href="https://github.com/owickstrom/hyper/blob/master/examples/HelloHyper.purs">こちら</a>からコピペしてきました。</p><pre><code class="haskell">module Examples.HelloHyper where
 
 import Prelude
 import Control.IxMonad ((:*>))
@@ -133,7 +133,7 @@ $ node
 undefined
 > HelloHyper.main()
 undefined
-> Listening on http://localhost:3000</code></pre><p>これで、あとはブラウザで <a href="/blog/http://localhost:3000/.html">http://localhost:3000/</a> にアクセスすれば<code>Hello, Hyper!</code>と表示されると思います。このコンパイルで生成されたアプリケーションは、もちろんNodeが動く環境ならどんなサーバでも実行することができます。ただし、上の手順で起動するのは少々面倒なので、次のような起動用のスクリプトを用意して起動してもいいでしょう。</p><pre><code class="js">const HelloHyper = require('./output/Examples.HelloHyper/index');
+> Listening on http://localhost:3000</code></pre><p>これで、あとはブラウザで <a href="http://localhost:3000/">http://localhost:3000/</a> にアクセスすれば<code>Hello, Hyper!</code>と表示されると思います。このコンパイルで生成されたアプリケーションは、もちろんNodeが動く環境ならどんなサーバでも実行することができます。ただし、上の手順で起動するのは少々面倒なので、次のような起動用のスクリプトを用意して起動してもいいでしょう。</p><pre><code class="js">const HelloHyper = require('./output/Examples.HelloHyper/index');
 Main.main();</code></pre><pre><code class="shell-session">$ node main.js
 Listening on http://localhost:3000</code></pre><p>また、以降の節で紹介する<code>purs bundle</code>コマンドを使えば、すべてのモジュールを結合しつつ、単独でそのまま起動できるモジュールを作ることができます。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ブラウザ環境での実行</h1><p>次は、ブラウザ環境でPureScriptアプリケーションを実行してみましょう。ブラウザ環境ではCommonJSモジュールは直接インポート出来ませんので、<code>purs bundle</code>というコマンドを使って、事前にモジュールを単一のJavaScriptファイルへと結合しておくのがいいと思います。コードは先程のHelloWorldを再び使いましょう。</p><pre><code class="haskell">module Main where
 
@@ -179,35 +179,35 @@ var PS = {};
 })(PS["Main"] = PS["Main"] || {});
 PS["Main"].main();</code></pre><p>これを読み込む<code>public/index.html</code>を適当に作成しておきます。</p><pre><code class="html"><!doctype html>
 <script src="app.js"></script></code></pre><p><code>public/index.html</code>をブラウザで開くと、コンソールに<code>Hello, world!</code>と表示されるはずです。</p><p><code>psc-bundle</code>で結合したコードは、もちろんNode環境でも次のようにして実行できます。</p><pre><code class="bash">$ node public/app.js
-Hello, world!</code></pre><p>単体のアプリケーションを作る場合は、起動したあとでいちいち<code>require</code>を呼び出してモジュールをロードするのは面倒ですから、<code>purs bundle</code>でバンドルしてしまうのがいいと思います。</p><h1><a name="halogen-" class="anchor" href="#halogen-"><span class="header-link"></span></a>Halogenによるクライアントサイドウェブアプリケーション開発</h1><p><strong>注：Halogenは0.11にアップデートされたのですが、purescript-halogen-templeteのアップデートがまだです</strong></p><p>PureScriptのUIフレームワークでは<a href="/blog/https://github.com/slamdata/purescript-halogen.html"><code>purescript-halogen</code></a>というのが一番メジャーです。このフレームワークのテンプレートプロジェクト<a href="/blog/https://github.com/slamdata/purescript-halogen-template.html">purescript-halogen-template</a>があるので、これをgitでも何でも構わないのでダウンロードしてきましょう。<code>my-halogen-project</code>のところはお好みでどうぞ。</p><pre><code class="bash">$ git clone https://github.com/slamdata/purescript-halogen-template.git my-halogen-project
+Hello, world!</code></pre><p>単体のアプリケーションを作る場合は、起動したあとでいちいち<code>require</code>を呼び出してモジュールをロードするのは面倒ですから、<code>purs bundle</code>でバンドルしてしまうのがいいと思います。</p><h1><a name="halogen-" class="anchor" href="#halogen-"><span class="header-link"></span></a>Halogenによるクライアントサイドウェブアプリケーション開発</h1><p><strong>注：Halogenは0.11にアップデートされたのですが、purescript-halogen-templeteのアップデートがまだです</strong></p><p>PureScriptのUIフレームワークでは<a href="https://github.com/slamdata/purescript-halogen"><code>purescript-halogen</code></a>というのが一番メジャーです。このフレームワークのテンプレートプロジェクト<a href="https://github.com/slamdata/purescript-halogen-template">purescript-halogen-template</a>があるので、これをgitでも何でも構わないのでダウンロードしてきましょう。<code>my-halogen-project</code>のところはお好みでどうぞ。</p><pre><code class="bash">$ git clone https://github.com/slamdata/purescript-halogen-template.git my-halogen-project
 $ cd my-halogen-project</code></pre><p>それから、<code>npm install</code>や<code>bower update</code>でこのテンプレートプロジェクトが依存するパッケージをかき集めます。</p><pre><code class="bash">$ npm install --production
 $ bower update</code></pre><p>これができたらビルド可能になるので、先ほどと同じコマンドで<code>psc</code>を叩いてコンパイルし、それから<code>psc-bundle</code>を叩いて結合します。</p><pre><code class="bash">$ purs compile "bower_components/purescript-*/src/**/*.purs" "src/**/*.purs"
 $ purs bundle "output/**/*.js" --module Main --main Main --output dist/app.js</code></pre><p><code>dist/index.html</code>を開くと、ボタンをクリックするたびに表示が切り替わるページが表示されるのがわかると思います。あとはお好みでuglifyなんかで圧縮してもいいと思います。</p><pre><code class="bash">$ purs bundle "output/**/*.js" --module Main --main Main | uglifyjs > dist/app.js</code></pre><p>これで、PureScriptで本格的なシングルページアプリケーションを開発する準備が整いました。この記事ではコンパイラを直接叩きましたが、必要に応じてシェルスクリプトやnpmスクリプトなどで自動化しておくと楽かと思います。このHalogenというフレームワークを使ってどのようにアプリケーションを開発すればいいのかは、また別に記事を書きたいと思っています。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ビルドタスクの自動化</h1><p>先に説明したコマンドをいちいち手で打つのは面倒くさいので、筆者はnpmスクリプトに次のように書いておくことが多いです。</p><pre><code class="text">  "scripts": {
     "prebuild": "purs compile \"bower_components/purescript-*/src/**/*.purs\" \"src/**/*.purs\"",
     "build": "purs bundle \"output/**/*.js\" --module Main --main Main --output public/index.js"
-  },</code></pre><p>これで、<code>npm run build</code>を実行すれば単体で実行可能なJavaScriptが<code>public/index.js</code>に出力されます。ビルド自体はコンパイラを直接叩いてもそれほど難しくはないと筆者は思うんですが、一連の作業をさらに簡略化するためにはPureScript専用のビルドツール<strong><a href="/blog/https://github.com/bodil/pulp.html">pulp</a></strong>を導入する方法があります。これを使うとブランクなプロジェクトの作成もコマンド一発、コンパイルもコマンド一発です。たまに意味の分からないエラーが出て頭を抱えることもあるんですが、楽なのは確かです。多くのPureScriptプロジェクトで使われているので、いろんなライブラリを試したりするときにいずれ使うことになると思います。</p><p>pulpの導入自体は<code>npm install</code>で一発です。</p><pre><code class="bash">$ npm install -g purescript pulp</code></pre><p>あとは適当なディレクトリを作って、<code>pulp init</code>で空のプロジェクトが作成できます。また<code>pulp run</code>でそのプロジェクトをビルドし実行することができます。</p><pre><code class="bash">$ pulp init
-$ pulp run</code></pre><p>筆者があまりpulpを使っていないのもあって、ここではこれ以上詳しい解説はしません。詳しい使い方についてはgithubのプロジェクトページなどを確認してください。</p><h1><a name="-psc-ide-" class="anchor" href="#-psc-ide-"><span class="header-link"></span></a>統合開発環境psc-ideの紹介</h1><p>PureScriptのコンパイラには<a href="/blog/https://github.com/purescript/purescript/tree/master/psc-ide-server.html">psc-ide</a>というIDE、つまり統合開発環境が付属していています。『統合開発環境』といってもVisual StudioやEclipseのようなゴッツいものではなくて、コンパイラと連携してコードの問題の修復なんかを自動的に実行するためのインターフェイスを提供するコマンドライン上で動くプログラムです。このpsc-ideを使うための拡張が各種エディタについて提供されています。</p><ul>
-<li>Emacs: <a href="/blog/https://github.com/epost/psc-ide-emacs.html">https://github.com/epost/psc-ide-emacs</a></li>
-<li>Atom: <a href="/blog/https://github.com/nwolverson/atom-ide-purescript.html">https://github.com/nwolverson/atom-ide-purescript</a></li>
-<li>Visual Studio Code: <a href="/blog/https://github.com/nwolverson/vscode-ide-purescript.html">https://github.com/nwolverson/vscode-ide-purescript</a></li>
-<li>Vim: <a href="/blog/https://github.com/FrigoEU/psc-ide-vim.html">https://github.com/FrigoEU/psc-ide-vim</a></li>
+  },</code></pre><p>これで、<code>npm run build</code>を実行すれば単体で実行可能なJavaScriptが<code>public/index.js</code>に出力されます。ビルド自体はコンパイラを直接叩いてもそれほど難しくはないと筆者は思うんですが、一連の作業をさらに簡略化するためにはPureScript専用のビルドツール<strong><a href="https://github.com/bodil/pulp">pulp</a></strong>を導入する方法があります。これを使うとブランクなプロジェクトの作成もコマンド一発、コンパイルもコマンド一発です。たまに意味の分からないエラーが出て頭を抱えることもあるんですが、楽なのは確かです。多くのPureScriptプロジェクトで使われているので、いろんなライブラリを試したりするときにいずれ使うことになると思います。</p><p>pulpの導入自体は<code>npm install</code>で一発です。</p><pre><code class="bash">$ npm install -g purescript pulp</code></pre><p>あとは適当なディレクトリを作って、<code>pulp init</code>で空のプロジェクトが作成できます。また<code>pulp run</code>でそのプロジェクトをビルドし実行することができます。</p><pre><code class="bash">$ pulp init
+$ pulp run</code></pre><p>筆者があまりpulpを使っていないのもあって、ここではこれ以上詳しい解説はしません。詳しい使い方についてはgithubのプロジェクトページなどを確認してください。</p><h1><a name="-psc-ide-" class="anchor" href="#-psc-ide-"><span class="header-link"></span></a>統合開発環境psc-ideの紹介</h1><p>PureScriptのコンパイラには<a href="https://github.com/purescript/purescript/tree/master/psc-ide-server">psc-ide</a>というIDE、つまり統合開発環境が付属していています。『統合開発環境』といってもVisual StudioやEclipseのようなゴッツいものではなくて、コンパイラと連携してコードの問題の修復なんかを自動的に実行するためのインターフェイスを提供するコマンドライン上で動くプログラムです。このpsc-ideを使うための拡張が各種エディタについて提供されています。</p><ul>
+<li>Emacs: <a href="https://github.com/epost/psc-ide-emacs">https://github.com/epost/psc-ide-emacs</a></li>
+<li>Atom: <a href="https://github.com/nwolverson/atom-ide-purescript">https://github.com/nwolverson/atom-ide-purescript</a></li>
+<li>Visual Studio Code: <a href="https://github.com/nwolverson/vscode-ide-purescript">https://github.com/nwolverson/vscode-ide-purescript</a></li>
+<li>Vim: <a href="https://github.com/FrigoEU/psc-ide-vim">https://github.com/FrigoEU/psc-ide-vim</a></li>
 </ul>
 <p>PureScriptではモジュールのインポートがとにかく面倒くさいのですが、ide-purescriptを使ったら簡単にインポートを整理できるようになってだいぶ楽になりました。推論された関数の型の型注釈を補間してくれる機能や、カーソルを合わせると関数の型を表示してくれる機能なんかは、入門したてのころは特に役に立つと思います。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>このあとは</h1><ul>
-<li><strong><a href="/blog/https://leanpub.com/purescript/read.html">&quot;PureScript by Example&quot;</a></strong> オリジナルの作者philさんが書いたPureScriptの入門書です。無料で読めます。PureScriptを使いたいならまっさきに読みたい。PureScriptに限らず、現代的な関数型プログラミングの一般的な入門としても適しています。SICPみたいな古文書を読んでる場合じゃないぞ！</li>
-<li><a href="/blog/https://github.com/purescript/purescript/wiki.html">Wiki</a> Wikiにも色々情報があります</li>
-<li><a href="/blog/https://github.com/paf31/24-days-of-purescript-2016.html">24-days-of-purescript-2016</a> 小ネタ集</li>
-<li><a href="/blog/https://github.com/purescript/documentation.html">purescript/documentation</a> ドキュメント用のリポジトリができたらしいです</li>
+<li><strong><a href="https://leanpub.com/purescript/read">&quot;PureScript by Example&quot;</a></strong> オリジナルの作者philさんが書いたPureScriptの入門書です。無料で読めます。PureScriptを使いたいならまっさきに読みたい。PureScriptに限らず、現代的な関数型プログラミングの一般的な入門としても適しています。SICPみたいな古文書を読んでる場合じゃないぞ！</li>
+<li><a href="https://github.com/purescript/purescript/wiki">Wiki</a> Wikiにも色々情報があります</li>
+<li><a href="https://github.com/paf31/24-days-of-purescript-2016">24-days-of-purescript-2016</a> 小ネタ集</li>
+<li><a href="https://github.com/purescript/documentation">purescript/documentation</a> ドキュメント用のリポジトリができたらしいです</li>
 </ul>
 <p>なお、これ全部<strong>英語</strong>です。がんばろう。</p><h1><a name="-issue-" class="anchor" href="#-issue-"><span class="header-link"></span></a>気になるIssueメモ（随時更新）</h1><ul>
-<li><a href="/blog/https://github.com/purescript/purescript/issues/2345.html">Inlining #2345</a> インライン化の話。PureScriptは現時点ではあまり最適化に力を入れていません。でも私もPureScriptのパフォーマンスの問題で躓いたことがあったので、もっと強力な最適化ができるといいとは思うのですが……。</li>
-<li><a href="/blog/https://github.com/purescript/purescript/issues/2207.html">Support ES6 and beyond?</a> / <a href="/blog/https://github.com/purescript/purescript/issues/2574.html">Change psc to emit ES6 modules instead of CommonJS</a> ES6対応。内部表現に破壊的変更が加わり、一部のFFIが壊れるかも。結局みんな静的解析が欲しくなるんじゃん。Commonjsモジュールとはなんだったのか。</li>
+<li><a href="https://github.com/purescript/purescript/issues/2345">Inlining #2345</a> インライン化の話。PureScriptは現時点ではあまり最適化に力を入れていません。でも私もPureScriptのパフォーマンスの問題で躓いたことがあったので、もっと強力な最適化ができるといいとは思うのですが……。</li>
+<li><a href="https://github.com/purescript/purescript/issues/2207">Support ES6 and beyond?</a> / <a href="https://github.com/purescript/purescript/issues/2574">Change psc to emit ES6 modules instead of CommonJS</a> ES6対応。内部表現に破壊的変更が加わり、一部のFFIが壊れるかも。結局みんな静的解析が欲しくなるんじゃん。Commonjsモジュールとはなんだったのか。</li>
 </ul>
 <h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>変更履歴</h2><p>PureScriptもどんどんバージョンアップしてすぐコンパイル通らなくなって困るのですが、この記事はなるべくメンテナンスしたいと思います。</p><ul>
 <li><strong>2017/04/18</strong> 0.11アップデート作業。あとpurescript-halogen-templeteだけ</li>
 <li><strong>2017/03/30</strong> 0.11アップデートの注意書きだけ加えました。そのうちまた更新します </li>
 <li><strong>2017/01/25</strong> 環境によってコンパイルが通らない問題を修正しました</li>
-<li><strong>2017/01/07</strong> 記事のメンテナンスをしました。pscのバージョンは<strong><a href="/blog/https://github.com/purescript/purescript/releases/tag/v0.10.5.html">v0.10.5</a></strong>です。バージョンがガンガン上がっていますが、コンパイラに破壊的変更はないので、この記事の内容にも大きな変更はありません。</li>
-<li><strong>2016/11/12</strong> 記事のメンテナンスをしました。pscのバージョンは<strong><a href="/blog/https://github.com/purescript/purescript/releases/tag/v0.10.2.html">v0.10.2</a></strong>です。node-hhtpモジュールでAPIの変更があった部分を修正しました。</li>
+<li><strong>2017/01/07</strong> 記事のメンテナンスをしました。pscのバージョンは<strong><a href="https://github.com/purescript/purescript/releases/tag/v0.10.5">v0.10.5</a></strong>です。バージョンがガンガン上がっていますが、コンパイラに破壊的変更はないので、この記事の内容にも大きな変更はありません。</li>
+<li><strong>2016/11/12</strong> 記事のメンテナンスをしました。pscのバージョンは<strong><a href="https://github.com/purescript/purescript/releases/tag/v0.10.2">v0.10.2</a></strong>です。node-hhtpモジュールでAPIの変更があった部分を修正しました。</li>
 <li>この記事を最初に書いた時点での<code>psc</code>のバージョンは<code>0.9.3</code>でした。</li>
 </ul>
 <hr>
@@ -259,7 +259,7 @@ $ pulp run</code></pre><p>筆者があまりpulpを使っていないのもあ�
 <footer>
     <div class="block-centered footer-inner">
         <p class="copy">&nbsp;</p>
-        <p class="author">このブログを書いてる人:&nbsp;&nbsp; 兎沢<p>
+        <p class="author">このブログを書いてる人:&nbsp;&nbsp; 羽佐田<p>
     </div>
 
     <script>

@@ -6,7 +6,7 @@
 <meta name="twitter:site" content="@cubbit2">
 <meta name="twitter:creator" content="@cubbit2">
 <meta name="twitter:title" content="rollup-plugin-pursでPureScriptのモジュールを結合する(インライン化、デッドコード排除) - ちょっと小さいのはたしかですが。">
-<meta name="twitter:description" content="わたしのブログです。面白いかどうかは、わかりませんが。">
+<meta name="twitter:description" content="Admittedly something small.">
 <meta name="twitter:image" content="https://aratama.github.io/res/empty.png">
 
 <link rel="icon" type="image/png" href="icon.png">
@@ -18,7 +18,7 @@
 <header>
     <div class="block-centered">
         <div class="site-title"><a href="/">ちょっと小さいのはたしかですが。</a></div>
-        <div class="sub-title">わたしのブログです。面白いかどうかは、わかりませんが。</div>
+        <div class="sub-title">Admittedly something small.</div>
     </div>
 </header>
 
@@ -75,7 +75,7 @@ MathJax.Hub.Config({
 <li>browserifyやwebpackを使って通常のCommonjsモジュールとして結合する方法（でかい）</li>
 <li>psc-bundleを使って結合する方法（デッドコード削除が効くので、こっちのほうが断然結合後のファイルサイズが小さい。ただしかなり遅いし、PureScriptから出力されたCommonjsモジュールしか結合できないので、それ以外のCommonJSモジュールを結合するにはさらにwebpackなどをキメる必要がある）</li>
 </ul>
-<p>の2種類があります。ここで、新たに<a href="/blog/https://github.com/rollup/rollup.html">rollup</a>のプラグイン<a href="/blog/https://github.com/Pauan/rollup-plugin-purs.html">rollup-plugin-purs</a>を使う方法が加わったようです。特徴としては、</p><ul>
+<p>の2種類があります。ここで、新たに<a href="https://github.com/rollup/rollup">rollup</a>のプラグイン<a href="https://github.com/Pauan/rollup-plugin-purs">rollup-plugin-purs</a>を使う方法が加わったようです。特徴としては、</p><ul>
 <li>psc-bundleと同様のデッドコード排除が効きます</li>
 <li>さらにインライン化もある程度効くようで、結合後のファイルサイズのさらなる削減とともに、実行効率の向上も期待できます</li>
 </ul>
@@ -101,9 +101,9 @@ main = logShow (sum 20 22)</code></pre><p>こんなかんじのコードをpsc-b
   var main = Control_Monad_Eff_Console.logShow(Data_Show.showInt)(sum(Data_Semiring.semiringInt)(20)(22));</code></pre><p>こんな感じのコードがそのまま結合されるのですが、rollup-plugin-pursで結合した場合は、</p><pre><code class="js">  var _main = _logShow_uncurried(_showInt, ((_semiringInt.add)(20)(22)));</code></pre><p>だけが吐かれて、<code>sum</code>の呼び出しがインライン化されて消滅してるのが確認できました。また、<code>_logShow_uncurried</code>という関数が見えますが、これは関数<code>_logShow</code>のカリー化を解除したバージョンで、次のような関数がrollup-plugin-pursによって自動的に定義されます。</p><pre><code class="js">  var _logShow_uncurried = function (_dictShow, _a) {
     return _log2((_dictShow.show)(_a));
   };</code></pre><p>そして、引数がすべて与えられた場合はカリー化が解除されたバージョンが使われるようになるようです。PureScriptは関数がデフォルトでカリー化されるので関数呼び出しが多くなり効率上のオーバーヘッドが大きいのですが、これで少しはオーバーヘッドが低減できそうです。ただし、私が試した範囲ではエラーが出て結合できないモジュールもありました。なんかシングルクォーテーションがついた名前の関数がお気に召さないようです。まだ実用的な完成度とまでは言えませんが、メリットが多いので今後に期待したいところです。</p><p>まだ議論の最中のようですが、pscも将来的にはES6モジュールを吐くようになるかもしれません。また、ブラウザ環境などでもES6 modulesが使えるようになれば、psc-bundleのようなツールで結合する必要自体がなくなるかもしれません。つーかES6 Modulesはやくしろよ！今どきモジュールがない言語なんてアホくさくて使ってられんわ！</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>参考</h1><ul>
-<li><a href="/blog/https://github.com/Pauan/rollup-plugin-purs/issues/6.html">https://github.com/Pauan/rollup-plugin-purs/issues/6</a> 一部のコードでエラーが起こるのは、acornの既知の問題っぽいです。すでに修正されているので、rollupがバージョンアップされれば直るかも</li>
-<li><a href="/blog/https://github.com/purescript/purescript/issues/2574#issuecomment-277434874.html">https://github.com/purescript/purescript/issues/2574#issuecomment-277434874</a> </li>
-<li><a href="/blog/https://github.com/Pauan/rollup-plugin-purs.html">https://github.com/Pauan/rollup-plugin-purs</a></li>
+<li><a href="https://github.com/Pauan/rollup-plugin-purs/issues/6">https://github.com/Pauan/rollup-plugin-purs/issues/6</a> 一部のコードでエラーが起こるのは、acornの既知の問題っぽいです。すでに修正されているので、rollupがバージョンアップされれば直るかも</li>
+<li><a href="https://github.com/purescript/purescript/issues/2574#issuecomment-277434874">https://github.com/purescript/purescript/issues/2574#issuecomment-277434874</a> </li>
+<li><a href="https://github.com/Pauan/rollup-plugin-purs">https://github.com/Pauan/rollup-plugin-purs</a></li>
 </ul>
 
             
@@ -153,7 +153,7 @@ main = logShow (sum 20 22)</code></pre><p>こんなかんじのコードをpsc-b
 <footer>
     <div class="block-centered footer-inner">
         <p class="copy">&nbsp;</p>
-        <p class="author">このブログを書いてる人:&nbsp;&nbsp; 兎沢<p>
+        <p class="author">このブログを書いてる人:&nbsp;&nbsp; 羽佐田<p>
     </div>
 
     <script>

@@ -6,7 +6,7 @@
 <meta name="twitter:site" content="@cubbit2">
 <meta name="twitter:creator" content="@cubbit2">
 <meta name="twitter:title" content="なるべく早くtimeoutする - ちょっと小さいのはたしかですが。">
-<meta name="twitter:description" content="わたしのブログです。面白いかどうかは、わかりませんが。">
+<meta name="twitter:description" content="Admittedly something small.">
 <meta name="twitter:image" content="https://aratama.github.io/res/empty.png">
 
 <link rel="icon" type="image/png" href="icon.png">
@@ -18,7 +18,7 @@
 <header>
     <div class="block-centered">
         <div class="site-title"><a href="/">ちょっと小さいのはたしかですが。</a></div>
-        <div class="sub-title">わたしのブログです。面白いかどうかは、わかりませんが。</div>
+        <div class="sub-title">Admittedly something small.</div>
     </div>
 </header>
 
@@ -66,14 +66,14 @@ MathJax.Hub.Config({
   ],
   "title": "なるべく早くtimeoutする"
 } -->
-<p>何十秒もかかる重いタスクがあり、それをブラウザ上のJavaScriptでなるべく早く完了させたいとします。でも同期的に一気にやろうとすると、たまには制御返せってブラウザに怒られるし、ページが固まってしまうので困ります。</p><p>たとえば、どうしても<a href="/blog/https://ja.wikipedia.org/wiki/%E3%82%B3%E3%83%A9%E3%83%83%E3%83%84%E3%81%AE%E5%95%8F%E9%A1%8C.html">コラッツの問題</a>を自分で確かめたくなっちゃったとします。<code>n</code>に操作を繰り返して1に到達するまでの回数を<code>collatz(n)</code>として、たとえば次のように一気にfor文で調べようとするとページ全体が固まってしまい、ユーザの操作で途中で止めることもできないのでよろしくありません。</p><pre><code class="js">for(var n = 1; n <= 10000000; n++){
+<p>何十秒もかかる重いタスクがあり、それをブラウザ上のJavaScriptでなるべく早く完了させたいとします。でも同期的に一気にやろうとすると、たまには制御返せってブラウザに怒られるし、ページが固まってしまうので困ります。</p><p>たとえば、どうしても<a href="https://ja.wikipedia.org/wiki/%E3%82%B3%E3%83%A9%E3%83%83%E3%83%84%E3%81%AE%E5%95%8F%E9%A1%8C">コラッツの問題</a>を自分で確かめたくなっちゃったとします。<code>n</code>に操作を繰り返して1に到達するまでの回数を<code>collatz(n)</code>として、たとえば次のように一気にfor文で調べようとするとページ全体が固まってしまい、ユーザの操作で途中で止めることもできないのでよろしくありません。</p><pre><code class="js">for(var n = 1; n <= 10000000; n++){
     console.log(n + "は" + collatz(n) + "回の操作で1に到達します");
 }</code></pre><p>ベストなのはWebWorkersを使って別スレッドで処理することですが、Workerスレッド上ではDOMに触れないとかいろいろ制限があります。タスクの内容によってはWorkerの上ではできない、もしくは面倒くさいこともあるでしょう。</p><p>そのようなときには、タスクを分割して<code>setTimeout</code>や<code>setInterval</code>で非同期に処理する方法があります。コラッツの問題ならただの数値計算なのでWeb Workers上でやればいいですが、仮にこの問題がメインスレッド上でないとやりにくいタスクだったとします。具体的には次のような関数<code>sleep</code>を用意すると現代的でちょっとおしゃれかもしれません。</p><pre><code class="js">function sleep(){
     return new Promise(resolve => setTimeout(resolve, 0));
 }</code></pre><p>呼び出す側ではジェネレータ関数の中で</p><pre><code class="js">for(var n = 1; n <= 10000000; n++){
     console.log(n + "は" + collatz(n) + "回の操作で1に到達します");
     yield sleep();
-}</code></pre><p>とループごとに一休みするだけで、ページ全体をブロックすることなく処理を行えます。ただし<code>setTimeout</code>を使うと、<code>setTimeout(f, 0)</code>として<code>delay</code>を0ミリ秒と指定しても最低でも数ミリ秒程度の遅延が生じます。とにかく早く終わらせたいときにはこの遅延が邪魔になるのですが、<code>postMessage</code>でメッセージを投げる → <code>onmessage</code>で即座にイベントを受け取ってタスクをこなす、というトリックを使うことで高速に非同期処理が繰り返せます。</p><p><a href="/blog/http://dbaron.org/log/20100309-faster-timeouts.html">こちら</a>の実装のコードを借りると、次の<code>setZeroTimeout</code>関数はほとんど瞬時に、でもあくまで非同期にコールバックしてくれます。</p><pre><code class="js">// Only add setZeroTimeout to the window object, and hide everything
+}</code></pre><p>とループごとに一休みするだけで、ページ全体をブロックすることなく処理を行えます。ただし<code>setTimeout</code>を使うと、<code>setTimeout(f, 0)</code>として<code>delay</code>を0ミリ秒と指定しても最低でも数ミリ秒程度の遅延が生じます。とにかく早く終わらせたいときにはこの遅延が邪魔になるのですが、<code>postMessage</code>でメッセージを投げる → <code>onmessage</code>で即座にイベントを受け取ってタスクをこなす、というトリックを使うことで高速に非同期処理が繰り返せます。</p><p><a href="http://dbaron.org/log/20100309-faster-timeouts">こちら</a>の実装のコードを借りると、次の<code>setZeroTimeout</code>関数はほとんど瞬時に、でもあくまで非同期にコールバックしてくれます。</p><pre><code class="js">// Only add setZeroTimeout to the window object, and hide everything
 // else in a closure.
 (function () {
     var timeouts = [];
@@ -101,9 +101,9 @@ MathJax.Hub.Config({
 
     // Add the one thing we want added to the window object.
     window.setZeroTimeout = setZeroTimeout;
-})();</code></pre><p>この<code>setZetoTimeout</code>を<code>setTimeout</code>の代わりに使うだけでずっと早く処理が終わります。<code>collatz(n)</code>のリアルタイム人気投票をすると<a href="/blog/https://jsfiddle.net/3ftgfusg/1/.html">こんな感じ</a>になります。ただし、<code>setTimeout</code>にはタブが裏に回るなどでページが非表示になると自動的に頻度を落として無用な処理を減らしてくれるという機能もあります。<code>setZeroTimeout</code>のほうはページが非表示だろうがお構いなしに全力疾走してしまいますが、それが迷惑な場面もあるでしょうから注意が必要です。使い道があるようなないような……。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>参考</h1><ul>
-<li><a href="/blog/http://dbaron.org/log/20100309-faster-timeouts.html">http://dbaron.org/log/20100309-faster-timeouts</a></li>
-<li><a href="/blog/https://developer.mozilla.org/ja/docs/Web/API/Window/setTimeout.html">https://developer.mozilla.org/ja/docs/Web/API/Window/setTimeout</a></li>
+})();</code></pre><p>この<code>setZetoTimeout</code>を<code>setTimeout</code>の代わりに使うだけでずっと早く処理が終わります。<code>collatz(n)</code>のリアルタイム人気投票をすると<a href="https://jsfiddle.net/3ftgfusg/1/">こんな感じ</a>になります。ただし、<code>setTimeout</code>にはタブが裏に回るなどでページが非表示になると自動的に頻度を落として無用な処理を減らしてくれるという機能もあります。<code>setZeroTimeout</code>のほうはページが非表示だろうがお構いなしに全力疾走してしまいますが、それが迷惑な場面もあるでしょうから注意が必要です。使い道があるようなないような……。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>参考</h1><ul>
+<li><a href="http://dbaron.org/log/20100309-faster-timeouts">http://dbaron.org/log/20100309-faster-timeouts</a></li>
+<li><a href="https://developer.mozilla.org/ja/docs/Web/API/Window/setTimeout">https://developer.mozilla.org/ja/docs/Web/API/Window/setTimeout</a></li>
 </ul>
 
             
@@ -153,7 +153,7 @@ MathJax.Hub.Config({
 <footer>
     <div class="block-centered footer-inner">
         <p class="copy">&nbsp;</p>
-        <p class="author">このブログを書いてる人:&nbsp;&nbsp; 兎沢<p>
+        <p class="author">このブログを書いてる人:&nbsp;&nbsp; 羽佐田<p>
     </div>
 
     <script>

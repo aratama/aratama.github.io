@@ -6,7 +6,7 @@
 <meta name="twitter:site" content="@cubbit2">
 <meta name="twitter:creator" content="@cubbit2">
 <meta name="twitter:title" content="ミーリマシンで遊ぼう - ちょっと小さいのはたしかですが。">
-<meta name="twitter:description" content="わたしのブログです。面白いかどうかは、わかりませんが。">
+<meta name="twitter:description" content="Admittedly something small.">
 <meta name="twitter:image" content="https://aratama.github.io/res/empty.png">
 
 <link rel="icon" type="image/png" href="icon.png">
@@ -18,7 +18,7 @@
 <header>
     <div class="block-centered">
         <div class="site-title"><a href="/">ちょっと小さいのはたしかですが。</a></div>
-        <div class="sub-title">わたしのブログです。面白いかどうかは、わかりませんが。</div>
+        <div class="sub-title">Admittedly something small.</div>
     </div>
 </header>
 
@@ -81,7 +81,7 @@ MathJax.Hub.Config({
   ],
   "title": "ミーリマシンで遊ぼう"
 } -->
-<p>にわかに<a href="/blog/115f6f6ea5a22abf9204.html">Reduxミーリ・マシン説</a>が浮上したので、ミーリ・マシンが実用上どのように役立つのかを調べるため、ミーリ・マシンについてもう少し詳しくお勉強することにしました。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ミーリ・マシンの定義</h1><p>何か抽象的なものを学ぶときは、最初に定義をさらっと眺めておくといいです。もちろん定義を眺めたからといってすぐに理解できるわけがないのですが、ぼんやりと手掛かりが得られることもよくあります。<a href="/blog/https://ja.wikipedia.org/wiki/%E3%83%9F%E3%83%BC%E3%83%AA%E3%83%BB%E3%83%9E%E3%82%B7%E3%83%B3.html">ウィキペディア</a>から拝借：</p><p>定義：ミーリ・マシンとは、 $\rm (S, Σ, Λ, T, G, s)$ をいう。ここで、</p><ul>
+<p>にわかに<a href="/blog/115f6f6ea5a22abf9204.html">Reduxミーリ・マシン説</a>が浮上したので、ミーリ・マシンが実用上どのように役立つのかを調べるため、ミーリ・マシンについてもう少し詳しくお勉強することにしました。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ミーリ・マシンの定義</h1><p>何か抽象的なものを学ぶときは、最初に定義をさらっと眺めておくといいです。もちろん定義を眺めたからといってすぐに理解できるわけがないのですが、ぼんやりと手掛かりが得られることもよくあります。<a href="https://ja.wikipedia.org/wiki/%E3%83%9F%E3%83%BC%E3%83%AA%E3%83%BB%E3%83%9E%E3%82%B7%E3%83%B3">ウィキペディア</a>から拝借：</p><p>定義：ミーリ・マシンとは、 $\rm (S, Σ, Λ, T, G, s)$ をいう。ここで、</p><ul>
 <li>状態の有限集合 $\rm S$</li>
 <li>入力文字列の有限集合 $\rm Σ$</li>
 <li>出力文字列の有限集合 $\rm Λ$</li>
@@ -90,10 +90,10 @@ MathJax.Hub.Config({
 <li>開始状態 $\rm s ∈ S$</li>
 </ul>
 <p>(´・ω・｀)？</p><p>よくわかりませんが、何か入力したら内部で何か状態が変わって何かが出力されるモノ、ということのようです。手続きの抽象化というところでしょうか。普通のプログラミング言語では手続きが作用や内部的な状態を持つのは当たり前のことなので、わざわざこんな堅苦しく述べるようなことでもない気がします。</p><p>数学的な定義はおいておいて、今回使うライブラリのほうでもミーリ・マシンの定義も確認しておきます。まあどうせすぐにはピンとこないんですけどね。言語はPureScriptを使っていますが、別に他の言語でも簡単に同じことができるはずです。</p><ul>
-<li><a href="/blog/https://github.com/purescript-contrib/purescript-machines.html">purescript-contrib/purescript-machines</a></li>
+<li><a href="https://github.com/purescript-contrib/purescript-machines">purescript-contrib/purescript-machines</a></li>
 </ul>
 <pre><code class="haskell">newtype MealyT f s a = MealyT (s -> f (Step f s a))</code></pre><p>このミーリ・マシン<code>MealyT</code>は、ただひとつの関数<code>s -&gt; f (Step f s a)</code>で表現されています。あれ？状態を表現する型変数がありませんね。また、出力関数も見当たりません。ミーリ・マシンは内部に状態を持っているはずですし、出力関数もあるはずなのですが、なぜか入力関数らしきものしかありません。謎です。<code>MealyT</code>には<code>Step f s a</code>という型も含まれるので、簡単に確認しておきます。</p><pre><code class="haskell">data Step f s a = Emit a (MealyT f s a) | Halt</code></pre><p><code>Emit a m</code>は文字通り出力を示すんでしょうが、ここでまた<code>MealyT f s a</code>が再帰的に出てきます。ややこしくて頭がどうにかなりそうです。しかも<code>Halt</code>？　字面から察すればミーリ・マシンの実行を停止できる操作のようですが、そんなことはウィキペディアの定義には書かれていませんでしたし、何か実用上の都合なのでしょう。もし<code>Halt</code>の操作がないとしたら、<code>Step f s a</code>は単に<code>s</code>と<code>MealyT f s a</code>の組ですから、こんな感じになると思います。</p><pre><code class="haskell">newtype MealyT f s a = MealyT (s -> f (Tuple a (MealyT f s a)))</code></pre><p>気持ち的にはクライスリ射<code>newtype Kleisli f s a = Kleisli (s -&gt; f a)</code>に近い気がしますが、出力だけじゃなくて状態も陽に触れるみたいな感じなんでしょうか。たしかに、単なる<code>Kleisli f s a</code>ではタイムトラベリングとかはできない気もします。この時点では謎が多いですが、まあどうせ考えてもわかりはしませんので、あとは実践あるのみです。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>とりあえずライブラリを動かそう</h1><p>なんかよくわかんないライブラリを動かすときは、もちろんまずサンプルコードをコピペです。しかし、このライブラリ、サンプルコードやテストすらついていません。そこで、以下のドキュメントを参照しました。これがこのライブラリについて解説しているほとんんど唯一のテキストだと思います。</p><ul>
-<li><a href="/blog/https://github.com/paf31/24-days-of-purescript-2014/blob/master/8.markdown.html">24-days-of-purescript-2014 8. purescript-machines</a> </li>
+<li><a href="https://github.com/paf31/24-days-of-purescript-2014/blob/master/8.markdown">24-days-of-purescript-2014 8. purescript-machines</a> </li>
 </ul>
 <p>PureScriptは昨日今日出来たばかりの言語なので、バージョンアップしまくりで当たり前のようにコンパイルが通りません。手直ししたものがこちら：</p><pre><code class="haskell">main = runMealy machine
   where
@@ -207,11 +207,11 @@ loopRec m0 = do
                 Halt -> pure (Loop m0)
                 Emit s' m' -> pure (Loop m')
         ) m0
-    loopRec m0</code></pre><p>この関数<code>loopRec</code>で作られたマシーンは、一度<code>Halt</code>で停止しても最初のマシーン<code>m0</code>を使って復活させて動き続けます。でも元の<code>loop</code>とはちょっと使い方が異なっていて、ループしたい全体を<code>loopRec</code>で囲まないといけません。</p><pre><code class="haskell">machine = loopRec (executeOOP >>> sink log)</code></pre><p>一般性がなくて、なんか違う感じがします。何かうまい方法はあるんでしょうか。まだ思いつきません。</p><p>そういえば、Rxにはなんであんなに関数がたくさんあるのかとみんな思っているでしょうが、<strong>Rxを作ってる人の気持がだんだんわかってきました</strong>。要するになんでもできるので、あれもできそう！これもできそう！って思いつく端から作っていくと、機能がモリモリ増えていってしまうんです。たぶんRxを作っている人も、<a href="/blog/http://www.slideshare.net/tikibou1/rxjs-67070374.html">それRxでできるよ</a>ってやり続けてあんな巨大になっちゃったんだと思います。そりゃあRxで『も』できますが、そんなに色々あっても覚えきれないし使われないんですけどね。それはRxでもできますが、それをRxでやるべきかどうかはまた別の話です。早すぎる抽象化というやつで、ミーリ・マシンも普遍的すぎてどこまでミーリ・マシンでやるべきなのかよくわからない感じです。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ミーリマシンの圏</h1><p>ところで脱線しますが、ミーリ・マシンは<strong>圏</strong>でもあるようです。『関数型プログラミング』の話でたまに出てくる『圏論』の『圏』です。『ミーリ・マシンが圏をなす』というのは難しいことを言っているわけではなくて、ミーリ・マシンは<code>&gt;&gt;&gt;</code>演算子で合成できるし、入力をそのまま出力する素通りマシン<code>id</code>も使えると、ということを言っているだけです。試しに<code>id</code>ミーリ・マシンを使ってみましょう。</p><pre><code class="haskell">machine = source readLine >>> id >>> sink log</code></pre><p>実行してみます。</p><pre><code class="undefined">> そんなことは
+    loopRec m0</code></pre><p>この関数<code>loopRec</code>で作られたマシーンは、一度<code>Halt</code>で停止しても最初のマシーン<code>m0</code>を使って復活させて動き続けます。でも元の<code>loop</code>とはちょっと使い方が異なっていて、ループしたい全体を<code>loopRec</code>で囲まないといけません。</p><pre><code class="haskell">machine = loopRec (executeOOP >>> sink log)</code></pre><p>一般性がなくて、なんか違う感じがします。何かうまい方法はあるんでしょうか。まだ思いつきません。</p><p>そういえば、Rxにはなんであんなに関数がたくさんあるのかとみんな思っているでしょうが、<strong>Rxを作ってる人の気持がだんだんわかってきました</strong>。要するになんでもできるので、あれもできそう！これもできそう！って思いつく端から作っていくと、機能がモリモリ増えていってしまうんです。たぶんRxを作っている人も、<a href="http://www.slideshare.net/tikibou1/rxjs-67070374">それRxでできるよ</a>ってやり続けてあんな巨大になっちゃったんだと思います。そりゃあRxで『も』できますが、そんなに色々あっても覚えきれないし使われないんですけどね。それはRxでもできますが、それをRxでやるべきかどうかはまた別の話です。早すぎる抽象化というやつで、ミーリ・マシンも普遍的すぎてどこまでミーリ・マシンでやるべきなのかよくわからない感じです。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ミーリマシンの圏</h1><p>ところで脱線しますが、ミーリ・マシンは<strong>圏</strong>でもあるようです。『関数型プログラミング』の話でたまに出てくる『圏論』の『圏』です。『ミーリ・マシンが圏をなす』というのは難しいことを言っているわけではなくて、ミーリ・マシンは<code>&gt;&gt;&gt;</code>演算子で合成できるし、入力をそのまま出力する素通りマシン<code>id</code>も使えると、ということを言っているだけです。試しに<code>id</code>ミーリ・マシンを使ってみましょう。</p><pre><code class="haskell">machine = source readLine >>> id >>> sink log</code></pre><p>実行してみます。</p><pre><code class="undefined">> そんなことは
 そんなことは
 > ナン　ノブ　マイ　ビジネス</code></pre><p>おや。<code>id</code>は入力を左から右に素通りさせるだけですが、それは１回だけで、２回めに通そうとするとそこで<code>Halt</code>で停止してしまうというマシンのようです。これ、ちょっとだけ予想外の振る舞いでした。実装も確かにそうなっています。</p><pre><code class="haskell">instance categoryMealy :: (Monad f) => Category (MealyT f) where
-  id = pureMealy $ \t -> Emit t halt</code></pre><p>そういえば、<code>pure &quot;Merry Christmas!&quot;</code>は&quot;Merry Christmas!&quot;を一度出力して停止するミーリ・マシンでしたし、それを<code>loop</code>することで無限に叫び続けるミーリ・マシンになってました。なんかいちいち停止しなければいけない理由があるんです？このへんがまだよくわかりません。</p><p>プログラミングにおける代表的な圏といえば関数の圏で、関数は合成できるし、引数をそのまま返す『恒等関数』が存在します。ミーリ・マシンが提供する手続きも、同じように合成と恒等射という構造を持つということですね。こんなところにも圏がひょっこり出てきてちょっとおもしろいなと思いました。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>まとめ</h1><p>まだ他にもいろいろできますが、というか何でもできると思っていいでしょうが、なんかトラベリングデバッガとかホットリロードみたいな具体的な機能として使ってみないと、まだそこまで便利な抽象だという感じではないです。そこまで考えて気付いたんですが、このライブラリの実装では、マシンの状態を取得して永続化する一般的な方法がありません。そのため、タイムトラベリングはともかく、ホットリローディングの実装には使えないと思います。だめじゃん！</p><p>今回使ったpurescript-machinesではありませんが、<a href="/blog/https://github.com/slamdata/purescript-halogen-vdom/blob/master/GUIDE.md.html">purescript-halogen-vdom</a>っていうライブラリはVDomを入力して<code>Node</code>を吐くミーリ・マシンになっているよ、とガイドに書いてあります。こんな応用もあるんですね。</p><p>ミーリ・マシンは入力があって状態が変化して出力するというだけのものですから、プログラムとしては当たり前のことをしているだけっていう感じもします。その一方で、いろんなものをミーリ・マシンで表現してそれを合成するというのは新たなプログラミングスタイルの一種なのかもしれません。Rxのスタイルをリアクティブプログラミングなどと格好いい名前で呼ぶなら、ミーリ・マシンを合成するこのスタイルも何か格好いい名前があってもいいかもしれませんね。ミーリ・マシン自体はただの関数一個で表現できますし、他の言語でもミーリ・マシンを抽象化するのは簡単だと思うので、トライしてみたら面白んじゃないでしょうか。</p><p>今回書いたまとまっていないコード：</p><ul>
-<li><a href="/blog/https://gist.github.com/aratama/5130e2ecf540d0ea6e4ce29e4b223f01.html">https://gist.github.com/aratama/5130e2ecf540d0ea6e4ce29e4b223f01</a></li>
+  id = pureMealy $ \t -> Emit t halt</code></pre><p>そういえば、<code>pure &quot;Merry Christmas!&quot;</code>は&quot;Merry Christmas!&quot;を一度出力して停止するミーリ・マシンでしたし、それを<code>loop</code>することで無限に叫び続けるミーリ・マシンになってました。なんかいちいち停止しなければいけない理由があるんです？このへんがまだよくわかりません。</p><p>プログラミングにおける代表的な圏といえば関数の圏で、関数は合成できるし、引数をそのまま返す『恒等関数』が存在します。ミーリ・マシンが提供する手続きも、同じように合成と恒等射という構造を持つということですね。こんなところにも圏がひょっこり出てきてちょっとおもしろいなと思いました。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>まとめ</h1><p>まだ他にもいろいろできますが、というか何でもできると思っていいでしょうが、なんかトラベリングデバッガとかホットリロードみたいな具体的な機能として使ってみないと、まだそこまで便利な抽象だという感じではないです。そこまで考えて気付いたんですが、このライブラリの実装では、マシンの状態を取得して永続化する一般的な方法がありません。そのため、タイムトラベリングはともかく、ホットリローディングの実装には使えないと思います。だめじゃん！</p><p>今回使ったpurescript-machinesではありませんが、<a href="https://github.com/slamdata/purescript-halogen-vdom/blob/master/GUIDE.md">purescript-halogen-vdom</a>っていうライブラリはVDomを入力して<code>Node</code>を吐くミーリ・マシンになっているよ、とガイドに書いてあります。こんな応用もあるんですね。</p><p>ミーリ・マシンは入力があって状態が変化して出力するというだけのものですから、プログラムとしては当たり前のことをしているだけっていう感じもします。その一方で、いろんなものをミーリ・マシンで表現してそれを合成するというのは新たなプログラミングスタイルの一種なのかもしれません。Rxのスタイルをリアクティブプログラミングなどと格好いい名前で呼ぶなら、ミーリ・マシンを合成するこのスタイルも何か格好いい名前があってもいいかもしれませんね。ミーリ・マシン自体はただの関数一個で表現できますし、他の言語でもミーリ・マシンを抽象化するのは簡単だと思うので、トライしてみたら面白んじゃないでしょうか。</p><p>今回書いたまとまっていないコード：</p><ul>
+<li><a href="https://gist.github.com/aratama/5130e2ecf540d0ea6e4ce29e4b223f01">https://gist.github.com/aratama/5130e2ecf540d0ea6e4ce29e4b223f01</a></li>
 </ul>
 <p>ミーリ・マシンは：</p><ul>
 <li>ただの手続きっぽい</li>
@@ -224,9 +224,9 @@ loopRec m0 = do
 <li>Rxの気持ちがわかる</li>
 </ul>
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>参考文献</h1><ul>
-<li><a href="/blog/https://ja.wikipedia.org/wiki/%E3%83%9F%E3%83%BC%E3%83%AA%E3%83%BB%E3%83%9E%E3%82%B7%E3%83%B3.html">ミーリ・マシン - Wikipedia</a></li>
-<li><a href="/blog/https://github.com/paf31/24-days-of-purescript-2014/blob/master/8.markdown.html">24-days-of-purescript-2014 8. purescript-machines</a> </li>
-<li><a href="/blog/https://github.com/purescript-contrib/purescript-machines.html">purescript-contrib/purescript-machines</a></li>
+<li><a href="https://ja.wikipedia.org/wiki/%E3%83%9F%E3%83%BC%E3%83%AA%E3%83%BB%E3%83%9E%E3%82%B7%E3%83%B3">ミーリ・マシン - Wikipedia</a></li>
+<li><a href="https://github.com/paf31/24-days-of-purescript-2014/blob/master/8.markdown">24-days-of-purescript-2014 8. purescript-machines</a> </li>
+<li><a href="https://github.com/purescript-contrib/purescript-machines">purescript-contrib/purescript-machines</a></li>
 </ul>
 
             
@@ -276,7 +276,7 @@ loopRec m0 = do
 <footer>
     <div class="block-centered footer-inner">
         <p class="copy">&nbsp;</p>
-        <p class="author">このブログを書いてる人:&nbsp;&nbsp; 兎沢<p>
+        <p class="author">このブログを書いてる人:&nbsp;&nbsp; 羽佐田<p>
     </div>
 
     <script>

@@ -6,7 +6,7 @@
 <meta name="twitter:site" content="@cubbit2">
 <meta name="twitter:creator" content="@cubbit2">
 <meta name="twitter:title" content="モナドのまほう　第２話『ゲームループとキー入力ができました』 - ちょっと小さいのはたしかですが。">
-<meta name="twitter:description" content="わたしのブログです。面白いかどうかは、わかりませんが。">
+<meta name="twitter:description" content="Admittedly something small.">
 <meta name="twitter:image" content="https://aratama.github.io/img/da2f674d-b893-2934-6acd-96be3ececa69.png">
 
 <link rel="icon" type="image/png" href="icon.png">
@@ -18,7 +18,7 @@
 <header>
     <div class="block-centered">
         <div class="site-title"><a href="/">ちょっと小さいのはたしかですが。</a></div>
-        <div class="sub-title">わたしのブログです。面白いかどうかは、わかりませんが。</div>
+        <div class="sub-title">Admittedly something small.</div>
     </div>
 </header>
 
@@ -91,7 +91,7 @@ MathJax.Hub.Config({
 </ul>
 <p>つづきです。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>座標変換！👀</h1><p>前回は画像の読み込みと複数回の描画ができました。ここで<strong>急にクォータービューっぽく表示してみたくなった</strong>（思いつき）ので、そうしてみます！　<code>translate</code>とか<code>scale</code>とか<code>rotate</code>とかそういう座標変換の関数をそういう感じに呼びます！　アフィン変換について知らない人はゲームプログラミングの書籍なんかを読んでお勉強してみましょう！</p><pre><code class="haskell">translate { translateX: 1280.0 * 0.5 , translateY: 720.0 * 0.5 } context
 scale { scaleX: 1.0, scaleY: 0.6 } context
-rotate (45.0 / 180.0 * pi) context</code></pre><p>これらの関数について、詳しくは<a href="/blog/https://developer.mozilla.org/ja/docs/Web/HTML/Canvas.html">Canvas API</a>をどうぞ。</p><h1><a name="-code-save-code-code-restore-code-" class="anchor" href="#-code-save-code-code-restore-code-"><span class="header-link"></span></a><code>save</code>/<code>restore</code>！👮</h1><p>そして忘れてはいけないのが、コンテキストの<code>save</code>と<code>restore</code>。これを忘れるとゲームループが回るたびに座標変換が蓄積していってわけのわからないことになります。まあまだゲームループも実装していませんけど。もちろんPureScriptからでも問題なく<code>save</code>と<code>restore</code>を呼ぶことができます。</p><pre><code class="haskell">save context
+rotate (45.0 / 180.0 * pi) context</code></pre><p>これらの関数について、詳しくは<a href="https://developer.mozilla.org/ja/docs/Web/HTML/Canvas">Canvas API</a>をどうぞ。</p><h1><a name="-code-save-code-code-restore-code-" class="anchor" href="#-code-save-code-code-restore-code-"><span class="header-link"></span></a><code>save</code>/<code>restore</code>！👮</h1><p>そして忘れてはいけないのが、コンテキストの<code>save</code>と<code>restore</code>。これを忘れるとゲームループが回るたびに座標変換が蓄積していってわけのわからないことになります。まあまだゲームループも実装していませんけど。もちろんPureScriptからでも問題なく<code>save</code>と<code>restore</code>を呼ぶことができます。</p><pre><code class="haskell">save context
 pure unit   -- do something
 restore context</code></pre><p>でも、これじゃうっかり<code>restore</code>を書き忘れるかも……。そんなときは<code>withContext</code>っていう関数が用意されているので、これを使えば自動的に<code>save</code>と<code>restore</code>をしてくれるので楽ちん！</p><pre><code class="haskell">withContext context do
     pure unit -- do something</code></pre><p><code>save</code>のあとにこの一段インデントされた部分が実行され、それが終わると勝手に<code>restore</code>してくれます。それでは表示してみましょう。</p><p><a href="/img/da2f674d-b893-2934-6acd-96be3ececa69.png"><img src="/img/da2f674d-b893-2934-6acd-96be3ececa69.png"></img></a></p><p>きっったあああああああああ！😈😈😈　クォータービュー🔸だ！　でも英語ではIsometric projectionっていうそうですよ！</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ゲームループとキー入力！👈</h1><p>静止画を表示しただけではゲームにはなりません。アニメーション、すなわち画面を時間にそって変化させることが必要ですが、そのためにはいわゆる<strong>ゲームループ</strong>が必要です。今はとくにゲームライブラリを使っていないので、ゲームループも自作する必要がありますが、この部分はJavaScriptで書きました（血涙）。イベントハンドラを仕掛けたりと多少DOMをいじらなくてはならないのですが、PureScriptの生DOMライブラリは死ぬほど面倒くさくて、はっきり言って使わないほうがよっぽどマシです。でもあんまりガチなUIフレームワークを使うほどではないので、代わりにJavaScriptでゲームループ関連のコードを書いて、それを<strong>外部関数インターフェイス</strong>を使ってPureScriptから呼び出すことにします。</p><p>JavaScript側は適当にこんな感じに。PureScriptから呼び出されるJavaScriptコードはCommonJSモジュールとして書きます。呼び出されたらすぐに内容を実行するのではなく、いったん引数のない関数オブジェクトを返しているのが特徴です。PureScript側からもう一度その関数オブジェクトを呼び出すことで本体が実行されます。</p><pre><code class="js">exports.gameloop = function(callback){
@@ -207,7 +207,7 @@ gameloop do
 <footer>
     <div class="block-centered footer-inner">
         <p class="copy">&nbsp;</p>
-        <p class="author">このブログを書いてる人:&nbsp;&nbsp; 兎沢<p>
+        <p class="author">このブログを書いてる人:&nbsp;&nbsp; 羽佐田<p>
     </div>
 
     <script>

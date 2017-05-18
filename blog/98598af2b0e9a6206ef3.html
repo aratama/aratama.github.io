@@ -6,7 +6,7 @@
 <meta name="twitter:site" content="@cubbit2">
 <meta name="twitter:creator" content="@cubbit2">
 <meta name="twitter:title" content="AffですべてのPromises/Generatorsを過去にする／そして何故我々は作用をモナドで抽象化すべきなのか - ちょっと小さいのはたしかですが。">
-<meta name="twitter:description" content="わたしのブログです。面白いかどうかは、わかりませんが。">
+<meta name="twitter:description" content="Admittedly something small.">
 <meta name="twitter:image" content="https://aratama.github.io/res/empty.png">
 
 <link rel="icon" type="image/png" href="icon.png">
@@ -18,7 +18,7 @@
 <header>
     <div class="block-centered">
         <div class="site-title"><a href="/">ちょっと小さいのはたしかですが。</a></div>
-        <div class="sub-title">わたしのブログです。面白いかどうかは、わかりませんが。</div>
+        <div class="sub-title">Admittedly something small.</div>
     </div>
 </header>
 
@@ -94,7 +94,7 @@ MathJax.Hub.Config({
             }]));
         });
     };
-}</code></pre><p>この関数の定義の詳細はどうでもいいのですが、とにかくこれで<code>promisify(fs.readFile)</code>とすれはPromiseを返すような非同期な関数になるので、ジェネレータ関数をうまいこと処理してくれる<a href="/blog/https://github.com/tj/co.html">tj/co</a>を組み合わせて次のように書くことができるようになります。</p><pre><code class="js">co(function*(){
+}</code></pre><p>この関数の定義の詳細はどうでもいいのですが、とにかくこれで<code>promisify(fs.readFile)</code>とすれはPromiseを返すような非同期な関数になるので、ジェネレータ関数をうまいこと処理してくれる<a href="https://github.com/tj/co">tj/co</a>を組み合わせて次のように書くことができるようになります。</p><pre><code class="js">co(function*(){
     try{
         var foo = yield promisify(fs.readFile)("foo.txt");
         var bar = yield promisify(fs.readFile)("bar.txt");
@@ -103,7 +103,7 @@ MathJax.Hub.Config({
     }catch(err){
         console.log(err);
     }
-});</code></pre><p>ネストが深くなっていかないし、例外処理も<code>try-catch</code>で同期処理の時と同じように書くことができています。これでJavaScriptの非同期処理におけるコーディングの問題は概ね解決したといっていいでしょう。Generatorsを使えない環境もあるので、現実的には<a href="/blog/https://babeljs.io/.html">Babel</a>でバベることになるかもしれませんが、解決の道筋は与えられたといえます。ここまではJavaScript基礎編ですが、大丈夫でしょうか。</p><h3><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>何かがおかしい</h3><p>さて、これで構文としては悪くないとは思うのですが、<code>yield promisify(fs.readFile)</code>という部分が3度も繰り返しているのが少し気になります。<code>promisify(fs.readFile)</code>の繰り返しについては、以下のように関数として括りだすことで重複を防げます。</p><pre><code class="js">function readFilePromise(path){
+});</code></pre><p>ネストが深くなっていかないし、例外処理も<code>try-catch</code>で同期処理の時と同じように書くことができています。これでJavaScriptの非同期処理におけるコーディングの問題は概ね解決したといっていいでしょう。Generatorsを使えない環境もあるので、現実的には<a href="https://babeljs.io/">Babel</a>でバベることになるかもしれませんが、解決の道筋は与えられたといえます。ここまではJavaScript基礎編ですが、大丈夫でしょうか。</p><h3><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>何かがおかしい</h3><p>さて、これで構文としては悪くないとは思うのですが、<code>yield promisify(fs.readFile)</code>という部分が3度も繰り返しているのが少し気になります。<code>promisify(fs.readFile)</code>の繰り返しについては、以下のように関数として括りだすことで重複を防げます。</p><pre><code class="js">function readFilePromise(path){
     return promisify(fs.readFile)(path);
 }</code></pre><p>しかし、<code>yield</code>の繰り返しについては、他の関数に括りだすというわけにはいきません。<code>promisify</code>はただの関数ですが、<strong><code>yield</code>は関数ではない</strong>からです。当たり前だろ！と思うかもしれませんが、なぜそんな指摘をするのかはあとでわかります。</p><p>それにまだ問題があります。たとえば、<strong><code>Array.prototype.forEach</code>を使った繰り返しの中では<code>yield</code>が使えない</strong>のです。</p><pre><code class="js">["foo.txt", "bar.txt", "baz.txt"].forEach(function(path){
    var content = yield readFilePromise(path);  // SyntaxError: Unexpected identifier
@@ -128,7 +128,7 @@ console.log(contents.map(s => s.toString()).join(""));</code></pre><p>これで�
 </ul>
 <p>多少字面が異なるだけで、やっていることはJavaScriptと大体同じようなものです。この中括弧のないスッカスカの見た目はCoffeeScriptやPythonを思わせます。この時点で人を堕落させる誘惑がほとばしっています。</p><p>ちなみに繰り返しは、JavaScriptの<code>forEach</code>関数みたいな感じで<code>for</code>関数を使います。</p><pre><code class="hs">for ["foo.txt", "bar.txt", "baz.txt"] \path -> do
     content <- FSS.readTextFile UTF8 path
-    log content</code></pre><p>同期処理はどの言語でもまあ問題はありません。問題は非同期処理です。</p><h3><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>夢のような方法はあった</h3><p>PureScriptには<a href="/blog/https://github.com/slamdata/purescript-aff.html">purescript-aff</a>という便利な非同期処理ライブラリがあります。JavaScriptが<code>function*</code>というキーワードのついたジェネレータ関数のうえでだけ<code>yield</code>するように、purescript-affでは<code>Aff</code>と呼ばれる文脈の上でのみ非同期処理を実行していきます。まずは、先ほどJavaScriptでNode形式の関数をPromise化したのと同じように、Nodeの<code>fs.readFile</code>に相当する非同期なテキストファイル読み込み関数<code>Node.FS.Async.readTextFile</code>を<code>Aff</code>で使える形式で次のように定義し直します<a class="link-footnote" href="#footnote-resolve" name="link-resolve">※</a>。この定義の詳細は気にしなくて構いません。とにかく、この<code>readTextFileAff</code>は<code>Aff</code>という非同期な文脈の上で非同期にファイルを読み込むことができる関数になります。</p><pre><code class="hs">readTextFileAff encoding path = makeAff (\reject resolve -> Node.FS.Async.readTextFile.readTextFile encoding path (either reject resolve))</code></pre><p>これを使うと、先ほどのJavaScriptのコードは、PureScriptで次のように書くことができます。</p><pre><code class="hs">mainAff = launchAff do
+    log content</code></pre><p>同期処理はどの言語でもまあ問題はありません。問題は非同期処理です。</p><h3><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>夢のような方法はあった</h3><p>PureScriptには<a href="https://github.com/slamdata/purescript-aff">purescript-aff</a>という便利な非同期処理ライブラリがあります。JavaScriptが<code>function*</code>というキーワードのついたジェネレータ関数のうえでだけ<code>yield</code>するように、purescript-affでは<code>Aff</code>と呼ばれる文脈の上でのみ非同期処理を実行していきます。まずは、先ほどJavaScriptでNode形式の関数をPromise化したのと同じように、Nodeの<code>fs.readFile</code>に相当する非同期なテキストファイル読み込み関数<code>Node.FS.Async.readTextFile</code>を<code>Aff</code>で使える形式で次のように定義し直します<a class="link-footnote" href="#footnote-resolve" name="link-resolve">※</a>。この定義の詳細は気にしなくて構いません。とにかく、この<code>readTextFileAff</code>は<code>Aff</code>という非同期な文脈の上で非同期にファイルを読み込むことができる関数になります。</p><pre><code class="hs">readTextFileAff encoding path = makeAff (\reject resolve -> Node.FS.Async.readTextFile.readTextFile encoding path (either reject resolve))</code></pre><p>これを使うと、先ほどのJavaScriptのコードは、PureScriptで次のように書くことができます。</p><pre><code class="hs">mainAff = launchAff do
     catchError (do
         foo <- readTextFileAff UTF8 "foo.txt"
         bar <- readTextFileAff UTF8 "bar.txt"
@@ -181,8 +181,8 @@ console.log(contents.map(s => s.toString()).join(""));</code></pre><p>これで�
 </ul>
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>参考文献</h1><ul>
 <li>とくに何も見ずに書いたので、いい参考文献が思いつきませんでした</li>
-<li>あえて挙げるなら<a href="/blog/https://github.com/slamdata/purescript-aff.html">purescript-affのReadme</a>を読むと、このテキストで説明しなかった並列処理のやり方や失敗からの復帰のやり方とか書いてあって夢が広がるかもしれません。</li>
-<li><a href="/blog/http://haskell.cs.yale.edu/wp-content/uploads/2011/02/history.pdf.html">A History of Haskell: Being Lazy With Class</a> Haskellの開発の中心人物たちがその歴史を語っている第一級の資料。このテキストを書いているときにたまたま見つけました。私はあまり歴史学に興味がないので読んでないのですが、歴史好きの人はお勧めかも。PureScriptはできたてホヤホヤなので実際に使うとなると大冒険になります。実用にしたい人は素直に長年の実績があるHaskellを使いましょう。</li>
+<li>あえて挙げるなら<a href="https://github.com/slamdata/purescript-aff">purescript-affのReadme</a>を読むと、このテキストで説明しなかった並列処理のやり方や失敗からの復帰のやり方とか書いてあって夢が広がるかもしれません。</li>
+<li><a href="http://haskell.cs.yale.edu/wp-content/uploads/2011/02/history.pdf">A History of Haskell: Being Lazy With Class</a> Haskellの開発の中心人物たちがその歴史を語っている第一級の資料。このテキストを書いているときにたまたま見つけました。私はあまり歴史学に興味がないので読んでないのですが、歴史好きの人はお勧めかも。PureScriptはできたてホヤホヤなので実際に使うとなると大冒険になります。実用にしたい人は素直に長年の実績があるHaskellを使いましょう。</li>
 </ul>
 <hr>
 <p class="footnote"><a href="#link-hell" name="footnote-hell">^</a>  ところで、Promiseでコールバック地獄が解決できるといわれることがたまにありますが、Promiseのようなライブラリを追加しただけではコールバック地獄は完全に解決できません。Generatorなしで解決している主張しているのは、関数を分割してネストを分解しているか、いわゆるメソッドチェーンで直前の非同期処理の結果だけを触っているかのどっちかでしょう。関数で分割すると深いネストはなくなりますが、本来ひとつの関数にまとまっているべき処理がバラバラになるので大きく可読性を損ないます。また、gulpで`gulp.src("foo.txt").pipe(browserify()).pipe(uglify()).pipe(gulp.dest("output"))`みたいに`pipe`でつなげるのは、それぞれの処理が直前の結果だけを扱う場合だけにしかうまくいきません。</p>
@@ -239,7 +239,7 @@ console.log(contents.map(s => s.toString()).join(""));</code></pre><p>これで�
 <footer>
     <div class="block-centered footer-inner">
         <p class="copy">&nbsp;</p>
-        <p class="author">このブログを書いてる人:&nbsp;&nbsp; 兎沢<p>
+        <p class="author">このブログを書いてる人:&nbsp;&nbsp; 羽佐田<p>
     </div>
 
     <script>

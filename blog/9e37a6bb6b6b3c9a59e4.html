@@ -6,7 +6,7 @@
 <meta name="twitter:site" content="@cubbit2">
 <meta name="twitter:creator" content="@cubbit2">
 <meta name="twitter:title" content="『先にヘッダを送信してから、そのあとでレスポンスボディを送信しなくてはならない』ことをコンパイル時に検証する - ちょっと小さいのはたしかですが。">
-<meta name="twitter:description" content="わたしのブログです。面白いかどうかは、わかりませんが。">
+<meta name="twitter:description" content="Admittedly something small.">
 <meta name="twitter:image" content="https://aratama.github.io/img/3c3b376d-5c80-47c6-58b9-23d264453a65.png">
 
 <link rel="icon" type="image/png" href="icon.png">
@@ -18,7 +18,7 @@
 <header>
     <div class="block-centered">
         <div class="site-title"><a href="/">ちょっと小さいのはたしかですが。</a></div>
-        <div class="sub-title">わたしのブログです。面白いかどうかは、わかりませんが。</div>
+        <div class="sub-title">Admittedly something small.</div>
     </div>
 </header>
 
@@ -116,7 +116,7 @@ Error: Can't set headers after they are sent.
     at emitTwo (events.js:106:13)
     at Server.emit (events.js:194:7)
     at parserOnIncoming (_http_server.js:563:12)
-    at HTTPParser.parserOnHeadersComplete (_http_common.js:99:23)</code></pre><p>なので、<code>setHeader</code>は<code>write</code>よりも手前に書くように気をつけましょう。</p><p><br></p><p><br></p><p><br></p><p><strong>……何が「気をつけましょう」だよ！アホか！「気をつけましょう」なんていう心がけで本当にミスを防げたら誰も苦労しねーよ！</strong>『自動車のアクセルとブレーキを踏み間違えないようにしましょう』とか呼びかければ不幸な事故が減るとでも思ってるのか！？それに、ミスは不注意な人とか知識に乏しい人だけがするものではありません。疲労や寝不足で頭がおかしくなって訳のわからないコードを書くことは誰にでもあります。頻繁な変更が入り複雑怪奇に成り果てたコードからは、単純なミスでもそう簡単に見つけられるものではありません。ミスに対する有効な対策とは、「気をつけましょう」とかそういう心がけじゃなくて、機械がミスを発見して自動的に報告する機構を用意することでしょう。</p><p>そこで、<a href="/blog/https://hyper.wickstrom.tech/.html"><strong>Hyper</strong></a>というウェブサーバサイドフレームワークの手法を簡単に紹介します。<code>Hyper</code>は、『ヘッダを書き終えてからレスポンスボディを書く』という条件が満たされているかを、<strong>コンパイル時に</strong>検証してくれます。</p><h1><a name="hyper-" class="anchor" href="#hyper-"><span class="header-link"></span></a>Hyperによる解決</h1><p>HyperによるHelloWorldは、例えば次のようになります。PureScriptのコードですし、コードの詳細は気にしなくていいです。フィーリングで読んでください<a class="link-footnote" href="#footnote-anno" name="link-anno">※</a>。</p><pre><code class="haskell">main = runServer defaultOptionsWithLogging {} do 
+    at HTTPParser.parserOnHeadersComplete (_http_common.js:99:23)</code></pre><p>なので、<code>setHeader</code>は<code>write</code>よりも手前に書くように気をつけましょう。</p><p><br></p><p><br></p><p><br></p><p><strong>……何が「気をつけましょう」だよ！アホか！「気をつけましょう」なんていう心がけで本当にミスを防げたら誰も苦労しねーよ！</strong>『自動車のアクセルとブレーキを踏み間違えないようにしましょう』とか呼びかければ不幸な事故が減るとでも思ってるのか！？それに、ミスは不注意な人とか知識に乏しい人だけがするものではありません。疲労や寝不足で頭がおかしくなって訳のわからないコードを書くことは誰にでもあります。頻繁な変更が入り複雑怪奇に成り果てたコードからは、単純なミスでもそう簡単に見つけられるものではありません。ミスに対する有効な対策とは、「気をつけましょう」とかそういう心がけじゃなくて、機械がミスを発見して自動的に報告する機構を用意することでしょう。</p><p>そこで、<a href="https://hyper.wickstrom.tech/"><strong>Hyper</strong></a>というウェブサーバサイドフレームワークの手法を簡単に紹介します。<code>Hyper</code>は、『ヘッダを書き終えてからレスポンスボディを書く』という条件が満たされているかを、<strong>コンパイル時に</strong>検証してくれます。</p><h1><a name="hyper-" class="anchor" href="#hyper-"><span class="header-link"></span></a>Hyperによる解決</h1><p>HyperによるHelloWorldは、例えば次のようになります。PureScriptのコードですし、コードの詳細は気にしなくていいです。フィーリングで読んでください<a class="link-footnote" href="#footnote-anno" name="link-anno">※</a>。</p><pre><code class="haskell">main = runServer defaultOptionsWithLogging {} do 
     writeStatus statusOK
     contentType textPlain
     closeHeaders
@@ -150,10 +150,10 @@ while checking that expression writeStatus statusOK
              t4
              t5
 in value declaration main</code></pre><p>エラーメッセージの言っていることは一見意味不明ですが、よくよく見てみるとこれは<strong>ただの型エラー</strong>だったりします。コンパイラが何か特別な静的解析を働かせているとか、そういうことではありません。<code>Could not match type StatusLineOpen with type BodyOpen</code>とあるように、コンパイラが言っているのは、関数に与えた引数の型<code>StatusLineOpen</code>が、関数が求めている型<code>BodyOpen</code>に合わない、というだけの話です。原理的にはそれだけなのですが、この型エラーの詳細について理解するには<strong>Indexed Monad</strong>という仕組みを学ばなくてはならず、話が長くなるので止めときます。またモナドかよ！</p><p>今回書いたコードはgistに載せておきました。</p><ul>
-<li><a href="/blog/https://gist.github.com/aratama/1b3b9a2c1672f4ecfdf4183820cef28e.html">https://gist.github.com/aratama/1b3b9a2c1672f4ecfdf4183820cef28e</a></li>
+<li><a href="https://gist.github.com/aratama/1b3b9a2c1672f4ecfdf4183820cef28e">https://gist.github.com/aratama/1b3b9a2c1672f4ecfdf4183820cef28e</a></li>
 </ul>
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>さいごに</h1><p>「こんな瑣末な落とし穴、書くときに気をつければ簡単に回避できるだろ」と思ったひともいるでしょう。このヘッダの順序の問題と、Indexed Monadなどという抽象的な機能を学ぶコストを天秤にかけて、「学習コストに見合わない」というふうに考える人もいるような気がします。</p><p>たしかにこの落とし穴だけについて考えれば、そうだと思います。でも問題は、<strong>現実のコードにはこういう些細な落とし穴が山ほど隠れている</strong>ということです。PureScriptのような言語を使っている人たちは、個々の落とし穴が瑣末であるからといって、その落とし穴を軽視して放置したりはしません。なぜなら、そうやって見逃されてきた単純な落とし穴も、いずれ寄り集まって複雑さを増し、やがて厄介なトラブルを山ほど生み出すとわかっているからです。些細な落とし穴だからこそ、PureScriptのような言語はそれを見逃さずに根本的な対処を与えて、そういう下らない問題で開発者の頭のなかがいっぱいにならないようにしてくれます。コンパイラがそういう下らないミスを開発者の代わりに検出してくれるからこそ、開発者は本来の問題に集中できるのです。</p><p><strong>プログラミング上のありとあらゆる落とし穴を可能な限りコンパイル時に検出する</strong>のが、PureScriptのような言語やHyperのようなフレームワークが目指すところです。PureScriptやHyperのような道具は詳細を追い始めるとやはり複雑なところはあるのですが、それは今まで個々の開発者が神経をすり減らして『気をつけて』いたことを、Hyperのようなフレームワークが代わりに『気をつけて』くれるようになった結果です。決して闇雲に複雑にしているわけではありません。ほかにも、「どうせ実行時エラーが出るのだから、コンパイルエラーにする必要はないのでは」と思う人もいるでしょうが……そういうことを説明し出すと、また話が長(略</p><p>今回は敢えて技術的詳細の説明を控えました。どうしても詳細を知りたければ、Hyperや<a href="/blog/https://github.com/garyb/purescript-indexed-monad.html">purescript-indexed-monad</a>のコードを眺めてみるといいかもしれません。ただし、今回紹介したHyperの手法を他の『普通の』プログラミング言語で実現することはまず不可能です。関数型プログラミングのテクニックを覚えて一般的なプログラミング言語で役立てるというのは、関数型プログラミングの初歩の初歩を齧っただけの人（しかも初歩しか齧っていないのに自分は関数型プログラミング全体を把握したと思い込んでいる人）が抱きがちな幻想です。HaskellやPureScript、Scalaのような本格的な関数型プログラミング言語へ移行して安全な世界で気楽に暮らすか、JavaやJavaScriptのような『普通の』プログラミング言語のまま落とし穴と隣り合わせに生きるか、どちらかしかありません。</p><p>Hyperはまだあまりに若いフレームワークですが、その方向性はPureScriptが目指しているところとぴったり一致していますし、今も活発に開発が続いていて有望なフレームワークだと思います。PureScriptの本格的なウェブサーバサイドフレームワークは、まだ片手で数えるほどしかありません。もっとPureScriptのユーザが増えて、こういう安全なフレームワークがたくさん育ってほしいと、筆者は願うところであります。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>参考文献</h1><ul>
-<li><a href="/blog/https://hyper.wickstrom.tech/.html">hyper.wickstrom.tech</a> Hyperの公式サイト。ロゴが可愛い</li>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>さいごに</h1><p>「こんな瑣末な落とし穴、書くときに気をつければ簡単に回避できるだろ」と思ったひともいるでしょう。このヘッダの順序の問題と、Indexed Monadなどという抽象的な機能を学ぶコストを天秤にかけて、「学習コストに見合わない」というふうに考える人もいるような気がします。</p><p>たしかにこの落とし穴だけについて考えれば、そうだと思います。でも問題は、<strong>現実のコードにはこういう些細な落とし穴が山ほど隠れている</strong>ということです。PureScriptのような言語を使っている人たちは、個々の落とし穴が瑣末であるからといって、その落とし穴を軽視して放置したりはしません。なぜなら、そうやって見逃されてきた単純な落とし穴も、いずれ寄り集まって複雑さを増し、やがて厄介なトラブルを山ほど生み出すとわかっているからです。些細な落とし穴だからこそ、PureScriptのような言語はそれを見逃さずに根本的な対処を与えて、そういう下らない問題で開発者の頭のなかがいっぱいにならないようにしてくれます。コンパイラがそういう下らないミスを開発者の代わりに検出してくれるからこそ、開発者は本来の問題に集中できるのです。</p><p><strong>プログラミング上のありとあらゆる落とし穴を可能な限りコンパイル時に検出する</strong>のが、PureScriptのような言語やHyperのようなフレームワークが目指すところです。PureScriptやHyperのような道具は詳細を追い始めるとやはり複雑なところはあるのですが、それは今まで個々の開発者が神経をすり減らして『気をつけて』いたことを、Hyperのようなフレームワークが代わりに『気をつけて』くれるようになった結果です。決して闇雲に複雑にしているわけではありません。ほかにも、「どうせ実行時エラーが出るのだから、コンパイルエラーにする必要はないのでは」と思う人もいるでしょうが……そういうことを説明し出すと、また話が長(略</p><p>今回は敢えて技術的詳細の説明を控えました。どうしても詳細を知りたければ、Hyperや<a href="https://github.com/garyb/purescript-indexed-monad">purescript-indexed-monad</a>のコードを眺めてみるといいかもしれません。ただし、今回紹介したHyperの手法を他の『普通の』プログラミング言語で実現することはまず不可能です。関数型プログラミングのテクニックを覚えて一般的なプログラミング言語で役立てるというのは、関数型プログラミングの初歩の初歩を齧っただけの人（しかも初歩しか齧っていないのに自分は関数型プログラミング全体を把握したと思い込んでいる人）が抱きがちな幻想です。HaskellやPureScript、Scalaのような本格的な関数型プログラミング言語へ移行して安全な世界で気楽に暮らすか、JavaやJavaScriptのような『普通の』プログラミング言語のまま落とし穴と隣り合わせに生きるか、どちらかしかありません。</p><p>Hyperはまだあまりに若いフレームワークですが、その方向性はPureScriptが目指しているところとぴったり一致していますし、今も活発に開発が続いていて有望なフレームワークだと思います。PureScriptの本格的なウェブサーバサイドフレームワークは、まだ片手で数えるほどしかありません。もっとPureScriptのユーザが増えて、こういう安全なフレームワークがたくさん育ってほしいと、筆者は願うところであります。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>参考文献</h1><ul>
+<li><a href="https://hyper.wickstrom.tech/">hyper.wickstrom.tech</a> Hyperの公式サイト。ロゴが可愛い</li>
 </ul>
 <hr>
 <p class="footnote"><a href="#link-anno" name="footnote-anno">^</a>  本当はもっと短く書くこともできますが、先ほどのJavaScriptでの例と対応させる感じにあえて冗長に書いています。また、インポートリストとか型注釈が長すぎるので、本質的なコードだけを抜粋してます。</p>
@@ -204,7 +204,7 @@ in value declaration main</code></pre><p>エラーメッセージの言ってい
 <footer>
     <div class="block-centered footer-inner">
         <p class="copy">&nbsp;</p>
-        <p class="author">このブログを書いてる人:&nbsp;&nbsp; 兎沢<p>
+        <p class="author">このブログを書いてる人:&nbsp;&nbsp; 羽佐田<p>
     </div>
 
     <script>
