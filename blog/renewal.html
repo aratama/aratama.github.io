@@ -5,15 +5,15 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@cubbit2">
 <meta name="twitter:creator" content="@cubbit2">
-<meta name="twitter:title" content="なるべく早くtimeoutする - ちょっと小さいのはたしかですが。">
+<meta name="twitter:title" content=" サイトをリニューアルしました - ちょっと小さいのはたしかですが。">
 <meta name="twitter:description" content="Admittedly something small.">
-<meta name="twitter:image" content="https://aratama.github.io/res/empty.png">
+<meta name="twitter:image" content="https://aratama.github.io/img/USAGI0I9A6075_TP_V.jpg">
 
 <link rel="icon" type="image/png" href="icon.png">
 <link rel="stylesheet" href="/res/reset.css">
 <link rel="stylesheet" href="/res/style.css">
 
-<title>なるべく早くtimeoutする - ちょっと小さいのはたしかですが。</title>
+<title> サイトをリニューアルしました - ちょっと小さいのはたしかですが。</title>
 
 <header>
     <div class="block-centered">
@@ -48,64 +48,34 @@ MathJax.Hub.Config({
     <div class="content">
 
         <article id="rendered">
-            <div class="date">2015年11月1日</div>
+            <div class="date">2017年5月20日</div>
             <h1 class="article-title">
                 <!-- <i class="fa fa-coffee" aria-hidden="true"></i> -->
-                <a href="0b89c36556cadbd751e2.html">なるべく早くtimeoutする<a>
+                <a href="renewal.html"> サイトをリニューアルしました<a>
             </h1>        
-            <p class="tags"><a href="JavaScript.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>JavaScript</span></a></p>
+            <p class="tags"><a href="about.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>about</span></a></p>
             <hr>
             <!-- {
-  "id": "0b89c36556cadbd751e2",
-  "created_at": "2015-11-01T22:55:34+09:00",
+  "id": "renewal",
+  "created_at": "2017-05-20T21:14:39+09:00",
   "tags": [
-    {
-      "name": "JavaScript",
-      "versions": []
-    }
+      { "name":"about" }
   ],
-  "title": "なるべく早くtimeoutする"
+  "title": " サイトをリニューアルしました"
 } -->
-<p>何十秒もかかる重いタスクがあり、それをブラウザ上のJavaScriptでなるべく早く完了させたいとします。でも同期的に一気にやろうとすると、たまには制御返せってブラウザに怒られるし、ページが固まってしまうので困ります。</p><p>たとえば、どうしても<a href="https://ja.wikipedia.org/wiki/%E3%82%B3%E3%83%A9%E3%83%83%E3%83%84%E3%81%AE%E5%95%8F%E9%A1%8C">コラッツの問題</a>を自分で確かめたくなっちゃったとします。<code>n</code>に操作を繰り返して1に到達するまでの回数を<code>collatz(n)</code>として、たとえば次のように一気にfor文で調べようとするとページ全体が固まってしまい、ユーザの操作で途中で止めることもできないのでよろしくありません。</p><pre><code class="js">for(var n = 1; n <= 10000000; n++){
-    console.log(n + "は" + collatz(n) + "回の操作で1に到達します");
-}</code></pre><p>ベストなのはWebWorkersを使って別スレッドで処理することですが、Workerスレッド上ではDOMに触れないとかいろいろ制限があります。タスクの内容によってはWorkerの上ではできない、もしくは面倒くさいこともあるでしょう。</p><p>そのようなときには、タスクを分割して<code>setTimeout</code>や<code>setInterval</code>で非同期に処理する方法があります。コラッツの問題ならただの数値計算なのでWeb Workers上でやればいいですが、仮にこの問題がメインスレッド上でないとやりにくいタスクだったとします。具体的には次のような関数<code>sleep</code>を用意すると現代的でちょっとおしゃれかもしれません。</p><pre><code class="js">function sleep(){
-    return new Promise(resolve => setTimeout(resolve, 0));
-}</code></pre><p>呼び出す側ではジェネレータ関数の中で</p><pre><code class="js">for(var n = 1; n <= 10000000; n++){
-    console.log(n + "は" + collatz(n) + "回の操作で1に到達します");
-    yield sleep();
-}</code></pre><p>とループごとに一休みするだけで、ページ全体をブロックすることなく処理を行えます。ただし<code>setTimeout</code>を使うと、<code>setTimeout(f, 0)</code>として<code>delay</code>を0ミリ秒と指定しても最低でも数ミリ秒程度の遅延が生じます。とにかく早く終わらせたいときにはこの遅延が邪魔になるのですが、<code>postMessage</code>でメッセージを投げる → <code>onmessage</code>で即座にイベントを受け取ってタスクをこなす、というトリックを使うことで高速に非同期処理が繰り返せます。</p><p><a href="http://dbaron.org/log/20100309-faster-timeouts">こちら</a>の実装のコードを借りると、次の<code>setZeroTimeout</code>関数はほとんど瞬時に、でもあくまで非同期にコールバックしてくれます。</p><pre><code class="js">// Only add setZeroTimeout to the window object, and hide everything
-// else in a closure.
-(function () {
-    var timeouts = [];
-    var messageName = "zero-timeout-message";
-
-    // Like setTimeout, but only takes a function argument.  There's
-    // no time argument (always zero) and no arguments (you have to
-    // use a closure).
-    function setZeroTimeout(fn) {
-        timeouts.push(fn);
-        window.postMessage(messageName, "*");
-    }
-
-    function handleMessage(event) {
-        if (event.source == window && event.data == messageName) {
-            event.stopPropagation();
-            if (timeouts.length > 0) {
-                var fn = timeouts.shift();
-                fn();
-            }
-        }
-    }
-
-    window.addEventListener("message", handleMessage, true);
-
-    // Add the one thing we want added to the window object.
-    window.setZeroTimeout = setZeroTimeout;
-})();</code></pre><p>この<code>setZetoTimeout</code>を<code>setTimeout</code>の代わりに使うだけでずっと早く処理が終わります。<code>collatz(n)</code>のリアルタイム人気投票をすると<a href="https://jsfiddle.net/3ftgfusg/1/">こんな感じ</a>になります。ただし、<code>setTimeout</code>にはタブが裏に回るなどでページが非表示になると自動的に頻度を落として無用な処理を減らしてくれるという機能もあります。<code>setZeroTimeout</code>のほうはページが非表示だろうがお構いなしに全力疾走してしまいますが、それが迷惑な場面もあるでしょうから注意が必要です。使い道があるようなないような……。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>参考</h1><ul>
-<li><a href="http://dbaron.org/log/20100309-faster-timeouts">http://dbaron.org/log/20100309-faster-timeouts</a></li>
-<li><a href="https://developer.mozilla.org/ja/docs/Web/API/Window/setTimeout">https://developer.mozilla.org/ja/docs/Web/API/Window/setTimeout</a></li>
-</ul>
-
+<p><a href="/img/USAGI0I9A6075_TP_V.jpg"><img src="/img/USAGI0I9A6075_TP_V.jpg"></img></a></p><p>この<code>aratama.github.io</code>はしばらく放置していたんですが、このたびリニューアルしました。</p><p>このブログの記事の多くは、Qiitaで私が書いたものをぶっこ抜いてきたものです。
+ご存知のかたもいるかもしれませんが、このあいだQiitaの運営方針の変遷(明確化？)により、
+技術的な意義に乏しい記事の幾つかが運営者の判断で非公開化されています。
+私はQiitaの運営方針には特に疑念や不満はないのですが、私が書いた記事の中にはややポエミーなものもふくまれていて、
+そのような記事がQiitaにご迷惑をかけることもあるかもしれないと思い、
+記事がいつ消えても構わないようにこちらに複製しておくことにしました。
+手動で非公開化ができればいいのですが、いったん公開した記事をユーザが非公開化することはできないようなので、
+Qiitaで書いた記事はとりあえず残しておきます。</p><p>今後もしポエミーな記事を書きたくなったら、こちらのサイトのほうに書こうと思います。
+私は今までツイッターやQiitaくらいしか媒体をもっていなかったのですが、
+これで好きなだけポエムを書くことができます。やったね！</p><p>なお、このサイトはオレオレ静的サイトジェネレータ<code>qbuild.js</code>により生成されたものです。
+またタグ検索や脚注などの機能の実装が不十分ですが、
+記事を閲覧するぶんには問題のない程度だと思います。
+今後余裕があったら、また機能の拡充をしていきたいと思います。</p><p>草々</p>
             
 <hr style="margin-top: 60px;">
 

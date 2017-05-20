@@ -1003,6 +1003,18 @@
     "title": "ミーリマシンで遊ぼう"
   },
   {
+    "url": "renewal.html",
+    "thumbnail": "/img/USAGI0I9A6075_TP_V.jpg",
+    "id": "renewal",
+    "created_at": "2017-05-20T21:14:39+09:00",
+    "tags": [
+      {
+        "name": "about"
+      }
+    ],
+    "title": " サイトをリニューアルしました"
+  },
+  {
     "url": "site.html",
     "thumbnail": "res/empty.png",
     "id": "site",
