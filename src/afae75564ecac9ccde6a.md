@@ -1,18 +1,3 @@
-<!-- {
-  "id": "afae75564ecac9ccde6a",
-  "created_at": "2016-12-11T18:46:09+09:00",
-  "tags": [
-    {
-      "name": "JSON",
-      "versions": []
-    },
-    {
-      "name": "purescript",
-      "versions": []
-    }
-  ],
-  "title": "PureScriptを使ってJSONの型安全な読み書きを自動化する"
-} -->
 # TL;DR Version
 
 JSONファイルを読み書きするには、[purescript-foreign-generic](https://github.com/paf31/purescript-foreign-generic)が便利です。

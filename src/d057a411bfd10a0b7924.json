@@ -1,0 +1,23 @@
+{
+  "id": "d057a411bfd10a0b7924",
+  "created_at": "2016-12-17T21:05:16+09:00",
+  "tags": [
+    {
+      "name": "Blender",
+      "versions": []
+    },
+    {
+      "name": "Babylon.js",
+      "versions": []
+    },
+    {
+      "name": "ゲーム開発",
+      "versions": []
+    },
+    {
+      "name": "purescript",
+      "versions": []
+    }
+  ],
+  "title": "モナドのまほう　第11話『タイトル画面があるとゲームっぽい』"
+}

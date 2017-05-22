@@ -1,0 +1,27 @@
+{
+  "id": "c1017d61978afbce6cc5",
+  "created_at": "2016-12-01T20:43:30+09:00",
+  "tags": [
+    {
+      "name": "JavaScript",
+      "versions": []
+    },
+    {
+      "name": "WebGL",
+      "versions": []
+    },
+    {
+      "name": "Blender",
+      "versions": []
+    },
+    {
+      "name": "Babylon.js",
+      "versions": []
+    },
+    {
+      "name": "purescript",
+      "versions": []
+    }
+  ],
+  "title": "モナドのまほう　第８話『たまにはデモします』"
+}

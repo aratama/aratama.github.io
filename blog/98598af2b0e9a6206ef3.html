@@ -59,34 +59,7 @@ MathJax.Hub.Config({
 <a href="generator.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>generator</span></a>
 <a href="purescript.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>purescript</span></a></p>
             <hr>
-            <!-- {
-  "id": "98598af2b0e9a6206ef3",
-  "created_at": "2015-09-17T20:13:07+09:00",
-  "tags": [
-    {
-      "name": "JavaScript",
-      "versions": []
-    },
-    {
-      "name": "Haskell",
-      "versions": []
-    },
-    {
-      "name": "promise",
-      "versions": []
-    },
-    {
-      "name": "generator",
-      "versions": []
-    },
-    {
-      "name": "purescript",
-      "versions": []
-    }
-  ],
-  "title": "AffですべてのPromises/Generatorsを過去にする／そして何故我々は作用をモナドで抽象化すべきなのか"
-} -->
-<p>PromiseやGeneratorのような機構を使ってもなお非同期処理は厄介だ、そしてもっとシンプルで便利な方法があるよ、という話です。前半の議論を元に、後半ではなぜプログラミング言語の作用をモナドで抽象すると便利なのかということの説明をしています。</p><p>関数型プログラミング言語は「副作用をなるべく減らすことで安全性を高めた言語」というように説明されることがありますが、すべての式が副作用を持たないという『純粋』関数型プログラミング言語が言語を参照透明にしてモナドを導入するのは決して「副作用はなるべく避けたほうが安全だから」という理由だけではないのです。長いですが、これでも結構削りました。</p><h1><a name="-promises-generators-" class="anchor" href="#-promises-generators-"><span class="header-link"></span></a>序盤戦・Promises/Generatorsの光と影</h1><h3><a name="promises-generators-" class="anchor" href="#promises-generators-"><span class="header-link"></span></a>Promises/Generatorsで世界はちょっと平和になる</h3><p>かつてはJavaScriptの非同期処理はコールバック地獄に陥ったり様々なパターンが混在したりして、『地獄』と呼ぶのに似つかわしい混沌とした状態にありましたが、最近になってPromiseとGeneratorが導入され、ようやくうまく書ける環境が整いつつあります<a class="link-footnote" href="#footnote-hell" name="link-hell">※</a>。</p><p>簡単な例として、Nodeで3つのファイル<code>foo.txt</code>、<code>bar.txt</code>、<code>baz.txt</code>を読み込んでつなげて出力したいとします。まずはNode形式の非同期処理関数をPromise化する関数<code>promisify</code>を次のように適当に定義しておきます。</p><pre><code class="js">function promisify(f){
+            <p>PromiseやGeneratorのような機構を使ってもなお非同期処理は厄介だ、そしてもっとシンプルで便利な方法があるよ、という話です。前半の議論を元に、後半ではなぜプログラミング言語の作用をモナドで抽象すると便利なのかということの説明をしています。</p><p>関数型プログラミング言語は「副作用をなるべく減らすことで安全性を高めた言語」というように説明されることがありますが、すべての式が副作用を持たないという『純粋』関数型プログラミング言語が言語を参照透明にしてモナドを導入するのは決して「副作用はなるべく避けたほうが安全だから」という理由だけではないのです。長いですが、これでも結構削りました。</p><h1><a name="-promises-generators-" class="anchor" href="#-promises-generators-"><span class="header-link"></span></a>序盤戦・Promises/Generatorsの光と影</h1><h3><a name="promises-generators-" class="anchor" href="#promises-generators-"><span class="header-link"></span></a>Promises/Generatorsで世界はちょっと平和になる</h3><p>かつてはJavaScriptの非同期処理はコールバック地獄に陥ったり様々なパターンが混在したりして、『地獄』と呼ぶのに似つかわしい混沌とした状態にありましたが、最近になってPromiseとGeneratorが導入され、ようやくうまく書ける環境が整いつつあります<a class="link-footnote" href="#footnote-hell" name="link-hell">※</a>。</p><p>簡単な例として、Nodeで3つのファイル<code>foo.txt</code>、<code>bar.txt</code>、<code>baz.txt</code>を読み込んでつなげて出力したいとします。まずはNode形式の非同期処理関数をPromise化する関数<code>promisify</code>を次のように適当に定義しておきます。</p><pre><code class="js">function promisify(f){
     return function(){
         return new Promise((resolve, reject)=>{
             f.apply(undefined, Array.prototype.slice.call(arguments).concat([(err, data)=>{

@@ -1,0 +1,27 @@
+{
+  "id": "5d3f61339e84d2715f71",
+  "created_at": "2016-10-31T06:56:43+09:00",
+  "tags": [
+    {
+      "name": "JavaScript",
+      "versions": []
+    },
+    {
+      "name": "purescript",
+      "versions": []
+    },
+    {
+      "name": "オンラインゲーム",
+      "versions": []
+    },
+    {
+      "name": "Firebase",
+      "versions": []
+    },
+    {
+      "name": "関数型プログラミング",
+      "versions": []
+    }
+  ],
+  "title": "モナドのまほう　第３話『オンラインゲームになりました』"
+}

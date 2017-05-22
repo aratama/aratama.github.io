@@ -1,0 +1,27 @@
+{
+  "id": "160fe92376e795168acd",
+  "created_at": "2016-10-03T21:14:39+09:00",
+  "tags": [
+    {
+      "name": "Haskell",
+      "versions": []
+    },
+    {
+      "name": "JSON",
+      "versions": []
+    },
+    {
+      "name": "言語作成",
+      "versions": []
+    },
+    {
+      "name": "purescript",
+      "versions": []
+    },
+    {
+      "name": "新人プログラマ応援",
+      "versions": []
+    }
+  ],
+  "title": " えっ!?　１時間でオリジナルのプログラミング言語の開発を構文解析から!?"
+}

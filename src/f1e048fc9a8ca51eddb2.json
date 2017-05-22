@@ -1,0 +1,27 @@
+{
+  "id": "f1e048fc9a8ca51eddb2",
+  "created_at": "2015-04-09T22:08:58+09:00",
+  "tags": [
+    {
+      "name": "JavaScript",
+      "versions": []
+    },
+    {
+      "name": "Haskell",
+      "versions": []
+    },
+    {
+      "name": "関数型言語",
+      "versions": []
+    },
+    {
+      "name": "altjs",
+      "versions": []
+    },
+    {
+      "name": "purescript",
+      "versions": []
+    }
+  ],
+  "title": "関数型なAltJS、PureScriptの入門書を邦訳しました。"
+}

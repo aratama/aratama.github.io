@@ -1,0 +1,19 @@
+{
+  "id": "910354220d14d597b876",
+  "created_at": "2016-12-27T18:02:15+09:00",
+  "tags": [
+    {
+      "name": "JavaScript",
+      "versions": []
+    },
+    {
+      "name": "purescript",
+      "versions": []
+    },
+    {
+      "name": "Firebase",
+      "versions": []
+    }
+  ],
+  "title": "モナドのまほう　第14話『冒涜的Firebase活用法』"
+}

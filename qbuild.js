@@ -47,6 +47,9 @@ glob(`${sourceDir}/*.md`, {}, (err, sources) => {
             return `<pre><code class="${lang_}">${code}</code></pre>`;
         };
         renderer.image = (href, title, text) => {
+            if( ! href) {
+                debugger;
+            }
             const href_ = toLocalName(href);
             images.push(href_);
             return `<a href="${href_}"><img src="${href_}"></img></a>`;
@@ -67,9 +70,10 @@ glob(`${sourceDir}/*.md`, {}, (err, sources) => {
 
         var footnotes = [];
 
+
         const source = fs.readFileSync(file).toString();
-        const metadataString = /^<!--((.|\s)*?)-->/g.exec(source);
-        const metadata = metadataString == null ? {} : JSON.parse(metadataString[1]);
+        const metadata = JSON.parse(fs.readFileSync(sourceDir + "/" + path.basename(file, ".md") + ".json").toString());
+
         const date = new Date(metadata.created_at);
         const tags = metadata.tags.map(tag => `<a href="${tag.name}.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>${tag.name}</span></a>`).join("\n");
         const basename = `${path.basename(file, ".md")}.html`;
@@ -98,18 +102,8 @@ glob(`${sourceDir}/*.md`, {}, (err, sources) => {
         const file = entry.file;
         const thumbnail = toLocalName(entry.images.length > 0 ? entry.images[0] : "res/empty.png");
         const source = fs.readFileSync(file).toString();
-        const metadataString = /^<!--((.|\s)*?)-->/g.exec(source);
-        if(metadataString){
-            const metadata = JSON.parse(metadataString[1]);
-            return Object.assign({ url: `${path.basename(file, ".md")}.html`, thumbnail }, metadata);
-        }else{
-            return {
-                title: file, 
-                url: file,
-                thumbnail: null,
-                created_at: ""
-            }
-        }
+        const metadata = JSON.parse(fs.readFileSync(sourceDir + "/" + path.basename(file, ".md") + ".json").toString());
+        return Object.assign({ url: `${path.basename(file, ".md")}.html`, thumbnail }, metadata);
     });
 
     const pinnedArticles = articles.filter(a => pinned.includes(a.id)).sort((x, y)=> new Date(y.created_at) - new Date(x.created_at));
@@ -129,7 +123,7 @@ glob(`${sourceDir}/*.md`, {}, (err, sources) => {
         }).join("\n");        
     }
 
-    const items = `<h2>ピックアップ</h2>` + render(pinnedArticles) + `<h2 style="clear:both">最近の投稿</h2>` + render(history);
+    const items = `<h2>ピックアップ</h2>` + render(pinnedArticles) + `<div style="clear:both"></div><h2>最近の投稿</h2>` + render(history);
     const pageTitle = siteTitle;
     const thumbnail = "/res/empty.png";
     fs.writeFileSync("index.html", eval("`" + header + templeteIndex + footer + "`"));

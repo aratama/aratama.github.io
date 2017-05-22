@@ -1,12 +1,3 @@
-<!-- {
-  "id": "renewal",
-  "created_at": "2017-05-20T21:14:39+09:00",
-  "tags": [
-      { "name":"about" }
-  ],
-  "title": " サイトをリニューアルしました"
-} -->
-
 ![USAGI0I9A6075_TP_V.jpg](/img/USAGI0I9A6075_TP_V.jpg)
 
 この`aratama.github.io`はしばらく放置していたんですが、このたびリニューアルしました。

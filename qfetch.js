@@ -8,12 +8,14 @@ const sourceFileDir = "src";
 const imageFileDir = "img";
 
 async function saveArticle(json){
-    await fs.writeFile(`${sourceFileDir}/${json.id}.md`, `<!-- ${JSON.stringify({ 
+    await fs.writeFile(`${sourceFileDir}/${json.id}.json`, JSON.stringify({ 
         id: json.id, 
         created_at: json.created_at,
         tags: json.tags, 
         title: json.title
-    }, null, 2)} -->\n${json.body}`);
+    }, null, 2));
+    
+    await fs.writeFile(`${sourceFileDir}/${json.id}.md`, json.body);
 
     const imgPattern = /!\[.*?\]\((.*?)\)/g;
     var match;

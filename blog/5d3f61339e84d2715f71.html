@@ -59,34 +59,7 @@ MathJax.Hub.Config({
 <a href="Firebase.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>Firebase</span></a>
 <a href="関数型プログラミング.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>関数型プログラミング</span></a></p>
             <hr>
-            <!-- {
-  "id": "5d3f61339e84d2715f71",
-  "created_at": "2016-10-31T06:56:43+09:00",
-  "tags": [
-    {
-      "name": "JavaScript",
-      "versions": []
-    },
-    {
-      "name": "purescript",
-      "versions": []
-    },
-    {
-      "name": "オンラインゲーム",
-      "versions": []
-    },
-    {
-      "name": "Firebase",
-      "versions": []
-    },
-    {
-      "name": "関数型プログラミング",
-      "versions": []
-    }
-  ],
-  "title": "モナドのまほう　第３話『オンラインゲームになりました』"
-} -->
-<ul>
+            <ul>
 <li><a href="/blog/5a2b613378d07906c5c5.html">第二話</a>　←前回</li>
 </ul>
 <p>つづきです。</p><h1><a name="-firebase-" class="anchor" href="#-firebase-"><span class="header-link"></span></a>🔥Firebase🔥で一気にオンラインゲームに！</h1><p><strong>そろそろオンラインゲームっぽくしたくなった</strong>(思いつき)ので、オンラインゲームっぽくしておきましょう。なおPureScriptのFirebaseのバインディングは他の人が書いたものがあったんですが、それが古くて動かなかったので、筆者が自分で書きました。つらい。それではFirebaseに接続！　もちろんコードは基本的にJavaScriptとほとんど同じ！　雰囲気を知ってほしいので、JavaScript版のコードとPureScript版のコードを並べて書いてみます！ JavaScriptならこう！</p><pre><code class="haskell">var firebaseApp = firebase.initializeApp({

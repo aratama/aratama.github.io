@@ -58,30 +58,7 @@ MathJax.Hub.Config({
 <a href="purescript.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>purescript</span></a>
 <a href="関数型プログラミング.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>関数型プログラミング</span></a></p>
             <hr>
-            <!-- {
-  "id": "2316b58162cfec150460",
-  "created_at": "2016-09-16T02:11:58+09:00",
-  "tags": [
-    {
-      "name": "JavaScript",
-      "versions": []
-    },
-    {
-      "name": "Haskell",
-      "versions": []
-    },
-    {
-      "name": "purescript",
-      "versions": []
-    },
-    {
-      "name": "関数型プログラミング",
-      "versions": []
-    }
-  ],
-  "title": "純粋関数型スクリプト言語PureScriptのはじめかた。コンパイラの使いかたからサーバサイド/クライアントサイドアプリケーション開発まで"
-} -->
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>はじめに</h1><p><blockquote class="twitter-tweet" data-lang="ja"><p lang="en" dir="ltr">&quot;PureScript is more like Haskell than Haskell itself.&quot; – `<a href="https://twitter.com/thebeardedzug">@thebeardedzug</a></p>&mdash; Rahul Goma Phulore (@missingfaktor) <a href="https://twitter.com/missingfaktor/status/845400837841195009">2017年3月24日</a></blockquote></p><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+            <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>はじめに</h1><p><blockquote class="twitter-tweet" data-lang="ja"><p lang="en" dir="ltr">&quot;PureScript is more like Haskell than Haskell itself.&quot; – `<a href="https://twitter.com/thebeardedzug">@thebeardedzug</a></p>&mdash; Rahul Goma Phulore (@missingfaktor) <a href="https://twitter.com/missingfaktor/status/845400837841195009">2017年3月24日</a></blockquote></p><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 <p>スクリプト言語<strong><a href="http://www.purescript.org/">PureScript</a></strong>の開発環境構築手順を紹介します。PureScriptには<strong>AltJS</strong>としての側面があり、ブラウザ環境やNode環境での実行が主眼に置かれており、JavaScriptでは難しかった大規模な開発に耐えうる極めて高い堅牢性や可読性を備えています。また、JavaScriptに変換されるため、膨大なJavaScriptの資産を比較的簡単に活用できるほか、PureScriptのソースコードとそこから出力されるJavaScriptコードを対比させながら学べるという利点もあります。</p><p>PureScriptは最高級の機能を備える<strong>関数型プログラミング言語</strong>としての側面も持ちます。関数型プログラミング言語の代名詞的存在であるHaskellは、互換性を保つためにその長い歴史の中で数々の欠陥を抱え込んできました。PureScriptはHaskellのコンセプトを更に洗練して、新規の言語としてすべてを作り直すもので、<strong>PureScriptはHaskellよりもHaskellらしい</strong>とすら言われることもあります。しかも、Haskellの最大の難点であった『遅延評価』を取り除くことで、Haskellに習熟していない開発者でも馴染みやすい言語仕様になっています。</p><p>この記事では、Nodeのコマンドライン環境のような基本的なターゲットだけではなく、ウェブのシングルページアプリケーションのような実用性の高いアプリケーションを作って試せるように、Halogenというユーザインターフェイスのフレームワークや、Hyperというサーバサイドフレームワークを動かすところまでを紹介します。ブラウザ環境で動けば、ウェブページに組み込んで自分が作ったアプリケーションを簡単に他の人に見せられますし、<a href="http://electron.atom.io/">Electron</a>を使って単独で動くウィンドウアプリケーションなんかも作ることができるなど夢が広がりますね。</p><h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>前提となる知識</h2><ul>
 <li>HTML/CSS/JavaScript</li>

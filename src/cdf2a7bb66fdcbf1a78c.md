@@ -1,14 +1,3 @@
-<!-- {
-  "id": "cdf2a7bb66fdcbf1a78c",
-  "created_at": "2016-12-18T22:10:23+09:00",
-  "tags": [
-    {
-      "name": "RPGアツマール",
-      "versions": []
-    }
-  ],
-  "title": "モナドのまほう　第12話『RPGアツマールに私も集まーる』"
-} -->
 [第一話](http://qiita.com/hiruberuto/items/5321d8cebce7b87851f6) / [前回](http://qiita.com/hiruberuto/items/d057a411bfd10a0b7924)
 
 ゲームを作る日記です。星屑のインテンツィオーネに負けないゲームを作りたいと思います。

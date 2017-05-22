@@ -59,34 +59,7 @@ MathJax.Hub.Config({
 <a href="redux.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>redux</span></a>
 <a href="redux-saga.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>redux-saga</span></a></p>
             <hr>
-            <!-- {
-  "id": "115f6f6ea5a22abf9204",
-  "created_at": "2017-01-18T22:08:46+09:00",
-  "tags": [
-    {
-      "name": "JavaScript",
-      "versions": []
-    },
-    {
-      "name": "flux",
-      "versions": []
-    },
-    {
-      "name": "Elm",
-      "versions": []
-    },
-    {
-      "name": "redux",
-      "versions": []
-    },
-    {
-      "name": "redux-saga",
-      "versions": []
-    }
-  ],
-  "title": "Redux先輩ミーリマシン説"
-} -->
-<p><blockquote class="twitter-tweet" data-conversation="none" data-lang="ja"><p lang="en" dir="ltr"><a href="https://twitter.com/YassineElouafi2">@YassineElouafi2</a> Redux seen as a mealy machine: reducers compute next state, while Sagas compute next Effect</p>&mdash; Yassine Elouafi (@YassineElouafi2) <a href="https://twitter.com/YassineElouafi2/status/702078607812861952">2016年2月23日</a></blockquote></p><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+            <p><blockquote class="twitter-tweet" data-conversation="none" data-lang="ja"><p lang="en" dir="ltr"><a href="https://twitter.com/YassineElouafi2">@YassineElouafi2</a> Redux seen as a mealy machine: reducers compute next state, while Sagas compute next Effect</p>&mdash; Yassine Elouafi (@YassineElouafi2) <a href="https://twitter.com/YassineElouafi2/status/702078607812861952">2016年2月23日</a></blockquote></p><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 <p>ここ数日、Reduxとはなんぞやということについてさんっざん検索して調べまわっていました。ふと<a href="https://ja.wikipedia.org/wiki/%E3%83%9F%E3%83%BC%E3%83%AA%E3%83%BB%E3%83%9E%E3%82%B7%E3%83%B3">ミーリ・マシン</a>っぽいなと思って&quot;Redux Mealy Machine&quot;でググり、Redux-sagaの中の人のこのツイートにたどり着いて、ようやくストンと腑に落ちました。<a href="/blog/293869e223d44848f9c9.html">参考1</a>。<a href="/blog/4a7f67275c3ad887d98d.html">参考２</a></p><p>ReduxでReducerの中で作用を使うなとかActionCreatorを純粋にしろとか言われてどうすりゃいいんだよウッセーなお前はおれのかーちゃんかよって思った人は多いでしょう。Reduxが何なのか理解できていないと、Reduxが要求する制限や規則は単に窮屈で複雑、難解なだけです。でもReduxが何を表現しているのかがわかったら、あのような厄介な規則もとたんに前向きに受け入れられるようになりました。</p><p>Reduxとは何か。<strong>Reduxはミーリ・マシンだ</strong>。アプリケーションから状態遷移の部分のみを切り離して抽象化した、有限状態機械だ。Actionとは入力記号$\rm Σ$であり、Reducerとは状態遷移関数$\rm S × Σ → S$だ。Reduxは状態遷移のみを取り扱う純粋な機械であり、現実世界との相互作用とは独立してその状態遷移をテストできる。</p><p>Reduxだけでは計算は進んでいかない。Redux-Sagaは<code>select</code>と<code>take</code>で$\rm S$と$\rm Σ$を取り出し、$\rm S × Σ$から現実世界との相互作用$\rm Λ$を計算する出力関数$\rm S × Σ → Λ$として振る舞う。それからSagaは作用$\rm Λ$を現実世界に作用させ、その結果に応じて$\rm Σ$を<code>put</code>で再びReduxの中に投げ入れることで、ミーリ・マシンたるReduxを駆動する役目を持つ。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>まとめ</h1><p><a href="http://elm-lang.org/">Elm</a>いいよ！</p>
             

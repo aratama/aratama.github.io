@@ -1,0 +1,27 @@
+{
+  "id": "5a2b613378d07906c5c5",
+  "created_at": "2016-10-29T21:09:57+09:00",
+  "tags": [
+    {
+      "name": "JavaScript",
+      "versions": []
+    },
+    {
+      "name": "purescript",
+      "versions": []
+    },
+    {
+      "name": "オンラインゲーム",
+      "versions": []
+    },
+    {
+      "name": "Firebase",
+      "versions": []
+    },
+    {
+      "name": "関数型プログラミング",
+      "versions": []
+    }
+  ],
+  "title": "モナドのまほう　第２話『ゲームループとキー入力ができました』"
+}
