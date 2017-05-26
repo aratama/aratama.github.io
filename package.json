@@ -4,28 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "node qbuild.js",
-    "debug": "node --inspect --debug-brk qbuild.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/aratama/aratama.github.io.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "UNLICENSED",
   "bugs": {
     "url": "https://github.com/aratama/aratama.github.io/issues"
   },
-  "homepage": "https://github.com/aratama/aratama.github.io#readme",
+  "homepage": "https://github.com/aratama/aratama.github.io",
   "devDependencies": {
-    "glob": "^7.1.1",
-    "marked": "^0.3.6",
-    "mikanjs": "^1.0.8",
-    "node-emoji": "^1.5.1",
-    "node-fetch": "^1.6.3"
   },
   "dependencies": {
-    "fs-extra": "^3.0.1"
   }
 }
