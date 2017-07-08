@@ -222,6 +222,27 @@
     "title": "HaskellerのためのPureScriptことはじめ"
   },
   {
+    "url": "36fcf600b618e6722554.html",
+    "thumbnail": "/img/36625a22-8ea3-9f8d-355b-9448cfd2e69c.png",
+    "id": "36fcf600b618e6722554",
+    "created_at": "2017-07-01T21:53:53+09:00",
+    "tags": [
+      {
+        "name": "JavaScript",
+        "versions": []
+      },
+      {
+        "name": "VirtualDom",
+        "versions": []
+      },
+      {
+        "name": "Maquette",
+        "versions": []
+      }
+    ],
+    "title": "5分でわかる、シンプルな仮想DOMライブラリMaquetteの紹介"
+  },
+  {
     "url": "39e4126f470d8b84b291.html",
     "thumbnail": "/img/d0e5491b-53af-bf2e-b980-6733d5530a31.png",
     "id": "39e4126f470d8b84b291",
@@ -424,6 +445,35 @@
       }
     ],
     "title": "モナドのまほう　第９話『サウンドエフェクトの作業をしてコーディングで荒んだ心を癒やします』"
+  },
+  {
+    "url": "5a2b613378d07906c5c5.html",
+    "thumbnail": "/img/da2f674d-b893-2934-6acd-96be3ececa69.png",
+    "id": "5a2b613378d07906c5c5",
+    "created_at": "2016-10-29T21:09:57+09:00",
+    "tags": [
+      {
+        "name": "JavaScript",
+        "versions": []
+      },
+      {
+        "name": "purescript",
+        "versions": []
+      },
+      {
+        "name": "オンラインゲーム",
+        "versions": []
+      },
+      {
+        "name": "Firebase",
+        "versions": []
+      },
+      {
+        "name": "関数型プログラミング",
+        "versions": []
+      }
+    ],
+    "title": "モナドのまほう　第２話『ゲームループとキー入力ができました』"
   },
   {
     "url": "5d3f61339e84d2715f71.html",
@@ -972,25 +1022,5 @@
       }
     ],
     "title": "ミーリマシンで遊ぼう"
-  },
-  {
-    "url": "renewal.html",
-    "thumbnail": "/img/USAGI0I9A6075_TP_V.jpg",
-    "id": "renewal",
-    "created_at": "2017-05-20T21:14:39+09:00",
-    "tags": [
-      {
-        "name": "about"
-      }
-    ],
-    "title": " サイトをリニューアルしました"
-  },
-  {
-    "url": "site.html",
-    "thumbnail": "res/empty.png",
-    "id": "site",
-    "created_at": "2525-04-01T00:00:00+09:00",
-    "tags": [],
-    "title": "このサイトについて"
   }
 ]

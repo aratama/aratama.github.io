@@ -67,22 +67,23 @@ MathJax.Hub.Config({
             <p class="tags"><a href="purescript.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>purescript</span></a></p>
             <hr>
             <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>おすすめ</h1><ul>
-<li>選ぶのが面倒なら、ひとまず<strong>Halogen</strong>を選べばいいと思います。ElmはReact/Reduxに似ているPuxもわりと人気があるようです</li>
+<li>選ぶのが面倒なら、ひとまず<strong>Halogen</strong>を選べばいいと思います。ElmやReact/Reduxに似ている<strong>Pux</strong>もわりと人気があるようです</li>
 <li><a href="https://github.com/alexmingoia/purescript-pux/issues/67">こちら</a>も参考になるかも</li>
 <li>ここに載っていないものがあったらぜひ教えてください</li>
+<li>なお、ここで紹介されているものは仮想DOM系のものばかりで、古典的なAPI設計のUIライブラリは皆無です。わざわざそんな不便なものを使う理由はないからです。</li>
 </ul>
 <h1><a name="-or-" class="anchor" href="#-or-"><span class="header-link"></span></a>メンテナンスが継続されているor新しいライブラリ</h1><h2><a name="-a-href-https-github-com-slamdata-purescript-halogen-halogen-a-" class="anchor" href="#-a-href-https-github-com-slamdata-purescript-halogen-halogen-a-"><span class="header-link"></span></a><a href="https://github.com/slamdata/purescript-halogen">halogen</a></h2><ul>
 <li>中身の仮想DOM実装は、PureScript製の<a href="https://github.com/slamdata/purescript-halogen-vdom">purescript-halogen-vdom</a></li>
 <li>Fluxやelm-htmlみたいにアクションを投げて状態を更新するタイプ</li>
 <li>状態更新や子のコンポーネントへのクエリまでを含めた計算構造をFreeモナドで定義するガチ勢</li>
 <li>要素と属性の組み合わせが正しいかどうかまで静的に型付けする機構がある</li>
-<li><a href="https://github.com/slamdata">slamdata</a>という会社のひとたちが中心に開発している</li>
+<li><a href="https://github.com/slamdata">slamdata</a>という会社のひとたちが中心に開発している。Halogenを使った製品を実際に提供しているようなので、実績としては間違いなくこの中で一番上</li>
 <li>基底のモナドは交換可能だけど基本的には<code>Aff</code></li>
 <li>コンポーネントを組み合わせるとかなり複雑な型になるのがちょっとつらい</li>
 <li>最も<a href="https://github.com/slamdata/purescript-halogen/tree/master/examples">サンプル</a>やドキュメントが揃っていてコントリビュータもユーザも多い</li>
 <li>ルーターやCSSを型安全に書くライブラリやなども平行して開発されている(他のUIライブラリからでも使えるが)</li>
-<li>SVGのサポートがまだない</li>
-<li>抽象度が高く、嵐のように投げつけられる意味不明な型エラーで初心者は頭がおかしくなって死ぬ</li>
+<li>SVGのサポートがまだないことがおそらく唯一にして最大の欠点</li>
+<li>抽象度が高く、嵐のように投げつけられる意味不明な型エラーで初心者は頭がおかしくなって死ぬ（慣れれば楽勝）</li>
 </ul>
 <h2><a name="-a-href-https-github-com-paf31-purescript-thermite-thermite-a-" class="anchor" href="#-a-href-https-github-com-paf31-purescript-thermite-thermite-a-"><span class="header-link"></span></a><a href="https://github.com/paf31/purescript-thermite/">thermite</a></h2><ul>
 <li>中身は<a href="https://facebook.github.io/react/">React.js</a></li>
@@ -97,7 +98,7 @@ MathJax.Hub.Config({
 <li>私はまだあんまりthermiteを試していないので、また何か気付いたら追記します</li>
 </ul>
 <h2><a name="-a-href-https-github-com-alexmingoia-purescript-pux-pux-a-" class="anchor" href="#-a-href-https-github-com-alexmingoia-purescript-pux-pux-a-"><span class="header-link"></span></a><a href="https://github.com/alexmingoia/purescript-pux">pux</a></h2><ul>
-<li>中身はReact</li>
+<li>中身はReact(でも他の仮想DOMライブラリも使えるっぽい)</li>
 <li>ビューを定義するのにモナドを使う。do記法が使える(他のフレームワークでは配列とか専用Monoid)</li>
 <li>サーバサイドレンダリングなんかもできるらしい</li>
 <li>ルーターも付属</li>
@@ -109,6 +110,7 @@ MathJax.Hub.Config({
 </ul>
 <h2><a name="-a-href-https-github-com-outwatch-purescript-outwatch-outwatch-a-" class="anchor" href="#-a-href-https-github-com-outwatch-purescript-outwatch-outwatch-a-"><span class="header-link"></span></a><a href="https://github.com/OutWatch/purescript-outwatch">outwatch</a></h2><ul>
 <li>できたて</li>
+<li>中身はSnabbdom</li>
 <li>Scala版とPureScript版がある</li>
 <li>リアクティブプログラミングを推しだしたライブラリのようです</li>
 <li>まだよくわからないです</li>
