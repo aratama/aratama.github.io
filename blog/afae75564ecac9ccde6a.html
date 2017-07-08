@@ -68,18 +68,18 @@ MathJax.Hub.Config({
 <a href="purescript.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>purescript</span></a></p>
             <hr>
             <h1><a name="tl-dr-version" class="anchor" href="#tl-dr-version"><span class="header-link"></span></a>TL;DR Version</h1><p>JSONファイルを読み書きするには、<a href="https://github.com/paf31/purescript-foreign-generic">purescript-foreign-generic</a>が便利です。</p><h1><a name="json-" class="anchor" href="#json-"><span class="header-link"></span></a>JSONめんどうくさい</h1><p>いまゲームを作っているんですが、実行環境ごとに適切な値が異なったり、実際にプレイしてみないと適切な値がわからないパラメータがたくさんあります。それで、コンパイルなしで細かい調節をできるようにしようといろんなパラメータをJSONのオプションファイルにくくり出しました。たとえばこんな感じです。</p><pre><code class="json">{
-    "loadDistance": 6,
-    "fogDensity": 0.005,
-    "maximumLoadedChunks": 2197
+    &quot;loadDistance&quot;: 6,
+    &quot;fogDensity&quot;: 0.005,
+    &quot;maximumLoadedChunks&quot;: 2197
 }</code></pre><p>静的型付けの言語であるPureScriptで書いているので、このオプションファイルを読み取って次のような型のデータとして受け取りたいです。</p><pre><code class="haskell">newtype Options = Options {
     loadDistance :: Int,
     fogDensity :: Number,
     maximumLoadedChunks :: Int
-}</code></pre><p>さて、<a href="https://github.com/slamdata/purescript-affjax">purescript-affjax</a>パッケージを使ってオプションファイルをajaxで<code>get</code>すると、その結果の<code>response</code>プロパティは<code>Json</code>、<code>ArrayBuffer</code>、<code>Unit</code>、<code>String</code>、<code>Foreign</code>、<code>Document</code>、<code>Blob</code>のうちの任意の型で受け取ることができます。JSONを読み取った時はこのうち<code>Foreign</code>か<code>Json</code>を使うことになりますが、<code>Foreign</code>を使った場合はこんな感じになります。</p><pre><code class="haskell">readOptions :: Foreign -> F Options
+}</code></pre><p>さて、<a href="https://github.com/slamdata/purescript-affjax">purescript-affjax</a>パッケージを使ってオプションファイルをajaxで<code>get</code>すると、その結果の<code>response</code>プロパティは<code>Json</code>、<code>ArrayBuffer</code>、<code>Unit</code>、<code>String</code>、<code>Foreign</code>、<code>Document</code>、<code>Blob</code>のうちの任意の型で受け取ることができます。JSONを読み取った時はこのうち<code>Foreign</code>か<code>Json</code>を使うことになりますが、<code>Foreign</code>を使った場合はこんな感じになります。</p><pre><code class="haskell">readOptions :: Foreign -&gt; F Options
 readOptions value = do
-    loadDistance <- readProp "loadDistance" value
-    fogDensity <- readProp "fogDensity" value
-    maximumLoadedChunks <- readProp "maximumLoadedChunks" value
+    loadDistance &lt;- readProp &quot;loadDistance&quot; value
+    fogDensity &lt;- readProp &quot;fogDensity&quot; value
+    maximumLoadedChunks &lt;- readProp &quot;maximumLoadedChunks&quot; value
     pure $ Options {
         loadDistance,
         fogDensity,
@@ -114,35 +114,35 @@ readOptions value = do
     landingDuration :: Int
 }
 
-readOptions :: Foreign -> F Options
+readOptions :: Foreign -&gt; F Options
 readOptions value = do
-    loadDistance <- readProp "loadDistance" value
-    fogDensity <- readProp "fogDensity" value
-    maximumLoadedChunks <- readProp "maximumLoadedChunks" value
-    vertexColorEnabled <- readProp "vertexColorEnabled" value
-    shadowEnabled <- readProp "shadowEnabled" value
-    shadowDisplayRange <- readProp "shadowDisplayRange" value
-    shadowMapSize <- readProp "shadowMapSize" value
-    skyboxRotationSpeed <- readProp "skyboxRotationSpeed" value
-    enableWaterMaterial <- readProp "enableWaterMaterial" value
-    chunkUnloadSpeed <- readProp "chunkUnloadSpeed" value
-    jumpVelocity <- readProp "jumpVelocity" value
-    initialWorldSize <- readProp "initialWorldSize" value
-    moveSpeed <- readProp "moveSpeed" value
-    cameraTargetSpeed <- readProp "cameraTargetSpeed" value
-    cameraRotationSpeed <- readProp "cameraRotationSpeed" value
-    cameraZoomSpeed <- readProp "cameraZoomSpeed" value
-    cameraMinZ <- readProp "cameraMinZ" value
-    cameraMaxZ <- readProp "cameraMaxZ" value
-    cameraFOV <- readProp "cameraFOV" value
-    cameraMinimumRange <- readProp "cameraMinimumRange" value
-    cameraMaximumRange <- readProp "cameraMaximumRange" value
-    cameraHorizontalSensitivity <- readProp "cameraHorizontalSensitivity" value
-    cameraVertialSensitivity <- readProp "cameraVertialSensitivity" value
-    pointerHorizontalSensitivity <- readProp "pointerHorizontalSensitivity" value
-    pointerVerticalSensitivity <- readProp "pointerVerticalSensitivity" value
-    landingVelocityLimit <- readProp "landingVelocityLimit" value
-    landingDuration <- readProp "landingDuration" value
+    loadDistance &lt;- readProp &quot;loadDistance&quot; value
+    fogDensity &lt;- readProp &quot;fogDensity&quot; value
+    maximumLoadedChunks &lt;- readProp &quot;maximumLoadedChunks&quot; value
+    vertexColorEnabled &lt;- readProp &quot;vertexColorEnabled&quot; value
+    shadowEnabled &lt;- readProp &quot;shadowEnabled&quot; value
+    shadowDisplayRange &lt;- readProp &quot;shadowDisplayRange&quot; value
+    shadowMapSize &lt;- readProp &quot;shadowMapSize&quot; value
+    skyboxRotationSpeed &lt;- readProp &quot;skyboxRotationSpeed&quot; value
+    enableWaterMaterial &lt;- readProp &quot;enableWaterMaterial&quot; value
+    chunkUnloadSpeed &lt;- readProp &quot;chunkUnloadSpeed&quot; value
+    jumpVelocity &lt;- readProp &quot;jumpVelocity&quot; value
+    initialWorldSize &lt;- readProp &quot;initialWorldSize&quot; value
+    moveSpeed &lt;- readProp &quot;moveSpeed&quot; value
+    cameraTargetSpeed &lt;- readProp &quot;cameraTargetSpeed&quot; value
+    cameraRotationSpeed &lt;- readProp &quot;cameraRotationSpeed&quot; value
+    cameraZoomSpeed &lt;- readProp &quot;cameraZoomSpeed&quot; value
+    cameraMinZ &lt;- readProp &quot;cameraMinZ&quot; value
+    cameraMaxZ &lt;- readProp &quot;cameraMaxZ&quot; value
+    cameraFOV &lt;- readProp &quot;cameraFOV&quot; value
+    cameraMinimumRange &lt;- readProp &quot;cameraMinimumRange&quot; value
+    cameraMaximumRange &lt;- readProp &quot;cameraMaximumRange&quot; value
+    cameraHorizontalSensitivity &lt;- readProp &quot;cameraHorizontalSensitivity&quot; value
+    cameraVertialSensitivity &lt;- readProp &quot;cameraVertialSensitivity&quot; value
+    pointerHorizontalSensitivity &lt;- readProp &quot;pointerHorizontalSensitivity&quot; value
+    pointerVerticalSensitivity &lt;- readProp &quot;pointerVerticalSensitivity&quot; value
+    landingVelocityLimit &lt;- readProp &quot;landingVelocityLimit&quot; value
+    landingDuration &lt;- readProp &quot;landingDuration&quot; value
     pure $ Options {
         loadDistance,
         fogDensity,
@@ -171,7 +171,7 @@ readOptions value = do
         pointerVerticalSensitivity,
         landingVelocityLimit,
         landingDuration
-    }</code></pre><p>ぎゃあああああああああああああああああああああ！　オプションの名前がコードの中にそれぞれの4回も登場していて、これはなかなかつらいボイラープレイートです。まだ序盤でコレですから、さらに開発が進んだらどんなことになるやら。弱い型付けのJavaScriptならこんな手間はないわけで、こんなことをやっていてはやっぱり強い型付けの言語はめんどうくさいねと言われても仕方ありません。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ジェネリックプログラミングは便利です</h1><p>これではあんまりなので何かいい方法がないか探したんですが、そういえば最近PureScriptは<strong>ジェネリックプログラミング</strong>に力を入れていることを思い出しました。コンパイル時にデータ型の定義からいろいろなコードを自動的に生成してくれる便利なやつで、<code>Generic</code>というクラスのインスタンスを自動導出できるようになったのです。なお、<code>Generic</code>という名前のクラスは<a href="https://pursuit.purescript.org/packages/purescript-generics/3.3.0/docs/Data.Generic#t:Generic"><code>purescript-generics</code>パッケージの<code>Data.Generic.Generic</code></a>と<a href="https://pursuit.purescript.org/packages/purescript-generics-rep/4.0.0/docs/Data.Generic.Rep#t:Generic"><code>purescript-generics-rep</code>パッケージの<code>Data.Generic.Rep.Generics</code>クラス</a>の2種類があって微妙に違います。<code>Data.Generic.Generic</code>は古いパッケージで、新しい<code>Data.Generic.Rep.Generics</code>パッケージのほうは古いパッケージに比べて少し制約が強くなり型安全性が向上しています。現在では古い<code>Data.Generic.Generics</code>を使う必要はなく、常に新しい方である<code>Data.Generic.Rep.Generics</code>を使えばいいみたいです。</p><p><code>Data.Generic.Rep.Generics</code>を使えば自動的にJSONを読み取ることができるのは見当がつきましたが、きっと誰かがすでにそういうライブラリを作っているはずです。筆者は面倒くさがりなので、なるべくなら自分でライブラリを書きたくありません。探したら<a href="https://github.com/paf31/purescript-foreign-generic">purescript-foreign-generic</a>パッケージがありました。これの使い方は簡単で、まずは<code>derive instance</code>で<code>Generic</code>のインスタンスを自動導出します。</p><pre><code class="haskell">derive instance genericOptions :: Generic Options _</code></pre><p>これで<code>readGeneric</code>という関数が使えるようになるので、これを呼び出すだけです。</p><pre><code class="haskell">readOptions :: Foreign -> F Options
+    }</code></pre><p>ぎゃあああああああああああああああああああああ！　オプションの名前がコードの中にそれぞれの4回も登場していて、これはなかなかつらいボイラープレイートです。まだ序盤でコレですから、さらに開発が進んだらどんなことになるやら。弱い型付けのJavaScriptならこんな手間はないわけで、こんなことをやっていてはやっぱり強い型付けの言語はめんどうくさいねと言われても仕方ありません。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ジェネリックプログラミングは便利です</h1><p>これではあんまりなので何かいい方法がないか探したんですが、そういえば最近PureScriptは<strong>ジェネリックプログラミング</strong>に力を入れていることを思い出しました。コンパイル時にデータ型の定義からいろいろなコードを自動的に生成してくれる便利なやつで、<code>Generic</code>というクラスのインスタンスを自動導出できるようになったのです。なお、<code>Generic</code>という名前のクラスは<a href="https://pursuit.purescript.org/packages/purescript-generics/3.3.0/docs/Data.Generic#t:Generic"><code>purescript-generics</code>パッケージの<code>Data.Generic.Generic</code></a>と<a href="https://pursuit.purescript.org/packages/purescript-generics-rep/4.0.0/docs/Data.Generic.Rep#t:Generic"><code>purescript-generics-rep</code>パッケージの<code>Data.Generic.Rep.Generics</code>クラス</a>の2種類があって微妙に違います。<code>Data.Generic.Generic</code>は古いパッケージで、新しい<code>Data.Generic.Rep.Generics</code>パッケージのほうは古いパッケージに比べて少し制約が強くなり型安全性が向上しています。現在では古い<code>Data.Generic.Generics</code>を使う必要はなく、常に新しい方である<code>Data.Generic.Rep.Generics</code>を使えばいいみたいです。</p><p><code>Data.Generic.Rep.Generics</code>を使えば自動的にJSONを読み取ることができるのは見当がつきましたが、きっと誰かがすでにそういうライブラリを作っているはずです。筆者は面倒くさがりなので、なるべくなら自分でライブラリを書きたくありません。探したら<a href="https://github.com/paf31/purescript-foreign-generic">purescript-foreign-generic</a>パッケージがありました。これの使い方は簡単で、まずは<code>derive instance</code>で<code>Generic</code>のインスタンスを自動導出します。</p><pre><code class="haskell">derive instance genericOptions :: Generic Options _</code></pre><p>これで<code>readGeneric</code>という関数が使えるようになるので、これを呼び出すだけです。</p><pre><code class="haskell">readOptions :: Foreign -&gt; F Options
 readOptions = readGeneric defaultOptions { unwrapSingleConstructors = true }</code></pre><p><code>readOptions</code>が恐ろしく簡単になりました。今までの苦労はなんだったんだ……。これだけでJSONを完全に型安全に読み取ることができますし、新たなオプションを追加したい時は、もう<code>readOptions</code>関数をいじる必要はありません。オプションファイル<code>options.json</code>に値を追加し、<code>Options</code>の型にプロパティの定義を追加するだけです。<a href="https://github.com/purescript-contrib/purescript-argonaut">purescript-argonaut</a>、もう要らない子じゃん。</p><p>後になって、<code>readOptions</code>のような専用の関数を与えるのではなく、<code>IsForeign</code>クラスや<code>AsForeign</code>クラスのインスタンスにしたほうが何かと便利なことにも気が付きました。</p><pre><code class="haskell">instance isForeignOptions :: IsForeign Options where
     read = readGeneric defaultOptions { unwrapSingleConstructors = true }
 
@@ -191,13 +191,13 @@ type Users = Array User</code></pre><h3><a name="2-code-generic-code-" class="an
 derive instance genericUser :: Generic User _
 
 instance showUser :: Show User where
-    show = genericShow</code></pre><h3><a name="3-affjax-web-api-" class="anchor" href="#3-affjax-web-api-"><span class="header-link"></span></a>3. Affjaxを使ってWeb APIを叩く非同期な作用を定義する</h3><pre><code class="haskell">fetchUsers :: forall eff. Int -> Aff (ajax :: AJAX | eff) Users
+    show = genericShow</code></pre><h3><a name="3-affjax-web-api-" class="anchor" href="#3-affjax-web-api-"><span class="header-link"></span></a>3. Affjaxを使ってWeb APIを叩く非同期な作用を定義する</h3><pre><code class="haskell">fetchUsers :: forall eff. Int -&gt; Aff (ajax :: AJAX | eff) Users
 fetchUsers since = do
-    res <- get $ "https://api.github.com/users?since=" <> show since
+    res &lt;- get $ &quot;https://api.github.com/users?since=&quot; &lt;&gt; show since
     liftEx $ read res.response
 
-liftEx :: forall m e. (MonadError Error m, Show e) => ExceptT e Identity ~> m
-liftEx = either (throwError <<< error <<< show) pure <<< runExcept</code></pre><p>これだけです。なお、<code>read</code>の失敗を表現する型は<code>ExceptT</code>というデータ型なのですが、それに対して<code>Aff</code>の内部で使われているエラー表現の<code>err :: EXCEPTION</code>はJavaScriptの<code>Error</code>オブジェクトベースのものなので、実はエラーの内部的な表現が異なります。<code>liftEx</code>という補助的な関数は、<code>ExceptT</code>を<code>Aff</code>へと変換してこのギャップを埋め合わせるためのものです。</p><p>また、ネットワークの不調などで失敗することも多いと思いますが、エラーハンドリングをどうするべきかはアプリケーションによってまちまちなので、ここでは特に細かいエラーハンドリングはしていません。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>型安全でない方法</h1><p>なお、型安全でなくていいのなら<a href="https://pursuit.purescript.org/packages/purescript-foreign/3.0.1/docs/Data.Foreign#v:unsafeFromForeign"><code>unsafeFromForeign</code></a>を使うか、あるいはもっとワイルドに<a href="https://pursuit.purescript.org/packages/purescript-unsafe-coerce/2.0.0/docs/Unsafe.Coerce#v:unsafeCoerce"><code>unsafeCoerce</code></a>で型を変換してしまえばOKです。PureScriptのデータ型はJavaScriptのものとちゃんと対応しているので、実行時のデータがどうなっているのかちゃんと理解していれば問題なく動きます。そっちのほうが効率面でも有利です。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>さいごに</h1><p>これでも動的型付けのプログラミング言語ならもっと簡単だと思うかもしれませんが、こういうオプションファイルを作ったらどんなオプションがあるのかドキュメントに書かなくてはいけませんから手間は結局同じことです。というかドキュメントに書いてもどうせ修正を忘れてコードとドキュメントの内容がズレ始めるに決まっているので、静的型付けの言語を使って型の定義として書いたほうがよほどマシです。</p><p>PureScriptのジェネリックプログラミングはまだHaskellほど強力ではないものの、最近のバージョンアップでジェネリックプログラミング関連の機能がどんどん追加されていてずいぶん便利になっています。それに伴って型レベルの計算も強力にサポートされるようになり、<a href="https://github.com/LiamGoodacre/purescript-type-map/blob/master/src/Type/Map.purs">型レベル計算でマップを実装する</a>というような変態行為が可能なくらいにまでなっているみたいです。</p><p>なんか最近ほんとPureScriptのことしか書いていないです。firebaseとかvirtual-domとかWebGL/Babylonjsとか他にもお勧めしたいものはいろいろあるのですが、そっちは誰か他の人が紹介を書いてくれそうなので私はあんまり書く気がおきません。PureScriptはほんとにいいスクリプト言語なので、みんなもっと記事を書いてくれたらいいなと思います。アドベントカレンダーとか作ればよかったでしょうか。<a href="http://qiita.com/advent-calendar/2016/typescript">TypeScriptのアドベントカレンダーすら過疎っている</a>し、PureScriptではもっと人が集まらないでしょうね……。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>参考文献</h1><ul>
+liftEx :: forall m e. (MonadError Error m, Show e) =&gt; ExceptT e Identity ~&gt; m
+liftEx = either (throwError &lt;&lt;&lt; error &lt;&lt;&lt; show) pure &lt;&lt;&lt; runExcept</code></pre><p>これだけです。なお、<code>read</code>の失敗を表現する型は<code>ExceptT</code>というデータ型なのですが、それに対して<code>Aff</code>の内部で使われているエラー表現の<code>err :: EXCEPTION</code>はJavaScriptの<code>Error</code>オブジェクトベースのものなので、実はエラーの内部的な表現が異なります。<code>liftEx</code>という補助的な関数は、<code>ExceptT</code>を<code>Aff</code>へと変換してこのギャップを埋め合わせるためのものです。</p><p>また、ネットワークの不調などで失敗することも多いと思いますが、エラーハンドリングをどうするべきかはアプリケーションによってまちまちなので、ここでは特に細かいエラーハンドリングはしていません。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>型安全でない方法</h1><p>なお、型安全でなくていいのなら<a href="https://pursuit.purescript.org/packages/purescript-foreign/3.0.1/docs/Data.Foreign#v:unsafeFromForeign"><code>unsafeFromForeign</code></a>を使うか、あるいはもっとワイルドに<a href="https://pursuit.purescript.org/packages/purescript-unsafe-coerce/2.0.0/docs/Unsafe.Coerce#v:unsafeCoerce"><code>unsafeCoerce</code></a>で型を変換してしまえばOKです。PureScriptのデータ型はJavaScriptのものとちゃんと対応しているので、実行時のデータがどうなっているのかちゃんと理解していれば問題なく動きます。そっちのほうが効率面でも有利です。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>さいごに</h1><p>これでも動的型付けのプログラミング言語ならもっと簡単だと思うかもしれませんが、こういうオプションファイルを作ったらどんなオプションがあるのかドキュメントに書かなくてはいけませんから手間は結局同じことです。というかドキュメントに書いてもどうせ修正を忘れてコードとドキュメントの内容がズレ始めるに決まっているので、静的型付けの言語を使って型の定義として書いたほうがよほどマシです。</p><p>PureScriptのジェネリックプログラミングはまだHaskellほど強力ではないものの、最近のバージョンアップでジェネリックプログラミング関連の機能がどんどん追加されていてずいぶん便利になっています。それに伴って型レベルの計算も強力にサポートされるようになり、<a href="https://github.com/LiamGoodacre/purescript-type-map/blob/master/src/Type/Map.purs">型レベル計算でマップを実装する</a>というような変態行為が可能なくらいにまでなっているみたいです。</p><p>なんか最近ほんとPureScriptのことしか書いていないです。firebaseとかvirtual-domとかWebGL/Babylonjsとか他にもお勧めしたいものはいろいろあるのですが、そっちは誰か他の人が紹介を書いてくれそうなので私はあんまり書く気がおきません。PureScriptはほんとにいいスクリプト言語なので、みんなもっと記事を書いてくれたらいいなと思います。アドベントカレンダーとか作ればよかったでしょうか。<a href="http://qiita.com/advent-calendar/2016/typescript">TypeScriptのアドベントカレンダーすら過疎っている</a>し、PureScriptではもっと人が集まらないでしょうね……。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>参考文献</h1><ul>
 <li><a href="http://www.purescript.org/learn/generic/">Generic Programming</a></li>
 <li><a href="https://github.com/paf31/24-days-of-purescript-2016/blob/master/11.markdown">11. Generic Deriving - 24-days-of-purescript-2016</a> 24-days-of-purescript-2016でもちょうどジェネリックプログラミングの話題でした</li>
 <li><a href="/blog/4cc65f128962e11811fb.html">AesonでJSONをパース・生成する方法まとめ</a> Haskellだとこんなかんじです</li>

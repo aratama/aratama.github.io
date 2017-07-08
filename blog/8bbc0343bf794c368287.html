@@ -83,28 +83,28 @@ MathJax.Hub.Config({
 <li>新しい概念を学ぼうとせず、自分が既に知っている何らかのプログラミング知識に照らし合わせようとする</li>
 <li>箱とかブリートとかポケモンとか、何かの比喩として理解しようとする</li>
 </ul>
-<p>モナドに限りませんが、<strong>抽象的な概念を学ぶコツは具体例を数多く学ぶこと</strong>です。「ポケモン」が「ピカチュウ」や「ラッタ」といった具体的なポケモンの総称であるように、モナドとはMaybeモナドやListモナドといったモナドの<strong><ruby>具体例<rt>インスタンス</rt></ruby></strong>の総称です。<strong>モナドを理解するには、なによりモナドのインスタンスを数多く知り、それぞれのモナドの具体例を使えるようにすることが大切</strong>です。モナドの具体例をいくつも知れば、やがてその共通点としてモナドとは何なのかが見えてきます。それでは、まずはモナドの図鑑をパラパラとめくって、駆け足でいろんなモナドを眺めてみましょう。</p><h2><a name="maybe-" class="anchor" href="#maybe-"><span class="header-link"></span></a>Maybeモナド</h2><p>プログラミングでは、操作が必ずしも成功するとは限りません。例えば、リストの要素への参照では、インデックスが範囲内なら成功してその要素を返せますが、そうでないなら失敗になります。あるいは、文字列中の別の文字列の位置を調べる<code>indexOf</code>も、その文字列が見つかればインデックスを返せますが、そうでなければ失敗になります。</p><p>ここではリスト<code>xs</code>への<code>i</code>番目の要素へのアクセスを、<code>!!</code>という演算子を使って<code>xs !! i</code>というように表すことにします。また、文字列<code>x</code>の位置を文字列<code>y</code>の中から探す操作を<code>indexOf x y</code>と書くことにします。このような失敗しうる計算が何度か続くとき、Haskellライクな言語では例えば次のように表すことができます。</p><pre><code class="hs">x <- ["Space", "World", "Universe"] !! 1
-y <- indexOf x "Hello, World"
-pure ("String \"" ++ x ++ "\" at " ++ show y)</code></pre><p>このプログラムは次のような順序で計算が進んでいきます。</p><p>1.<code>[&quot;Space&quot;, &quot;World&quot;, &quot;Universe&quot;] !! 1</code>という式でリストの<code>1</code>番目の要素を参照し、結果である値<code>World</code>に変数<code>x</code>が束縛されます。</p><ol>
+<p>モナドに限りませんが、<strong>抽象的な概念を学ぶコツは具体例を数多く学ぶこと</strong>です。「ポケモン」が「ピカチュウ」や「ラッタ」といった具体的なポケモンの総称であるように、モナドとはMaybeモナドやListモナドといったモナドの<strong><ruby>具体例<rt>インスタンス</rt></ruby></strong>の総称です。<strong>モナドを理解するには、なによりモナドのインスタンスを数多く知り、それぞれのモナドの具体例を使えるようにすることが大切</strong>です。モナドの具体例をいくつも知れば、やがてその共通点としてモナドとは何なのかが見えてきます。それでは、まずはモナドの図鑑をパラパラとめくって、駆け足でいろんなモナドを眺めてみましょう。</p><h2><a name="maybe-" class="anchor" href="#maybe-"><span class="header-link"></span></a>Maybeモナド</h2><p>プログラミングでは、操作が必ずしも成功するとは限りません。例えば、リストの要素への参照では、インデックスが範囲内なら成功してその要素を返せますが、そうでないなら失敗になります。あるいは、文字列中の別の文字列の位置を調べる<code>indexOf</code>も、その文字列が見つかればインデックスを返せますが、そうでなければ失敗になります。</p><p>ここではリスト<code>xs</code>への<code>i</code>番目の要素へのアクセスを、<code>!!</code>という演算子を使って<code>xs !! i</code>というように表すことにします。また、文字列<code>x</code>の位置を文字列<code>y</code>の中から探す操作を<code>indexOf x y</code>と書くことにします。このような失敗しうる計算が何度か続くとき、Haskellライクな言語では例えば次のように表すことができます。</p><pre><code class="hs">x &lt;- [&quot;Space&quot;, &quot;World&quot;, &quot;Universe&quot;] !! 1
+y &lt;- indexOf x &quot;Hello, World&quot;
+pure (&quot;String \&quot;&quot; ++ x ++ &quot;\&quot; at &quot; ++ show y)</code></pre><p>このプログラムは次のような順序で計算が進んでいきます。</p><p>1.<code>[&quot;Space&quot;, &quot;World&quot;, &quot;Universe&quot;] !! 1</code>という式でリストの<code>1</code>番目の要素を参照し、結果である値<code>World</code>に変数<code>x</code>が束縛されます。</p><ol>
 <li>次に<code>indexOf x &quot;Hello, World&quot;</code>という式のが計算され、結果である<code>7</code>という値に変数<code>y</code>が束縛されます。</li>
 <li>最後に<code>&quot;String \&quot;&quot; ++ x ++ &quot;\&quot; at &quot; ++ show y</code>が計算され、これが<code>pure</code>関数に渡されます。</li>
 <li>この最後の行の値が、この一連の計算全体の結果になります。</li>
 </ol>
-<p>まあ上から下に順番に計算が行われていったというだけなのですが、この一連の計算の途中で失敗が起こるともっと興味深い振る舞いになります。たとえば、2行目で<code>&quot;World&quot;</code>という文字列を検索するときに、どうみても<code>&quot;World&quot;</code>が含まれていないような文字列を与えてみます。</p><pre><code class="hs">x <- ["Space", "World", "Universe"] !! 1
-y <- indexOf x "----"
-pure ("String \"" ++ x ++ "\" at " ++ show y)</code></pre><p>このとき、計算が<code>indexOf x &quot;----&quot;</code>のところまで来ると、この計算は失敗し、<strong>そこで一連の計算は中止され</strong>、呼び出し元に失敗したという情報のみが伝わります。一連の計算が失敗した時点で、この計算を中止して呼び出し元に戻るのです。これは単にプログラムがクラッシュしたとかではなくて、呼び出し元は計算が成功したか失敗したか、結果を条件分岐して調べて、安全にプログラムの実行を継続することができます。</p><p>また、<code>Nothing</code>という値を使うと、その地点で確実に計算を失敗させることができます。次のコードでは、必ず二行目で計算が失敗し、そこで計算が中止され、呼び出し元に戻ります。</p><pre><code class="hs">x <- ["Space", "World", "Universe"] !! 1
+<p>まあ上から下に順番に計算が行われていったというだけなのですが、この一連の計算の途中で失敗が起こるともっと興味深い振る舞いになります。たとえば、2行目で<code>&quot;World&quot;</code>という文字列を検索するときに、どうみても<code>&quot;World&quot;</code>が含まれていないような文字列を与えてみます。</p><pre><code class="hs">x &lt;- [&quot;Space&quot;, &quot;World&quot;, &quot;Universe&quot;] !! 1
+y &lt;- indexOf x &quot;----&quot;
+pure (&quot;String \&quot;&quot; ++ x ++ &quot;\&quot; at &quot; ++ show y)</code></pre><p>このとき、計算が<code>indexOf x &quot;----&quot;</code>のところまで来ると、この計算は失敗し、<strong>そこで一連の計算は中止され</strong>、呼び出し元に失敗したという情報のみが伝わります。一連の計算が失敗した時点で、この計算を中止して呼び出し元に戻るのです。これは単にプログラムがクラッシュしたとかではなくて、呼び出し元は計算が成功したか失敗したか、結果を条件分岐して調べて、安全にプログラムの実行を継続することができます。</p><p>また、<code>Nothing</code>という値を使うと、その地点で確実に計算を失敗させることができます。次のコードでは、必ず二行目で計算が失敗し、そこで計算が中止され、呼び出し元に戻ります。</p><pre><code class="hs">x &lt;- [&quot;Space&quot;, &quot;World&quot;, &quot;Universe&quot;] !! 1
 Nothing
-pure ("String \"" ++ x ++ "\" at " ++ show y)</code></pre><p>そういえば、一番最後の行では<code>pure</code>という関数を呼び出していますが、これは必ず成功する『失敗しうる計算』を表現するためのものです。<code>x + y + z</code>という普通の計算を、<code>pure</code>関数に渡すことで、<code>!!</code>や<code>indexOf</code>のような操作と同種の計算として扱えるように変換しているのです。</p><p>つまり、この一連の『失敗しうる計算』はシンプルな<strong>例外処理機構</strong>として働きます。途中で失敗すればそこで計算を中止し、呼び出し元では計算が最後まで成功したかどうか、それとも失敗したかどうかわかります。また最後まで成功した場合はその結果の値もわかります。<code>Nothing</code>を挟めば、まるで<code>throw</code>で例外を投げるように途中で計算を中止できます。Maybeモナドというのは、このような構文を実現するものです。Maybeモナドはモナドを学び始める時にだいたい最初に扱うシンプルなモナドで、物語序盤でみんなが遭遇し、最弱クラスだけど最弱ではないポケモン、<strong><a href="http://www.pokemon.jp/zukan/detail/019.html">コラッタ</a></strong>のような存在です(強引)。</p><p>ここではこれ以上<code>Maybe</code>モナドの詳細には踏み込みません。ここでよく確認しておきたいのは、この<code>Maybe</code>モナドの振る舞いでも実装の詳細でもなく、次の2点です。</p><ul>
+pure (&quot;String \&quot;&quot; ++ x ++ &quot;\&quot; at &quot; ++ show y)</code></pre><p>そういえば、一番最後の行では<code>pure</code>という関数を呼び出していますが、これは必ず成功する『失敗しうる計算』を表現するためのものです。<code>x + y + z</code>という普通の計算を、<code>pure</code>関数に渡すことで、<code>!!</code>や<code>indexOf</code>のような操作と同種の計算として扱えるように変換しているのです。</p><p>つまり、この一連の『失敗しうる計算』はシンプルな<strong>例外処理機構</strong>として働きます。途中で失敗すればそこで計算を中止し、呼び出し元では計算が最後まで成功したかどうか、それとも失敗したかどうかわかります。また最後まで成功した場合はその結果の値もわかります。<code>Nothing</code>を挟めば、まるで<code>throw</code>で例外を投げるように途中で計算を中止できます。Maybeモナドというのは、このような構文を実現するものです。Maybeモナドはモナドを学び始める時にだいたい最初に扱うシンプルなモナドで、物語序盤でみんなが遭遇し、最弱クラスだけど最弱ではないポケモン、<strong><a href="http://www.pokemon.jp/zukan/detail/019.html">コラッタ</a></strong>のような存在です(強引)。</p><p>ここではこれ以上<code>Maybe</code>モナドの詳細には踏み込みません。ここでよく確認しておきたいのは、この<code>Maybe</code>モナドの振る舞いでも実装の詳細でもなく、次の2点です。</p><ul>
 <li><strong><code>結果 &lt;- 何らかの同種の計算</code>という文の連続として一連の計算を表現できること</strong></li>
 <li><strong><code>pure</code>関数で任意の式をその計算に組み込めること</strong></li>
 </ul>
-<h2><a name="either-" class="anchor" href="#either-"><span class="header-link"></span></a>Eitherモナド</h2><p>Maybeモナドは失敗して計算が中止しても、呼び出し元がなぜ計算が失敗したのかを窺い知ることはできません。失敗した時にその理由を呼び出し元にちゃんと伝えたいという場合は、次のEitherモナドを使います。</p><p>JSONオブジェクトのプロパティを読み取る関数<code>readIntProp</code>、<code>readStringProp</code>、<code>readBooleanProp</code>のような関数があったとしましょう。これらの関数は、引数に指定した名前のプロパティが存在しない時や、読み取ろうとしたプロパティのデータ型が一致しない場合に失敗になります。コードは例えば次のようになります。</p><pre><code class="hs">x <- readIntProp "x" json
-y <- readStringProp "y" json
-z <- readBooleanProp "z" json
-pure { x: x, y: y, z: z }</code></pre><p>このコードでも、上から順に一行づつ実行されていき、途中で失敗がなければ最後まで計算が進み、それから最後の行の値が最終的な結果になります。失敗した場合は、どのプロパティの読み取りに失敗したのかが呼び出し元に伝わります。</p><p>Maybeモナドでは<code>Nothing</code>で明示的に失敗させて中止することができましたが、Eitherモナドでも同じように<code>Left</code>で計算を中止できます。ただし、<code>Left</code>は関数になっていて、引数に受け取ったデータを呼び出し元に伝えることができます。この点がMaybeモナドとの違いです。</p><pre><code class="hs">x <- readIntProp "x" json
-y <- Left "Some error"        -- 計算はここで中止され、"Some error"という例外情報が呼び出し元に伝わる
-z <- readIntProp "z" json
-pure { x: x, y: y, z: z }</code></pre><p>これはつまりEitherモナドは、Maybeモナドと同様の機能を備えているだけでなく、その自然な拡張になっています。ポケモンで言えばコラッタの進化系である<strong><a href="http://www.pokemon.jp/zukan/detail/020.html">ラッタ</a></strong>であるといえるでしょう。Haskell/PureScriptはtry-catch文のような例外処理専用の構文を持たないのですが、まさに<code>throw</code>文と同じようにエラーオブジェクトと共に計算の途中で抜けるという振る舞いが、このEitherモナドで実現できるのです。</p><p>さて、ここでも重要なのはEitherモナドの振る舞いや機能ではなく、このモナドもまた<strong>『<code>結果 &lt;- 計算</code>という文の連続として計算を表せること』『<code>pure</code>関数で任意の値をその計算に組み込めること』</strong>という共通点を持っていることです。</p><h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>リストモナド</h2><p>リストモナドとは、それぞれの計算が複数個の結果を持つような計算を表すことができるモナドです。リストモナドでは名前の通りそれぞれの行の計算がリストであるような式になっていて、このリストの要素がそれぞれの計算の結果だと考えます。例えば、次のようなコードを書くことができます。</p><pre><code class="hs">x <- [1, 2, 3]
+<h2><a name="either-" class="anchor" href="#either-"><span class="header-link"></span></a>Eitherモナド</h2><p>Maybeモナドは失敗して計算が中止しても、呼び出し元がなぜ計算が失敗したのかを窺い知ることはできません。失敗した時にその理由を呼び出し元にちゃんと伝えたいという場合は、次のEitherモナドを使います。</p><p>JSONオブジェクトのプロパティを読み取る関数<code>readIntProp</code>、<code>readStringProp</code>、<code>readBooleanProp</code>のような関数があったとしましょう。これらの関数は、引数に指定した名前のプロパティが存在しない時や、読み取ろうとしたプロパティのデータ型が一致しない場合に失敗になります。コードは例えば次のようになります。</p><pre><code class="hs">x &lt;- readIntProp &quot;x&quot; json
+y &lt;- readStringProp &quot;y&quot; json
+z &lt;- readBooleanProp &quot;z&quot; json
+pure { x: x, y: y, z: z }</code></pre><p>このコードでも、上から順に一行づつ実行されていき、途中で失敗がなければ最後まで計算が進み、それから最後の行の値が最終的な結果になります。失敗した場合は、どのプロパティの読み取りに失敗したのかが呼び出し元に伝わります。</p><p>Maybeモナドでは<code>Nothing</code>で明示的に失敗させて中止することができましたが、Eitherモナドでも同じように<code>Left</code>で計算を中止できます。ただし、<code>Left</code>は関数になっていて、引数に受け取ったデータを呼び出し元に伝えることができます。この点がMaybeモナドとの違いです。</p><pre><code class="hs">x &lt;- readIntProp &quot;x&quot; json
+y &lt;- Left &quot;Some error&quot;        -- 計算はここで中止され、&quot;Some error&quot;という例外情報が呼び出し元に伝わる
+z &lt;- readIntProp &quot;z&quot; json
+pure { x: x, y: y, z: z }</code></pre><p>これはつまりEitherモナドは、Maybeモナドと同様の機能を備えているだけでなく、その自然な拡張になっています。ポケモンで言えばコラッタの進化系である<strong><a href="http://www.pokemon.jp/zukan/detail/020.html">ラッタ</a></strong>であるといえるでしょう。Haskell/PureScriptはtry-catch文のような例外処理専用の構文を持たないのですが、まさに<code>throw</code>文と同じようにエラーオブジェクトと共に計算の途中で抜けるという振る舞いが、このEitherモナドで実現できるのです。</p><p>さて、ここでも重要なのはEitherモナドの振る舞いや機能ではなく、このモナドもまた<strong>『<code>結果 &lt;- 計算</code>という文の連続として計算を表せること』『<code>pure</code>関数で任意の値をその計算に組み込めること』</strong>という共通点を持っていることです。</p><h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>リストモナド</h2><p>リストモナドとは、それぞれの計算が複数個の結果を持つような計算を表すことができるモナドです。リストモナドでは名前の通りそれぞれの行の計算がリストであるような式になっていて、このリストの要素がそれぞれの計算の結果だと考えます。例えば、次のようなコードを書くことができます。</p><pre><code class="hs">x &lt;- [1, 2, 3]
 pure (x * x)</code></pre><p>このコードは次のように振る舞います。</p><ol>
 <li>最初の行<code>[1, 2, 3]</code>の最初の値<code>1</code>に<code>x</code>が束縛されます。</li>
 <li>最後の行で<code>x * x = 1 * 1 = 1</code>が計算される</li>
@@ -114,18 +114,18 @@ pure (x * x)</code></pre><p>このコードは次のように振る舞います�
 <li>最後の行で<code>x * x = 3 * 3 = 9</code>が計算される</li>
 <li>これまで最後の行で計算された結果がリストにまとめられて、全体の結果になる</li>
 </ol>
-<p>この計算では不思議なことに、最後の行が3回実行され、それらの結果すべてがリストにまとめられて結果として変えるのです。行がもっと増えると、それぞれの行の要素すべてに網羅的に計算が行われます。</p><pre><code class="hs">x <- [1, 2, 3]
-y <- [7, 8]
-pure (x + y)</code></pre><p>例えば、このコードでは、一行目は3つの値、二行目は2つの値があるので、最後の行は<code>2 * 3 = 6</code>回の計算が行われ<code>[8, 9, 9, 10, 10, 11]</code>という値として呼び出し元に返ってきます。</p><p>このモナドの特徴的な点は、それぞれの行の計算が、必ずしも上から順に一回づつ計算されていくというわけではない点です。それぞれの計算が複数値を返すことができ、それらのすべての場合について網羅的に計算が行われます。これはまるで、れんぞくパンチで１ターンに複数回攻撃する<strong><a href="http://www.pokemon.jp/zukan/detail/115.html">ガルーラ</a></strong>のようです。</p><p>MaybeモナドやEitherモナドは途中で中止されることがありましたし、リストモナドは同じ行を何度も計算することがあります。モナドがどのような順序で計算を進めていくのかは、それぞれのモナドによってまったく異なるのです。しかし、ここではモナドの共通点を探すことが重要でした。リストモナドがたとえこのような不思議な順序で計算が進むとしても、<strong>「<code>結果 &lt;- 計算</code>という文の連続で一連の計算を表すことができること」「<code>pure</code>関数で値を計算に組み込めること」</strong>という2点には変わりはありません。今回重要なのはそこです。</p><h2><a name="st-" class="anchor" href="#st-"><span class="header-link"></span></a>STモナド</h2><p>Haskellのような言語は変数の再代入禁止だとか聞いたことあるかもしれませんが、STモナドを使うと、どのオブジェクトも変更禁止、変数の再代入禁止という純粋な計算の中でありながら、変更可能な状態を作り出して計算することができます。</p><p>モナドの計算の中では、それぞれモナドの種類に応じた機能が使えます。Maybeモナドでは<code>Nothing</code>が、<code>Either</code>モナドでは<code>Left</code>が、独自の操作として使うことができました。リストでは<code>[1, 2, 3]</code>のようなリストリテラルをそのまま書けましたし、結果がリストになる式は何でも計算の中に組み込むことができます。そして、STモナドでは<code>newSTRef</code>、<code>modifySTRef</code>、<code>readSTRef</code>などの多彩な関数を使うことができます。<code>newSTRef</code>は変更可能な領域を作り出す関数で、C++でいうところの<code>new</code>演算子でヒープを確保しているようなものです。また<code>modifySTRef</code>ではこの領域の値に対して任意の変更を加える事ができます。そして<code>readSTRef</code>ではその領域の値を読み出すことができます。</p><p>例えば、リスト<code>xs</code>の値の合計をSTモナドで求めると、次のようになります。</p><pre><code class="hs">n <- newSTRef 0
-for xs $ \x ->
+<p>この計算では不思議なことに、最後の行が3回実行され、それらの結果すべてがリストにまとめられて結果として変えるのです。行がもっと増えると、それぞれの行の要素すべてに網羅的に計算が行われます。</p><pre><code class="hs">x &lt;- [1, 2, 3]
+y &lt;- [7, 8]
+pure (x + y)</code></pre><p>例えば、このコードでは、一行目は3つの値、二行目は2つの値があるので、最後の行は<code>2 * 3 = 6</code>回の計算が行われ<code>[8, 9, 9, 10, 10, 11]</code>という値として呼び出し元に返ってきます。</p><p>このモナドの特徴的な点は、それぞれの行の計算が、必ずしも上から順に一回づつ計算されていくというわけではない点です。それぞれの計算が複数値を返すことができ、それらのすべての場合について網羅的に計算が行われます。これはまるで、れんぞくパンチで１ターンに複数回攻撃する<strong><a href="http://www.pokemon.jp/zukan/detail/115.html">ガルーラ</a></strong>のようです。</p><p>MaybeモナドやEitherモナドは途中で中止されることがありましたし、リストモナドは同じ行を何度も計算することがあります。モナドがどのような順序で計算を進めていくのかは、それぞれのモナドによってまったく異なるのです。しかし、ここではモナドの共通点を探すことが重要でした。リストモナドがたとえこのような不思議な順序で計算が進むとしても、<strong>「<code>結果 &lt;- 計算</code>という文の連続で一連の計算を表すことができること」「<code>pure</code>関数で値を計算に組み込めること」</strong>という2点には変わりはありません。今回重要なのはそこです。</p><h2><a name="st-" class="anchor" href="#st-"><span class="header-link"></span></a>STモナド</h2><p>Haskellのような言語は変数の再代入禁止だとか聞いたことあるかもしれませんが、STモナドを使うと、どのオブジェクトも変更禁止、変数の再代入禁止という純粋な計算の中でありながら、変更可能な状態を作り出して計算することができます。</p><p>モナドの計算の中では、それぞれモナドの種類に応じた機能が使えます。Maybeモナドでは<code>Nothing</code>が、<code>Either</code>モナドでは<code>Left</code>が、独自の操作として使うことができました。リストでは<code>[1, 2, 3]</code>のようなリストリテラルをそのまま書けましたし、結果がリストになる式は何でも計算の中に組み込むことができます。そして、STモナドでは<code>newSTRef</code>、<code>modifySTRef</code>、<code>readSTRef</code>などの多彩な関数を使うことができます。<code>newSTRef</code>は変更可能な領域を作り出す関数で、C++でいうところの<code>new</code>演算子でヒープを確保しているようなものです。また<code>modifySTRef</code>ではこの領域の値に対して任意の変更を加える事ができます。そして<code>readSTRef</code>ではその領域の値を読み出すことができます。</p><p>例えば、リスト<code>xs</code>の値の合計をSTモナドで求めると、次のようになります。</p><pre><code class="hs">n &lt;- newSTRef 0
+for xs $ \x -&gt;
     modifySTRef n (_ + x)
-readSTRef n</code></pre><p>ここで、領域<code>n</code>に格納された値は、<code>for</code>での繰り返しの中で事実上繰り返し変更されていると捉えることができます。一見変更できないオブジェクトの不変性がありながら、内部で自由に変更可能なオブジェクトを提供するSTモナドは、まるで外側は固くて歯がたたないけど中は柔らかい<strong><a href="http://www.pokemon.jp/zukan/detail/090.html">シェルダー</a></strong>にそっくりです(強引)。</p><h2><a name="identity-" class="anchor" href="#identity-"><span class="header-link"></span></a>Identityモナド</h2><p>Identityモナドは　せかいで　いちばん　よわくて　なさけないモナドです。酷い言われようですが、何しろこのIdentityモナドは<code>pure</code>くらいしかできることがありません。<strong>モナド界の<a href="http://www.pokemon.jp/zukan/detail/129.html">コイキング</a></strong>とはIdentityモナドのことです。Maybeみたいに<code>Nothing</code>で処理の途中で抜けたりはできませんし、リストモナドのように何度も計算を繰り返したり、STみたいに状態を変えていくこともできません。<code>pure</code>で計算に組み入れることはできても、それがそのまま<code>&lt;-</code>で出てくるだけです。本当にそれくらいしかできません。</p><pre><code class="hs">x <- pure 10
-y <- pure 20
-z <- pure 30
-pure (x + y + z)</code></pre><p>何も役に立つことはできそうにありませんが、「<code>結果 &lt;- 計算</code>という文で表せる」「<code>pure</code>を使える」というモナドの共通点はしっかり満たしています。何もできないけどポケモンには違いないし枠を埋めることはできるコイキングみたいに、何もできないけどモナドには違いない、そういう感じの変なモナドです。</p><h2><a name="free-" class="anchor" href="#free-"><span class="header-link"></span></a>Freeモナド</h2><p>このモナドはポケモンで言うと<strong><a href="http://www.pokemon.jp/zukan/detail/132.html">メタモン</a></strong>のような、それ自身では何もできないが、どんなモナドにも変化することができるという、とにかくメタメタしい性質を持っています。不思議なことに、このFreeモナドをへんしんさせれば、Maybeモナドでもリストモナドでも、どんなモナドも創りだすことができるのです。これを説明しだすと長くなるので割愛しますが、とりあえず<strong>メタモンもポケモン</strong>ということだけ頭に入れておけば大丈夫です。</p><p>メタモンかわいいよメタモン</p><h2><a name="io-" class="anchor" href="#io-"><span class="header-link"></span></a>IOモナド</h2><p>IOモナドは<code>readFile</code>関数でファイルの読み取り、<code>putStrLn</code>関数で標準出力など、外界とのあらゆるやりとりを一手に担うとても機能の多いモナドです。また、Eitherのように例外を投げて途中で脱出したり、STモナドのように変更可能な領域を作り出すことすらできます。</p><p>また、IOモナドはプログラムのエントリポイントとなるモナドであり、現実のコードだとこのIOモナドはプログラム全体にわたって登場し、ユーザはIOとは切っても切り離せない関係を築くことになります。まさにアニメ版ポケモンで主人公サトシが強制的に選ばされることになり、ボールに入るのが嫌などという言い訳でとにかく画面に映りたがる<strong><a href="http://www.pokemon.jp/zukan/detail/025.html">ピカチュウ</a></strong>のようなモナドといえます。</p><p>例えば、標準入力から指定した名前のテキストファイルをコピーする計算は次のようになります。</p><pre><code class="hs">from　<- getLine       
-to　<- getLine       
-putStrLn ("copy " ++ from ++ " to " ++ to) 
-contents <- readFile from        
+readSTRef n</code></pre><p>ここで、領域<code>n</code>に格納された値は、<code>for</code>での繰り返しの中で事実上繰り返し変更されていると捉えることができます。一見変更できないオブジェクトの不変性がありながら、内部で自由に変更可能なオブジェクトを提供するSTモナドは、まるで外側は固くて歯がたたないけど中は柔らかい<strong><a href="http://www.pokemon.jp/zukan/detail/090.html">シェルダー</a></strong>にそっくりです(強引)。</p><h2><a name="identity-" class="anchor" href="#identity-"><span class="header-link"></span></a>Identityモナド</h2><p>Identityモナドは　せかいで　いちばん　よわくて　なさけないモナドです。酷い言われようですが、何しろこのIdentityモナドは<code>pure</code>くらいしかできることがありません。<strong>モナド界の<a href="http://www.pokemon.jp/zukan/detail/129.html">コイキング</a></strong>とはIdentityモナドのことです。Maybeみたいに<code>Nothing</code>で処理の途中で抜けたりはできませんし、リストモナドのように何度も計算を繰り返したり、STみたいに状態を変えていくこともできません。<code>pure</code>で計算に組み入れることはできても、それがそのまま<code>&lt;-</code>で出てくるだけです。本当にそれくらいしかできません。</p><pre><code class="hs">x &lt;- pure 10
+y &lt;- pure 20
+z &lt;- pure 30
+pure (x + y + z)</code></pre><p>何も役に立つことはできそうにありませんが、「<code>結果 &lt;- 計算</code>という文で表せる」「<code>pure</code>を使える」というモナドの共通点はしっかり満たしています。何もできないけどポケモンには違いないし枠を埋めることはできるコイキングみたいに、何もできないけどモナドには違いない、そういう感じの変なモナドです。</p><h2><a name="free-" class="anchor" href="#free-"><span class="header-link"></span></a>Freeモナド</h2><p>このモナドはポケモンで言うと<strong><a href="http://www.pokemon.jp/zukan/detail/132.html">メタモン</a></strong>のような、それ自身では何もできないが、どんなモナドにも変化することができるという、とにかくメタメタしい性質を持っています。不思議なことに、このFreeモナドをへんしんさせれば、Maybeモナドでもリストモナドでも、どんなモナドも創りだすことができるのです。これを説明しだすと長くなるので割愛しますが、とりあえず<strong>メタモンもポケモン</strong>ということだけ頭に入れておけば大丈夫です。</p><p>メタモンかわいいよメタモン</p><h2><a name="io-" class="anchor" href="#io-"><span class="header-link"></span></a>IOモナド</h2><p>IOモナドは<code>readFile</code>関数でファイルの読み取り、<code>putStrLn</code>関数で標準出力など、外界とのあらゆるやりとりを一手に担うとても機能の多いモナドです。また、Eitherのように例外を投げて途中で脱出したり、STモナドのように変更可能な領域を作り出すことすらできます。</p><p>また、IOモナドはプログラムのエントリポイントとなるモナドであり、現実のコードだとこのIOモナドはプログラム全体にわたって登場し、ユーザはIOとは切っても切り離せない関係を築くことになります。まさにアニメ版ポケモンで主人公サトシが強制的に選ばされることになり、ボールに入るのが嫌などという言い訳でとにかく画面に映りたがる<strong><a href="http://www.pokemon.jp/zukan/detail/025.html">ピカチュウ</a></strong>のようなモナドといえます。</p><p>例えば、標準入力から指定した名前のテキストファイルをコピーする計算は次のようになります。</p><pre><code class="hs">from　&lt;- getLine       
+to　&lt;- getLine       
+putStrLn (&quot;copy &quot; ++ from ++ &quot; to &quot; ++ to) 
+contents &lt;- readFile from        
 writeFile to contents</code></pre><p>このモナドも、<strong>「<code>結果 &lt;- 計算</code>という文の連続で一連の計算を表すことができること」「<code>pure</code>関数で値を計算に組み込めること」</strong>という2点は満たしています。それを確認しておきましょう。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>それで、モナドとはつまり何なのか</h1><p>さて、モナド全体に共通するのは、次のたった２つの点だけでした。</p><ul>
 <li><code>結果 &lt;- 何らかの同種の作用</code>の連続で一連の計算が表現される</li>
 <li><code>pure</code>関数で任意の値を計算に組み込める</li>
@@ -143,23 +143,23 @@ writeFile to contents</code></pre><p>このモナドも、<strong>「<code>結�
 var 変数 = 式; 
 var 変数 = 式; 
 ...</code></pre><p>というような構文をカスタマイズできるようにしたもの、という見かたもあって、<strong>プログラム可能なセミコロン</strong>などと説明されることもあります。文と文のあいだに置かれるセミコロンを一種の中置演算子だと考えて、このセミコロン演算子を演算子オーバーロードしてるようなものだ、というわけです。</p><p>HaskellやPureScriptはこの枠組みをコード全体に渡って一貫して再利用し、これらのモナドを目的に応じて使い分けて計算を進めていく言語なのです。このため、Haskell/PureScriptにはthrow/catchのような例外処理の専用の構文がないのに例外を投げて計算の途中から脱出したり例外を捕まえたりすることができるし、await/asyncもないのに非同期処理を同期的処理と同じように平坦に書くことができるのです。</p><p>そして、目的に合わせてカスタマイズした専用のモナドを自分で作って使うこともできるという、強力な拡張性も備えています。モナドを自分で定義すると、どんな操作を許しどんな操作を許さないか、何もかもを自分でコントロールできます。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>やさしいモナドの使いかた</h1><p>プログラミングにおけるモナドはコーディングの道具であって、理論を鑑賞して悦に浸るためのものではありません。使わなければ何の意味もないのです。ここからはモナドを使ったコードをどのように書けばいいのかを具体的に説明していきます。</p><p>さて、モナドにはいろいろな種類があり、それぞれ違った能力を持ちますから、まずは自分の計算の目的に応じて適切なモナドをを選ばなくてはなりません。使いたいモナドがすぐに思いつくように、モナド図鑑をよく頭に入れておくことが大切です。ここでは説明のために<strong>IOモナド</strong>を使ってみます。HaskellではIOモナド、PureScriptではEffモナドは、唯一絶対に避けて通れないモナドになっています。これらの言語で実用的なコードを書くにはどうしてもIO/Effだけでも使えるようになるのが先決ですし、ひとつでも使えれば他のモナドへの足がかりにもなります。</p><h2><a name="do-" class="anchor" href="#do-"><span class="header-link"></span></a>do式の一般形</h2><p>これまで何度も見てきた<code>結果 &lt;- 作用</code>というような文の連続からなる構文は、<strong>do記法</strong>と呼ばれています。このdo記法を使いこなせるようになっておくことが、モナドを実用に供する上で必要不可欠です。これまで見てきたとおり、do記法の構文は外見上<code>結果 &lt;- 作用</code>でほとんどすべてという単純さなのですが、実はコードの字面に現れない隠れたルールこそが厄介です。</p><p>Haskellでは、コード中で式の型を明示するのに、ダブルコロン<code>::</code>を使って次のように書きます</p><pre><code class="undefined">式 :: 型</code></pre><p>また、型変数<code>a</code>を含むような型<code>m</code>は、単にスペースを挟んで次のように書きます。</p><pre><code class="undefined">m a</code></pre><p>これを使って、do記法の中の式にもれなく型注釈を書き込むと、do記法の一般形は次のようになります。</p><pre><code class="hs">(do 
-    v0 :: a <- expr0 :: m a
-    v1 :: b <- expr1 :: m b
-    v2 :: c <- expr2 :: m c
+    v0 :: a &lt;- expr0 :: m a
+    v1 :: b &lt;- expr1 :: m b
+    v2 :: c &lt;- expr2 :: m c
 
     ...
 
     exprZ :: m z) :: m z</code></pre><p>この<code>m</code>の部分にはモナドに結び付けられた型の名前が入ります。IOモナドを使う場合は、<code>m</code>を<code>IO</code>に置き換えて、次のようになります。</p><pre><code class="hs">(do 
-    v0 :: a <- expr0 :: IO a
-    v1 :: b <- expr1 :: IO b
-    v2 :: c <- expr2 :: IO c
+    v0 :: a &lt;- expr0 :: IO a
+    v1 :: b &lt;- expr1 :: IO b
+    v2 :: c &lt;- expr2 :: IO c
 
     ...
 
     exprZ :: IO z) :: IO z</code></pre><p>この<code>IO a</code>は、それが<code>IO</code>という種類の操作であり、その結果として<code>a</code>型の値を返すことを意味しています。</p><h3><a name="-1-code-do-code-" class="anchor" href="#-1-code-do-code-"><span class="header-link"></span></a>ルール1 頭に<code>do</code>をつけてインデントを揃える</h3><p>図鑑の擬似コードでは省略していましたが、do記法では先頭に<code>do</code>というキーワードを付けます。また、そのdo記法内部の式はインデントを揃えなくてはなりません。</p><h3><a name="-2-" class="anchor" href="#-2-"><span class="header-link"></span></a>ルール2 結果はそこから下に書かれた計算の中でのみ使える</h3><p>それぞれの計算の結果は、それ以降の計算の中でしか使うことができません。</p><pre><code class="hs">do 
-    v0 <- expr0
-    v1 <- expr1
-    v2 <- expr2
+    v0 &lt;- expr0
+    v1 &lt;- expr1
+    v2 &lt;- expr2
     exprZ</code></pre><p>このようなコードでは、例えば変数<code>v1</code>はそれより前の式である<code>expr0</code>、<code>expr1</code>の中からは参照することはできません。それより後ろにある<code>expr2</code>、<code>exprZ</code>の中からのみ参照できます。これは普通の言語で変数に値を代入するときの振る舞いと同じです。</p><h3><a name="-3-" class="anchor" href="#-3-"><span class="header-link"></span></a>ルール3 結果を束縛する変数は省略できる</h3><p>各行の<code>結果 &lt;-</code>という部分は省略可能です。たとえば、標準出力を行う関数<code>putStrLn</code>の結果の型は<code>()</code>になっていますが、これはC言語でいう<code>void</code>型みたいなもので、データには何の意味もありません。このような操作の結果を変数に束縛するのは無意味なので、<code>結果 &lt;-</code>という部分は省略することができます。<code>()</code>型に限らず、操作の結果が不要ならどの行でも自由に省略してしまって構いません。</p><h3><a name="-4-" class="anchor" href="#-4-"><span class="header-link"></span></a>ルール4 最後の行は結果を束縛できない</h3><p>最後の行では<code>結果 &lt;- 式</code>というように<code>&lt;-</code>を使って書けません。その最後の行の結果が、Do記法全体の結果になるからです。</p><h3><a name="-5-" class="anchor" href="#-5-"><span class="header-link"></span></a>ルール5 型構築子は統一する</h3><p>これは何を言っているかというと、以下の丸をつけた部分の型は、すべて同じでなくてはならないということです。</p><p><a href="/img/228bf357-8a42-647e-e3ae-ee1061ca9d8c.png"><img src="/img/228bf357-8a42-647e-e3ae-ee1061ca9d8c.png"></img></a></p><!--
 
 ```hs
@@ -195,17 +195,17 @@ do
 <h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ドキュメントを漁る</h2><p>さて、実際にモナドを使うには、どんな操作が可能なのかをドキュメントで確認する必要があります。たとえば、Haskellではデフォルトでインポートされる標準モジュール<code>Prelude</code>に標準出力を行う関数や簡単なファイル操作を行う関数が定義されています。</p><ul>
 <li><a href="https://hackage.haskell.org/package/base-4.8.2.0/docs/Prelude.html">base-4.8.2.0: Basic libraries</a></li>
 </ul>
-<p>関数なら引数を与えて最終的に<code>IO a</code>というような形になればdo記法の中に書けますし、中にはそのままで<code>IO a</code>という値を持つ値もあります。これらをドキュメントから探します。ここでは次の関数や値を使うことにしましょう。</p><pre><code class="hs">readFile :: FilePath -> IO String</code></pre><pre><code class="hs">writeFile :: FilePath -> String -> IO ()</code></pre><pre><code class="hs">getLine :: IO String</code></pre><pre><code class="hs">putStrLn :: String -> IO ()</code></pre><p>いずれも、型注釈の最後が<code>IO a</code>という形になっていることがわかるでしょう。これらはすべてIOモナドの計算のなかで使える操作だということです。</p><h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>完全なコードのサンプル</h2><p>これらの関数を使って、テキストファイルのコピーを行うプログラムを作ってみます。標準入力から、コピー元のファイル名とコピー先のファイル名を読み取り、それらの名前に従ってファイルをコピーします。</p><pre><code class="hs">main :: IO ()
+<p>関数なら引数を与えて最終的に<code>IO a</code>というような形になればdo記法の中に書けますし、中にはそのままで<code>IO a</code>という値を持つ値もあります。これらをドキュメントから探します。ここでは次の関数や値を使うことにしましょう。</p><pre><code class="hs">readFile :: FilePath -&gt; IO String</code></pre><pre><code class="hs">writeFile :: FilePath -&gt; String -&gt; IO ()</code></pre><pre><code class="hs">getLine :: IO String</code></pre><pre><code class="hs">putStrLn :: String -&gt; IO ()</code></pre><p>いずれも、型注釈の最後が<code>IO a</code>という形になっていることがわかるでしょう。これらはすべてIOモナドの計算のなかで使える操作だということです。</p><h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>完全なコードのサンプル</h2><p>これらの関数を使って、テキストファイルのコピーを行うプログラムを作ってみます。標準入力から、コピー元のファイル名とコピー先のファイル名を読み取り、それらの名前に従ってファイルをコピーします。</p><pre><code class="hs">main :: IO ()
 main = do
-    from :: String <- getLine                  :: IO String
-    to   :: String <- getLine                  :: IO String
-    putStrLn ("copy " ++ from ++ " to " ++ to) :: IO ()
-    contents :: String <- readFile from        :: IO String
+    from :: String &lt;- getLine                  :: IO String
+    to   :: String &lt;- getLine                  :: IO String
+    putStrLn (&quot;copy &quot; ++ from ++ &quot; to &quot; ++ to) :: IO ()
+    contents :: String &lt;- readFile from        :: IO String
     writeFile to contents                      :: IO ()</code></pre><p>先に挙げたルールが守られていることを確認してみてください。</p><p>ここでは説明のために過剰に型注釈をつけていますが、これらはすべて型推論可能なので、次のようにすべて取り去ってしまっても大丈夫です。</p><pre><code class="hs">main = do
-    from　<- getLine       
-    to　<- getLine       
-    putStrLn ("copy " ++ from ++ " to " ++ to) 
-    contents <- readFile from        
+    from　&lt;- getLine       
+    to　&lt;- getLine       
+    putStrLn (&quot;copy &quot; ++ from ++ &quot; to &quot; ++ to) 
+    contents &lt;- readFile from        
     writeFile to contents</code></pre><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>モナドのはじめかた</h1><p>自分がモナドを理解できたかどうか確かめる唯一の方法は、自分で実際にコードを書いてみることだけです。<strong>もしモナドをなかなか理解できないなら、その最大の原因は自分でモナドを使ったコードを書こうとしていないから</strong>だと思います。啓蒙的な記事ばかりを幾つ読み漁ったところで、モナドは理解できません。なぜなら、自分でモナドを使ったコードを書いていないからです。モナドの定義を穴が空くまで眺めても、モナドは理解できません。なぜなら、自分でモナドを使ったコードを書いていないからです。多分この記事を開いたひとはみんなモナドを理解したいんだろうと思います。まずはコードを書いてみましょう。</p><h3><a name="haskell" class="anchor" href="#haskell"><span class="header-link"></span></a>Haskell</h3><p>Haskellのインストールは、現状はStack一択です。インストールも難しくないのでさくっとインストールしてしまいましょう。</p><ul>
 <li><a href="/blog/6866d0f570d0547df026.html">Haskellのビルドツール&quot;stack&quot;の紹介</a></li>
 <li><a href="/blog/879c2011ce8744c838de.html">Haskell環境構築<em>20151226</em>最新版<em>4</em>投稿済み_stack-1.0.0対応版.md</a></li>

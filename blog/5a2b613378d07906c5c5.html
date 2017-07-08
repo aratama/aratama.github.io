@@ -86,12 +86,12 @@ restore context</code></pre><p>でも、これじゃうっかり<code>restore</c
             window.requestAnimationFrame(next);
         }
         var count = 0;
-        window.addEventListener("keydown", function(e){
+        window.addEventListener(&quot;keydown&quot;, function(e){
             if( ! keyTable.hasOwnProperty(e.keyCode)){
                 keyTable[e.keyCode] = count;
             }
         });
-        window.addEventListener("keyup", function(e){
+        window.addEventListener(&quot;keyup&quot;, function(e){
             delete keyTable[e.keyCode];
         });
         next();
@@ -112,24 +112,24 @@ gameloop do
 gameloop do
     count ← readRef ref       -- 領域から値の読み取り！
     writeRef ref (count + 1)  -- 領域への値の書き込み</code></pre><p>これで、ゲームループが回るたびにカウンターがひとつずつ増えていきます。状態を読み取る前に<code>readRef</code>を呼んで領域から現在の状態を取り出さなくてはならないのがちょっと面倒ですが、三匹の豚精神で乗り切ります。逆にいえば、DOMや外部のライブラリが持つ状態を除けば、<strong>アプリケーション自身の状態といえるものはこの<code>ref</code>の状態だけ</strong>であり、それ以外にはまったく状態を持たないのが保証されるので、アプリケーションの状態の管理がとても楽です。なんかゲームの状態がおかしくなったなあと思ったらこの<code>ref</code>の中だけ確認すればいいのです。</p><p>それでは、さっき<code>gameloop</code>関数と一緒に定義した<code>getKey</code>関数で、キーの状態を取得し、現在の状態に反映させます。それからその状態を使って画面を再描画します。試しに、変更されている状態を、座標変換の回転量に使いましょうか。実行させてみるとこうなります。</p><p><a href="/img/ee9618f4-39b3-8157-59c2-535157fd4780.png"><img src="/img/ee9618f4-39b3-8157-59c2-535157fd4780.png"></img></a></p><p>あああああああ！　キー操作でくるくる回っているのに、静止画だから伝わらない！　詳しくは実際に動かしてみてください。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>画像の読み込み(二回目)！📷</h1><p>現状の方法だと、読み込む画像が増えるたびにネストがどんどん増えていってしまいます。</p><pre><code class="haskell">main = do
-    withImage "grass.png" \grass → do
-        withImage "foo.png" \foo → do
-            withImage "bar.png" \bar → do
+    withImage &quot;grass.png&quot; \grass → do
+        withImage &quot;foo.png&quot; \foo → do
+            withImage &quot;bar.png&quot; \bar → do
                 pure unit</code></pre><p>これはキモいので、<strong>非同期処理モナド</strong>という謎の技術を使ってこれを平坦に書けるようにします(なお、PureScriptの非同期処理モナドについては、<a href="/blog/98598af2b0e9a6206ef3.html">こちら</a>で筆者も紹介しています)。これを使って<code>loadImage</code>という関数を定義すると、こんなふうに書けるようになります。</p><pre><code class="haskell">main = launchAff do
-    grass ← loadImage "grass.png"
-    foo ← loadImage "foo.png"
-    bar ← loadImage "bar.png"
+    grass ← loadImage &quot;grass.png&quot;
+    foo ← loadImage &quot;foo.png&quot;
+    bar ← loadImage &quot;bar.png&quot;
     pure unit</code></pre><p>よし！🌞　これでネストが増えていかない！🌵　え？　なんでこういうふうに書けるのかって？　そういう難しいことをあんまり気にしちゃだめです！</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>全体像!🐔</h1><p>今日のところはここまでにしておいてやる！👮　キャンバスを取得するところとかもちょっとリファクタリングして、こんなかんじです(再現)。</p><pre><code class="haskell">main = launchAff do
-    grass ← loadImage "grass.png"
-    canvas ← getCanvas "canvas"
+    grass ← loadImage &quot;grass.png&quot;
+    canvas ← getCanvas &quot;canvas&quot;
     liftEff $ runST do
         context ← getContext2D canvas
         stateRef ← newSTRef (0 :: Int)
 
         gameloop do
             state ← readSTRef stateRef
-            let zeroOrOne key = maybe 0 (const 1) <$> getKey key
-            rx ← (-) <$> zeroOrOne 68 <*> zeroOrOne 65
+            let zeroOrOne key = maybe 0 (const 1) &lt;$&gt; getKey key
+            rx ← (-) &lt;$&gt; zeroOrOne 68 &lt;*&gt; zeroOrOne 65
             writeSTRef stateRef (state + rx)
 
             clearRect context { x: 0.0, y: 0.0, w: 1280.0, h: 720.0 }

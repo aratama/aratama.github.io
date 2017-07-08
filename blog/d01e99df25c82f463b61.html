@@ -75,12 +75,12 @@ MathJax.Hub.Config({
 <li>psc-bundleと同様のデッドコード排除が効きます</li>
 <li>さらにインライン化もある程度効くようで、結合後のファイルサイズのさらなる削減とともに、実行効率の向上も期待できます</li>
 </ul>
-<p>となんだかとても良さげです。使い方はrollupをインストールして、</p><pre><code class="undefined">$ npm install -g rollup</code></pre><p>rollup-plugin-pursをインストールして、</p><pre><code class="undefined">$ npm install --save-dev rollup-plugin-purs</code></pre><p>なんかこんな感じに<code>rollup.config.js</code>を書いて、</p><pre><code class="js">import purs from "rollup-plugin-purs";
+<p>となんだかとても良さげです。使い方はrollupをインストールして、</p><pre><code class="undefined">$ npm install -g rollup</code></pre><p>rollup-plugin-pursをインストールして、</p><pre><code class="undefined">$ npm install --save-dev rollup-plugin-purs</code></pre><p>なんかこんな感じに<code>rollup.config.js</code>を書いて、</p><pre><code class="js">import purs from &quot;rollup-plugin-purs&quot;;
 
 export default {
-  entry: "src/Main.purs",
-  dest: "bundle.js",
-  format: "iife",
+  entry: &quot;src/Main.purs&quot;,
+  dest: &quot;bundle.js&quot;,
+  format: &quot;iife&quot;,
   sourceMap: true,
   plugins: [
     purs()
