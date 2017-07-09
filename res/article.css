@@ -4,19 +4,19 @@ article {
 }
 
 article > h1.article-title {
-    color: #9883ca;
+    color: #6e988b;
     margin: 1em;
     border-bottom: none;
     font-size: 36px;
 
-    border-left: solid 60px #9883ca;
+    border-left: solid 60px #6e988b;
     padding-left: 10px;
 
     text-align: justify;
 }
 
 article h1.article-title a {
-    color: #9883ca;
+    color: #6e988b;
     text-decoration: none; 
     font-weight: bold;
 }
