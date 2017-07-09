@@ -64,8 +64,8 @@ MathJax.Hub.Config({
                 <!-- <i class="fa fa-coffee" aria-hidden="true"></i> -->
                 <a href="9d32d96354740b2b7020.html">PureScriptで型レベル計算ドリル<a>
             </h1>        
-            <p class="tags"><a href="Haskell.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>Haskell</span></a>
-<a href="purescript.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>purescript</span></a></p>
+            <p class="tags"><a href="/blog/tag/Haskell.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>Haskell</span></a>
+<a href="/blog/tag/purescript.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>purescript</span></a></p>
             <hr>
             <p>型レベル計算は、プログラミング言語の型システムを<del>悪用</del>有効活用して、実行時ではなく<strong>コンパイル時に</strong>任意の計算を可能にするものです。型レベル計算はチューリング完全であり、理論上どんな計算でもできることが知られていて、うまく使うといろいろと便利なことができるようです。私も練習してみます。言語はPureScriptですが、Haskellでも事情はだいたい同じだと思います。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>型レベル計算　基礎編</h1><h2><a name="emptydatadecls" class="anchor" href="#emptydatadecls"><span class="header-link"></span></a>EmptyDataDecls</h2><p>代数的データ型では通常、<code>=</code>のあとに<code>|</code>で区切ってその型に含まれるデータを列挙して定義します。</p><pre><code class="haskell">data Bool = True | False</code></pre><pre><code class="haskell">data Nat = Zero | Succ Nat</code></pre><pre><code class="haskell">data Tuple a b = Tuple a b</code></pre><p>実行時計算がデータを計算の対象にするのに対して、<strong>型レベル計算では型そのものが計算の対象になります</strong>。必要なのは型だけであってデータは不要ですから、代数的データ型では何もデータのない型を定義することもできるようになっています。型レベルの真偽値や自然数などを定義してみます。</p><pre><code class="haskell">data True
 

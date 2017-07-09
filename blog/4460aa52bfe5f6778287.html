@@ -64,8 +64,8 @@ MathJax.Hub.Config({
                 <!-- <i class="fa fa-coffee" aria-hidden="true"></i> -->
                 <a href="4460aa52bfe5f6778287.html">逆引きLensサンプルコード<a>
             </h1>        
-            <p class="tags"><a href="Haskell.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>Haskell</span></a>
-<a href="purescript.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>purescript</span></a></p>
+            <p class="tags"><a href="/blog/tag/Haskell.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>Haskell</span></a>
+<a href="/blog/tag/purescript.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>purescript</span></a></p>
             <hr>
             <p>複雑なデータ構造の内部への読み書きを抽象化するライブラリ<a href="https://github.com/ekmett/lens">Lens</a>の練習メモです。言語はPureScriptを使っています。この記事はHaskellな人も読めなくはないと思いますが、PureScriptとHaskellでは異なる部分が結構あるので注意してください。パッケージは<a href="https://github.com/purescript-contrib/purescript-profunctor-lenses"><code>purescript-profunctor-lenses</code></a>を使っています<a class="link-footnote" href="#footnote-lib" name="link-lib">※</a>。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>単純なオブジェクトのプロパティの読み書き</h1><pre><code class="hs">-- 読み書きしたいデータの型
 type Task = { name :: String, completed :: Boolean }</code></pre><pre><code class="hs">-- サンプルデータ
