@@ -64,10 +64,10 @@ MathJax.Hub.Config({
                 <!-- <i class="fa fa-coffee" aria-hidden="true"></i> -->
                 <a href="7b1b6eb45f8207ea96e4.html">どう見てもJavaScriptなのに遅延評価するオレオレプログラミング言語を作りました。遅延評価 is 何？<a>
             </h1>        
-            <p class="tags"><a href="/blog/tag/JavaScript.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>JavaScript</span></a>
-<a href="/blog/tag/Haskell.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>Haskell</span></a>
-<a href="/blog/tag/遅延評価.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>遅延評価</span></a>
-<a href="/blog/tag/作ってみた.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>作ってみた</span></a></p>
+            <p class="tags"><a href="/blog/tag/JavaScript"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>JavaScript</span></a>
+<a href="/blog/tag/Haskell"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>Haskell</span></a>
+<a href="/blog/tag/遅延評価"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>遅延評価</span></a>
+<a href="/blog/tag/作ってみた"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>作ってみた</span></a></p>
             <hr>
             <p>急にプログラミング言語を作りたくなったので、見た目はJavaScriptなのに遅延評価なプログラミング言語を作ってみました。このエントリで解説されている内容はほとんど実用性がないので、暇つぶしをしたい人だけお読みください。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>今回作ったもの</h1><p>「そもそも『遅延評価』って何？」っていう人が多いとは思うのですが、それはおいおい説明するとして、まずは今回作ったものを簡単に紹介します。今回作ったプログラミング言語の名前は、コンセプトそのまんまで<strong>LazyScript</strong>です。JavaScriptのサブセットを用意して新しいプログラミング言語を作ったと私が言い張るのは実は<a href="/blog/810ecdff0c1674d1a74e.html">既に二回目</a>なのですが、処理系を作ってすらいない前回と違って、今回はちゃんとインタプリタを作りました。コンセプトは次のような感じです。</p><ul>
 <li><strong>評価の過程を確認しやすい</strong>。今回作った処理系では、比較的読みやすい形式で評価の過程を表示できるようにしました。遅延評価のお勉強向けです（これはHaskellの評価の過程を確認するのがあまりに困難だというのが根底にあります）。このため、コンパイラではなくインタプリタにしました。</li>

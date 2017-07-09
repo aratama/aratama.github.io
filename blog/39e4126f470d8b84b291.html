@@ -64,11 +64,11 @@ MathJax.Hub.Config({
                 <!-- <i class="fa fa-coffee" aria-hidden="true"></i> -->
                 <a href="39e4126f470d8b84b291.html">リアクティブプログラミングとは何だったのか<a>
             </h1>        
-            <p class="tags"><a href="/blog/tag/JavaScript.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>JavaScript</span></a>
-<a href="/blog/tag/RxJS.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>RxJS</span></a>
-<a href="/blog/tag/Rx.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>Rx</span></a>
-<a href="/blog/tag/purescript.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>purescript</span></a>
-<a href="/blog/tag/Elm.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>Elm</span></a></p>
+            <p class="tags"><a href="/blog/tag/JavaScript"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>JavaScript</span></a>
+<a href="/blog/tag/RxJS"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>RxJS</span></a>
+<a href="/blog/tag/Rx"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>Rx</span></a>
+<a href="/blog/tag/purescript"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>purescript</span></a>
+<a href="/blog/tag/Elm"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>Elm</span></a></p>
             <hr>
             <p><a href="/img/d0e5491b-53af-bf2e-b980-6733d5530a31.png"><img src="/img/d0e5491b-53af-bf2e-b980-6733d5530a31.png"></img></a></p><p><strong>※この記事はずいぶん内容がわかりづらかったようで、さまざまな反応を頂きました。追記が複数ありますので、併せてご覧ください。</strong></p><h1><a name="tl-dr-version-" class="anchor" href="#tl-dr-version-"><span class="header-link"></span></a>TL;DR Version:</h1><p>リアクティブプログラミングに挑戦しようとした。がっかりした。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>はじめに</h1><p>私のこの記事は「<a href="http://ninjinkun.hatenablog.com/entry/introrxja">【翻訳】あなたが求めていたリアクティブプログラミング入門</a>」に触発されて？書かれたもので、そちらの元ネタの記事に先に目を通しておいたほうが理解がしやすいと思います。そちらの記事は本当に解説がわかりやすく、そして何より<strong>とても説明が具体的</strong>なので、リアクティブプログラミングについて知りたいかたには大変おすすめです。リアクティブプログラミングの解説には、漠然としたことしか言っておらずさっぱり参考にならないものも多いのですが、いや本当に多いのですが、この元ネタの記事では図表が適切に使われているだけでなく具体的な問題提起と具体的なコードによる解決策が示されており、リアクティブプログラミングについての解説記事のうち間違いなくもっとも優良なもののひとつだと言えると思います。</p><p>あらかじめ注意しておきますが、私のこの記事は自分でリアクティブプログラミングを試してみたところうまく行かなかったという残念な話であって、この記事を最後まで読んで内容に納得したとしても、あまり役に立つ知見にはならないと思われます。宝物が埋まっている場所なら誰でも知りたいと思うでしょうが、宝物が埋まっていない場所を知りたがる人はあまりいない、ということです。なお、言語は例によってJavaScriptとPureScriptを使いますが、どちらの言語のコードもみっしり解説をつけてあるので、疎くてもわりと大丈夫だと思います。</p><p>私のこの記事はほんとにクソみたいに長い割に無益なので、忙しい人は「<a href="#%E3%81%BE%E3%81%A8%E3%82%81">まとめ</a>」だけ読むといいと思います。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>リアクティブプログラミングとは</h1><p>そもそもFunctional Reactive Programming(FRP)あるいはReactive Programming(RP)とは何を指しているのかという問題があるのですが、どうもこの両者は区別されるべきものであるようです：</p><ul>
 <li><a href="http://postd.cc/what-is-functional-reactive-programming/">『FRPとは「“時間とともに変化する”値を表すデータ型」によるプログラミングだ』</a></li>

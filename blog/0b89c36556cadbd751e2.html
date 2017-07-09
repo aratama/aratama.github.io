@@ -64,7 +64,7 @@ MathJax.Hub.Config({
                 <!-- <i class="fa fa-coffee" aria-hidden="true"></i> -->
                 <a href="0b89c36556cadbd751e2.html">なるべく早くtimeoutする<a>
             </h1>        
-            <p class="tags"><a href="/blog/tag/JavaScript.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>JavaScript</span></a></p>
+            <p class="tags"><a href="/blog/tag/JavaScript"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>JavaScript</span></a></p>
             <hr>
             <p>何十秒もかかる重いタスクがあり、それをブラウザ上のJavaScriptでなるべく早く完了させたいとします。でも同期的に一気にやろうとすると、たまには制御返せってブラウザに怒られるし、ページが固まってしまうので困ります。</p><p>たとえば、どうしても<a href="https://ja.wikipedia.org/wiki/%E3%82%B3%E3%83%A9%E3%83%83%E3%83%84%E3%81%AE%E5%95%8F%E9%A1%8C">コラッツの問題</a>を自分で確かめたくなっちゃったとします。<code>n</code>に操作を繰り返して1に到達するまでの回数を<code>collatz(n)</code>として、たとえば次のように一気にfor文で調べようとするとページ全体が固まってしまい、ユーザの操作で途中で止めることもできないのでよろしくありません。</p><pre><code class="js">for(var n = 1; n &lt;= 10000000; n++){
     console.log(n + &quot;は&quot; + collatz(n) + &quot;回の操作で1に到達します&quot;);

@@ -64,8 +64,8 @@ MathJax.Hub.Config({
                 <!-- <i class="fa fa-coffee" aria-hidden="true"></i> -->
                 <a href="810ecdff0c1674d1a74e.html">純粋関数型JavaScriptのつくりかた<a>
             </h1>        
-            <p class="tags"><a href="/blog/tag/JavaScript.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>JavaScript</span></a>
-<a href="/blog/tag/Haskell.html"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>Haskell</span></a></p>
+            <p class="tags"><a href="/blog/tag/JavaScript"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>JavaScript</span></a>
+<a href="/blog/tag/Haskell"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>Haskell</span></a></p>
             <hr>
             <p>前回筆者が書いた記事が長いって言われたので、今回は簡潔にいきます。この記事との関連は薄いので、前回の記事を読んでなくても大丈夫です。</p><p>さて、言語全体が参照透明な(簡単にいえば副作用のない)式で構成される言語を純粋関数型プログラミング言語と言いますが、プログラミング言語から副作用のある式をすべて除去し、その代わりに<a href="https://www.haskell.org/haskellwiki/Hakell_I/O%E3%82%A2%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%AE%E7%B4%B9%E4%BB%8B">アクション</a>とかIOモナドという仕掛けを追加すると、その言語を純粋関数型に変えることができます。このあいだふとした思いつきでJavaScriptを純粋関数型にしてみたんですが、そのままストレージの奥で腐らせるのはもったいないのでAurorScriptと名づけて記事にして飾っておきます。アクションの仕掛け全体は<strong>10行くらいで書ける</strong>ので簡単です。</p><p>純粋関数型を理解するには、自分でアクションのような仕組みを作ってみるのがとてもいい勉強になります。だって「副作用のない式のみで副作用を表現する」とか説明しても「……はぁ？副作用あるの？ないの？」とかっていう反応になるの当たり前じゃないですか。数学屋さん好みの説明に、世界全体の状態を表す型 $\Omega$ があるとき、アクション $ {\rm IO} \ a$ とは ${\rm IO} \ a : \Omega \rightarrow (a, \Omega)$ であるどうのこうのみたいな感じの説明もありますが、気持ち的には確かにそんな感じでも、ホントに世界全体を記述できるわけないじゃないですか。いい加減にしてください！筆者が10行でアクションを実装して見せて、アクションが具体的にどういう仕組みなのかお見せします(言うまでもありませんが、これは数ある実装方法のひとつでしかありません。まともなコンパイラはちゃんと効率のいいコードを吐きます)。筆者は世の中の「関数型言語とかわけわからん」という人の味方ですからね。</p><h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>フレームワーク</h2><p>まずは <code>pure</code>, <code>bind</code>, <code>exec</code> という3つのシンプルな関数を実装します。</p><pre><code class="js">var pure = a=&gt;_=&gt;a                        // pure :: a -&gt; IO a
 var bind = m=&gt;f=&gt;_=&gt;f(m())()              // bind :: IO a -&gt; (a -&gt; IO b) -&gt; IO b
