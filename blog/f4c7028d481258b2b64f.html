@@ -142,7 +142,7 @@ interplet = mealy case _ of
 &gt;</code></pre><p>いよいよRxっぽいですね。こんな感じで、入力を送るたびに内部状態を変化させ、同時に記号を出力するということが、ミーリ・マシンではできるようです。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>外部から入力する</h1><p>今までは<code>source</code>でソースのマシンを作って入力を発生させていましたが、次はマシンの外部から入力をしてみます。といっても<code>stepMealy</code>関数を適用するだけです。たとえば、入力を大文字にするマシン<code>upper</code>を作って、</p><pre><code class="haskell">upper :: forall m. (Monad m) =&gt; MealyT m String String
 upper = mealy \s -&gt; pure (Emit (toUpper s) upper)</code></pre><p>あとは<code>stepMealy</code>で値を投げ込みます。ただし、結果は<code>Step f s a</code>で返ってきますから、<code>Emit</code>した場合と<code>Halt</code>で停止した場合について分岐をします。</p><pre><code class="haskell">step &lt;- stepMealy &quot;Hello&quot; upper
 case step of
-    Emit o m&#x27; -&gt; log o
+    Emit o m&#39; -&gt; log o
     Halt -&gt; pure unit</code></pre><p>実行すると、<code>HELLO</code>が出力されます。値を投げ入れてミーリ・マシンを外部から駆動するという感じで、これはなんだかRedux-Sagaっぽいですね。<code>put</code>でReduxに値を投げ入れるように、<code>stepMealy</code>を使うというという違いだけです。でも、結果のマシン<code>m&#39;</code>が明示的に出てくるのがちょっと違いますか。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ほかにもいろいろやってみます</h1><p>配列の値を次々流しこむ<code>fromArray</code>もあります。</p><pre><code class="haskell">machine = fromArray [0, 1, 2, 4, 5, 6, 7] &gt;&gt;&gt; sink logShow</code></pre><p>実行すると</p><pre><code class="undefined">0
 1
 2
@@ -193,7 +193,7 @@ loopRec m0 = do
         tailRecM (\m -&gt; do
             stepMealy s m &gt;&gt;= case _ of
                 Halt -&gt; pure (Loop m0)
-                Emit s&#x27; m&#x27; -&gt; pure (Loop m&#x27;)
+                Emit s&#39; m&#39; -&gt; pure (Loop m&#39;)
         ) m0
     loopRec m0</code></pre><p>この関数<code>loopRec</code>で作られたマシーンは、一度<code>Halt</code>で停止しても最初のマシーン<code>m0</code>を使って復活させて動き続けます。でも元の<code>loop</code>とはちょっと使い方が異なっていて、ループしたい全体を<code>loopRec</code>で囲まないといけません。</p><pre><code class="haskell">machine = loopRec (executeOOP &gt;&gt;&gt; sink log)</code></pre><p>一般性がなくて、なんか違う感じがします。何かうまい方法はあるんでしょうか。まだ思いつきません。</p><p>そういえば、Rxにはなんであんなに関数がたくさんあるのかとみんな思っているでしょうが、<strong>Rxを作ってる人の気持がだんだんわかってきました</strong>。要するになんでもできるので、あれもできそう！これもできそう！って思いつく端から作っていくと、機能がモリモリ増えていってしまうんです。たぶんRxを作っている人も、<a href="http://www.slideshare.net/tikibou1/rxjs-67070374">それRxでできるよ</a>ってやり続けてあんな巨大になっちゃったんだと思います。そりゃあRxで『も』できますが、そんなに色々あっても覚えきれないし使われないんですけどね。それはRxでもできますが、それをRxでやるべきかどうかはまた別の話です。早すぎる抽象化というやつで、ミーリ・マシンも普遍的すぎてどこまでミーリ・マシンでやるべきなのかよくわからない感じです。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ミーリマシンの圏</h1><p>ところで脱線しますが、ミーリ・マシンは<strong>圏</strong>でもあるようです。『関数型プログラミング』の話でたまに出てくる『圏論』の『圏』です。『ミーリ・マシンが圏をなす』というのは難しいことを言っているわけではなくて、ミーリ・マシンは<code>&gt;&gt;&gt;</code>演算子で合成できるし、入力をそのまま出力する素通りマシン<code>id</code>も使えると、ということを言っているだけです。試しに<code>id</code>ミーリ・マシンを使ってみましょう。</p><pre><code class="haskell">machine = source readLine &gt;&gt;&gt; id &gt;&gt;&gt; sink log</code></pre><p>実行してみます。</p><pre><code class="undefined">&gt; そんなことは
 そんなことは

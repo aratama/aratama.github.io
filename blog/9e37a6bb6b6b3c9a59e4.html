@@ -70,31 +70,31 @@ MathJax.Hub.Config({
 <a href="/blog/tag/purescript"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>purescript</span></a>
 <a href="/blog/tag/hyper"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>hyper</span></a></p>
             <hr>
-            <p><a href="/img/3c3b376d-5c80-47c6-58b9-23d264453a65.png"><img src="/img/3c3b376d-5c80-47c6-58b9-23d264453a65.png"></img></a></p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>動機</h1><p>Nodeで簡単なサーバサイドアプリケーションを作ることを考えてみます。</p><pre><code class="js">const http = require(&#x27;http&#x27;);
+            <p><a href="/img/3c3b376d-5c80-47c6-58b9-23d264453a65.png"><img src="/img/3c3b376d-5c80-47c6-58b9-23d264453a65.png"></img></a></p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>動機</h1><p>Nodeで簡単なサーバサイドアプリケーションを作ることを考えてみます。</p><pre><code class="js">const http = require(&#39;http&#39;);
 
-const hostname = &#x27;127.0.0.1&#x27;;
+const hostname = &#39;127.0.0.1&#39;;
 const port = 3000;
 
 const server = http.createServer((req, res) =&gt; {
   res.statusCode = 200;
-  res.setHeader(&#x27;Content-Type&#x27;, &#x27;text/plain&#x27;);
-  res.write(&#x27;Hello World\n&#x27;);
+  res.setHeader(&#39;Content-Type&#39;, &#39;text/plain&#39;);
+  res.write(&#39;Hello World\n&#39;);
   res.end();
 });
 
 server.listen(port, hostname, () =&gt; {
-  console.log(&#x60;Server running at http://${hostname}:${port}/&#x60;);
+  console.log(`Server running at http://${hostname}:${port}/`);
 });</code></pre><p>このコードが何をやっているかは明白ですし、Nodeを知らない人でもなんとなく見当がつくでしょう。さて、HTTPのレスポンスというのは、最初にステータス行、それからヘッダが続いて、最後にレスポンスボディの順で送信するプロトコルで、例えば次のような内容になっています。</p><pre><code class="undefined">HTTP/1.0 200 OK
 Content-Type: text/plain
 
-Hello World</code></pre><p>そういうプロトコルなので、レスポンスボディを送信したあとにヘッダを送信することはできません。たとえば、コードを次のように変更してみます。</p><pre><code class="js">  res.write(&#x27;Hello World\n&#x27;);
+Hello World</code></pre><p>そういうプロトコルなので、レスポンスボディを送信したあとにヘッダを送信することはできません。たとえば、コードを次のように変更してみます。</p><pre><code class="js">  res.write(&#39;Hello World\n&#39;);
   res.statusCode = 200;
-  res.setHeader(&#x27;Content-Type&#x27;, &#x27;text/plain&#x27;);
+  res.setHeader(&#39;Content-Type&#39;, &#39;text/plain&#39;);
   res.end();</code></pre><p>変更後のコードでは、<code>write</code>でレスポンスボディを書いたあとに、<code>setHeader</code>でヘッダを書き込んでいます。これを実行すると、実行時例外でサーバはお亡くなりになります。</p><pre><code class="undefined">http_outgoing.js:371
-    throw new Error(&#x27;Can\&#x27;t set headers after they are sent.&#x27;);
+    throw new Error(&#39;Can\&#39;t set headers after they are sent.&#39;);
     ^
 
-Error: Can&#x27;t set headers after they are sent.
+Error: Can&#39;t set headers after they are sent.
     at ServerResponse.setHeader (_http_outgoing.js:371:11)
     at Server.http.createServer (C:\dev\nodehttptest\test.js:9:7)
     at emitTwo (events.js:106:13)

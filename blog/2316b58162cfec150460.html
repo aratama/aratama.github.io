@@ -94,7 +94,7 @@ var main = Control_Monad_Eff_Console.log(&quot;Hello, world!&quot;);
 module.exports = {
     main: main
 };</code></pre><h2><a name="node-helloworld" class="anchor" href="#node-helloworld"><span class="header-link"></span></a>Node環境でHelloWorld</h2><p>コンパイルされて出力されたJavaScriptソースファイルはCommonJSモジュールになっているので、JavaScriptで直接書かれた通常のモジュールのように扱うことができます。例えば次のようにすればNode環境で先ほどのHelloWorldを実行することができます。</p><pre><code class="bash">$ node
-&gt; const Main = require(&#x27;./output/Main/index&#x27;)
+&gt; const Main = require(&#39;./output/Main/index&#39;)
 undefined
 &gt; Main.main()
 Hello, world!
@@ -117,11 +117,11 @@ main =
   in runServer defaultOptionsWithLogging {} app</code></pre><p>HyperのBowerパッケージの名前は<code>purescript-hyper</code>です。忘れないようにパッケージをインストールし、それからコンパイルして、うまく行ったら<code>node</code>でアプリケーションを起動してみましょう。起動するときはモジュールの名前を間違えないように気をつけてください。</p><pre><code class="bash">$ bower install --save purescript-hyper
 $ purs compile &quot;bower_components/purescript-*/src/**/*.purs&quot; &quot;src/**/*.purs&quot;
 $ node
-&gt; const HelloHyper = require(&#x27;./output/Examples.HelloHyper/index&#x27;)
+&gt; const HelloHyper = require(&#39;./output/Examples.HelloHyper/index&#39;)
 undefined
 &gt; HelloHyper.main()
 undefined
-&gt; Listening on http://localhost:3000</code></pre><p>これで、あとはブラウザで <a href="http://localhost:3000/">http://localhost:3000/</a> にアクセスすれば<code>Hello, Hyper!</code>と表示されると思います。このコンパイルで生成されたアプリケーションは、もちろんNodeが動く環境ならどんなサーバでも実行することができます。ただし、上の手順で起動するのは少々面倒なので、次のような起動用のスクリプトを用意して起動してもいいでしょう。</p><pre><code class="js">const HelloHyper = require(&#x27;./output/Examples.HelloHyper/index&#x27;);
+&gt; Listening on http://localhost:3000</code></pre><p>これで、あとはブラウザで <a href="http://localhost:3000/">http://localhost:3000/</a> にアクセスすれば<code>Hello, Hyper!</code>と表示されると思います。このコンパイルで生成されたアプリケーションは、もちろんNodeが動く環境ならどんなサーバでも実行することができます。ただし、上の手順で起動するのは少々面倒なので、次のような起動用のスクリプトを用意して起動してもいいでしょう。</p><pre><code class="js">const HelloHyper = require(&#39;./output/Examples.HelloHyper/index&#39;);
 HelloHyper.main();</code></pre><pre><code class="shell-session">$ node main.js
 Listening on http://localhost:3000</code></pre><p>また、以降の節で紹介する<code>purs bundle</code>コマンドを使えば、すべてのモジュールを結合しつつ、単独でそのまま起動できるモジュールを作ることができます。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ブラウザ環境での実行</h1><p>次は、ブラウザ環境でPureScriptアプリケーションを実行してみましょう。ブラウザ環境ではCommonJSモジュールは直接インポート出来ませんので、<code>purs bundle</code>というコマンドを使って、事前にモジュールを単一のJavaScriptファイルへと結合しておくのがいいと思います。コードは先程のHelloWorldを再び使いましょう。</p><pre><code class="haskell">module Main where
 

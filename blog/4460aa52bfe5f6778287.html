@@ -76,7 +76,7 @@ name = lens _.name _ { name = _ }
 
 completed :: forall a b . Lens { completed :: a | b } { completed :: a | b } a a 
 completed = lens _.completed _ { completed = _ }</code></pre><pre><code class="hs">-- lensを使わない通常のプロパティ読み取り
--- ここの『name』はLensの&#x60;name&#x60;じゃなくて、JavaScriptと同様のそういう専用の構文です
+-- ここの『name』はLensの`name`じゃなくて、JavaScriptと同様のそういう専用の構文です
 task.name          -- &quot;meeting&quot;
 
 -- view関数と先ほど定義したLensのnameを使ったプロパティ読み取り
@@ -188,7 +188,7 @@ type Task = { name :: String, completed :: Boolean }
 type TodoList = { title :: String, tasks :: Array Task }</code></pre><pre><code class="hs">-- サンプルデータ
 todoList :: TodoList
 todoList = {
-    title: &quot;Today&#x27;s todo&quot;,
+    title: &quot;Today&#39;s todo&quot;,
     tasks: [
         { name: &quot;meeting at 15:00&quot;, completed: false },
         { name: &quot;purchase a milk&quot;, completed: true },
@@ -206,7 +206,7 @@ todoList ^? (tasks &lt;&lt;&lt; ix 1 &lt;&lt;&lt; name)    -- Just &quot;purchas
 -- こういう複雑なオブジェクトの内部を書き換えようとすると、素朴な方法では一気に可読性が悪化します
 todoList { tasks = fromMaybe todoList.tasks $ modifyAt 1 (_ { name = &quot;purchase two bottles of milk&quot; }) todoList.tasks  }  
 -- {
---    title: &quot;Today&#x27;s todo&quot;,
+--    title: &quot;Today&#39;s todo&quot;,
 --    tasks: [
 --        { name: &quot;meeting at 15:00&quot;, completed: false },
 --        { name: &quot;purchase two bottles of milk&quot;, completed: true },
@@ -218,7 +218,7 @@ todoList { tasks = fromMaybe todoList.tasks $ modifyAt 1 (_ { name = &quot;purch
 -- JavaScriptだと todoList.tasks[1].name = &quot;purchase two bottles of milk&quot;; と書くのと同じイメージ
 todoList # (tasks &lt;&lt;&lt; ix 1 &lt;&lt;&lt; name) .~ &quot;purchase two bottles of milk&quot;      
 -- {
---    title: &quot;Today&#x27;s todo&quot;,
+--    title: &quot;Today&#39;s todo&quot;,
 --    tasks: [
 --        { name: &quot;meeting at 15:00&quot;, completed: false },
 --        { name: &quot;purchase two bottles of milk&quot;, completed: true },
@@ -231,7 +231,7 @@ todoList # (tasks &lt;&lt;&lt; ix 1 &lt;&lt;&lt; name) .~ &quot;purchase two bot
 -- JavaScriptでいう todoList.tasks.push({ name: &quot;have a lunch with her&quot;, completed: false }) のような操作は次のようになります
 todoList # tasks %~ (++ [{ name: &quot;have a lunch with her&quot;, completed: false }])
 -- {
---    title: &quot;Today&#x27;s todo&quot;,
+--    title: &quot;Today&#39;s todo&quot;,
 --    tasks: [
 --        { name: &quot;meeting at 15:00&quot;, completed: false },
 --        { name: &quot;purchase two bottles of milk&quot;, completed: true },

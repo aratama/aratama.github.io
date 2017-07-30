@@ -78,7 +78,7 @@ MathJax.Hub.Config({
 </ul>
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>えっ!?　５分でこの言語の字句解析を!?</h1><p>さて、なんとなく思いついたところからコーディングしていきます。構文解析をする前に、まずは『<strong>字句解析器</strong>』(LexerあるいはToken Parser)というプログラムを作る必要があります<a class="link-footnote" href="#footnote-lex" name="link-lex">※</a>。字句解析器の主な役割はコードをトークンに分割することですが、そのほかにも空白やコメントを読み飛ばしたり、後の構文解析でエラーが生じたときのためにトークンのソースコード上の位置を記録しておくなど、振る舞いは結構複雑です。といっても、今回の場合は、<code>purescript-parsing</code>というライブラリでデフォルトで定義されている構文解析器で十分でした。コードとしては実質的に次の一行だけです。</p><pre><code class="haskell">lexer = makeTokenParser emptyDef</code></pre><p>できました。これで字句解析器<code>lexer</code>の完成です。この<code>makeTokenParser</code>なる関数がポイントで、ほとんどすべてのプログラミング言語のソースコードの字句解析器は<code>makeTokenParser</code>一発で作成することができます。<code>makeTokenParser</code>には11項目のオプションがあって、<code>emptyDef</code>はそのオプションのデフォルト設定で、今回のorelangではこのデフォルト設定で事足ります。JavaやHaskell、Rubyのようなもっと本格的で複雑なプログラミング言語のコードを構文解析する場合でも、オプションを変えて<code>makeTokenParser</code>を呼び出すだけです。ぜんぜん難しくはありません。</p><h1><a name="-10-" class="anchor" href="#-10-"><span class="header-link"></span></a>えっ！この言語の構文解析を10分で!?</h1><p>先ほどの字句解析器<code>lexer</code>を使って、次は<strong>構文解析器</strong>を作ります。できました。</p><pre><code class="haskell">program = lexer.whiteSpace *&gt; expression *&gt; eof
   where
-    sign = char &#x27;-&#x27; &lt;|&gt; char &#x27;+&#x27;
+    sign = char &#39;-&#39; &lt;|&gt; char &#39;+&#39;
     expression = fix \expression -&gt; void lexer.stringLiteral
                                 &lt;|&gt; void (sign *&gt; lexer.naturalOrFloat)
                                 &lt;|&gt; void (lexer.brackets (sepBy1 expression lexer.comma))</code></pre><p><code>*&gt;</code>は『～のあとに～』と読んでください。例えば、<code>sign *&gt; lexer.naturalOrFloat</code>というコードは、『プラスやマイナスの符号(<code>sign</code>)のあとに、自然数か浮動小数点数(<code>naturalOrFloat</code>)がある』というように読むことができます。<code>sepBy1 expression lexer.comma</code>は『式(<code>expression</code>)は、コンマ(<code>comma</code>)で区切られた一個以上の(<code>sepBy1</code>)、式である』というように読みます。</p><p><code>&lt;|&gt;</code>は『～または～』と読んでください。<code>expression = ......</code>という部分は、『式とは、文字列リテラル、または自然数か浮動小数点数、または角括弧で囲まれた(<code>brackets</code>)コンマで区切られた一個以上の式』という意味です。<code>sign = char &#39;-&#39; &lt;|&gt; char &#39;+&#39;</code>は、『符号(<code>sign</code>)は文字<code>-</code>または文字<code>+</code>』というように読めます。</p><p>この定義がS式の構造を直感的に表現していることが、なんとなくわかると思います。なお、<code>void</code>というのはとりあえずの型合わせで使っているだけで、構文解析の振る舞いとは関係がないので気にしなくてもいいです。実質5行くらいしかありませんが、これでorelangの構文解析器<code>program</code>は出来上がりです<a class="link-footnote" href="#footnote-fix" name="link-fix">※</a>。構文解析なんてぜんぜん恐れるに足りないことがわかると思います。</p><p>構文解析器ができたので、あとはファイルからソースコードを読み取って構文解析を実行するだけです。<code>readTextFile</code>関数でファイルを読み取って<code>runParser</code>関数で構文解析を実行しているだけで、特に面白くもなんともないので解説は省略します。詳しくは先述のgistを御覧ください。</p><h1><a name="-5-" class="anchor" href="#-5-"><span class="header-link"></span></a>えっ？5分で抽象構文木の定義を？</h1><p>先ほどの構文解析器は構文解析の結果をすべて捨ててしまっているので、せいぜい構文のチェックに使えるくらいです。インタプリタとして動作させるには、構文解析の結果を<strong>構文木</strong>として取得する必要があります。元ネタのほうでは構文木にJSONデータをそのまま利用しているのですが、今回はJSONを使いませんので、まずは構文木のデータ構造を定義しておきましょう。orelangにおける式は次のようなものです。</p><ul>
@@ -92,7 +92,7 @@ MathJax.Hub.Config({
                 | String String
                 | List (List Expression)</code></pre><p>あまり詳細な説明はしませんが、<code>=</code>を『～とは、～』、<code>|</code>を『～または～』と読んでください。『式とは、真偽値または数値または文字列またはリスト』というように書かれているのが、なんとなくわかるかと思います。</p><h1><a name="-5-" class="anchor" href="#-5-"><span class="header-link"></span></a>えっ？ 5分で構文解析からの構文木構築を？</h1><p>それから、構文解析の結果をこのデータ型のデータへと移し替えるように先ほどの構文解析器<code>program</code>を改造します。ちょっと複雑になりました。</p><pre><code class="haskell">program = lexer.whiteSpace *&gt; expression &lt;* eof
   where
-    sign = (char &#x27;-&#x27; *&gt; pure negate) &lt;|&gt; (char &#x27;+&#x27; *&gt; pure id) &lt;|&gt; pure id
+    sign = (char &#39;-&#39; *&gt; pure negate) &lt;|&gt; (char &#39;+&#39; *&gt; pure id) &lt;|&gt; pure id
     number = Number &lt;$&gt; (sign &lt;*&gt; (either toNumber id &lt;$&gt; lexer.naturalOrFloat))
     string = String &lt;$&gt; lexer.stringLiteral
     list expression = List &lt;$&gt; lexer.brackets (sepBy1 expression lexer.comma)
@@ -124,9 +124,9 @@ eval _ = lift $ Left &quot;Invalid expression&quot;</code></pre><p>評価器の�
                 | String String
                 | List (List Expression)
                 | Assignment String Expression  -- new!</code></pre><p>それから、構文解析器も代入文を受け付けるように改造します。次のような代入文の定義<code>assignment</code>を付け加えました。『代入文(<code>assignment</code>)とは、まず識別子(<code>identifier</code>)があって、そのあとに<code>=</code>記号(<code>lexer.symbol &quot;=&quot;</code>)、それから式(<code>expression</code>)』というようになんとなく読めるのがわかると思います。なんとなく。</p><pre><code class="haskell">assignment expression = Assignment &lt;$&gt; lexer.identifier &lt;*&gt; (lexer.symbol &quot;=&quot; *&gt; expression)</code></pre><p>また、式の定義も、『式(<code>expression</code>)とは、<code>string</code>または<code>number</code>または<code>list</code>または<code>assignment</code>』に変えました。</p><pre><code class="haskell">expression = fix \expression -&gt; string &lt;|&gt; number &lt;|&gt; list expression &lt;|&gt; assignment expression</code></pre><p>更に、<code>Asssignment</code>を評価できるように評価器へパターンを付け加えます。中身は<code>set</code>演算子とほとんど同じです。</p><pre><code class="haskell">eval (Assignment key value) = do
-    value&#x27; &lt;- eval value
-    modify \(State s) -&gt; State s { variables = insert key value&#x27; s.variables }
-    lift (pure value&#x27;)</code></pre><p>7行ほど付け加えただけですが、これで例えば次のようなコードが実行できるようになります。</p><pre><code class="undefined">[&quot;step&quot;,
+    value&#39; &lt;- eval value
+    modify \(State s) -&gt; State s { variables = insert key value&#39; s.variables }
+    lift (pure value&#39;)</code></pre><p>7行ほど付け加えただけですが、これで例えば次のようなコードが実行できるようになります。</p><pre><code class="undefined">[&quot;step&quot;,
   i = 10,
   sum = 0,
   [&quot;until&quot;, [&quot;=&quot;, [&quot;get&quot;, &quot;i&quot;], 0], [
