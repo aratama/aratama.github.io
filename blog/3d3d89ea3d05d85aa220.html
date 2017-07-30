@@ -1,76 +1,12 @@
-<!DOCTYPE html>
-<meta charset="UTF-8">
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@cubbit2"><meta name="twitter:creator" content="@cubbit2"><meta name="twitter:title" content="仮想DOMを使うのに純粋関数型言語が最適である理由 - ちょっと小さいのはたしかですが。"><meta name="twitter:description" content="Admittedly something small."><meta name="twitter:image" content="/res/empty.png"><link rel="icon" href="icon.png"><link rel="stylesheet" href="/res/reset.css"><link rel="stylesheet" href="/res/style.css"><title>仮想DOMを使うのに純粋関数型言語が最適である理由 - ちょっと小さいのはたしかですが。</title><script>
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-<!-- Twitter card -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:site" content="@cubbit2">
-<meta name="twitter:creator" content="@cubbit2">
-<meta name="twitter:title" content="仮想DOMを使うのに純粋関数型言語が最適である理由 - ちょっと小さいのはたしかですが。">
-<meta name="twitter:description" content="Admittedly something small.">
-<meta name="twitter:image" content="https://aratama.github.io/res/empty.png">
-
-<link rel="icon" type="image/png" href="icon.png">
-<link rel="stylesheet" href="/res/reset.css">
-<link rel="stylesheet" href="/res/style.css">
-
-<title>仮想DOMを使うのに純粋関数型言語が最適である理由 - ちょっと小さいのはたしかですが。</title>
-
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-61162129-3', 'auto');
-  ga('send', 'pageview');
-
-</script>
-
-<header>
-    <div class="block-centered">
-        <div class="site-title"><a href="/">ちょっと小さいのはたしかですが。</a></div>
-        <div class="sub-title">Admittedly something small.</div>
-    </div>
-</header>
-
-
-
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<!--
-<link rel="stylesheet" href="/lib/highlight/styles/default.css">
-<script src="/lib/highlight/highlight.pack.js"></script>
-<script>hljs.initHighlightingOnLoad();</script>
--->
-
-<!--
-<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  tex2jax: {inlineMath: [['$','$']]}
-});
-</script>
--->
-
-
-<link rel="stylesheet" href="/res/article.css">
-
-
-    <div class="content">
-
-        <article id="rendered">
-            <div class="date">2016年2月1日</div>
-            <h1 class="article-title">
-                <!-- <i class="fa fa-coffee" aria-hidden="true"></i> -->
-                <a href="3d3d89ea3d05d85aa220.html">仮想DOMを使うのに純粋関数型言語が最適である理由<a>
-            </h1>        
-            <p class="tags"><a href="/blog/tag/JavaScript"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>JavaScript</span></a>
-<a href="/blog/tag/Haskell"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>Haskell</span></a>
-<a href="/blog/tag/purescript"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>purescript</span></a>
-<a href="/blog/tag/reactjs"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>reactjs</span></a>
-<a href="/blog/tag/redux"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>redux</span></a></p>
-            <hr>
-            <p>『純粋』関数型プログラミング言語といえば関数型プログラミング言語全体のなかでも殊更ラジカルな言語として知られていますが、『すべて純粋』という言語には、『だいたい純粋』という言語にはない利点があります。このテキストは、実感を得やすい具体的な場面を元に『純粋関数型』の利点を紹介していくシリーズです。第一回は<a href="/blog/98598af2b0e9a6206ef3.html">言語を純粋にしてモナドで抽象化すると、非同期処理のコールバック地獄をPromise/Generators以上にシンプルかつ優れた方法で解決できるよ</a>という話でした。今回は、言語が純粋なら仮想DOMを使うときに純粋性も何も知らなくていいし、レンダリング関数の純粋性が自動的に保証されてとにかく簡単だよ、という話です。</p><h1><a name="-1-" class="anchor" href="#-1-"><span class="header-link"></span></a>ケース1: 『別に純粋でない』言語～『だいたい純粋な』言語の場合</h1><p>みなさん仮想DOMは使ってますでしょうか。筆者はもう新しいおもちゃを与えられたイヌのようにハフハフしながら遊んでいて、この間記事に書いた<a href="/blog/72236dfb8476cd490e01.html">コレ</a>も中身は<a href="https://github.com/Matt-Esch/virtual-dom">Matt-Esch/virtual-dom</a>でレンダリングされています。ところで、仮想DOM実装でもっともポピュラーだと思われるReactのドキュメントでは、ドキュメントをレンダリングする関数<code>render</code>の実装の仕方について、次のような注意書きがあります。</p><blockquote>
+                ga('create', 'UA-61162129-3', 'auto');
+                ga('send', 'pageview');
+            </script></head><body><header><div class="block-centered"><div class="site-title"><a href="/">ちょっと小さいのはたしかですが。</a></div><div class="sub-title">Admittedly something small.</div></div></header><div class="content"><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" href="/res/article.css"><article id="rendered"><div class="date">2016年2月1日</div><h1 class="article-title"><a href="3d3d89ea3d05d85aa220.html">仮想DOMを使うのに純粋関数型言語が最適である理由</a></h1><p class="tags"><a href="/blog/tag/JavaScript"><span class="tag"><i class="fa fa-tag"></i>JavaScript</span></a><a href="/blog/tag/Haskell"><span class="tag"><i class="fa fa-tag"></i>Haskell</span></a><a href="/blog/tag/purescript"><span class="tag"><i class="fa fa-tag"></i>purescript</span></a><a href="/blog/tag/reactjs"><span class="tag"><i class="fa fa-tag"></i>reactjs</span></a><a href="/blog/tag/redux"><span class="tag"><i class="fa fa-tag"></i>redux</span></a></p><hr><div><p>『純粋』関数型プログラミング言語といえば関数型プログラミング言語全体のなかでも殊更ラジカルな言語として知られていますが、『すべて純粋』という言語には、『だいたい純粋』という言語にはない利点があります。このテキストは、実感を得やすい具体的な場面を元に『純粋関数型』の利点を紹介していくシリーズです。第一回は<a href="/blog/98598af2b0e9a6206ef3.html">言語を純粋にしてモナドで抽象化すると、非同期処理のコールバック地獄をPromise/Generators以上にシンプルかつ優れた方法で解決できるよ</a>という話でした。今回は、言語が純粋なら仮想DOMを使うときに純粋性も何も知らなくていいし、レンダリング関数の純粋性が自動的に保証されてとにかく簡単だよ、という話です。</p><h1><a name="-1-" class="anchor" href="#-1-"><span class="header-link"></span></a>ケース1: 『別に純粋でない』言語～『だいたい純粋な』言語の場合</h1><p>みなさん仮想DOMは使ってますでしょうか。筆者はもう新しいおもちゃを与えられたイヌのようにハフハフしながら遊んでいて、この間記事に書いた<a href="/blog/72236dfb8476cd490e01.html">コレ</a>も中身は<a href="https://github.com/Matt-Esch/virtual-dom">Matt-Esch/virtual-dom</a>でレンダリングされています。ところで、仮想DOM実装でもっともポピュラーだと思われるReactのドキュメントでは、ドキュメントをレンダリングする関数<code>render</code>の実装の仕方について、次のような注意書きがあります。</p><blockquote>
 <p><strong>render()関数は純粋(pure)であるべきです</strong>。 これはコンポーネントのstateを変更せず、それぞれの実行時には同じ結果が返り、 DOMからの読み込みをしない、DOMへの書き込みをしない、 もしくはブラウザとの相互作用による処理(例えば、setTimeout)を行わないという意味です。 もしブラウザとの相互作用の処理が必要な場合は、 代わりにcomponentDidMount()内、または別のライフサイクルのメソッド内で行って下さい。 render()を純粋に保つことで、サーバーでの描画(レンダリング)がより実用的になり、 コンポーネントの処理を推察しやすいものにします。</p></blockquote>
 <p><a href="http://js.studio-kingdom.com/react/component_specs/render">http://js.studio-kingdom.com/react/component_specs/render</a></p><p>なるほど、<code>render</code>は『純粋』でなければならないということだそうです。また、<code>setState</code>のところに次のような注意書きが書かれています。</p><blockquote>
 <p>注意:<br>決して、setState()呼び出し後に変更されたとして、<strong>直接this.stateを変更しないでください。 this.stateは不変(immutable)であるかのように扱って下さい</strong>。 setState()は即座にthis.stateを変更しませんが、stateの遷移をペンディング(保留)にします。 このメソッド呼び出しの後にthis.stateにアクセスすると、既存の値が返る可能性があります。</p></blockquote>
@@ -102,8 +38,8 @@ put (state + 1)</code></pre><p><code>get</code>で現在の状態を取得し、
 <hr>
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>追記</h1><p>はてブコメより：</p><blockquote>
 <p>matsulib &quot;純粋性は必須条件なの？ただのプラクティスなの？面倒臭かったら破ってもいいの？どこまで忠実に守るべき？&quot;/reactでは自己責任で破れるものなんだろうけど、その「だいたい純粋」が原因で起こる問題ってなんだろう。</p></blockquote>
-<p>先の筆者の説明では『面倒臭かったら破ってもいいの？』とよくわかっていないふりをしてとぼけていますが、<strong>これは自己責任でも破ってはいけないもの</strong>です。そうでなければ、こんなお節介をわざわざドキュメントに書いたりはしません。わざわざ破る必要もありません。reactはそれを破らなくても済むように設計されています。</p><p>たとえば、状態を表すオブジェクトの一部を書き換えても、reactはそれを検知できないので正しく表示を更新できません。新しい状態全体を<code>setState</code>して初めて正常に状態を更新できます。ですから状態オブジェクトは不変オブジェクトであるかのように扱わなければならないわけです。純粋でない操作が可能であると、そんなふうに状態の一部を書き換えて状態と表示の不整合を生じる可能性が出てきます。他にも、reactはコンポーネントをいつ何度書き換えるかは予想できないので、レンダリング関数に副作用があるとその副作用がいつ何回実行されるかわからず、予想の付かない結果を招きます。詳しくはreactについて学んでください。</p><p>上で述べたことを繰り返しますが、<strong>言語全体が純粋であれば「reactでは純粋性を自己責任で破れる」などという勘違いはそもそも起きません</strong>し、<strong>そのように『だいたい純粋が原因で起こる問題ってなんだろう』と考える必要がない</strong>と言っているのです。matsulibさんのようなひとが、そのような疑問を抱く必要がないようにするために、そのようなことについて学習する必要がないようにするために、純粋性が役に立つのです。このテキストで主張しているのはそういうことです。</p>
-            
+<p>先の筆者の説明では『面倒臭かったら破ってもいいの？』とよくわかっていないふりをしてとぼけていますが、<strong>これは自己責任でも破ってはいけないもの</strong>です。そうでなければ、こんなお節介をわざわざドキュメントに書いたりはしません。わざわざ破る必要もありません。reactはそれを破らなくても済むように設計されています。</p><p>たとえば、状態を表すオブジェクトの一部を書き換えても、reactはそれを検知できないので正しく表示を更新できません。新しい状態全体を<code>setState</code>して初めて正常に状態を更新できます。ですから状態オブジェクトは不変オブジェクトであるかのように扱わなければならないわけです。純粋でない操作が可能であると、そんなふうに状態の一部を書き換えて状態と表示の不整合を生じる可能性が出てきます。他にも、reactはコンポーネントをいつ何度書き換えるかは予想できないので、レンダリング関数に副作用があるとその副作用がいつ何回実行されるかわからず、予想の付かない結果を招きます。詳しくはreactについて学んでください。</p><p>上で述べたことを繰り返しますが、<strong>言語全体が純粋であれば「reactでは純粋性を自己責任で破れる」などという勘違いはそもそも起きません</strong>し、<strong>そのように『だいたい純粋が原因で起こる問題ってなんだろう』と考える必要がない</strong>と言っているのです。matsulibさんのようなひとが、そのような疑問を抱く必要がないようにするために、そのようなことについて学習する必要がないようにするために、純粋性が役に立つのです。このテキストで主張しているのはそういうことです。</p></div><div>
+    
 <hr style="margin-top: 60px;">
 
 <div class="snsbuttons">
@@ -132,7 +68,7 @@ put (state + 1)</code></pre><p><code>get</code>で現在の状態を取得し、
         js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.8";
         fjs.parentNode.insertBefore(js, fjs);
         }(document, 'script', 'facebook-jssdk'));</script>
-        <div class="fb-like" data-href="https://aratama.github.io/blog/${metadata.id}.md" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="false"></div>
+        <div class="fb-like" data-href="https://aratama.github.io/blog/3d3d89ea3d05d85aa220.md" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="false"></div>
     </div>
 
     <!-- google+ -->
@@ -144,41 +80,31 @@ put (state + 1)</code></pre><p><code>get</code>で現在の状態を取得し、
     </div>
 
 </div>
-        </article>
-    </div>
 
-<footer>
-    <div class="block-centered footer-inner">
-        <p class="copy">&nbsp;</p>
-        <p class="author">このブログを書いてる人:&nbsp;&nbsp; 竹内稲穂<p>
-    </div>
-
-    <script>
-        const poem = [
-            "なんにもない毎日が、なによりの宝物。",
-            "今日という日を、何度でも繰り返したい。",
-            "世界を追いかけなくても、世界は私のまわりにある。", 
-            "速すぎる雑踏。鼻先をくすぐる春風。", 
-            "明日撮る写真を飾る場所を、アルバムに空けておこう。", 
-            "落ち葉が地面に、触れる音がした。", 
-            "明日は、明日の楽しさが待っている。", 
-            "風が泣いている。この想いを紡ぐ言葉を持たないから。", 
-            "もうここには何もない。だから、次の場所に旅立とう。", 
-            "もう此処にはこないだろう。そう言って私は過去に背を向けた。", 
-            "散りゆくからこそ、美しい。私は桜の花びらをかかとで踏みしめた。", 
-            "思い出はいつだって輝いてる。",
-            "正直ばかりじゃつまらない。たまには楽しい嘘をつこう。", 
-            "ゆっくり歩けば歩くほど、時間がゆっくり過ぎてゆく。",
-            "夜明けを、探しにいこう。", 
-            "空はこんなに青かったんだ。", 
-            "地球は青かった。それはこの空を見上げたことのある全員が知っている。", 
-            "休み時間は、長すぎるということはない。", 
-            "缶コーヒーを飲むときだけは、それ以外のすべてを忘れることにしてる。", 
-            "ちょっと小さいのは確かですが、それは確かにここにあります。", 
-            "ちょっと小さいのは確かですが、広すぎる家というのも寂しいでしょう？", 
-            "ひつじが一匹、ひつじが二匹。五十匹までは、数えたことがある。"
-        ];
-    document.querySelector(".copy").textContent = poem[Math.floor(poem.length * Math.random())];
-    </script>
-</footer>
-
+</div></article></div><footer><div class="block-centered footer-inner"><p class="copy">&amp;nbsp;</p><p class="author">このブログを書いてる人:&amp;nbsp;&amp;nbsp; 竹内稲穂</p></div><script>
+                    const poem = [
+                        "なんにもない毎日が、なによりの宝物。",
+                        "今日という日を、何度でも繰り返したい。",
+                        "世界を追いかけなくても、世界は私のまわりにある。", 
+                        "速すぎる雑踏。鼻先をくすぐる春風。", 
+                        "明日撮る写真を飾る場所を、アルバムに空けておこう。", 
+                        "落ち葉が地面に、触れる音がした。", 
+                        "明日は、明日の楽しさが待っている。", 
+                        "風が泣いている。この想いを紡ぐ言葉を持たないから。", 
+                        "もうここには何もない。だから、次の場所に旅立とう。", 
+                        "もう此処にはこないだろう。そう言って私は過去に背を向けた。", 
+                        "散りゆくからこそ、美しい。私は桜の花びらをかかとで踏みしめた。", 
+                        "思い出はいつだって輝いてる。",
+                        "正直ばかりじゃつまらない。たまには楽しい嘘をつこう。", 
+                        "ゆっくり歩けば歩くほど、時間がゆっくり過ぎてゆく。",
+                        "夜明けを、探しにいこう。", 
+                        "空はこんなに青かったんだ。", 
+                        "地球は青かった。それはこの空を見上げたことのある全員が知っている。", 
+                        "休み時間は、長すぎるということはない。", 
+                        "缶コーヒーを飲むときだけは、それ以外のすべてを忘れることにしてる。", 
+                        "ちょっと小さいのは確かですが、それは確かにここにあります。", 
+                        "ちょっと小さいのは確かですが、広すぎる家というのも寂しいでしょう？", 
+                        "ひつじが一匹、ひつじが二匹。五十匹までは、数えたことがある。"
+                    ];
+                    document.querySelector(".copy").textContent = poem[Math.floor(poem.length * Math.random())];
+                </script></footer></body></html>

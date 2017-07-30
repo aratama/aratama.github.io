@@ -1,76 +1,12 @@
-<!DOCTYPE html>
-<meta charset="UTF-8">
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@cubbit2"><meta name="twitter:creator" content="@cubbit2"><meta name="twitter:title" content="関数型なAltJS、PureScriptの入門書を邦訳しました。 - ちょっと小さいのはたしかですが。"><meta name="twitter:description" content="Admittedly something small."><meta name="twitter:image" content="/res/empty.png"><link rel="icon" href="icon.png"><link rel="stylesheet" href="/res/reset.css"><link rel="stylesheet" href="/res/style.css"><title>関数型なAltJS、PureScriptの入門書を邦訳しました。 - ちょっと小さいのはたしかですが。</title><script>
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-<!-- Twitter card -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:site" content="@cubbit2">
-<meta name="twitter:creator" content="@cubbit2">
-<meta name="twitter:title" content="関数型なAltJS、PureScriptの入門書を邦訳しました。 - ちょっと小さいのはたしかですが。">
-<meta name="twitter:description" content="Admittedly something small.">
-<meta name="twitter:image" content="https://aratama.github.io/res/empty.png">
-
-<link rel="icon" type="image/png" href="icon.png">
-<link rel="stylesheet" href="/res/reset.css">
-<link rel="stylesheet" href="/res/style.css">
-
-<title>関数型なAltJS、PureScriptの入門書を邦訳しました。 - ちょっと小さいのはたしかですが。</title>
-
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-61162129-3', 'auto');
-  ga('send', 'pageview');
-
-</script>
-
-<header>
-    <div class="block-centered">
-        <div class="site-title"><a href="/">ちょっと小さいのはたしかですが。</a></div>
-        <div class="sub-title">Admittedly something small.</div>
-    </div>
-</header>
-
-
-
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<!--
-<link rel="stylesheet" href="/lib/highlight/styles/default.css">
-<script src="/lib/highlight/highlight.pack.js"></script>
-<script>hljs.initHighlightingOnLoad();</script>
--->
-
-<!--
-<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  tex2jax: {inlineMath: [['$','$']]}
-});
-</script>
--->
-
-
-<link rel="stylesheet" href="/res/article.css">
-
-
-    <div class="content">
-
-        <article id="rendered">
-            <div class="date">2015年4月9日</div>
-            <h1 class="article-title">
-                <!-- <i class="fa fa-coffee" aria-hidden="true"></i> -->
-                <a href="f1e048fc9a8ca51eddb2.html">関数型なAltJS、PureScriptの入門書を邦訳しました。<a>
-            </h1>        
-            <p class="tags"><a href="/blog/tag/JavaScript"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>JavaScript</span></a>
-<a href="/blog/tag/Haskell"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>Haskell</span></a>
-<a href="/blog/tag/関数型言語"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>関数型言語</span></a>
-<a href="/blog/tag/altjs"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>altjs</span></a>
-<a href="/blog/tag/purescript"><span class="tag"><i class="fa fa-tag" aria-hidden="true"></i>purescript</span></a></p>
-            <hr>
-            <p><strong>追記: この翻訳は超古いです。本文中のサンプルコードの多くは、最新版のコンパイラではコンパイルが通りません。最新の情報については、原著を参照してください。</strong>基本的な概念は変わらないので、この翻訳もまったく参考にならないというわけではないと思いますが、なるべく原著を読むことをおすすめします。</p><p>現在のPureScriptでの開発環境構築については、<a href="/blog/2316b58162cfec150460.html">純粋関数型プログラミング言語PureScriptのはじめかた／コンパイラの使いかたからサーバサイドアプリケーション・クライアントサイドシングルページアプリケーション開発まで</a>の記事も併せてご覧ください。</p><hr>
+                ga('create', 'UA-61162129-3', 'auto');
+                ga('send', 'pageview');
+            </script></head><body><header><div class="block-centered"><div class="site-title"><a href="/">ちょっと小さいのはたしかですが。</a></div><div class="sub-title">Admittedly something small.</div></div></header><div class="content"><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" href="/res/article.css"><article id="rendered"><div class="date">2015年4月9日</div><h1 class="article-title"><a href="f1e048fc9a8ca51eddb2.html">関数型なAltJS、PureScriptの入門書を邦訳しました。</a></h1><p class="tags"><a href="/blog/tag/JavaScript"><span class="tag"><i class="fa fa-tag"></i>JavaScript</span></a><a href="/blog/tag/Haskell"><span class="tag"><i class="fa fa-tag"></i>Haskell</span></a><a href="/blog/tag/関数型言語"><span class="tag"><i class="fa fa-tag"></i>関数型言語</span></a><a href="/blog/tag/altjs"><span class="tag"><i class="fa fa-tag"></i>altjs</span></a><a href="/blog/tag/purescript"><span class="tag"><i class="fa fa-tag"></i>purescript</span></a></p><hr><div><p><strong>追記: この翻訳は超古いです。本文中のサンプルコードの多くは、最新版のコンパイラではコンパイルが通りません。最新の情報については、原著を参照してください。</strong>基本的な概念は変わらないので、この翻訳もまったく参考にならないというわけではないと思いますが、なるべく原著を読むことをおすすめします。</p><p>現在のPureScriptでの開発環境構築については、<a href="/blog/2316b58162cfec150460.html">純粋関数型プログラミング言語PureScriptのはじめかた／コンパイラの使いかたからサーバサイドアプリケーション・クライアントサイドシングルページアプリケーション開発まで</a>の記事も併せてご覧ください。</p><hr>
 <p>Haskellライクな関数型プログラミング言語PureScriptの入門書、&quot;PureScript By Example&quot;を邦訳しました。本書はPureScriptのオリジナルの作者であるPhilさん本人が執筆した入門書です。本書を理解するにはJavaScriptを知っていることが望ましいですが、そうでなくともすでに何らかのプログラミング言語を知っていれば読みこなすことはできると思います。PureScriptはHaskellを始めとした多くの関数型言語と様々な考え方を共有していますから、PureScriptという言語そのものを学ぶという目的でなくとも、関数型プログラミング全般についての入門としても読むにも適しています。<strong>無料</strong>ですので、ぜひ読んでみてください。</p><ul>
 <li><a href="https://hiruberuto.bitbucket.io/purescript/">実例によるPureScript</a></li>
 </ul>
@@ -289,8 +225,8 @@ exceptionは例外という漢語なのにerrorはエラーというカタカナ
 
 
 -->
-
-            
+</div><div>
+    
 <hr style="margin-top: 60px;">
 
 <div class="snsbuttons">
@@ -319,7 +255,7 @@ exceptionは例外という漢語なのにerrorはエラーというカタカナ
         js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.8";
         fjs.parentNode.insertBefore(js, fjs);
         }(document, 'script', 'facebook-jssdk'));</script>
-        <div class="fb-like" data-href="https://aratama.github.io/blog/${metadata.id}.md" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="false"></div>
+        <div class="fb-like" data-href="https://aratama.github.io/blog/f1e048fc9a8ca51eddb2.md" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="false"></div>
     </div>
 
     <!-- google+ -->
@@ -331,41 +267,31 @@ exceptionは例外という漢語なのにerrorはエラーというカタカナ
     </div>
 
 </div>
-        </article>
-    </div>
 
-<footer>
-    <div class="block-centered footer-inner">
-        <p class="copy">&nbsp;</p>
-        <p class="author">このブログを書いてる人:&nbsp;&nbsp; 竹内稲穂<p>
-    </div>
-
-    <script>
-        const poem = [
-            "なんにもない毎日が、なによりの宝物。",
-            "今日という日を、何度でも繰り返したい。",
-            "世界を追いかけなくても、世界は私のまわりにある。", 
-            "速すぎる雑踏。鼻先をくすぐる春風。", 
-            "明日撮る写真を飾る場所を、アルバムに空けておこう。", 
-            "落ち葉が地面に、触れる音がした。", 
-            "明日は、明日の楽しさが待っている。", 
-            "風が泣いている。この想いを紡ぐ言葉を持たないから。", 
-            "もうここには何もない。だから、次の場所に旅立とう。", 
-            "もう此処にはこないだろう。そう言って私は過去に背を向けた。", 
-            "散りゆくからこそ、美しい。私は桜の花びらをかかとで踏みしめた。", 
-            "思い出はいつだって輝いてる。",
-            "正直ばかりじゃつまらない。たまには楽しい嘘をつこう。", 
-            "ゆっくり歩けば歩くほど、時間がゆっくり過ぎてゆく。",
-            "夜明けを、探しにいこう。", 
-            "空はこんなに青かったんだ。", 
-            "地球は青かった。それはこの空を見上げたことのある全員が知っている。", 
-            "休み時間は、長すぎるということはない。", 
-            "缶コーヒーを飲むときだけは、それ以外のすべてを忘れることにしてる。", 
-            "ちょっと小さいのは確かですが、それは確かにここにあります。", 
-            "ちょっと小さいのは確かですが、広すぎる家というのも寂しいでしょう？", 
-            "ひつじが一匹、ひつじが二匹。五十匹までは、数えたことがある。"
-        ];
-    document.querySelector(".copy").textContent = poem[Math.floor(poem.length * Math.random())];
-    </script>
-</footer>
-
+</div></article></div><footer><div class="block-centered footer-inner"><p class="copy">&amp;nbsp;</p><p class="author">このブログを書いてる人:&amp;nbsp;&amp;nbsp; 竹内稲穂</p></div><script>
+                    const poem = [
+                        "なんにもない毎日が、なによりの宝物。",
+                        "今日という日を、何度でも繰り返したい。",
+                        "世界を追いかけなくても、世界は私のまわりにある。", 
+                        "速すぎる雑踏。鼻先をくすぐる春風。", 
+                        "明日撮る写真を飾る場所を、アルバムに空けておこう。", 
+                        "落ち葉が地面に、触れる音がした。", 
+                        "明日は、明日の楽しさが待っている。", 
+                        "風が泣いている。この想いを紡ぐ言葉を持たないから。", 
+                        "もうここには何もない。だから、次の場所に旅立とう。", 
+                        "もう此処にはこないだろう。そう言って私は過去に背を向けた。", 
+                        "散りゆくからこそ、美しい。私は桜の花びらをかかとで踏みしめた。", 
+                        "思い出はいつだって輝いてる。",
+                        "正直ばかりじゃつまらない。たまには楽しい嘘をつこう。", 
+                        "ゆっくり歩けば歩くほど、時間がゆっくり過ぎてゆく。",
+                        "夜明けを、探しにいこう。", 
+                        "空はこんなに青かったんだ。", 
+                        "地球は青かった。それはこの空を見上げたことのある全員が知っている。", 
+                        "休み時間は、長すぎるということはない。", 
+                        "缶コーヒーを飲むときだけは、それ以外のすべてを忘れることにしてる。", 
+                        "ちょっと小さいのは確かですが、それは確かにここにあります。", 
+                        "ちょっと小さいのは確かですが、広すぎる家というのも寂しいでしょう？", 
+                        "ひつじが一匹、ひつじが二匹。五十匹までは、数えたことがある。"
+                    ];
+                    document.querySelector(".copy").textContent = poem[Math.floor(poem.length * Math.random())];
+                </script></footer></body></html>
