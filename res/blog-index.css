@@ -6,10 +6,10 @@ article {
 
 
 .article-container {
-    max-width: 960px;
+    /* max-width: 960px; */
     transition-property: all;
     transition-duration: 0.3s;
-    margin: 1em;
+    padding: 1em;
 }
 
 li {
@@ -81,3 +81,39 @@ h2 {
     font-size: 12px;
     letter-spacing: 0.5em;
 }
+
+
+@media screen and ( max-width:959px ) {
+
+    article {
+        width: 100%;
+        padding: 5px;
+    }
+
+    .article-container {
+        max-width: none;
+        margin: 0px;
+    }
+
+    .article-entry {
+        width: initial;
+        height: initial;
+        margin: 10px;
+        margin-top: 12px;
+        padding: 0px;
+        float: none;
+    }
+
+    .article-entry .thumbnail {
+        height: 80px;
+    }
+
+    .article-entry .title {
+        position: relative;
+    }
+
+    .article-entry .date {
+        position: relative;
+    }
+}
+

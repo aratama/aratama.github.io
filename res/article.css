@@ -40,3 +40,22 @@ article h1.article-title a:hover {
 .footnote a {
     text-decoration: none;
 }
+
+
+
+
+@media screen and ( max-width:959px ) {
+
+    article > h1.article-title {
+        margin: 0px;
+    }
+
+    img {
+        max-width: 100%;
+    }
+
+    article {
+        width: 100%;
+        padding: 15px;
+    }
+}
