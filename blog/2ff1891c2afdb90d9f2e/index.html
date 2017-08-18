@@ -1,0 +1,268 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@cubbit2"><meta name="twitter:creator" content="@cubbit2"><meta name="twitter:title" content="HaskellerのためのPureScriptことはじめ - ちょっと小さいのはたしかですが。"><meta name="twitter:description" content="Admittedly something small."><meta name="twitter:image" content="https://aratama.github.io/res/empty.png"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="icon.png"><link rel="stylesheet" href="/res/reset.css"><link rel="stylesheet" href="/res/style.css"><title>HaskellerのためのPureScriptことはじめ - ちょっと小さいのはたしかですが。</title><script>
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+                ga('create', 'UA-61162129-3', 'auto');
+                ga('send', 'pageview');
+            </script></head><body><header><div class="block-centered"><div class="site-title"><a href="/">Admittedly <wbr>something <wbr>small.</a></div><div class="sub-title">ちょっと<wbr>小さいのは<wbr>たしかですが。</div></div></header><div class="content"><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" href="/res/article.css"><article id="rendered"><div class="date">2015年2月6日</div><h1 class="article-title"><a href=".">HaskellerのためのPureScriptことはじめ</a></h1><p class="tags"><a href="/blog/tag/JavaScript"><span class="tag"><i class="fa fa-tag"></i>JavaScript</span></a><a href="/blog/tag/Haskell"><span class="tag"><i class="fa fa-tag"></i>Haskell</span></a><a href="/blog/tag/altjs"><span class="tag"><i class="fa fa-tag"></i>altjs</span></a><a href="/blog/tag/purescript"><span class="tag"><i class="fa fa-tag"></i>purescript</span></a></p><hr><div><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><strong>【注意事項】この記事はとてもとても古いです。現在のPureScriptとは大きく言語仕様が変わっており、この記事の情報はあまり宛てにならないと思います。あまりに現状のPureScriptとかけ離れているので削除も考えましたが、何かの参考になるかもしれないので一応残しておきます。PureScriptについては、もし英語でも構わないのであれば、PureScriptのオリジナルの開発者であるPhilさん本人による<a href="https://leanpub.com/purescript/read">PureScript by Example</a>がもっとも信頼できる情報源です。どうしても日本語の情報を探しているなら、かなり古いですが<a href="f1e048fc9a8ca51eddb2.html">関数型なAltJS、PureScriptの入門書を邦訳しました。</a>も参考にしてください。</strong> </p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><hr>
+<h2><a name="-strong-a-href-http-www-purescript-org-purescript-a-strong-" class="anchor" href="#-strong-a-href-http-www-purescript-org-purescript-a-strong-"><span class="header-link"></span></a><strong><a href="http://www.purescript.org/">PureScript</a></strong>とは：</h2><ul>
+<li>Haskellライクな構文とライブラリ</li>
+<li>Row Polymorphismによる柔軟な型システム</li>
+<li>JavaScriptへトランスコンパイルされるAltJS</li>
+</ul>
+<p>そんなPureScriptについて調べた内容のざっくりとしたメモです。べつにHaskellユーザじゃなくても読めますのでどうぞ。</p><h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>言語仕様編</h2><h3><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>正格評価</h3><p>PureScriptは<strong>正格評価</strong>です</p><h3><a name="-kind" class="anchor" href="#-kind"><span class="header-link"></span></a>型とKind</h3><h4><a name="-type-" class="anchor" href="#-type-"><span class="header-link"></span></a>* (Type)</h4><p>Haskellと同じように、<code>*</code>は普通のデータ型を表すkindです。<code>* -&gt; *</code>は型をひとつとって型を返すkindです。例: <code>Number :: *</code>, <code>String :: *</code>, <code>Maybe :: * -&gt; *</code>, <code>Maybe Number :: *</code>, <code>(-&gt;) :: * -&gt; * -&gt; *</code>, <code>Number -&gt; Number :: *</code>, <code>[] :: * -&gt; *</code>, <code>[] Number :: *</code>, <code>[Number] :: *</code> </p><h4><a name="-effect-" class="anchor" href="#-effect-"><span class="header-link"></span></a>! (Effect)</h4><p>PureScriptのkindには<code>*</code>とは別に<code>!</code>というものもあります。この<code>!</code>は入出力や副作用を表すEffectの型のkindです。例: <code>Data.Trace.Trace :: !</code>, <code>Control.Monad.Eff.Random.Random :: !</code></p><p><code>foreign import</code>を使えば自分で新たなEffectを定義することもできます。</p><pre><code class="undefined">foreign import data Counter :: !</code></pre><p>自分で定義したこの<code>!</code>は、FFIで<code>Eff</code>と一緒に使います。</p><h4><a name="-row-" class="anchor" href="#-row-"><span class="header-link"></span></a># (Row)</h4><p>Rowは名前と型の組み合わせを複数個順序なしでまとめたものです。副作用を表す型Effでどんな副作用が含まれているかを表したり、オブジェクト型を作り出したりするのに使います。<code># *</code>はフィールドに<code>*</code>だけをもつRowで、<code># !</code>はフィールドに<code>!</code>だけを持つRowのことです。Rowを作るには<code>()</code>を使います。</p><h6><a name="-code-code-" class="anchor" href="#-code-code-"><span class="header-link"></span></a><code>()</code></h6><p>例: <code>() :: # *</code>　または <code>() :: # !</code>, <code>( number :: Number ) :: # *</code>, <code>( number :: Number, string :: String ) :: # *</code>, <code>( trace :: Trace ) :: # !</code>, <code>( number :: Number, trace :: Trace )</code> は * と ! を混ぜているのでエラー</p><h6><a name="-code-object-code-" class="anchor" href="#-code-object-code-"><span class="header-link"></span></a><code>Object</code></h6><p><code>Object</code>は <code># *</code>から<code>*</code>を作ってくれます。JavaScriptのオブジェクトのような型は<code>()</code>でRowを作ってから<code>Object</code>に渡すと作ることができます。</p><p>例: <code>Object :: # * -&gt; *</code>, <code>Object () :: *</code>, <code>Object ( number :: Number ) :: *</code>, <code>Object ( trace :: Trace )</code> はObjectは # ! は受け取れないのでエラー</p><p><code>Object ( number :: Number )</code>は<code>number</code>という名前で<code>Number</code>という型のプロパティを持ったオブジェクトの型に相当します。</p><pre><code class="undefined">earth :: Object ( answer :: Number )
+earth = { answer : 42 }</code></pre><h6><a name="-code-code-" class="anchor" href="#-code-code-"><span class="header-link"></span></a><code>{}</code></h6><p><code>{}</code>は<code>Object ()</code>のシンタックスシュガーです。JavaScriptのオブジェクトの型を作るときにちょっと便利です。</p><p>例: <code>{} :: *</code>,  <code>{ number :: Number } :: *</code>, <code>{ trace :: Trace }</code> は <code>Object ( trace :: Trace )</code> と同じ理由でエラー</p><pre><code class="undefined">earth :: { answer :: Number }
+earth = { answer : 42 }</code></pre><h6><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>そのほか</h6><p>例: <code>Eff :: # ! -&gt; * -&gt; *</code>, <code>Eff () :: * -&gt; *</code>, <code>Eff ( trace :: Trace ) :: * -&gt; *</code>, <code>Eff ( trace :: Trace ) Number :: *</code>, <code>Eff ( number :: Number )</code> は <code>Eff</code> は <code># *</code> を受け取れないのでエラー, <code>Eff ( trace :: Trace ) Trace</code> も <code>*</code> に <code>!</code> を渡そうとしているのでエラー</p><h3><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>オブジェクト(レコード)</h3><p><code>{ answer : 42 }</code>というようなRecord LiteralでJavaScriptのようなオブジェクトリテラルを書けます。レコードでパターンマッチングもできます。</p><pre><code class="undefined">f { foo = &quot;Foo&quot;, bar = n } = n
+f _ = 0</code></pre><p>(チュートリアルを読んでると、<code>{ answer :: Number }</code>みたいなのをHaskellと同様にRecordと呼んでいたり、<code>{ answer : 42 }</code>はRecord Literalと呼んだり、パターンマッチングするときは<code>Record Pattern</code>なのですが、Rowから型を作るときの型コンストラクタは<code>Object</code>だし、RecordとObjectという呼び方が混在している気もします。このあたりまだよくわかりません)</p><h6><a name="data-" class="anchor" href="#data-"><span class="header-link"></span></a>dataの直積型とオブジェクトの使い分け：</h6><ul>
+<li>Haskellと同様に、のちほどフィールドを追加しそうなデータ型はオブジェクトにします。<code>type</code> で別名も定義しておくと良さそうです</li>
+<li>インスタンスが必要な場合や、データ型が循環する場合では、<code>newtype</code>でさらにオブジェクトを包むデータ型を別に定義します</li>
+<li>直和が必要な場合は<code>newtype</code>ではなく <code>data</code>でオブジェクトを包むことになります</li>
+<li>２次元ベクトル型や単方向リストのように、フィールドの内容が明らかで今後増減しそうになくフィールドの個数が少ないデータ型は、直接<code>data</code>でデータ型を定義しても構いません。ただし、パターンマッチングは関数定義か<code>case</code>式のみで使用可能で、(関数ではない)値の定義や<code>let</code>式ではパターンマッチングが使えないらしく、直積型を<code>data</code>で定義すると不便なことがあります。dataによる直積型とオブジェクト型(レコード型)は異なるので、Haskellのように一旦dataで直積型を定義しておいてあとからフィールドラベルを付け加えるというようなことは簡単にはできません。筆者もいろいろ調査中ですが、この点についてはもしかしたら今後改善されるのかもしれません。</li>
+</ul>
+<pre><code class="hs">module Main(main) where
+
+import Debug.Trace
+
+-- dataで直積型を定義。
+data Vector2 = Vector2 Number Number
+
+p :: Vector2
+p = Vector2 10 20
+
+-- 関数定義でのパターンマッチングは可能
+addVector :: Vector2 -&gt; Vector2 -&gt; Vector2
+addVector (Vector2 x1 y1) (Vector2 x2 y2) = Vector2 (x1 + x2) (y1 + y2)
+
+-- case式でもパターンマッチングは可能
+px :: Number
+px = case p of
+    Vector2 x y -&gt; x
+
+-- do記法の &lt;- でもパターンマッチングが可能
+main = do Vector2 x y &lt;- return $ Vector2 10 20
+          trace $ show x
+
+
+
+-- パースエラー(Haskellでは可能)
+Vector2 x y = Vector2 10 20
+
+-- パースエラー(Haskellでは可能)
+py = let Vector2 x y = p in y
+
+-- パースエラー(Haskellでは可能)
+main = do let Vector2 x y = Vector2 10 20
+          trace $ show x
+
+-- こういうWorkaroundは可能だけど、さすがにちょっとよみづらい
+py = (\(Vector2 x y) -&gt; y) p
+
+-- dataを直接使う場合は、フィールドを取り出す関数を自力で定義するのが正攻法か
+xop (Vector2 x _) = x
+py = xop p</code></pre><h3><a name="row-polymorphism" class="anchor" href="#row-polymorphism"><span class="header-link"></span></a>Row Polymorphism</h3><p><code>( name::String, age::Number )</code>というRowは<code>name::String</code>と<code>age::Number</code>という２つのフィールド<strong>のみ</strong>を持った『閉じた』Rowです。それに対し、型変数<code>t</code>を加えた<code>( name::String, age::Number | t)</code>は<strong>少なくとも</strong><code>name::String</code>と<code>age::Number</code>という２つのフィールドを持つ『開いた』Rowです。</p><p><code>Object ()</code>のシンタックスシュガーである<code>{}</code>も同様で、<code>{ name::String, age::Number }</code>は閉じたオブジェクト、<code>{ name::String, age::Number | t}</code>は開いたオブジェクトの型になります。</p><p>閉じたRowには過不足なく同じ名前で同じ型のフィールドが揃っていなければその型の値として扱えません。</p><pre><code class="undefined">type Entry = { firstName :: String, lastName :: String, phone :: String }
+
+john :: Entry
+john = { firstName: &quot;John&quot;, lastName: &quot;Smith&quot;, phone: &quot;555-555-5555&quot; }</code></pre><pre><code class="undefined">fullName :: { firstName :: String, lastName :: String } -&gt; String
+fullName person = person.firstName ++ &quot; &quot; ++ person.lastName
+
+main = trace $ fullName john       -- Johnには余計なフィールドphoneが含まれているからERROR</code></pre><p>それに対し、開いたRowにすると余分なフィールドがあっても受け取れます。<code>r</code>にその場に応じて適切な型が補完されると考えるとよいでしょう。この場合、<code>fullName</code>の呼び出しでは型変数<code>r</code>が<code>phone :: String</code>であるとすれば型を一致させることができます。</p><pre><code class="undefined">fullName :: forall r. { firstName :: String, lastName :: String | r } -&gt; String  ---r を追加
+fullName person = person.firstName ++ &quot; &quot; ++ person.lastName
+
+main = trace $ fullName John       -- Johnには余計なフィールドphoneが含まれているけどOK</code></pre><p>Row Polymorphismにより、入出力の時にいろんな<code>Eff</code>を混ぜて書くのが楽になります。逆に言えば、<code>Eff</code>を<code>Trace</code>するための<code>Eff</code>、例外を扱うための<code>Eff</code>、乱数を生成するための<code>Eff</code>……という風に細かく分けて定義し、必要に応じて合成させることでより詳細に制御できます。<code>Eff</code>について詳しくは後述します。</p><h3><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>型変数</h3><p>型変数を導入する際 <code>forall</code>は 必須です</p><h3><a name="main" class="anchor" href="#main"><span class="header-link"></span></a>main</h3><p>エントリポイントである <code>main</code> の型は <code>main :: Eff :: # ! -&gt; * -&gt; *</code>というような型です。<code>main</code>で<code>Trace</code>と<code>Random</code>の<code>Eff</code>を混ぜて使いたい時の<code>main</code>の型は次のようになります。</p><pre><code class="undefined">module Main where
+
+import Prelude
+import Control.Monad.Eff
+import Control.Monad.Eff.Random
+import Debug.Trace
+
+main :: Eff (trace :: Trace, random :: Random) Unit
+main = do
+  n &lt;- random
+  print n</code></pre><p>もっとも、<code>main</code>の型注釈は書かなくても型推論でたぶんなんとかなります。</p><h3><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>モジュール</h3><p><code>module ... where</code> は必須です。</p><h3><a name="magic-do" class="anchor" href="#magic-do"><span class="header-link"></span></a>magic-do</h3><p><code>do</code>は<code>&gt;&gt;=</code>のシンタックスシュガーですから、</p><pre><code class="hs">do trace &quot;hoge&quot;
+   trace &quot;piyo&quot;</code></pre><p>のようなコードは<code>&gt;&gt;=</code>の入れ子になってしまいそうですが、<code>Eff</code>はコンパイラが特別扱いしてうまく平坦なコードにして出力してくれます。このmagic-doはコンパイラオプションでオフにすることもできます。magic-doが効くのは<code>Eff</code>だけですから、それ以外の独自のモナドで副作用を記述しようとすると恐ろしいコードが吐かれます（後述）。</p><h3><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>末尾再帰</h3><p>末尾再帰もちゃんと最適化してwhileのループにしてくれますので心配いりません。</p><pre><code class="hs">go n = do
+  print n
+  go (n + 1)
+
+main = go 1</code></pre><pre><code class="js">var go = function (__copy_n) {
+    return function __do() {
+        var n = __copy_n;
+        tco: while (true) {
+            Debug_Trace.print(Prelude.showNumber)(n)();
+            var __tco_n = n + 1;
+            n = __tco_n;
+            continue tco;
+        };
+    };
+};</code></pre><h3><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>セクション</h3><p>演算子のセクションはありません。演算子を<code>()</code>で囲んで関数にし、<code>(+) 42</code>みたいに書くことはできます。</p><h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ライブラリ編</h2><p><a href="https://github.com/purescript">PureScript</a> や　<a href="https://github.com/purescript-contrib">PureScript Contrib</a>　を覗くといろいろあります。</p><h3><a name="-a-href-https-github-com-purescript-purescript-tree-master-prelude-prelude-a-" class="anchor" href="#-a-href-https-github-com-purescript-purescript-tree-master-prelude-prelude-a-"><span class="header-link"></span></a><a href="https://github.com/purescript/purescript/tree/master/prelude">Prelude</a></h3><p>Preludeに入っているのは本当に基本的なものだけです。<code>Maybe</code>や<code>Either</code>も別モジュールです。ちゃんと<code>Fanctor</code> -&gt; <code>Applicative</code> -&gt; <code>Monad</code> の階層になっていたり、後発なだけあって全体的に整理されてすっきりしている印象です。</p><h4><a name="boolean-number-string" class="anchor" href="#boolean-number-string"><span class="header-link"></span></a>Boolean/Number/String</h4><p><code>Boolean</code>, <code>Number</code>, <code>String</code>がJavaScriptの<code>boolean</code>, <code>number</code>, <code>string</code>にそのまま対応します。<code>Boolean</code>な値は小文字から始まる<code>true</code>と<code>false</code>です。<code>true</code>や<code>false</code>はパターンマッチングでも使えるデータコンストラクタなのに！ふしぎ！</p><h4><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>標準出力</h4><p><code>trace</code>, <code>print</code>がそれぞれHaskellの<code>putStrLn</code>, <code>print</code>に相当します。</p><h4><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>関数合成</h4><p>Haskellのような<code>.</code>による関数合成はできません。関数は<code>Semigroupoid</code>という型クラスのインスタンスがあって、<code>f . g</code> は <code>f &lt;&lt;&lt; g</code>か<code>g &gt;&gt;&gt; f</code>と書きます。</p><h4><a name="unit" class="anchor" href="#unit"><span class="header-link"></span></a>Unit</h4><p>UnitはHaskellのような<code>() :: ()</code>ではなく<code>unit :: Unit</code>です。</p><h3><a name="foreign-function-interface" class="anchor" href="#foreign-function-interface"><span class="header-link"></span></a>Foreign Function Interface</h3><p>PureScriptのFFIは単純で、</p><ul>
+<li>PureScriptから呼ぶ関数はカリー化して定義しておく(PureScriptの関数はJavaScriptレベルでもカリー化されて定義されるので、逆にJavaScriptからPureScriptの関数を呼ぶ場合は引数を一つづつ渡す)</li>
+<li>Effモナドは単にnullary function</li>
+<li>Haskell同様の <code>foreign import &quot; ... &quot; hoge :: Hoge -&gt; Piyo</code> というような構文で呼び出す先の型を定義する</li>
+</ul>
+<p>というだけです。仕組みは簡単なものの、何しろカリー化しなければならないので愚直に<code>foreign import</code>キーワードを使ってPureScriptからJavaScriptの関数を呼ぶのはとても面倒です。ffiを使う場合は<a href="https://github.com/pelotom/purescript-easy-ffi">purescript-easy-ffi</a>というモジュールを使いましょう。<code>unsafeForeignFunction</code>という関数を呼ぶだけです。</p><pre><code class="undefined">stringify :: forall a. Number -&gt; a -&gt; String
+stringify = unsafeForeignFunction [&quot;n&quot;, &quot;x&quot;] &quot;JSON.stringify(x, null, n)&quot;</code></pre><p>purescript-easy-ffiがあれば、 <code>foreign import</code>で直接外部の関数を定義する方法や、<code>Data.Function</code>を組み合わせる方法はほとんど使う必要はないと思います。</p><h6><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>参考</h6><ul>
+<li><a href="https://gist.github.com/paf31/8e9177b20ee920480fbc#day-3---purescript-easy-ffi-and-purescript-oo-ffi">24 Days of PureScript | day 3</a></li>
+</ul>
+<h3><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>例外処理</h3><p>JavaScriptのtry/catchのような<code>Eff</code>まみれの例外処理をしたければ、<a href="https://github.com/purescript/purescript-exceptions"><code>purescript-exceptions</code></a> の <code>Control.Monad.Eff.Exception</code> をインポートします。　<code>error</code>で例外オブジェクトを作り　<code>throwException</code>で投げて<code>catchException</code>で受けとります。</p><pre><code class="undefined">module Main where
+
+import Prelude
+import Control.Monad.Eff
+import Debug.Trace
+import Control.Monad.Eff.Exception
+
+main :: forall t. Eff (trace :: Trace, ex :: Exception) Unit
+main = do
+    catchException (\err -&gt; print (message err)) do
+        print &quot;begin&quot;
+        throwException (error &quot;Exception&quot;)
+        print &quot;end&quot;   -- throwException で抜けるのでこちらは呼ばれない</code></pre><p><code>throwException</code>はJavaScriptレベルでは<code>throw</code>しているだけで、<code>catchException</code>も<code>try-catch</code>で捕まえているだけです。</p><h3><a name="st-" class="anchor" href="#st-"><span class="header-link"></span></a>STモナド</h3><p><code>ST</code>モナドを<code>runPure</code>/<code>runST</code>で走らせた場合は、コンパイラが特別に処理してくれてただの変数になります</p><pre><code class="undefined">collatz :: Number -&gt; Number
+collatz n = runPure (runST (do
+  r &lt;- newSTRef n
+  count &lt;- newSTRef 0
+  untilE $ do
+    modifySTRef count $ (+) 1
+    m &lt;- readSTRef r
+    writeSTRef r $ if m % 2 == 0 then m / 2 else 3 * m + 1
+    return $ m == 1
+  readSTRef count))</code></pre><pre><code class="undefined">var collatz = function (n) {
+        return Control_Monad_Eff.runPure(function __do() {
+            var _60 = n;
+            var _59 = 0;
+            (function () {
+                while (!(function __do() {
+                    _59 = 1 + _59;
+                    var _58 = _60;
+                    _60 = _58 % 2 === 0 ? _58 / 2 : 3 * _58 + 1;
+                    return _58 === 1;
+                })()) {
+
+                };
+                return {};
+            })();
+            return _59;
+        });
+    };</code></pre><p>ただし、以下のように<code>ST</code>を他の<code>Eff</code>と混ぜて使った場合は普通にいろんな関数呼び出しにコンパイルされてました。残念。</p><pre><code class="undefined">main :: forall a . Eff (trace :: Trace, random :: Random, st :: ST a) Unit
+main = do
+  x &lt;- newSTRef 0
+  forE 0 100 $ \i -&gt; do
+    n &lt;- random
+    modifySTRef x $ (+) n
+    return unit
+  readSTRef x &gt;&gt;= print</code></pre><h3><a name="canvas-free-" class="anchor" href="#canvas-free-"><span class="header-link"></span></a>CanvasとFreeモナド</h3><p>ブラウザ環境でCanvasに描くためのバインディング<a href="https://github.com/purescript-contrib/purescript-canvas">Graphics.Canvas</a>もあります。ゲームを作ったりするときに役に立ちそうです。</p><p>CanvasのFreeモナド版<a href="https://github.com/paf31/purescript-free-canvas">Graphics.Canvas.Free</a>もあるみたいです。Freeモナドじゃないほうの生の<code>Graphics.Canvas</code>で書こうとすると</p><pre><code class="undefined">context &lt;- getContext2D canvas
+dimensions &lt;- getCanvasDimensions canvas
+clearRect context { x:0, y:0, w:dimensions.width, h:dimensions.height }
+save context
+setLineWidth 2 context
+setShadowOffsetX 1 context
+setShadowOffsetY 1 context
+...</code></pre><p>みたいにひたすら<code>context</code>に付きまとわれるCanvasの描画コマンド群が、Freeモナドを使うと<code>context</code>が消えて次のようにすっきり書くことができます。</p><pre><code class="undefined">context &lt;- getContext2D canvas
+dimensions &lt;- getCanvasDimensions canvas
+clearRect context { x:0, y:0, w:dimensions.width, h:dimensions.height }
+runGraphics context $ do
+    save
+    setLineWidth 2
+    setShadowOffsetX 1
+    setShadowOffsetY 1
+    ...</code></pre><p><code>Graphics.Canvas</code>だけを使って<code>Eff</code>モナドで書けばmagic-doのおかげで以下のようなシンプルなJavaScriptを吐いてくれるのですが、</p><pre><code class="js">Graphics_Canvas.save(_53)();
+Graphics_Canvas.setLineWidth(2)(_53)();
+Graphics_Canvas.setShadowOffsetX(1)(_53)();
+Graphics_Canvas.setShadowOffsetY(1)(_53)();
+Graphics_Canvas.setShadowColor(&quot;#808080&quot;)(_53)();
+Graphics_Canvas.setStrokeStyle(&quot;#FF8000&quot;)(_53)();
+....</code></pre><p><code>Graphics.Canvas.Free</code>を使うと、以下の様な恐ろしいコードを吐いてきます。</p><pre><code class="js">return Graphics_Canvas_Free.runGraphics(_55)(Prelude[&quot;&gt;&gt;=&quot;](Control_Monad_Free.bindFree(Data_Coyoneda.functorCoyoneda))(Graphics_Canvas_Free.save)(function () {
+    return Prelude[&quot;&gt;&gt;=&quot;](Control_Monad_Free.bindFree(Data_Coyoneda.functorCoyoneda))(Graphics_Canvas_Free.setLineWidth(2))(function () {
+        return Prelude[&quot;&gt;&gt;=&quot;](Control_Monad_Free.bindFree(Data_Coyoneda.functorCoyoneda))(Graphics_Canvas_Free.setShadowOffsetX(1))(function () {
+            return Prelude[&quot;&gt;&gt;=&quot;](Control_Monad_Free.bindFree(Data_Coyoneda.functorCoyoneda))(Graphics_Canvas_Free.setShadowOffsetY(1))(function () {
+                return Prelude[&quot;&gt;&gt;=&quot;](Control_Monad_Free.bindFree(Data_Coyoneda.functorCoyoneda))(Graphics_Canvas_Free.setShadowColor(&quot;#808080&quot;))(function () {
+                    return Prelude[&quot;&gt;&gt;=&quot;](Control_Monad_Free.bindFree(Data_Coyoneda.functorCoyoneda))(Graphics_Canvas_Free.setStrokeStyle(&quot;#FF8000&quot;))(function () {
+                        return Prelude[&quot;&gt;&gt;=&quot;](Control_Monad_Free.bindFree(Data_Coyoneda.functorCoyoneda))(Graphics_Canvas_Free.translate(20)(20))(function () {
+                            return Prelude[&quot;&gt;&gt;=&quot;](Control_Monad_Free.bindFree(Data_Coyoneda.functorCoyoneda))(Graphics_Canvas_Free.scale(2.0)(1.5))(function () {
+                                return Prelude[&quot;&gt;&gt;=&quot;](Control_Monad_Free.bindFree(Data_Coyoneda.functorCoyoneda))(Graphics_Canvas_Free.rotate(state.rotation))(function () {
+                                    ....</code></pre><p>１回きりの描画ならこれでも構わないのですが、ゲームみたいに頻繁に画面を更新するアプリケーションだとさすがにちょっと心配です。</p><h2><a name="-see-also" class="anchor" href="#-see-also"><span class="header-link"></span></a>参考文献というかSee Also</h2><p>まともにPureScriptに取り組む気があるなら、<strong>&quot;PureScript by Example&quot;</strong> と <strong>&quot;24 Days of PureScript&quot;</strong> は必須です。それ以外はお好みに応じてどうぞ。</p><ul>
+<li><p><strong><a href="https://github.com/purescript/purescript/wiki">purescript/wiki</a></strong> とりあえずWikiがいろんな情報の入口です</p></li>
+<li><p><strong><a href="https://leanpub.com/purescript/">PureScript by Example</a> PureScript開発者本人によって書かれたチュートリアルで、これさえ読めばPureScriptについてはだいたいすべてわかります。開発環境のインストールの方法から関数型言語の基礎的な概念まで丁寧に説明されており、PureScriptの入門に最適だろうと思います。主にJavaScriptのユーザ向けに書かれており、Haskellのような言語に通じていなくても読むことができます(というか、Haskellに通じている人ならすでに知っている内容のほうが多いかもしれません)。</strong> <del>長いので筆者はまだ全部は読んでませんが、十分な量がある充実したテキストなのでそのうち全部目を通そうと思います。</del> 読んだので邦訳しました。読んでください → <strong><a href="f1e048fc9a8ca51eddb2.html">関数型なAltJS、PureScriptの入門書を邦訳しました。</a></strong></p></li>
+<li><p><strong><a href="https://gist.github.com/paf31/8e9177b20ee920480fbc">24 Days of PureScript</a></strong> PureScriptをいじろうと思うなら絶対に目を通しておくべき記事その２</p></li>
+<li><p><a href="https://github.com/purescript/purescript/wiki/Handling-Native-Effects-with-the-Eff-Monad">Handling Native Effects with the Eff Monad</a> 入出力はHaskellとだいぶ違います。</p></li>
+<li><a href="http://curtis.io/posts/purescript-for-web-development.html">Getting Started with Purescript for Web Development</a> &quot;PureScript by Example&quot;のサンプルコードはNode上で動かすものが多いですが、この記事はブラウザ環境で動かす方法。といってもビルドの方法がちょっと違ったりブラウザ環境専用のモジュールが必要になるだけの話です。</li>
+<li><a href="http://pursuit.purescript.org/">pursuit</a> - PureScriptのドキュメント検索エンジン。Hoogleみたいなアレ</li>
+</ul>
+<h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>参考になりそうな小さめのプロジェクト</h2><p>とりあえず筆者も何かゲームでも作ってみようと思うので、PureScriptで書かれたゲームのデモを幾つか：</p><ul>
+<li><a href="https://github.com/waterson/purescript-asteroids/">purescript-asteroids</a> アステロイド。DOMでイベントリスナを登録してSTを書き換えてというベタな方法で書かれている</li>
+<li><a href="https://github.com/bodil/purescript-is-magic/">purescript-is-magic</a>　マイリトルポニーをジャンプさせてTroll Faceを避けるゲーム。purescript-signalでリアクティブに書かれている</li>
+<li><a href="https://github.com/michaelficarra/purescript-demo-mario">purescript-demo-mario</a> purescript-signalでマリオがジャンプするデモ。これもpurescript-signal</li>
+</ul>
+<h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>材料</h2><ul>
+<li><a href="https://github.com/aktowns/purescript-simple-dom">purescript-simple-dom</a> 基本的なDOMの操作はひと通り揃っているみたいです。別に<a href="https://github.com/purescript-contrib/purescript-dom/">purescript-dom</a> (<code>DOM</code>) というモジュールもありますが、そちらはすっからかん</li>
+<li><a href="https://github.com/purescript-contrib/purescript-canvas">purescript-canvas</a>　Canvasへの描画。まだ<code>drawImage</code>すらなくて辛い</li>
+</ul>
+<h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>感想</h2><p>PureScriptは筆者が長年追い求めていた理想のAltJSに限りなく近い。すごい。</p><h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>さいごに</h2><p>そのうちPureScriptで何か作ってみようと思います。いろいろわかり次第また追記するつもりです。</p></div><div>
+    
+<hr style="margin-top: 60px;">
+
+<div class="snsbuttons">
+
+    <!-- Twitter -->
+    <a href="https://twitter.com/share" class="twitter-share-button" data-related="cubbit2">Tweet</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+    <!-- Hatena -->
+    <div>
+        <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </div>
+
+    <!-- line -->
+    <div>
+        <div class="line-it-button" style="display: none;" data-type="share-a" data-lang="ja" ></div>
+        <script src="//scdn.line-apps.com/n/line_it/thirdparty/loader.min.js" async="async" defer="defer" ></script>
+    </div>
+
+    <!--facebook -->
+    <div>
+        <div id="fb-root"></div>
+        <script>(function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.8";
+        fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
+        <div class="fb-like" data-href="https://aratama.github.io/blog/2ff1891c2afdb90d9f2e.md" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="false"></div>
+    </div>
+
+    <!-- google+ -->
+    <div>
+        <script src="https://apis.google.com/js/platform.js" async defer>
+        {lang: 'ja'}
+        </script>
+        <div class="g-plusone" data-size="medium"></div>
+    </div>
+
+</div>
+
+</div></article></div><footer><div class="block-centered footer-inner"><p class="copy">&amp;nbsp;</p><p class="author">このブログを書いてる人: 竹内稲穂</p></div><script>
+                    const poem = [
+                        "なんにもない毎日が、なによりの宝物。",
+                        "今日という日を、何度でも繰り返したい。",
+                        "世界を追いかけなくても、世界は私のまわりにある。", 
+                        "速すぎる雑踏。鼻先をくすぐる春風。", 
+                        "明日撮る写真を飾る場所を、アルバムに空けておこう。", 
+                        "落ち葉が地面に、触れる音がした。", 
+                        "明日は、明日の楽しさが待っている。", 
+                        "風が泣いている。この想いを紡ぐ言葉を持たないから。", 
+                        "もうここには何もない。だから、次の場所に旅立とう。", 
+                        "もう此処にはこないだろう。そう言って私は過去に背を向けた。", 
+                        "散りゆくからこそ、美しい。私は桜の花びらをかかとで踏みしめた。", 
+                        "思い出はいつだって輝いてる。",
+                        "正直ばかりじゃつまらない。たまには楽しい嘘をつこう。", 
+                        "ゆっくり歩けば歩くほど、時間がゆっくり過ぎてゆく。",
+                        "夜明けを、探しにいこう。", 
+                        "空はこんなに青かったんだ。", 
+                        "地球は青かった。それはこの空を見上げたことのある全員が知っている。", 
+                        "休み時間は、長すぎるということはない。", 
+                        "缶コーヒーを飲むときだけは、それ以外のすべてを忘れることにしてる。", 
+                        "ちょっと小さいのは確かですが、それは確かにここにあります。", 
+                        "ちょっと小さいのは確かですが、広すぎる家というのも寂しいでしょう？", 
+                        "ひつじが一匹、ひつじが二匹。五十匹までは、数えたことがある。"
+                    ];
+                    document.querySelector(".copy").textContent = poem[Math.floor(poem.length * Math.random())];
+                </script></footer></body></html>

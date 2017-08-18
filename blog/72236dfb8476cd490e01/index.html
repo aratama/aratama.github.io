@@ -1,0 +1,143 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@cubbit2"><meta name="twitter:creator" content="@cubbit2"><meta name="twitter:title" content="Web Audio APIを使ってブラウザで音楽や音声にエフェクトをかけられるツールを作りました。 - ちょっと小さいのはたしかですが。"><meta name="twitter:description" content="Admittedly something small."><meta name="twitter:image" content="https://aratama.github.io/f1c6e728-2b00-f022-3f26-24774d028137.png"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="icon.png"><link rel="stylesheet" href="/res/reset.css"><link rel="stylesheet" href="/res/style.css"><title>Web Audio APIを使ってブラウザで音楽や音声にエフェクトをかけられるツールを作りました。 - ちょっと小さいのはたしかですが。</title><script>
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+                ga('create', 'UA-61162129-3', 'auto');
+                ga('send', 'pageview');
+            </script></head><body><header><div class="block-centered"><div class="site-title"><a href="/">Admittedly <wbr>something <wbr>small.</a></div><div class="sub-title">ちょっと<wbr>小さいのは<wbr>たしかですが。</div></div></header><div class="content"><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" href="/res/article.css"><article id="rendered"><div class="date">2016年1月9日</div><h1 class="article-title"><a href=".">Web Audio APIを使ってブラウザで音楽や音声にエフェクトをかけられるツールを作りました。</a></h1><p class="tags"><a href="/blog/tag/JavaScript"><span class="tag"><i class="fa fa-tag"></i>JavaScript</span></a><a href="/blog/tag/WebAudioAPI"><span class="tag"><i class="fa fa-tag"></i>WebAudioAPI</span></a><a href="/blog/tag/purescript"><span class="tag"><i class="fa fa-tag"></i>purescript</span></a></p><hr><div><p>ブラウザで本格的なサウンドプログラミングが可能になるWeb Audio APIを使って、リアルタイムで音声にフィルタを掛けられるツールを作りました。コードを書くことなくマウスで操作するだけで、好きな動画や音楽にエコーを掛けたりフィルタを掛けたり、MP3ファイルへとエンコードしたりと、いろいろな実験ができます。Web Audio APIやサウンドプログラミングの入門教材にもどうぞ。Web Audio APIは使ってみると楽しいAPIです。以下のURLで実際にブラウザ上で実行することができます。</p><p>(追記: BitbucketとGithubの両方に設置してありますが、気まぐれにアップデートしているので両者の内容が異なる場合があります。だいたいはBitbucketに置いてある方が新しいです。ただし、ChromeではHTTPSで接続しないとUser Mediaを使うことができないため、パソコンのマイクからの入力を使いたい場合はGithub版のほうを使ってください)</p><ul>
+<li><a href="http://hiruberuto.bitbucket.org/soundknot/">Soundknot @ Bitbucket</a></li>
+<li><a href="https://aratama.github.io/soundknot/">Soundknot @ Github</a></li>
+</ul>
+<p>動作環境は主にChromeで確認していています。FirefoxやOperaなどでも一応動いてはいるようですが、Chrome以外の環境への対応はまだ作業が足りていないので、できればChromeがいいと思います。Electronでも動くのは確認していますが、現時点ではElectronで動かすメリットがほとんどないのでElectronパッケージでの提供はありません。まだまったくのWork in Progressなので、もしいろいろ動かなくても気にしないでください。きっとそのうち動くようになります。きっと。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>つかいかた</h1><h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>低音だけを取り出すフィルタをかける</h2><p>簡単に使い方を紹介しておきます。最初の実験として、まずは音声の低音部分だけを取り出して再生するようなフィルタリングをやってみます。</p><p>このツールはUnreal Engineの<a href="https://docs.unrealengine.com/latest/JPN/Engine/Blueprints/index.html">Blueprint</a>や<a href="http://nodered.org/">Node-RED</a>みたいなインターフェイスになっていて、ノード同士を繋ぎあわせて音声データの流れを表す「オーディオグラフ」をグラフィカルに作成していきます。でも筆者はBlueprintとかは使ったことがないので、筆者のなかではBlenderの<a href="http://wiki.blender.org/index.php/Doc:JA/2.6/Manual/Composite_Nodes/Editor">Node Editor</a>が元ネタです。</p><p>左のパネルから中央のエリアにボタンをドラッグアンドドロップすると各種のノードが作成できますので、「Media Element」「Biquad Filter」「Destination」の３つのノードを作成し、下の図のようにノード同士を接続してみましょう。それぞれのノードの右端にある黄色い丸はオーディオの出力ポートを表していて、それを各ノードの左端の丸にドラッグアンドドロップするとノードどうしを接続することができます。また、接続した線をクリックすると接続を切断することができます。これらのノードは上のタイトルバーっぽいところをドラッグすると移動することもできます。また中央のエリアの背景部分をドラッグすると全体をスクロールできますし、マウスホイールで全体を拡大縮小して表示することができます。</p><p>Media Elementノードの「Open」ボタンを押すとファイルダイアログが開きますから、何か適当な音声ファイルや動画ファイルを開いてみてください。読み込み可能なファイル形式はブラウザにそのまま依存しており、WAV、MP3、Oggのようなオーディオファイルや、avi、mp4、WebMなどの動画ファイルが読み込めます。それからMedia Elementノードの左下の再生ボタンをクリックするとファイルが再生され、Biquad Filterノードでフィルタリングされた音が出力されます。</p><p><a href="f1c6e728-2b00-f022-3f26-24774d028137.png"><img src="f1c6e728-2b00-f022-3f26-24774d028137.png"></img></a></p><p>ノードと接続はオーディオ信号の流れる経路を表していて、オーディオ機器どうしを音声ケーブルで接続するのによく似ています。Media Elementは動画や音声ファイルなどを再生するためのノードで、その音声情報がBiquad Filterノードに入力されます。Biquad Filterは各種の周波数に応じたフィルタを掛けることができ、デフォルトでは350Hz以下の低音だけを通すローパスフィルタになっています。そしてそのフィルタリングされた結果の信号がDestinationノードへ入力されると、スピーカーから実際の音声が出力されます。</p><p>ローパスフィルタをかけると、まるで映画館の上映室から漏れる映画の音声とか、ライブハウスの会場の外に漏れる音楽みたいになります。これは高音に比べて低音は建物の壁などを通して周囲に伝わりやすいからです。Biquad Filterノードの一番上のドロップダウンリストはフィルタリングの種類になっていて、ここで<code>highpass</code>を選ぶとハイパスフィルタに変更できます。これは文字通り高音だけを通すフィルタで、<code>frequency</code>インプットでしきい値となる値を上げていくと低音が削除されて高音だけが残り、イヤフォンから漏れるシャカシャカ音みたいになります。</p><h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>音声を視覚的に確認する</h2><p>Analyserノードを使うと、音声信号の内容を視覚的に表示することができます。使い方は適当なノードの出力をAnalyserノードに接続するだけです。線で描画されているほうが、音声の時間的な波形を示しています。音声とは空気を媒体にした密度の縦波ですが、ここではある時間間隔でのその波形が表示されているわけです。音楽や動画などの音声では多分ぐにゃぐにゃとした曲線が表示されるだけで、人間では波形の振幅が大きいと大きな音だなーくらいしか読み取れないでしょう。どちらかというと、次の周波数領域での解析のほうが人間にとって直感的です。</p><p>後ろの塗りつぶしがされているほうの図形が周波数領域に対するヒストグラムです。音はさまざまな周波数の音に分解できることが知られており、これはその瞬間にAnalyserノードに入力された音声信号の各周波数ごとの分布を表しています。左側が周波数の低いほうになっていて、低い音が鳴っているとか高い音が鳴っているというのが視覚的にわかるのです。次のようにBiquad Filterをかけた信号と元の信号を並べて比較すると、ローパスフィルタにどのような効果があるのか、視覚的にも理解しやすいと思います。</p><p><a href="c748728e-3d55-fe0f-3c49-e0825b154c64.png"><img src="c748728e-3d55-fe0f-3c49-e0825b154c64.png"></img></a></p><p>そういえば、周波数領域と時間領域のグラフが重なって表示されていますが、縦軸も横軸もまったく無関係です。重ねて表示してるのは、ただのスペースの節約です。こういうグラフ書くと怒られるので気をつけましょう。</p><h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>エコーをかける</h2><p>やまびこは音が遠くの山や谷に反射して遅れて返ってくる現象ですが、信号を遅らせるDelayノードと信号の大きさを変えるGainノードを組み合わせると、これと同じような効果を生むことができます。左のパネルからDelayノードを作成し、スライダを動かして遅延時間を0.5秒くらいに設定してください。またGainノードを作成して0.5くらいの大きさに設定してください。Gainノードは平たく言うといわゆる「ボリューム」で、音の大きさを比率で調節します。0.5は振幅をちょうど半分にするということです。これで、音声を小さくしながら0.5秒ずつ遅らせて再生するということができます……できます……きます……ます……ます……</p><p><a href="f6774d43-ca06-4595-68ca-70db31f68001.png"><img src="f6774d43-ca06-4595-68ca-70db31f68001.png"></img></a></p><h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>リバーブをかける</h2><p>広くて閉鎖的な空間で音声を発すると、周囲のあらゆる場所で乱反射して緩やかに減衰していきます。リバーブはこの現象をシミュレートするもので、音楽に空間的な広がりを与える効果があります。素人っぽい歌でもリバーブがかかると人間はなぜかやけにうまく感じるもので、音を吸収するものが少ない風呂場では音が反響しやすく、妙に鼻歌がうまく聞こえるのもコレのせいです。</p><p>Convolverノードはリバーブを再現するのに適したノードで、音声データどうしの畳込みを行います。Convolverノードにはリバーブを掛けたい音声信号のほかに、環境のインパルス応答を計測した音声データを入力します。このインパルス応答は広い空間でパンッという瞬間的な音(インパルス)がどのように聞こえるかを録音したもので、大きな教会の建物やホールなどで計測したものが<a href="http://www.openairlib.net/">The Open Acoustic Impulse Response Library</a>などで入手することができます。たとえば、</p><ul>
+<li><a href="http://www.openairlib.net/auralizationdb/content/york-minster#impulse-responses">http://www.openairlib.net/auralizationdb/content/york-minster#impulse-responses</a></li>
+</ul>
+<p>から、<code>minster1_000_ortf_48k.wav</code>をダウンロードして保存しておきます。また、ConvolverノードとAudioBufferノードを作成し、次のように接続します。ノードのコネクタは同じ色どうしでしか接続できないことに注意してください。それから、AudioBufferノードのボタンを押して、先ほどのインパルス応答の音声ファイルを開きます。これで音声を再生すると、インパルス応答を録音した空間でその音を鳴らしている状態をシミュレーションすることができます。</p><p><a href="584d7a15-218f-4ec7-ff4b-06590a474313.png"><img src="584d7a15-218f-4ec7-ff4b-06590a474313.png"></img></a></p><h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>音を大きくする</h2><p>音声を小さくすることは簡単なのですが、それに比べて音量を大きくするのは結構複雑な処理になります。というのも、単純に波形を大きくすれば確かに音は大きくなるのですが、表現できる振幅の大きさには限度があるので、限度を超えるとそこで振幅は頭打ちになってしまい、波形が平坦に潰れます。このような波形を再生しようとしても、波形が潰れた点でプチッというノイズが発生してしまい、音楽としてはとても聞けたものにはなりません。このようなクリッピングが継続的に起きると、ガリガリガガガガといういわゆる「音割れ」になって聞こえます。先ほどのDelayノードやConvolverノードを通した時にも音が大きくなった部分で音割れが起きることがよくあります。</p><p>音を大きくした時にクリッピングが起きないようにするには、音声信号をCompressorノードを通します。これは音を大きくするというよりは大きすぎてクリップしそうな音を押さえつけるという役割があり、小さくて聞こえにくかった音が底上げされる感じで大きく聞こえるようになります。すべての周波数で音がなるようにバランスよく楽器を配置しつつコンプレッサをうまくかけると、迫力のある音楽にすることができます。</p><p>人間は音量を大きくするだけで不思議と良い音楽に聞こえるもので、クラシックだと強弱を聞かせた表現力が大事ということで音が大きい部分と小さい部分の差があるのですが、ロックやポップスでは曲全体にわたって目一杯音を大きくするのが普通です。ライブでも音が大きいだけで何故か迫力を感じてしまうので、巨大なアンプを設置して耳がおかしくなりそうなほど大きな音量を出したりするようです。パソコンやオーディオプレイヤーでは音楽を聞かせる側が無理やり音量を上げることはできないので、波形を崩さずになるべく音を大きく聞かせるというマスタリングの差が最終的な印象に大きく影響します。</p><h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ハウリング</h2><p>カラオケなんかでマイクがキーンってなるハウリングがありますが、信号を増幅して再び入力するループを作ると同じような現象を再現することができます。たとえば、先ほどのエコーを掛けるノードの構成でGainのスライダを<code>1.0</code>をほんのちょっとでも超えて動かすと、一瞬で信号が繰り返し果てしなく増幅されるので大音量で耳があああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああとなります。</p><p>ヘッドホンや大型スピーカーなんかを使ってる人は特に危険なので気をつけてください。音楽を聞いているとボリュームを上げて迫力を求めたくなりますが、ソフトウェアである人間の知覚はそれを自動的に調節するのですぐに慣れてしまうのに対し、ハードウェアである耳は大きな音を聞き続けると不可逆的な損傷を受けるそうです。耳は大切に。</p><h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>オシレータ</h2><p>Oscillatorノードを使うと周波数を指定して単純な音声信号を合成することができます。ファミコンやゲームボーイなどの昔のハードウェアでは波形データをまるごと載せて再生するだけの性能がなく、このような単純な波形をオーディオ専用のハードウェアで合成することであのピコピコとした音を作り出していました。現代ではハードウェアの性能が向上して汎用のCPUで任意の波形を再生できるようになったので、もはやこのような機構を使う必要はありませんが、こういう単純な波形をあえて表現として多用した音楽はChiptuneとして現代でも生き残っています。また音に様々なエフェクトをかけたいときにも役に立ちます。シンセサイザーなどではこれらの波形をもっと組み合わせて複雑な音を作り出しますが、現段階ではこのツールにそこまでの機能はありません。そのうちそういう機能も付けたいです。</p><p>オシレータノードをつなげると、ピーーーーーーーっという音がずっと鳴り続けます。結構耳をつんざく音なので、Gainノードをなどを予め設定して音を小さくしておくほうがいいと思います。デフォルトでは440Hzの正弦波になっていて、Frequencyインプットをいじると周波数が変更されて音が高くなったり低くなったりします。</p><p>音声はさまざまな周波数に分解できますが、正弦波はたったひとつの周波数からなる最も単純な音です。正弦波はポーとかピーというクセのない音として聞こえます。Analyserで見ると、正弦波の周波数のピークはひとつだけで、周波数を変えるとそれが左右に動いていくのが視覚的にもわかるはずです。矩形波や三角波がどのような波形や周波数成分からなるのかも実験してみると面白いと思います。</p><p><a href="682561ee-b333-556c-699c-34acdea78854.png"><img src="682561ee-b333-556c-699c-34acdea78854.png"></img></a></p><h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>その他の操作</h2><p>User Mediaというボタンを使うと、パソコンの音声入力から直接音声を入力できます。このノードを作成すると、ブラウザがマイクへのアクセスを許可するかどうか尋ねてきますので許可してください。マイクを繋いでConvolverノードでリバーブをかければ、その場でカラオケ気分に浸れます。<strong>(注意)Chrome(Chromium)ではいつの間にか<code>getUserMedia</code>みたいな強力な機能はHTTPSのような安全な接続でないと使用不能になったようです(<a href="https://sites.google.com/a/chromium.org/dev/Home/chromium-security/deprecating-powerful-features-on-insecure-origins">参考</a>)。User Mediaを使いたい場合は、Githubに設置してあるほうを使ってHTTPSで接続してください。</strong>Firefoxではどちらに設置してある方でもマイクからの入力ができます。</p><p>タイムラインノードを使うと、正確にタイミングを制御しながら一連のオーディオ片を再生できます。いくつかの「トラック」が用意されていて、その上にオーディオファイルをドラッグアンドドロップすると配置でき、再生ボタンを押すと再生されます。が、いかんせんまったくの開発途中で、効かないボタンもありますが気にしないでください。そのうちオーディオ片をスライスしたりマージしたりの編集ができるようになる予定です。</p><p>なお、上にならんだボタンのうち、一番右のボタンを押すと、現在のタイムラインの内容をエフェクト付きでMP3ファイルとして書き出すことができます。音を聞くだけしかできないなら単なるおもちゃですが、ちゃんと結果をオーディオファイルに残せれば何か役に立つツールとして使えるわけです。このまま開発を進めていけば、さまざまな音楽制作がブラウザだけで完結できるようになりそうです。いつかシーケンサもつけてサウンドフォントを鳴らせるようになればいいですね(願望)。</p><p><a href="6f591026-4452-4c0a-a8d5-5ce509566791.png"><img src="6f591026-4452-4c0a-a8d5-5ce509566791.png"></img></a></p><p>画面左上のボタンを押すと、作業内容を保存するためのダイアログが出てきます。ここで作業内容をブラウザのIndexedDBに保存できるので、ブラウザを閉じたりしても状態を保存できます。また、画面上部のボタンで自由に取り消しとやり直しができます。が、どのタイミングでどう履歴を重ねていくかは調整が必要なところで、そこも調整の手が回っていないので操作が結構飛ぶ時があります。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>さいごに</h1><p>目標としては、<a href="http://audacityteam.org/">Audacity</a>や<a href="http://www.reaper.fm/">Reaper</a>なんかと同じような目的で使えるツールにできたらいいかなと思います。ひと通りの検証が終わって技術的な見通しは立ったんですが、そうなると何か逆に開発のモチベーション下がってきてしまって、完成を待ってるといつになっても公開できなさそうなので、モチベーション維持を兼ねて記事にしました。この後もまただらだらと開発を続けようと思います。</p><p>なお、このアプリケーションのコードの大半は<a href="http://www.purescript.org/">PureScript</a>で書かれています。純粋関数型プログラミング言語でGUIアプリケーションをゴリゴリ書いているというのはかなりめずらしい例だとは思いますし、今回使ったライブラリの紹介などもしたいのですが、その辺りの説明を始めると長くなるのでまたいずれ別の記事にまとめようかと思います。PureScriptはいいぞ。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>参考文献</h1><ul>
+<li><a href="http://g200kg.github.io/web-audio-api-ja/">Web Audio API (日本語訳)</a> 日本語訳が公開されています。ありがてぇありがてぇ</li>
+<li><a href="http://www.html5rocks.com/ja/tutorials/webaudio/intro/">Web Audio API の基礎 - html5rocks</a> - Web Audio APIの入門によさげ。</li>
+<li><p><a href="http://www.html5rocks.com/ja/tutorials/audio/scheduling/">2つの時計のお話 - Web Audio の正確なスケジューリングについて - html5rocks</a> 「音楽」をやりたいなら知らないと困るやつ</p></li>
+<li><p><a href="http://g200kg.github.io/web-midi-api-ja/">Web MIDI API (日本語訳)</a> こっちも</p></li>
+<li><a href="http://www.nicovideo.jp/watch/1446026835">松嶋ダンス動画【うなぎの唄】</a> - 100万再生も目前</li>
+</ul>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>続き</h1><ul>
+<li><a href="c8dc4880d5621cfad250.html">Web Audio APIを使ってブラウザで音楽や音声にエフェクトをかけられるツールを作りました。(2) サウンドフォント</a></li>
+</ul>
+<hr>
+<p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p>------------------- ここから筆者の自分用メモ ---------------------------------------------------------------</p><p><br></p><p><br></p><p><br></p><p><br></p><h4><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ウェブで音楽制作できるまとめ</h4><ul>
+<li><p><a href="https://developer.mozilla.org/ja/docs/Tools/Web_Audio_Editor">Web Audio Editor - MDN</a> - Firefoxでは「開発ツール」である程度WebAudioをいじれたりします。デバッグに便利。</p></li>
+<li><p><a href="http://g200kg.github.io/WebAudioDesigner/">WebAudio Designer</a> - 同じようなツールですが、筆者が作ったものよりもうちょっとシンセサイザー的な使い方ができます。</p></li>
+<li><a href="http://www.webaudiotool.com/">Web Audio Tool</a> - これも同じような感じのツール</li>
+<li><a href="http://webaudioplayground.appspot.com/">Web Audio Playground</a>　 - これも同じような感じのツール</li>
+<li><a href="https://hya.io/">hya.io</a> </li>
+<li><a href="https://www.soundtrap.com/">soundtrap</a>　商業では一番大手っぽい気がする。ループ素材がたくさん提供されていて、適当に並べるだけでそれっぽくなる手軽さがとてもいい</li>
+<li><a href="http://yamaha-webmusic.github.io/webmusicplatform/app/">Web Music Platform</a> すごくPolmyer</li>
+<li><a href="http://wavepot.com/">wavepot</a> テキストベース</li>
+</ul>
+<h5><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>まとめ記事系</h5><ul>
+<li><a href="http://www.musicradar.com/news/tech/10-of-the-best-ways-to-make-music-in-your-web-browser-490608">10 of the best ways to make music in your web browser</a></li>
+<li><a href="http://matome.naver.jp/odai/2127546037497232901">ブラウザだけで出来るWEBベースのDTM系アプリいろいろ</a></li>
+<li><a href="http://dtmnews.snapmix.jp/online-dtm/browser-dtm/">ブラウザDTMができる画期的な無料webサイト9+2つ</a></li>
+</ul>
+<h4><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>金科玉条なコンセプト</h4><ul>
+<li>各種の実験に使えるプラットフォームとして、Web Audio APIのすべての機能を直接扱えること。「プラグイン」での高レベルに覆い隠すより、ノード単位、パラメータ単位で低レベルに扱えるものであること。これは一見「使いやすいやすさ」「わかりやすさ」と相反するようにも思えるけど、アホみたいに大量のツマミが並んでいるよりはわかりやすいように思う</li>
+<li>インストール作業なし、ユーザ登録なしで、クリックひとつで製作を始められる、もっとも手軽なツールであること</li>
+<li>シーケンサへの打ち込みからMP3へのエンコードまで、これひとつで音楽編集作業を一貫して行えること。エンコードは別のツールが必要、みたいなことにはしない</li>
+</ul>
+<h4><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>そのほか検討したいコンセプトや機能とか方向性</h4><p>類似のツールはすでに山のようにあるので、既存のツールとの違いを明確化したいです</p><ul>
+<li>すっきりとして一見して使い方がわかるUI。既存のDAWでは大量のダイヤルやスライダが所狭しと並んでいて、どこをどういじったらいいのかわかりづらいし、知らない機能のコントロールをうっかりいじると初心者は元へ戻し方がわからなくなったりすることがある。<strong>何もしてない</strong>のに突然音が出なくなっちゃった！というのはよくあることで、そういう事故が少ない直感的でシンプルな構成。必要な機能は必要に応じて追加するようにし、むやみに機能を並べない</li>
+<li>サウンドフォントを中心とした生音系の音色を使いたい。既存のツールにピコピコシンセサイザ系が多いので差別化を図りたいというのもありますが、単に筆者が生々しい音のほうが好きというのも</li>
+<li>自由にスクロールやズームが可能なUI。ここまでできるツールはわりと少ないので、こういう使い勝手を押し出していきたい</li>
+<li>プロジェクトの保存やRedo/UndoなどのUIの使い勝手</li>
+<li>音声入力として動画を使える</li>
+<li>MP3へのエンコード。oggやwavも要る？</li>
+<li>Webアプリケーション、Chromeアプリ、Electronでのネイティブアプリなどのマルチなプラットフォームでの実行</li>
+<li>ユーザ同士でのオンラインでのコミュニケーションの方法。共同作業や制作データの共有</li>
+<li>録音機能。一度実装したのですが、実装の都合上一旦外してます</li>
+<li><del>仮想キーボード。ピアノの鍵盤が表示されて押すと音がなるやつ。これも一度実(略</del> シーケンサと統合するからやっぱりいらない</li>
+<li>Web MIDI APIによるMIDI入出力。MIDIキーボードを持ってる人は多くないでしょうけど、ブラウザでもMIDIキーボードで入力できるのは結構感動です。これも一度(略</li>
+<li>スクリプト。この辺りはスクリプトノードの仕様が大きく変わっていることもあって後回し</li>
+<li>マルチプラットフォーム。ブラウザ版、Chromeアプリ版、Electron版で三種類。ブラウザだと履歴を消すときにうっかり消してしまうこともありそうだし、ローカルにプロジェクトファイルを置けたほうが安全。</li>
+<li>Chromeアプリでも僅かな変更だけで普通に動いた。セキュリティ的にはChromeアプリのほうがちょっと安心かも</li>
+<li>パフォーマンスチューニング。タイムラインでの波形描画やアナライザでのアニメーションは重いのでもう少し調整が必要</li>
+<li>こういうツールは多少の心得がないと使えないので、音楽制作に馴染みがないひとでも遊びやすい工夫。サンプルプロジェクトの提供やプリセット素材</li>
+<li>オンラインでプロジェクトを共有できるといいね。他人の作ったものは参考になるし、誰かに観てもらうことでモチベーションも上がる</li>
+<li>アイコン作らなきゃ</li>
+<li>とりあえず「妙に高級っぽい系」「明るい色系」「暗い色系」の３種類のテーマ。可能ならスタイルのユーザ定義可能にもしたい。プロジェクトファイルを配布した時にUIの雰囲気もついて回ったらちょっと楽しい。</li>
+<li>他の人が書いた「プラグイン」をグラフに組み入れることができたら。ただしセキュリティには要注意</li>
+</ul>
+<h6><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>関連するサンプルコード</h6><ul>
+<li><a href="https://developer.mozilla.org/ja/docs/Web/API/MediaRecorder_API">MediaRecorder API</a> なんてあったんすか。使えれば使いたいですが、Chrome未実装なのでどうにもならないです。というかまあサードパーティのライブラリで録音もなんとかなることがわかってるので、別に必要ないといえば必要ないです</li>
+<li><a href="https://dvcs.w3.org/hg/audio/raw-file/tip/webaudio/webrtc-integration.html">WebAudioとMediaRecorderで録音</a>。まあまだ絵に描いた餅みたいな感じだとは思います</li>
+<li><a href="https://github.com/cwilso/pitchdetect">pitchdetect</a> 音声からピッチを推定する。アナライザに組み込んだらあっさり動きました</li>
+</ul>
+</div><div>
+    
+<hr style="margin-top: 60px;">
+
+<div class="snsbuttons">
+
+    <!-- Twitter -->
+    <a href="https://twitter.com/share" class="twitter-share-button" data-related="cubbit2">Tweet</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+    <!-- Hatena -->
+    <div>
+        <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </div>
+
+    <!-- line -->
+    <div>
+        <div class="line-it-button" style="display: none;" data-type="share-a" data-lang="ja" ></div>
+        <script src="//scdn.line-apps.com/n/line_it/thirdparty/loader.min.js" async="async" defer="defer" ></script>
+    </div>
+
+    <!--facebook -->
+    <div>
+        <div id="fb-root"></div>
+        <script>(function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.8";
+        fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
+        <div class="fb-like" data-href="https://aratama.github.io/blog/72236dfb8476cd490e01.md" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="false"></div>
+    </div>
+
+    <!-- google+ -->
+    <div>
+        <script src="https://apis.google.com/js/platform.js" async defer>
+        {lang: 'ja'}
+        </script>
+        <div class="g-plusone" data-size="medium"></div>
+    </div>
+
+</div>
+
+</div></article></div><footer><div class="block-centered footer-inner"><p class="copy">&amp;nbsp;</p><p class="author">このブログを書いてる人: 竹内稲穂</p></div><script>
+                    const poem = [
+                        "なんにもない毎日が、なによりの宝物。",
+                        "今日という日を、何度でも繰り返したい。",
+                        "世界を追いかけなくても、世界は私のまわりにある。", 
+                        "速すぎる雑踏。鼻先をくすぐる春風。", 
+                        "明日撮る写真を飾る場所を、アルバムに空けておこう。", 
+                        "落ち葉が地面に、触れる音がした。", 
+                        "明日は、明日の楽しさが待っている。", 
+                        "風が泣いている。この想いを紡ぐ言葉を持たないから。", 
+                        "もうここには何もない。だから、次の場所に旅立とう。", 
+                        "もう此処にはこないだろう。そう言って私は過去に背を向けた。", 
+                        "散りゆくからこそ、美しい。私は桜の花びらをかかとで踏みしめた。", 
+                        "思い出はいつだって輝いてる。",
+                        "正直ばかりじゃつまらない。たまには楽しい嘘をつこう。", 
+                        "ゆっくり歩けば歩くほど、時間がゆっくり過ぎてゆく。",
+                        "夜明けを、探しにいこう。", 
+                        "空はこんなに青かったんだ。", 
+                        "地球は青かった。それはこの空を見上げたことのある全員が知っている。", 
+                        "休み時間は、長すぎるということはない。", 
+                        "缶コーヒーを飲むときだけは、それ以外のすべてを忘れることにしてる。", 
+                        "ちょっと小さいのは確かですが、それは確かにここにあります。", 
+                        "ちょっと小さいのは確かですが、広すぎる家というのも寂しいでしょう？", 
+                        "ひつじが一匹、ひつじが二匹。五十匹までは、数えたことがある。"
+                    ];
+                    document.querySelector(".copy").textContent = poem[Math.floor(poem.length * Math.random())];
+                </script></footer></body></html>

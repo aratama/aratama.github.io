@@ -1,0 +1,147 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@cubbit2"><meta name="twitter:creator" content="@cubbit2"><meta name="twitter:title" content="Freeモナドで領域特化言語を作るとプリティミューテーション - ちょっと小さいのはたしかですが。"><meta name="twitter:description" content="Admittedly something small."><meta name="twitter:image" content="https://aratama.github.io/res/empty.png"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="icon.png"><link rel="stylesheet" href="/res/reset.css"><link rel="stylesheet" href="/res/style.css"><title>Freeモナドで領域特化言語を作るとプリティミューテーション - ちょっと小さいのはたしかですが。</title><script>
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+                ga('create', 'UA-61162129-3', 'auto');
+                ga('send', 'pageview');
+            </script></head><body><header><div class="block-centered"><div class="site-title"><a href="/">Admittedly <wbr>something <wbr>small.</a></div><div class="sub-title">ちょっと<wbr>小さいのは<wbr>たしかですが。</div></div></header><div class="content"><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" href="/res/article.css"><article id="rendered"><div class="date">2015年9月5日</div><h1 class="article-title"><a href=".">Freeモナドで領域特化言語を作るとプリティミューテーション</a></h1><p class="tags"><a href="/blog/tag/Haskell"><span class="tag"><i class="fa fa-tag"></i>Haskell</span></a><a href="/blog/tag/purescript"><span class="tag"><i class="fa fa-tag"></i>purescript</span></a></p><hr><div><p>多くのプログラミング言語が用途を限定しない汎用の言語として設計されているのに対して、<strong>領域特化言語</strong>(ドメイン固有言語, domain-specific language, DSL)は何らかの目的に特化して設計された言語のことをいいます。領域特化言語を導入する利点のひとつは、プログラムの各部分の役割が明確になり、ソフトウェア全体の設計がよりわかりやすくなるというものがあります。たとえば、ゲームソフトウェアではゲームの描画とゲームの状態更新は完全に分離されているべきです。ゲームで一時的に処理が重くなり、描画を何フレームかスキップして速度を維持したいとしましょう。もし状態更新と描画がきちんと分離されていなければ、描画だけをうまくスキップするということはできなくなってしまいます。もし描画専用の領域特化言語を導入すると、ソフトウェアのコードをその内容に沿って完全に分離するのを強制し、それに違反するようなコードをコンパイル時に防ぐことができます。</p><p>Freeモナドを使うと、一定の手順にしたがって命令群を定義するだけで、簡単にそのような領域特化言語を構成する事ができます。しかも、あくまでその領域特化言語は元のプログラミング言語の上で構成されているので、構文そのものは元のプログラミング言語そのままですし、純粋な計算については何ら制限なく自由に使うことができます。しかも、その領域特化言語で書かれたプログラムはデータとして扱うことができ、その解釈を動的に切り替えるようなことも可能です。プログラムをデータとして動的に操作できるというとまるでLisp/Schemeのようですが、Lispのような動的な型付けで何でもありのリストとは異なり、Freeモナドなら静的型付けの上で型安全な言語を定義することができます。動的に命令列を構成し、その解釈も動的に自由に切り替えられる柔軟さと、誤った命令をコンパイル時に検出できる堅牢さを同時に達成できるわけです。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>領域特化言語を使ってみる</h1><p>まずは領域特化言語を使ったコードがどのようになるのかを見てみましょう。何か仮想的な命令体系を想定して説明するのもいいですが、既知のAPIのほうが理解も早いだろうということと、現実のAPIを使うことで実用性を匂わせておきたいという意図で、HTML5の<a href="https://developer.mozilla.org/ja/docs/Web/Guide/HTML/Canvas_tutorial">CanvasグラフィックスAPI</a>に基づいた領域特化言語を考えてみます。これとほぼ同様のものが<a href="https://github.com/paf31/purescript-free-canvas/">purescript-free-canvas</a>で実装されています。</p><p>最近筆者はPureScriptばかりいじっているのでPureScriptの文脈で説明をしていきますが、もちろん他の言語でも同様のことができるはずです。構文もHaskellとほとんど同じなので、雰囲気で理解できると思います。</p><p>このテキストで作る領域特化言語には、以下のようなCanvas APIに対応する3つの命令があります。これらは実のところただのPureScriptの関数に過ぎません。</p><pre><code class="hs">setFillStyle :: String -&gt; Graphics Unit
+measureText :: String -&gt; Graphics TextMetrics
+fillText :: String -&gt; Number -&gt; Number -&gt; Graphics Unit</code></pre><p><code>Graphics a</code>がモナドなので、いつものようにdo記法でだらだらと命令を並べて描画の内容を記述することができます。</p><pre><code class="hs">paint :: Graphics Unit
+paint = do
+    let text = &quot;Lorem ipsum dolor sit amet&quot;
+    metrics &lt;- measureText text
+    setFillStyle &quot;red&quot;
+    fillText text (100.0 - metrics.width) 20.0</code></pre><p>この<code>Graphics a</code>はキャンバスグラフィックス専用のモナドですから、例えば意図しないDOM操作をうっかりねじ込んでしまうというようなことは起こりえません。確実にコンパイルエラーになります。</p><pre><code class="hs">paint :: Graphics Unit
+paint = do
+    let text = &quot;Lorem ipsum dolor sit amet&quot;
+    metrics &lt;- measureText text
+    appendChild parent child -- コンパイルエラー！勝手にDOMをいじるんじゃない！
+    setFillStyle &quot;red&quot;
+    fillText text (100.0 - metrics.width) 20.0</code></pre><p>DOM操作のような別の作用を描画の部分に埋め込むことは禁止されますが、純粋な計算であれば状態に一切悪影響を与えませんから、この領域特化言語内で自由に利用可能です。<code>100.0 - metrics.width</code>のような数値計算には何の制限もありません。独自の領域特化言語といっても、PureScript本来の表現力が失われることはありません。</p><p>ここで各命令の引数にグラフィックスコンテキストを与えていないことにも注目してください。JavaScriptだと</p><pre><code class="js">context.measureText(text)</code></pre><p>というようにコンテキストも指定しなければなりませんが、ここでは</p><pre><code class="hs">measureText text</code></pre><p>だけの指定で呼び出せています。どのコンテキストに対して描画命令を出すかという構造も分離されているのです。コンテキストを渡さなくて済むのは、単にコーディングの手間が省けるという意味でも便利です。念の為に言っておきますが、決してグラフィックスコンテキストをグローバルに共有しているわけではありません。</p><p>また、すでにHaskellやPureScriptを使っている方には言うまでもないようなことですが、同じ命令を繰り返したければいつもの<code>for</code>や<code>for_</code>を再利用することができます。領域特化言語専用の<code>for</code>を改めて定義する必要はありません。<code>if-then-else</code>や<code>when</code>もいつもどおりです。</p><pre><code class="hs">for_ (range 1 3) \i -&gt; do
+    fillText text (100.0 - metrics.width) (20.0 * toNumber i)</code></pre><p>この一連の描画命令を実際に実行するのは、<code>runGraphics</code>という関数を呼び出すだけなので簡単です。グラフィックコンテキストを明示的に渡すのはここの一度だけです。</p><pre><code class="hs">runGraphics paint context</code></pre><p>Freeモナドを使うと、こういった領域特化言語を刺し身の上にタンポポを載せるような単純作業で定義することができます。</p><h1><a name="free-" class="anchor" href="#free-"><span class="header-link"></span></a>Freeモナドを使って領域特化言語を作る</h1><h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ライブラリの準備</h2><p>PureScriptでは<a href="https://github.com/purescript/purescript-free">purescript-free</a>というモジュールがあって、Freeモナドが一連のライブラリとして提供されています。Haskellだと<a href="https://github.com/ekmett/free">ekmett/free</a>がありますし、Scalaなら<a href="https://github.com/scalaz/scalaz">scalaz</a>がよさそうです。その他の言語でももちろん可能ですが、HaskellやPureScriptでさえ結構手順が面倒なので、強力な型システムやモナド用の糖衣構文がない言語ではなかなか苦しいと思います。</p><p>Freeモナドを自力で定義してもそれほど大変ではありません。自力で定義したいかたは、記事末尾に挙げた参考文献を御覧ください。</p><h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>命令セット</h2><p>まずはその領域特化言語にどんな命令を用意するか検討します。説明のためだけに<a href="https://developer.mozilla.org/ja/docs/Web/API/CanvasRenderingContext2D">CanvasRenderingContext2D</a>のすべてのAPIを実装するわけにはいかないので、以下の３つの命令だけ用意することにしましょう。</p><pre><code class="ts">interface CanvasRenderingContext2D { 
+    fillStyle: String;
+    measureText(String text): TextMetrics;
+    fillText(text: String, x: Number, y: Number): void
+}</code></pre><p>これに対応する、領域特化言語でない、直接の作用を起こすほうのAPIの定義は以下のようになります。これは後で解釈関数というのを実装するときに、低レベルなAPIとして使います。</p><pre><code class="hs">_setFillStyle :: forall eff . String -&gt; Context2D -&gt; Eff (canvas :: Canvas | eff) Unit
+
+_measureText :: forall eff . String -&gt; Context2D -&gt; Eff (canvas :: Canvas | eff) TextMetrics
+
+_fillText :: forall eff . String -&gt; Number -&gt; Number -&gt; Context2D -&gt; Eff (canvas :: Canvas | eff) Unit</code></pre><h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>データ型</h2><p>それでは実際に領域特化言語を作っていきます。最初に、先ほどの命令群に対応するデータ型<code>GraphicsF</code>を定義します。代数的データ型を使い、各命令が受け取る引数をフィールドとして持つようなコンストラクタを与えます。</p><pre><code class="hs">data GraphicsF more = SetFillStyle String more
+                    | MeasureText String (TextMetrics -&gt; more)
+                    | FillText String Number Number more</code></pre><p>このとき、幾つかポイントがあるので注意してください。</p><ul>
+<li>このデータ型には型変数<code>more</code>を持たせます。この謎の型変数の意味についてはFreeモナドそのものの定義について調べてみるとわかりますが、このテキストでは気にしないことにします。</li>
+<li>実行した結果を返さないような命令の場合は、それぞれのコンストラクタの最後のフィールドとして<code>more</code>を付け加えます。例えば、<code>SetFillStyle</code>はこの命令の結果のようなものはないので、そのまま<code>more</code>を付け加えます。</li>
+<li>実行した結果を返すような命令の場合は、その命令が返す値の型から<code>more</code>へ写す関数をフィールドの最後に付け加えます。例えば、<code>MeasureText</code>は命令を実行した結果として<code>TextMetrics</code>を返しますが、コンストラクタのフィールドの最後に<code>TextMetrics -&gt; more</code>を付け加えます。</li>
+</ul>
+<p>なお、ここではグラフィックスコンテキストと分離したいので、<code>Context2D</code>はフィールドに加えていません。</p><h2><a name="functor-" class="anchor" href="#functor-"><span class="header-link"></span></a>Functorのインスタンス</h2><p>また、<code>Free</code>と組み合わせるには<code>GraphicsF</code>に<code>Functor</code>のインスタンスが(ひとまずは)必要です。ここがちょっとめんどうくさいですが、それぞれのコンストラクタの最後の追加のフィールドのところに関数<code>f</code>を噛ませるだけです。</p><pre><code class="hs">instance functor_GraphicsF :: Functor GraphicsF where
+    fmap f (SetFillStyle style more) = SetFillStyle style (f more)
+    fmap f (MeasureText text more) = MeasureText text (f &lt;&lt;&lt; more)
+    fmap f (FillText text x y more) = FillText text x y (f more)</code></pre><p>HaskellだとFunctorを自動で導出できるので簡単ですが、PureScriptにはインスタンスの導出がありません。どうせ単純作業なので、ここでは頑張って自力で定義しますが、実は後述するようにFunctorのインスタンスを自分で書かずに作るテクニックがあります。</p><h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>型の別名</h2><p>型名としては<code>Free GraphicsF a</code>というように<code>Free</code>に<code>GraphicsF</code>を埋め込んだ形で使うことが多いので、これを別名としておくと便利です。それに、このライブラリを使う側から見ればそれが内部的に<code>Free</code>を使っているかどうかは興味のないことなので、隠してしまうという意味もあります。</p><pre><code class="hs">type Graphics a = Free GraphicsF a</code></pre><p><code>type</code>(型の別名)だと中身が<code>Free</code>だというのがモロ見えになってしまうので、<code>newtype</code>で新しい型を与えて中身を隠してあげるほうが好きな人もいるでしょう。</p><pre><code class="hs">newtype Graphics a = Graphics (Free GraphicsF a)</code></pre><p>たぶん実用上は後者のほうがいいと思いますが、ここでは簡単のために前者の<code>type</code>のほうにしておきます。</p><h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>命令</h2><p>Freeモナドのライブラリには次のような関数<code>liftF</code>が定義されています。</p><pre><code class="hs">liftF :: forall f a. f a -&gt; Free f a</code></pre><p><code>liftF</code>は任意の<code>f a</code>を<code>Free f a</code>という値に『持ち上げる』(lift)関数で、つまり<code>GraphicsF a</code>を<code>Free GraphicsF a</code>に変えることができます。つぎに<code>GraphicsF</code>の各コンストラクタをこの<code>liftF</code>で持ち上げ、実際のFreeモナドの値を返すような関数にします。各コンストラクタの最後のフィールドは<code>unit</code>や<code>id</code>で埋めておきます。</p><pre><code class="hs">setFillStyle :: String -&gt; Graphics Unit
+setFillStyle s = liftF $ SetFillStyle s unit
+
+measureText :: String -&gt; Graphics TextMetrics
+measureText s = liftF $ MeasureText s id
+
+fillText :: String -&gt; Number -&gt; Number -&gt; Graphics Unit
+fillText s x y = liftF $ FillText s x y unit</code></pre><p>ここもめんどうくさいボイラープレートなのですが、PureScriptにはTemplate Haskellのような邪悪なメタプログラミングの仕組みがないので、善の魔法使いである我々はひたすら脳が退化しそうな単純作業に没頭します。命令が3つくらいなら大丈夫ですが、命令の数が多いとここでげんなりしてきます。</p><p>これが終われば、命令列を領域特化言語として構成することができるようになりますが、まだこの命令列を実際に実行する機能は与えられていません。</p><h2><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>解釈関数</h2><p>最後に、データとして与えられた命令群を実際に解釈して別の何かへと変える関数を実装します。ここでは関数<code>runGraphics</code>を定義して<code>Graphics</code>をPureScriptのネイティブな作用の型<code>Eff eff a</code>に変換して実際に実行可能にします。<code>Free f a</code>の値を変換するには、<em>本来なら(後述)</em>次のような<code>foldFree</code>という関数を使います。</p><pre><code class="hs">foldFree :: forall f m a. (Functor f, MonadRec m) =&gt; NaturalTransformation f m -&gt; Free f a -&gt; m a</code></pre><p>ここで<code>Functor f</code>の制約があるため。<code>GraphicsF</code>に<code>Functor</code>のインスタンスが必要だったわけです。</p><p><code>runFreeM</code>の最初の引数に渡す関数<code>interpret</code>を<code>runGraphics</code>の内部で定義しますが、<code>interpret</code>では<code>GraphicsF</code>のフィールドからデータを取り出して実際の作用を起こすための関数にせっせ移し替え、あとは型の辻褄を合わせるために<code>const a &lt;$&gt;</code>や<code>k &lt;$&gt;</code>みたいな式を機械的にくっつけます。<code>interpret</code>の実装も単調な作業です。</p><pre><code class="hs">runGraphics :: forall a eff. Context2D -&gt; Graphics a -&gt; Eff (canvas :: Canvas | eff) a
+runGraphics ctx = foldFree interpret
+  where
+    interpret :: Natural GraphicsF (Eff (canvas :: Canvas | eff))
+    interpret (SetFillStyle s a) = const a &lt;$&gt; _setFillStyle s ctx
+    interpret (MeasureText s k)  = k &lt;$&gt; _measureText s ctx
+    interpret (FillText s x y a) = const a &lt;$&gt; _fillText s x y ctx</code></pre><p><code>Natural</code>という謎の型コンストラクタが出てきていますが、これは次のような関数の型の別名です。</p><pre><code class="hs">type Natural f g = forall a. f a -&gt; g a</code></pre><p>こういうのを<a href="https://ja.wikipedia.org/wiki/%E8%87%AA%E7%84%B6%E5%A4%89%E6%8F%9B">自然変換</a>(Natural Transformation)というそうで、型が示している通り<code>interpret</code>は関手<code>GraphicsF</code>を関手<code>Eff (canvas :: Canvas | eff)</code>に変換しているということを意味しています。関数型プログラミングの界隈では圏論の言葉を使って肝試しをするのが流行っていますが、幽霊の正体を見てみたら枯れ尾花だったりすることもよくあるわけで、ここでビビって帰ってしまったら負けです。圏論なんてよくわかりませんが、とにかく型とにらめっこして型パズルを解きさえすればこっちのものです。</p><p>作業はこれで完了です。それなりの作業量はあるものの、一旦理解してしまえばここまでの手順はまったくの単純作業です。時給800円くらいで領域特化言語を定義するアルバイト(未経験可)とかありそうです。</p><p>ここでは<code>Eff eff a</code>に変換して実際に描画する翻訳関数だけを定義しましたが、これとは全然別の複数の翻訳関数を与えることもできます。たとえば、各命令の呼び出しをロギングしたりとか、あるいはリモートのターゲットに対しての描画命令に変換したりできるかもしれません。活かすも殺すも解釈関数しだいです。</p><h2><a name="coyoneda-functor-" class="anchor" href="#coyoneda-functor-"><span class="header-link"></span></a>CoyonedaでFunctorを作る</h2><p>先ほどの過程では、<code>GraphicsF</code>の<code>Functor</code>インスタンスを自力で定義しなければならないという面倒くさい手順がありました。Haskellだとインスタンスの自動導出でこれを避ける事ができますが、PureScriptではそうはいきません。ところが、インスタンスの導出がなくてもうまい回避策があって、<code>Coyoneda</code>というデータ型を使うと、どんなデータ型からでも勝手に<code>Functor</code>が構成できてしまうのです。<code>Coyoneda</code>の値を作るのは簡単で、次の<code>liftCoyoneda</code>という関数を適用するだけです。</p><pre><code class="hs">liftCoyoneda :: forall f a. f a -&gt; Coyoneda f a</code></pre><p><code>f</code>に何の制約もありません。どんな値<code>f a</code>でも<code>liftCoyoneda</code>であっさりと<code>Coyoneda f a</code>の値にすることができてしまいます。そして、</p><pre><code class="hs">instance functorCoyoneda :: Functor (Coyoneda f)</code></pre><p>というように、<code>f</code>に何の制約もなくこの<code>Coyoneda</code>は<code>Functor</code>なのです。こわい。</p><p>それでは、今度は<code>Free</code>に直接<code>GraphicsF</code>を埋め込むのではなく、代わりに<code>Coyoneda GraphicsF</code>を埋め込んでみます。</p><pre><code class="hs">type Graphics a = Free (Coyoneda GraphicsF) a</code></pre><p>それぞれの命令の定義も、間に<code>liftCoyoneda</code>を挟んで持ち上げるだけ。</p><pre><code class="hs">setFillStyle :: String -&gt; Graphics Unit
+setFillStyle s = liftF $ liftCoyoneda $ SetFillStyle s unit
+
+measureText :: String -&gt; Graphics TextMetrics
+measureText s = liftF $ liftCoyoneda $ MeasureText s id
+
+fillText :: String -&gt; Number -&gt; Number -&gt; Graphics Unit
+fillText s x y = liftF $ liftCoyoneda $ FillText s x y unit</code></pre><p><code>runGraphics</code>も、解釈関数<code>interpret</code>を<code>liftCoyonedaTF</code>で持ち上げるだけ。よっこいしょ。</p><pre><code class="hs">runGraphics :: forall a eff. Context2D -&gt; Graphics a -&gt; Eff (canvas :: Canvas | eff) a
+runGraphics ctx = runFreeM $ liftCoyonedaTF interpret
+  where
+    interpret :: Natural GraphicsF (Eff (canvas :: Canvas | eff))
+    interpret (SetFillStyle s a) = const a &lt;$&gt; _setFillStyle s ctx
+    interpret (MeasureText s k)  = k &lt;$&gt; _measureText s ctx
+    interpret (FillText s x y a) = const a &lt;$&gt; _fillText s x y ctx</code></pre><p><code>Coyoneda</code>を絡めるだけで、<code>GraphicsF</code>に<code>Functor</code>インスタンスを与えずに領域特化言語を定義できてしまいました。</p><p><code>Functor</code>でないただのデータ型で<code>Functor</code>を構成できるとかどう見ても超常現象ですし、おそらくCoyonedaは何か強力な魔術の類だと思うのですが、残念ながら筆者の魔力が不足しているためこれ以上のことはわかりませんでした。ふしぎ！</p><h2><a name="purescript-free-" class="anchor" href="#purescript-free-"><span class="header-link"></span></a>purescript-freeの実装</h2><p>Haskellのekmett/freeのほうでは、<code>Free f a</code>のモナドインスタンスは</p><pre><code class="hs">instance Functor f =&gt; Monad (Free f)</code></pre><p>というように<code>f</code>に<code>Functor f</code>の制約がかかっていて、<code>GraphicsF a</code>のような型は<code>Functor</code>のインスタンスがないと<code>Free GraphicsF a</code>がモナドになりません。これが本来のシンプルなFreeモナドなのですが、実はpurescript-freeの実装では最初から<code>Coyoneda</code>に相当する構造が埋め込まれているため、<code>GraphicsF a</code>に<code>Functor</code>のインスタンスは必要ありません。先程は<code>foldFree</code>に<code>Functor f</code>の制約がかかっているというようなことを言いましたが、それは古いバージョンの話で、現在では以下のように<code>Functor f</code>の制約はなくなっています。</p><pre><code class="hs">foldFree :: forall f m a. (MonadRec m) =&gt; NaturalTransformation f m -&gt; Free f a -&gt; m a</code></pre><p>同様に<code>Free f</code>のモナドインスタンスのほうも<code>Functor f</code>の制約がなくなっています。</p><pre><code class="hs">instance freeMonad :: Monad (Free f)</code></pre><p>こうなっているのはどうも最適化の都合のようです。というわけで、purescript-freeを使う場合は明示的にCoyonedaでこよこよする必要はありません。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>さいごに</h1><p>特定の問題領域に特化した言語を作るのは、ソフトウェアの堅牢さを保証する最も強力な手法のうちのひとつだと思います。そして、<code>Free</code>を使えば領域特化言語を作るのは決して難しくはありません。</p><p>単にコードの一部に制約を加えたいということであれば、PureScriptでは他にもExtensible Effectsで制御する方法があります。Freeモナドでも複数の種類の作用を混ぜる方法がありますが、他の作用と混ぜたいという場合はExtensible Effectsのほうが便利なときも多いでしょうし、解釈を動的に切り替えたいという場合はやはりFreeモナドを選ぶことになるでしょう。この辺りは目的に応じて使い分けることになると思います。</p><p>説明の多くは<a href="http://www.haskellforall.com/2012/06/you-could-have-invented-free-monads.html">Why free monads matter - Haskell for all</a>を参考にしています。Freeモナドの中身にあまり興味がなくて、とにかく領域特化言語を定義するために道具として使えれば何でもいいやという人もいるでしょうし、Freeモナドがそもそもどのように定義されているのかという説明はこのテキストでは意図的にすべてばっさり省きました。&quot;Why free monads matter&quot;では、そもそもFreeモナドそのものはどのように定義されているのか、どのような考え方で導出するのかとか、FreeモナドはFunctorの不動点なんだとか、Freeモナドで並列処理っぽいものを実装してみるというような面白い話題が数多く紹介されています。興味のある人は是非読んでみることをおすすめします。</p><p>ところで、ここで作った言語というのはあくまでPureScriptの言語の構文の範疇にありますが、こう言ったものは<strong>内部領域特化言語</strong>(internal domain-specific language, 内部DSL)と呼ばれているようです。領域特化言語というと、筆者としてはCSSやGLSLみたいに、母体となる言語とは互換性のない全然別の言語というイメージなのですが、こういうCSSのような元の言語と互換性のないものは外部DSL(external domain-specific language)とというようです。でも内部領域特化言語といってもどうせ単なるモナドですし、これを領域特化言語なんて大仰な名前で呼んでいいものかという気もします。だっていつものPureScriptのソースコードなんですから。そんなに大袈裟なことはしていません。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>キャンペーンおよび追加情報</h1><ul>
+<li>FRP特集：話題のファンクショナル・リアクティブ・プログラミングを体験したいかたに、<a href="https://github.com/slamdata/purescript-halogen">purescript-halogen</a>がおすすめ！purescript-freeも内部で使われています。</li>
+</ul>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>この文章を読んだ人はこんな文章も読んでいます</h1><ul>
+<li>Gabriel Gonzalez, <a href="http://www.haskellforall.com/2012/06/you-could-have-invented-free-monads.html">Why free monads matter - Haskell for all</a></li>
+<li>Edward Kmett, <a href="http://comonad.com/reader/2008/monads-for-free/">Monads for Free</a></li>
+<li>Phil Freeman, <a href="http://functorial.com/stack-safety-for-free/index.pdf">Stack Safety for Free</a></li>
+<li><p>Phil Freeman, <a href="https://leanpub.com/purescript/read#leanpub-auto-domain-specific-languages">PureScript by Example/14. Domain-Specific Languages</a></p></li>
+<li><p><a href="http://halcat.org/scala/extensible/index.html">Extensible Effects in Scala</a> 日本語!Scala!</p></li>
+<li><p><a href="https://github.com/coot/purescript-dsl-example">A simple crud DSL with an interpreter written as cofree commonad in Purescript</a></p></li>
+</ul>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>最も参考になったカスタマーレビュー</h1></div><div>
+    
+<hr style="margin-top: 60px;">
+
+<div class="snsbuttons">
+
+    <!-- Twitter -->
+    <a href="https://twitter.com/share" class="twitter-share-button" data-related="cubbit2">Tweet</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+    <!-- Hatena -->
+    <div>
+        <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </div>
+
+    <!-- line -->
+    <div>
+        <div class="line-it-button" style="display: none;" data-type="share-a" data-lang="ja" ></div>
+        <script src="//scdn.line-apps.com/n/line_it/thirdparty/loader.min.js" async="async" defer="defer" ></script>
+    </div>
+
+    <!--facebook -->
+    <div>
+        <div id="fb-root"></div>
+        <script>(function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.8";
+        fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
+        <div class="fb-like" data-href="https://aratama.github.io/blog/3d55b0e54565dbb286a7.md" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="false"></div>
+    </div>
+
+    <!-- google+ -->
+    <div>
+        <script src="https://apis.google.com/js/platform.js" async defer>
+        {lang: 'ja'}
+        </script>
+        <div class="g-plusone" data-size="medium"></div>
+    </div>
+
+</div>
+
+</div></article></div><footer><div class="block-centered footer-inner"><p class="copy">&amp;nbsp;</p><p class="author">このブログを書いてる人: 竹内稲穂</p></div><script>
+                    const poem = [
+                        "なんにもない毎日が、なによりの宝物。",
+                        "今日という日を、何度でも繰り返したい。",
+                        "世界を追いかけなくても、世界は私のまわりにある。", 
+                        "速すぎる雑踏。鼻先をくすぐる春風。", 
+                        "明日撮る写真を飾る場所を、アルバムに空けておこう。", 
+                        "落ち葉が地面に、触れる音がした。", 
+                        "明日は、明日の楽しさが待っている。", 
+                        "風が泣いている。この想いを紡ぐ言葉を持たないから。", 
+                        "もうここには何もない。だから、次の場所に旅立とう。", 
+                        "もう此処にはこないだろう。そう言って私は過去に背を向けた。", 
+                        "散りゆくからこそ、美しい。私は桜の花びらをかかとで踏みしめた。", 
+                        "思い出はいつだって輝いてる。",
+                        "正直ばかりじゃつまらない。たまには楽しい嘘をつこう。", 
+                        "ゆっくり歩けば歩くほど、時間がゆっくり過ぎてゆく。",
+                        "夜明けを、探しにいこう。", 
+                        "空はこんなに青かったんだ。", 
+                        "地球は青かった。それはこの空を見上げたことのある全員が知っている。", 
+                        "休み時間は、長すぎるということはない。", 
+                        "缶コーヒーを飲むときだけは、それ以外のすべてを忘れることにしてる。", 
+                        "ちょっと小さいのは確かですが、それは確かにここにあります。", 
+                        "ちょっと小さいのは確かですが、広すぎる家というのも寂しいでしょう？", 
+                        "ひつじが一匹、ひつじが二匹。五十匹までは、数えたことがある。"
+                    ];
+                    document.querySelector(".copy").textContent = poem[Math.floor(poem.length * Math.random())];
+                </script></footer></body></html>

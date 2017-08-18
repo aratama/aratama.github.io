@@ -1,0 +1,214 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@cubbit2"><meta name="twitter:creator" content="@cubbit2"><meta name="twitter:title" content="PureScriptを使ってJSONの型安全な読み書きを自動化する - ちょっと小さいのはたしかですが。"><meta name="twitter:description" content="Admittedly something small."><meta name="twitter:image" content="https://aratama.github.io/res/empty.png"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="icon.png"><link rel="stylesheet" href="/res/reset.css"><link rel="stylesheet" href="/res/style.css"><title>PureScriptを使ってJSONの型安全な読み書きを自動化する - ちょっと小さいのはたしかですが。</title><script>
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+                ga('create', 'UA-61162129-3', 'auto');
+                ga('send', 'pageview');
+            </script></head><body><header><div class="block-centered"><div class="site-title"><a href="/">Admittedly <wbr>something <wbr>small.</a></div><div class="sub-title">ちょっと<wbr>小さいのは<wbr>たしかですが。</div></div></header><div class="content"><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" href="/res/article.css"><article id="rendered"><div class="date">2016年12月11日</div><h1 class="article-title"><a href=".">PureScriptを使ってJSONの型安全な読み書きを自動化する</a></h1><p class="tags"><a href="/blog/tag/JSON"><span class="tag"><i class="fa fa-tag"></i>JSON</span></a><a href="/blog/tag/purescript"><span class="tag"><i class="fa fa-tag"></i>purescript</span></a></p><hr><div><h1><a name="tl-dr-version" class="anchor" href="#tl-dr-version"><span class="header-link"></span></a>TL;DR Version</h1><p>JSONファイルを読み書きするには、<a href="https://github.com/paf31/purescript-foreign-generic">purescript-foreign-generic</a>が便利です。</p><h1><a name="json-" class="anchor" href="#json-"><span class="header-link"></span></a>JSONめんどうくさい</h1><p>いまゲームを作っているんですが、実行環境ごとに適切な値が異なったり、実際にプレイしてみないと適切な値がわからないパラメータがたくさんあります。それで、コンパイルなしで細かい調節をできるようにしようといろんなパラメータをJSONのオプションファイルにくくり出しました。たとえばこんな感じです。</p><pre><code class="json">{
+    &quot;loadDistance&quot;: 6,
+    &quot;fogDensity&quot;: 0.005,
+    &quot;maximumLoadedChunks&quot;: 2197
+}</code></pre><p>静的型付けの言語であるPureScriptで書いているので、このオプションファイルを読み取って次のような型のデータとして受け取りたいです。</p><pre><code class="haskell">newtype Options = Options {
+    loadDistance :: Int,
+    fogDensity :: Number,
+    maximumLoadedChunks :: Int
+}</code></pre><p>さて、<a href="https://github.com/slamdata/purescript-affjax">purescript-affjax</a>パッケージを使ってオプションファイルをajaxで<code>get</code>すると、その結果の<code>response</code>プロパティは<code>Json</code>、<code>ArrayBuffer</code>、<code>Unit</code>、<code>String</code>、<code>Foreign</code>、<code>Document</code>、<code>Blob</code>のうちの任意の型で受け取ることができます。JSONを読み取った時はこのうち<code>Foreign</code>か<code>Json</code>を使うことになりますが、<code>Foreign</code>を使った場合はこんな感じになります。</p><pre><code class="haskell">readOptions :: Foreign -&gt; F Options
+readOptions value = do
+    loadDistance &lt;- readProp &quot;loadDistance&quot; value
+    fogDensity &lt;- readProp &quot;fogDensity&quot; value
+    maximumLoadedChunks &lt;- readProp &quot;maximumLoadedChunks&quot; value
+    pure $ Options {
+        loadDistance,
+        fogDensity,
+        maximumLoadedChunks
+    }</code></pre><p><code>Foreign</code>は<a href="https://github.com/purescript/purescript-foreign">purescript-foreign</a>というパッケージで定義されているデータ型で、PureScriptで外部から何かのデータを受け取った時によく使われます。<code>Foreign</code>はJavaScriptの任意のデータを表していて、<code>readProp</code>関数を使うと<code>Foreign</code>なデータからプロパティを読み取ることができますので、<code>readProp</code>でプロパティを読み取っては変数に移し、最後にオブジェクトでまとめて返します。同じような式の繰り返しなので複雑というわけではありませんが、なんかちょっと冗長です。ちなみに、<code>Json</code>のほうで受け取ったとしても、<code>readProp</code>の代わりに<code>.?</code>という演算子でプロパティを読み取ることになるだけで、コーディングの手間としてはあんまり変わらなかったりします。</p><p>オプションが３つくらいならどうということはないのですが、開発が進むにつれてオプションがもりもりと増えてきてしまい、それに伴って読み取る部分のコードももりもり増えてきてしまいました。</p><pre><code class="haskell">newtype Options = Options {
+    loadDistance :: Int,
+    fogDensity :: Number,
+    maximumLoadedChunks :: Int,
+    vertexColorEnabled :: Boolean,
+    shadowEnabled :: Boolean,
+    shadowDisplayRange :: Int,
+    shadowMapSize :: Int,
+    skyboxRotationSpeed :: Number,
+    enableWaterMaterial :: Boolean,
+    chunkUnloadSpeed :: Int,
+    jumpVelocity :: Number,
+    initialWorldSize :: Int,
+    moveSpeed :: Number,
+    cameraTargetSpeed :: Number,
+    cameraRotationSpeed :: Number,
+    cameraZoomSpeed :: Number,
+    cameraMaxZ :: Number,
+    cameraMinZ :: Number,
+    cameraFOV :: Number,
+    cameraMinimumRange :: Number,
+    cameraMaximumRange :: Number,
+    cameraHorizontalSensitivity :: Number,
+    cameraVertialSensitivity :: Number,
+    pointerHorizontalSensitivity :: Number,
+    pointerVerticalSensitivity :: Number,
+    landingVelocityLimit :: Number,
+    landingDuration :: Int
+}
+
+readOptions :: Foreign -&gt; F Options
+readOptions value = do
+    loadDistance &lt;- readProp &quot;loadDistance&quot; value
+    fogDensity &lt;- readProp &quot;fogDensity&quot; value
+    maximumLoadedChunks &lt;- readProp &quot;maximumLoadedChunks&quot; value
+    vertexColorEnabled &lt;- readProp &quot;vertexColorEnabled&quot; value
+    shadowEnabled &lt;- readProp &quot;shadowEnabled&quot; value
+    shadowDisplayRange &lt;- readProp &quot;shadowDisplayRange&quot; value
+    shadowMapSize &lt;- readProp &quot;shadowMapSize&quot; value
+    skyboxRotationSpeed &lt;- readProp &quot;skyboxRotationSpeed&quot; value
+    enableWaterMaterial &lt;- readProp &quot;enableWaterMaterial&quot; value
+    chunkUnloadSpeed &lt;- readProp &quot;chunkUnloadSpeed&quot; value
+    jumpVelocity &lt;- readProp &quot;jumpVelocity&quot; value
+    initialWorldSize &lt;- readProp &quot;initialWorldSize&quot; value
+    moveSpeed &lt;- readProp &quot;moveSpeed&quot; value
+    cameraTargetSpeed &lt;- readProp &quot;cameraTargetSpeed&quot; value
+    cameraRotationSpeed &lt;- readProp &quot;cameraRotationSpeed&quot; value
+    cameraZoomSpeed &lt;- readProp &quot;cameraZoomSpeed&quot; value
+    cameraMinZ &lt;- readProp &quot;cameraMinZ&quot; value
+    cameraMaxZ &lt;- readProp &quot;cameraMaxZ&quot; value
+    cameraFOV &lt;- readProp &quot;cameraFOV&quot; value
+    cameraMinimumRange &lt;- readProp &quot;cameraMinimumRange&quot; value
+    cameraMaximumRange &lt;- readProp &quot;cameraMaximumRange&quot; value
+    cameraHorizontalSensitivity &lt;- readProp &quot;cameraHorizontalSensitivity&quot; value
+    cameraVertialSensitivity &lt;- readProp &quot;cameraVertialSensitivity&quot; value
+    pointerHorizontalSensitivity &lt;- readProp &quot;pointerHorizontalSensitivity&quot; value
+    pointerVerticalSensitivity &lt;- readProp &quot;pointerVerticalSensitivity&quot; value
+    landingVelocityLimit &lt;- readProp &quot;landingVelocityLimit&quot; value
+    landingDuration &lt;- readProp &quot;landingDuration&quot; value
+    pure $ Options {
+        loadDistance,
+        fogDensity,
+        maximumLoadedChunks,
+        vertexColorEnabled,
+        shadowDisplayRange,
+        shadowEnabled,
+        shadowMapSize,
+        skyboxRotationSpeed,
+        enableWaterMaterial,
+        chunkUnloadSpeed,
+        jumpVelocity,
+        initialWorldSize,
+        moveSpeed,
+        cameraTargetSpeed,
+        cameraRotationSpeed,
+        cameraZoomSpeed,
+        cameraMinZ,
+        cameraMaxZ,
+        cameraFOV,
+        cameraMinimumRange,
+        cameraMaximumRange,
+        cameraHorizontalSensitivity,
+        cameraVertialSensitivity,
+        pointerHorizontalSensitivity,
+        pointerVerticalSensitivity,
+        landingVelocityLimit,
+        landingDuration
+    }</code></pre><p>ぎゃあああああああああああああああああああああ！　オプションの名前がコードの中にそれぞれの4回も登場していて、これはなかなかつらいボイラープレイートです。まだ序盤でコレですから、さらに開発が進んだらどんなことになるやら。弱い型付けのJavaScriptならこんな手間はないわけで、こんなことをやっていてはやっぱり強い型付けの言語はめんどうくさいねと言われても仕方ありません。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ジェネリックプログラミングは便利です</h1><p>これではあんまりなので何かいい方法がないか探したんですが、そういえば最近PureScriptは<strong>ジェネリックプログラミング</strong>に力を入れていることを思い出しました。コンパイル時にデータ型の定義からいろいろなコードを自動的に生成してくれる便利なやつで、<code>Generic</code>というクラスのインスタンスを自動導出できるようになったのです。なお、<code>Generic</code>という名前のクラスは<a href="https://pursuit.purescript.org/packages/purescript-generics/3.3.0/docs/Data.Generic#t:Generic"><code>purescript-generics</code>パッケージの<code>Data.Generic.Generic</code></a>と<a href="https://pursuit.purescript.org/packages/purescript-generics-rep/4.0.0/docs/Data.Generic.Rep#t:Generic"><code>purescript-generics-rep</code>パッケージの<code>Data.Generic.Rep.Generics</code>クラス</a>の2種類があって微妙に違います。<code>Data.Generic.Generic</code>は古いパッケージで、新しい<code>Data.Generic.Rep.Generics</code>パッケージのほうは古いパッケージに比べて少し制約が強くなり型安全性が向上しています。現在では古い<code>Data.Generic.Generics</code>を使う必要はなく、常に新しい方である<code>Data.Generic.Rep.Generics</code>を使えばいいみたいです。</p><p><code>Data.Generic.Rep.Generics</code>を使えば自動的にJSONを読み取ることができるのは見当がつきましたが、きっと誰かがすでにそういうライブラリを作っているはずです。筆者は面倒くさがりなので、なるべくなら自分でライブラリを書きたくありません。探したら<a href="https://github.com/paf31/purescript-foreign-generic">purescript-foreign-generic</a>パッケージがありました。これの使い方は簡単で、まずは<code>derive instance</code>で<code>Generic</code>のインスタンスを自動導出します。</p><pre><code class="haskell">derive instance genericOptions :: Generic Options _</code></pre><p>これで<code>readGeneric</code>という関数が使えるようになるので、これを呼び出すだけです。</p><pre><code class="haskell">readOptions :: Foreign -&gt; F Options
+readOptions = readGeneric defaultOptions { unwrapSingleConstructors = true }</code></pre><p><code>readOptions</code>が恐ろしく簡単になりました。今までの苦労はなんだったんだ……。これだけでJSONを完全に型安全に読み取ることができますし、新たなオプションを追加したい時は、もう<code>readOptions</code>関数をいじる必要はありません。オプションファイル<code>options.json</code>に値を追加し、<code>Options</code>の型にプロパティの定義を追加するだけです。<a href="https://github.com/purescript-contrib/purescript-argonaut">purescript-argonaut</a>、もう要らない子じゃん。</p><p>後になって、<code>readOptions</code>のような専用の関数を与えるのではなく、<code>IsForeign</code>クラスや<code>AsForeign</code>クラスのインスタンスにしたほうが何かと便利なことにも気が付きました。</p><pre><code class="haskell">instance isForeignOptions :: IsForeign Options where
+    read = readGeneric defaultOptions { unwrapSingleConstructors = true }
+
+instance asForeignOptions :: AsForeign Options where
+    write = toForeignGeneric defaultOptions { unwrapSingleConstructors = true }</code></pre><p>これで、コンパイルが通る限りは<code>write</code>で確実にJSONへと変換できますし、<code>read</code>でJSONから安全に読み取ることができます。うっかり<code>Options</code>の定義を間違えてJSONには変換できないようなデータ、たとえば関数をプロパティにを加えてしまった場合は確実にコンパイルエラーが出ます。JavaScriptで<code>JSON.stringidy</code>とかを通すとJSONに変換できないデータは無視されるので、受け取った側でデータが欠落していてぎょっとすることがたまにありますが、そういうミスもコンパイル時に検知できます。</p><p>もっとも、型安全に取り扱えるような堅実な設計のJSONばかりではないでしょうし、<code>number</code>や<code>string</code>の両方を取りうるようなプロパティを持つJSONもあるでしょう。そういう静的型付けでは扱いにくいJSONを読み取るには、<code>Foreign</code>や<code>argonaut</code>を使ってプロパティをひとつひとつ丁寧に読み取っていくしかありません。</p><h1><a name="json-web-api-" class="anchor" href="#json-web-api-"><span class="header-link"></span></a>JSONなWeb APIを叩く</h1><p>手順は同じようなものですが、GithubのAPIを叩くサンプルも作ってみました。<a href="39e4126f470d8b84b291.html">以前の記事</a>のために書いたコードを流用したものです。</p><ul>
+<li><a href="https://github.com/aratama/example-followbox">https://github.com/aratama/example-followbox</a></li>
+</ul>
+<p>簡単に手順をまとめてみます。</p><h3><a name="1-" class="anchor" href="#1-"><span class="header-link"></span></a>1. データ型を定義する</h3><pre><code class="haskell">newtype User = User {
+    login :: String,
+    avatar_url :: String,
+    html_url :: String
+}
+
+type Users = Array User</code></pre><h3><a name="2-code-generic-code-" class="anchor" href="#2-code-generic-code-"><span class="header-link"></span></a>2. <code>Generic</code>そのほかのインスタンスを自動導出あるいは自分で定義する</h3><pre><code class="haskell">instance isForeignUser :: IsForeign User where
+    read = readGeneric defaultOptions { unwrapSingleConstructors = true }
+
+derive instance genericUser :: Generic User _
+
+instance showUser :: Show User where
+    show = genericShow</code></pre><h3><a name="3-affjax-web-api-" class="anchor" href="#3-affjax-web-api-"><span class="header-link"></span></a>3. Affjaxを使ってWeb APIを叩く非同期な作用を定義する</h3><pre><code class="haskell">fetchUsers :: forall eff. Int -&gt; Aff (ajax :: AJAX | eff) Users
+fetchUsers since = do
+    res &lt;- get $ &quot;https://api.github.com/users?since=&quot; &lt;&gt; show since
+    liftEx $ read res.response
+
+liftEx :: forall m e. (MonadError Error m, Show e) =&gt; ExceptT e Identity ~&gt; m
+liftEx = either (throwError &lt;&lt;&lt; error &lt;&lt;&lt; show) pure &lt;&lt;&lt; runExcept</code></pre><p>これだけです。なお、<code>read</code>の失敗を表現する型は<code>ExceptT</code>というデータ型なのですが、それに対して<code>Aff</code>の内部で使われているエラー表現の<code>err :: EXCEPTION</code>はJavaScriptの<code>Error</code>オブジェクトベースのものなので、実はエラーの内部的な表現が異なります。<code>liftEx</code>という補助的な関数は、<code>ExceptT</code>を<code>Aff</code>へと変換してこのギャップを埋め合わせるためのものです。</p><p>また、ネットワークの不調などで失敗することも多いと思いますが、エラーハンドリングをどうするべきかはアプリケーションによってまちまちなので、ここでは特に細かいエラーハンドリングはしていません。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>型安全でない方法</h1><p>なお、型安全でなくていいのなら<a href="https://pursuit.purescript.org/packages/purescript-foreign/3.0.1/docs/Data.Foreign#v:unsafeFromForeign"><code>unsafeFromForeign</code></a>を使うか、あるいはもっとワイルドに<a href="https://pursuit.purescript.org/packages/purescript-unsafe-coerce/2.0.0/docs/Unsafe.Coerce#v:unsafeCoerce"><code>unsafeCoerce</code></a>で型を変換してしまえばOKです。PureScriptのデータ型はJavaScriptのものとちゃんと対応しているので、実行時のデータがどうなっているのかちゃんと理解していれば問題なく動きます。そっちのほうが効率面でも有利です。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>さいごに</h1><p>これでも動的型付けのプログラミング言語ならもっと簡単だと思うかもしれませんが、こういうオプションファイルを作ったらどんなオプションがあるのかドキュメントに書かなくてはいけませんから手間は結局同じことです。というかドキュメントに書いてもどうせ修正を忘れてコードとドキュメントの内容がズレ始めるに決まっているので、静的型付けの言語を使って型の定義として書いたほうがよほどマシです。</p><p>PureScriptのジェネリックプログラミングはまだHaskellほど強力ではないものの、最近のバージョンアップでジェネリックプログラミング関連の機能がどんどん追加されていてずいぶん便利になっています。それに伴って型レベルの計算も強力にサポートされるようになり、<a href="https://github.com/LiamGoodacre/purescript-type-map/blob/master/src/Type/Map.purs">型レベル計算でマップを実装する</a>というような変態行為が可能なくらいにまでなっているみたいです。</p><p>なんか最近ほんとPureScriptのことしか書いていないです。firebaseとかvirtual-domとかWebGL/Babylonjsとか他にもお勧めしたいものはいろいろあるのですが、そっちは誰か他の人が紹介を書いてくれそうなので私はあんまり書く気がおきません。PureScriptはほんとにいいスクリプト言語なので、みんなもっと記事を書いてくれたらいいなと思います。アドベントカレンダーとか作ればよかったでしょうか。<a href="http://qiita.com/advent-calendar/2016/typescript">TypeScriptのアドベントカレンダーすら過疎っている</a>し、PureScriptではもっと人が集まらないでしょうね……。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>参考文献</h1><ul>
+<li><a href="http://www.purescript.org/learn/generic/">Generic Programming</a></li>
+<li><a href="https://github.com/paf31/24-days-of-purescript-2016/blob/master/11.markdown">11. Generic Deriving - 24-days-of-purescript-2016</a> 24-days-of-purescript-2016でもちょうどジェネリックプログラミングの話題でした</li>
+<li><a href="http://qiita.com/alpha22jp/items/4cc65f128962e11811fb">AesonでJSONをパース・生成する方法まとめ</a> Haskellだとこんなかんじです</li>
+<li><a href="https://github.com/purescript/purescript/issues/2416#issuecomment-266621928">https://github.com/purescript/purescript/issues/2416#issuecomment-266621928</a> ほんとはtypeにしたかったのですが、コンパイルが通らなかったのでnewtypeにしてます。これはバグかもしれません</li>
+</ul>
+</div><div>
+    
+<hr style="margin-top: 60px;">
+
+<div class="snsbuttons">
+
+    <!-- Twitter -->
+    <a href="https://twitter.com/share" class="twitter-share-button" data-related="cubbit2">Tweet</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+    <!-- Hatena -->
+    <div>
+        <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </div>
+
+    <!-- line -->
+    <div>
+        <div class="line-it-button" style="display: none;" data-type="share-a" data-lang="ja" ></div>
+        <script src="//scdn.line-apps.com/n/line_it/thirdparty/loader.min.js" async="async" defer="defer" ></script>
+    </div>
+
+    <!--facebook -->
+    <div>
+        <div id="fb-root"></div>
+        <script>(function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.8";
+        fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
+        <div class="fb-like" data-href="https://aratama.github.io/blog/afae75564ecac9ccde6a.md" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="false"></div>
+    </div>
+
+    <!-- google+ -->
+    <div>
+        <script src="https://apis.google.com/js/platform.js" async defer>
+        {lang: 'ja'}
+        </script>
+        <div class="g-plusone" data-size="medium"></div>
+    </div>
+
+</div>
+
+</div></article></div><footer><div class="block-centered footer-inner"><p class="copy">&amp;nbsp;</p><p class="author">このブログを書いてる人: 竹内稲穂</p></div><script>
+                    const poem = [
+                        "なんにもない毎日が、なによりの宝物。",
+                        "今日という日を、何度でも繰り返したい。",
+                        "世界を追いかけなくても、世界は私のまわりにある。", 
+                        "速すぎる雑踏。鼻先をくすぐる春風。", 
+                        "明日撮る写真を飾る場所を、アルバムに空けておこう。", 
+                        "落ち葉が地面に、触れる音がした。", 
+                        "明日は、明日の楽しさが待っている。", 
+                        "風が泣いている。この想いを紡ぐ言葉を持たないから。", 
+                        "もうここには何もない。だから、次の場所に旅立とう。", 
+                        "もう此処にはこないだろう。そう言って私は過去に背を向けた。", 
+                        "散りゆくからこそ、美しい。私は桜の花びらをかかとで踏みしめた。", 
+                        "思い出はいつだって輝いてる。",
+                        "正直ばかりじゃつまらない。たまには楽しい嘘をつこう。", 
+                        "ゆっくり歩けば歩くほど、時間がゆっくり過ぎてゆく。",
+                        "夜明けを、探しにいこう。", 
+                        "空はこんなに青かったんだ。", 
+                        "地球は青かった。それはこの空を見上げたことのある全員が知っている。", 
+                        "休み時間は、長すぎるということはない。", 
+                        "缶コーヒーを飲むときだけは、それ以外のすべてを忘れることにしてる。", 
+                        "ちょっと小さいのは確かですが、それは確かにここにあります。", 
+                        "ちょっと小さいのは確かですが、広すぎる家というのも寂しいでしょう？", 
+                        "ひつじが一匹、ひつじが二匹。五十匹までは、数えたことがある。"
+                    ];
+                    document.querySelector(".copy").textContent = poem[Math.floor(poem.length * Math.random())];
+                </script></footer></body></html>

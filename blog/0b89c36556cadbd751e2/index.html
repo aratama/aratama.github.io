@@ -1,0 +1,117 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@cubbit2"><meta name="twitter:creator" content="@cubbit2"><meta name="twitter:title" content="なるべく早くtimeoutする - ちょっと小さいのはたしかですが。"><meta name="twitter:description" content="Admittedly something small."><meta name="twitter:image" content="https://aratama.github.io/res/empty.png"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="icon.png"><link rel="stylesheet" href="/res/reset.css"><link rel="stylesheet" href="/res/style.css"><title>なるべく早くtimeoutする - ちょっと小さいのはたしかですが。</title><script>
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+                ga('create', 'UA-61162129-3', 'auto');
+                ga('send', 'pageview');
+            </script></head><body><header><div class="block-centered"><div class="site-title"><a href="/">Admittedly <wbr>something <wbr>small.</a></div><div class="sub-title">ちょっと<wbr>小さいのは<wbr>たしかですが。</div></div></header><div class="content"><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" href="/res/article.css"><article id="rendered"><div class="date">2015年11月1日</div><h1 class="article-title"><a href=".">なるべく早くtimeoutする</a></h1><p class="tags"><a href="/blog/tag/JavaScript"><span class="tag"><i class="fa fa-tag"></i>JavaScript</span></a></p><hr><div><p>何十秒もかかる重いタスクがあり、それをブラウザ上のJavaScriptでなるべく早く完了させたいとします。でも同期的に一気にやろうとすると、たまには制御返せってブラウザに怒られるし、ページが固まってしまうので困ります。</p><p>たとえば、どうしても<a href="https://ja.wikipedia.org/wiki/%E3%82%B3%E3%83%A9%E3%83%83%E3%83%84%E3%81%AE%E5%95%8F%E9%A1%8C">コラッツの問題</a>を自分で確かめたくなっちゃったとします。<code>n</code>に操作を繰り返して1に到達するまでの回数を<code>collatz(n)</code>として、たとえば次のように一気にfor文で調べようとするとページ全体が固まってしまい、ユーザの操作で途中で止めることもできないのでよろしくありません。</p><pre><code class="js">for(var n = 1; n &lt;= 10000000; n++){
+    console.log(n + &quot;は&quot; + collatz(n) + &quot;回の操作で1に到達します&quot;);
+}</code></pre><p>ベストなのはWebWorkersを使って別スレッドで処理することですが、Workerスレッド上ではDOMに触れないとかいろいろ制限があります。タスクの内容によってはWorkerの上ではできない、もしくは面倒くさいこともあるでしょう。</p><p>そのようなときには、タスクを分割して<code>setTimeout</code>や<code>setInterval</code>で非同期に処理する方法があります。コラッツの問題ならただの数値計算なのでWeb Workers上でやればいいですが、仮にこの問題がメインスレッド上でないとやりにくいタスクだったとします。具体的には次のような関数<code>sleep</code>を用意すると現代的でちょっとおしゃれかもしれません。</p><pre><code class="js">function sleep(){
+    return new Promise(resolve =&gt; setTimeout(resolve, 0));
+}</code></pre><p>呼び出す側ではジェネレータ関数の中で</p><pre><code class="js">for(var n = 1; n &lt;= 10000000; n++){
+    console.log(n + &quot;は&quot; + collatz(n) + &quot;回の操作で1に到達します&quot;);
+    yield sleep();
+}</code></pre><p>とループごとに一休みするだけで、ページ全体をブロックすることなく処理を行えます。ただし<code>setTimeout</code>を使うと、<code>setTimeout(f, 0)</code>として<code>delay</code>を0ミリ秒と指定しても最低でも数ミリ秒程度の遅延が生じます。とにかく早く終わらせたいときにはこの遅延が邪魔になるのですが、<code>postMessage</code>でメッセージを投げる → <code>onmessage</code>で即座にイベントを受け取ってタスクをこなす、というトリックを使うことで高速に非同期処理が繰り返せます。</p><p><a href="http://dbaron.org/log/20100309-faster-timeouts">こちら</a>の実装のコードを借りると、次の<code>setZeroTimeout</code>関数はほとんど瞬時に、でもあくまで非同期にコールバックしてくれます。</p><pre><code class="js">// Only add setZeroTimeout to the window object, and hide everything
+// else in a closure.
+(function () {
+    var timeouts = [];
+    var messageName = &quot;zero-timeout-message&quot;;
+
+    // Like setTimeout, but only takes a function argument.  There&#39;s
+    // no time argument (always zero) and no arguments (you have to
+    // use a closure).
+    function setZeroTimeout(fn) {
+        timeouts.push(fn);
+        window.postMessage(messageName, &quot;*&quot;);
+    }
+
+    function handleMessage(event) {
+        if (event.source == window &amp;&amp; event.data == messageName) {
+            event.stopPropagation();
+            if (timeouts.length &gt; 0) {
+                var fn = timeouts.shift();
+                fn();
+            }
+        }
+    }
+
+    window.addEventListener(&quot;message&quot;, handleMessage, true);
+
+    // Add the one thing we want added to the window object.
+    window.setZeroTimeout = setZeroTimeout;
+})();</code></pre><p>この<code>setZetoTimeout</code>を<code>setTimeout</code>の代わりに使うだけでずっと早く処理が終わります。<code>collatz(n)</code>のリアルタイム人気投票をすると<a href="https://jsfiddle.net/3ftgfusg/1/">こんな感じ</a>になります。ただし、<code>setTimeout</code>にはタブが裏に回るなどでページが非表示になると自動的に頻度を落として無用な処理を減らしてくれるという機能もあります。<code>setZeroTimeout</code>のほうはページが非表示だろうがお構いなしに全力疾走してしまいますが、それが迷惑な場面もあるでしょうから注意が必要です。使い道があるようなないような……。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>参考</h1><ul>
+<li><a href="http://dbaron.org/log/20100309-faster-timeouts">http://dbaron.org/log/20100309-faster-timeouts</a></li>
+<li><a href="https://developer.mozilla.org/ja/docs/Web/API/Window/setTimeout">https://developer.mozilla.org/ja/docs/Web/API/Window/setTimeout</a></li>
+</ul>
+</div><div>
+    
+<hr style="margin-top: 60px;">
+
+<div class="snsbuttons">
+
+    <!-- Twitter -->
+    <a href="https://twitter.com/share" class="twitter-share-button" data-related="cubbit2">Tweet</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+    <!-- Hatena -->
+    <div>
+        <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </div>
+
+    <!-- line -->
+    <div>
+        <div class="line-it-button" style="display: none;" data-type="share-a" data-lang="ja" ></div>
+        <script src="//scdn.line-apps.com/n/line_it/thirdparty/loader.min.js" async="async" defer="defer" ></script>
+    </div>
+
+    <!--facebook -->
+    <div>
+        <div id="fb-root"></div>
+        <script>(function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.8";
+        fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
+        <div class="fb-like" data-href="https://aratama.github.io/blog/0b89c36556cadbd751e2.md" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="false"></div>
+    </div>
+
+    <!-- google+ -->
+    <div>
+        <script src="https://apis.google.com/js/platform.js" async defer>
+        {lang: 'ja'}
+        </script>
+        <div class="g-plusone" data-size="medium"></div>
+    </div>
+
+</div>
+
+</div></article></div><footer><div class="block-centered footer-inner"><p class="copy">&amp;nbsp;</p><p class="author">このブログを書いてる人: 竹内稲穂</p></div><script>
+                    const poem = [
+                        "なんにもない毎日が、なによりの宝物。",
+                        "今日という日を、何度でも繰り返したい。",
+                        "世界を追いかけなくても、世界は私のまわりにある。", 
+                        "速すぎる雑踏。鼻先をくすぐる春風。", 
+                        "明日撮る写真を飾る場所を、アルバムに空けておこう。", 
+                        "落ち葉が地面に、触れる音がした。", 
+                        "明日は、明日の楽しさが待っている。", 
+                        "風が泣いている。この想いを紡ぐ言葉を持たないから。", 
+                        "もうここには何もない。だから、次の場所に旅立とう。", 
+                        "もう此処にはこないだろう。そう言って私は過去に背を向けた。", 
+                        "散りゆくからこそ、美しい。私は桜の花びらをかかとで踏みしめた。", 
+                        "思い出はいつだって輝いてる。",
+                        "正直ばかりじゃつまらない。たまには楽しい嘘をつこう。", 
+                        "ゆっくり歩けば歩くほど、時間がゆっくり過ぎてゆく。",
+                        "夜明けを、探しにいこう。", 
+                        "空はこんなに青かったんだ。", 
+                        "地球は青かった。それはこの空を見上げたことのある全員が知っている。", 
+                        "休み時間は、長すぎるということはない。", 
+                        "缶コーヒーを飲むときだけは、それ以外のすべてを忘れることにしてる。", 
+                        "ちょっと小さいのは確かですが、それは確かにここにあります。", 
+                        "ちょっと小さいのは確かですが、広すぎる家というのも寂しいでしょう？", 
+                        "ひつじが一匹、ひつじが二匹。五十匹までは、数えたことがある。"
+                    ];
+                    document.querySelector(".copy").textContent = poem[Math.floor(poem.length * Math.random())];
+                </script></footer></body></html>
