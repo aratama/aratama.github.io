@@ -6,10 +6,13 @@ article {
 
 
 .article-container {
+    padding: 30px;
+    width: 960px;
+
     /* max-width: 960px; */
     transition-property: all;
     transition-duration: 0.3s;
-    padding: 1em;
+
 
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.4);
     transform: translateY(-60px);
@@ -23,7 +26,8 @@ li {
 }
 
 .article-entry {
-    width: calc(320px - 20px * 2 - 10px * 2 - 1px * 2);
+    width: 260px;
+
     height: 200px; 
     list-style-type: none;
     margin: 20px;
@@ -81,36 +85,36 @@ li {
 
 
 .article-container > a:nth-child(7) > div {
-    width: 556px;
+    width: 560px;
     height: 440px;
 }
 
 .article-container > a:nth-child(14) > div {
-    width: 556px;
+    width: 560px;
 }
 
 .article-container > a:nth-child(21) > div {
-    width: 556px;
+    width: 560px;
 }
 
 .article-container > a:nth-child(27) > div {
-    width: 556px;
+    width: 560px;
 }
 
 .article-container > a:nth-child(28) > div {
-    width: 556px;
+    width: 560px;
 }
 
 .article-container > a:nth-child(36) > div {
-    width: 556px;
+    width: 560px;
 }
 
 .article-container > a:nth-child(45) > div {
-    width: 556px;
+    width: 560px;
 }
 
 .article-container > a:nth-child(46) > div {
-    width: 556px;
+    width: 560px;
 }
 
 
@@ -130,19 +134,21 @@ h2 {
 
     article {
         width: 100%;
-        padding: 5px;
+        padding: 0px;
     }
 
     .article-container {
+        width: 100%;    
         max-width: none;
         margin: 0px;
+        transform: none;
     }
 
     .article-entry {
-        width: calc(320px - 20px * 2 - 10px * 2 - 1px * 2) !important;
-        height: 200px !important; 
-        margin: 10px;
-        margin-top: 12px;
+        width: 100% !important;
+        height: initial !important; 
+        margin: 0px;
+        margin-top: 22px;
         padding: 0px;
         float: none;
     }

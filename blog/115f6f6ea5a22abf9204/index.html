@@ -10,7 +10,7 @@
 
 <p>ここ数日、Reduxとはなんぞやということについてさんっざん検索して調べまわっていました。ふと<a href="https://ja.wikipedia.org/wiki/%E3%83%9F%E3%83%BC%E3%83%AA%E3%83%BB%E3%83%9E%E3%82%B7%E3%83%B3">ミーリ・マシン</a>っぽいなと思って&quot;Redux Mealy Machine&quot;でググり、Redux-sagaの中の人のこのツイートにたどり着いて、ようやくストンと腑に落ちました。<a href="http://qiita.com/inamiy/items/293869e223d44848f9c9">参考1</a>。<a href="http://qiita.com/shinout/items/4a7f67275c3ad887d98d">参考２</a></p><p>ReduxでReducerの中で作用を使うなとかActionCreatorを純粋にしろとか言われてどうすりゃいいんだよウッセーなお前はおれのかーちゃんかよって思った人は多いでしょう。Reduxが何なのか理解できていないと、Reduxが要求する制限や規則は単に窮屈で複雑、難解なだけです。でもReduxが何を表現しているのかがわかったら、あのような厄介な規則もとたんに前向きに受け入れられるようになりました。</p><p>Reduxとは何か。<strong>Reduxはミーリ・マシンだ</strong>。アプリケーションから状態遷移の部分のみを切り離して抽象化した、有限状態機械だ。Actionとは入力記号$\rm Σ$であり、Reducerとは状態遷移関数$\rm S × Σ → S$だ。Reduxは状態遷移のみを取り扱う純粋な機械であり、現実世界との相互作用とは独立してその状態遷移をテストできる。</p><p>Reduxだけでは計算は進んでいかない。Redux-Sagaは<code>select</code>と<code>take</code>で$\rm S$と$\rm Σ$を取り出し、$\rm S × Σ$から現実世界との相互作用$\rm Λ$を計算する出力関数$\rm S × Σ → Λ$として振る舞う。それからSagaは作用$\rm Λ$を現実世界に作用させ、その結果に応じて$\rm Σ$を<code>put</code>で再びReduxの中に投げ入れることで、ミーリ・マシンたるReduxを駆動する役目を持つ。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>まとめ</h1><p><a href="http://elm-lang.org/">Elm</a>いいよ！</p></div><div>
     
-<hr style="margin-top: 60px;">
+<hr>
 
 <div class="snsbuttons">
 

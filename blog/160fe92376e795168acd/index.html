@@ -86,7 +86,7 @@ eval _ = lift $ Left &quot;Invalid expression&quot;</code></pre><p>評価器の�
 <p class="footnote"><a href="#link-oop" name="footnote-oop">^</a>  御存知の通り、オブジェクト指向の『クラス』は『状態』と『操作』を一体にして定義したものですからね。PureScriptはオブジェクト指向ではないので、データ型の定義と関数の定義が、別々になっているというだけの話です。</p>
 <p class="footnote"><a href="#link-ast" name="footnote-ast">^</a>  構文木を改造する方法の他に、構文解析した時点で、`sum = 0`のような代入文を`["set", "sum", 0]`のような`set`演算子の呼び出しへと変換してしまう手もあります。つまり、`sum = 0`を`["set", "sum", 0]`の構文糖とみなしてしまうわけです。</p></div><div>
     
-<hr style="margin-top: 60px;">
+<hr>
 
 <div class="snsbuttons">
 
