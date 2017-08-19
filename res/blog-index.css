@@ -88,41 +88,68 @@ li {
 
 
 
-.article-container > a:nth-child(7) > div {
+.article-container > div.recent > a:nth-child(1) > div {
     width: 560px;
     height: 440px;
 }
 
-.article-container > a:nth-child(14) > div {
+.article-container > div.recent > a:nth-child(2) > div {
+    height: 440px;
+}
+
+.article-container > div.recent > a:nth-child(3) > div {
+    width: 860px;
+}
+
+.article-container > div.recent > a:nth-child(4) > div {
+    height: 440px;
+}
+
+.article-container > div.recent > a:nth-child(7) > div {
     width: 560px;
 }
 
-.article-container > a:nth-child(21) > div {
+.article-container > div.recent > a:nth-child(11) > div {
     width: 560px;
 }
 
-.article-container > a:nth-child(27) > div {
+.article-container > div.recent > a:nth-child(17) > div {
     width: 560px;
 }
 
-.article-container > a:nth-child(28) > div {
+.article-container > div.recent > a:nth-child(18) > div {
+    width: 560px;
+    height: 440px;    
+}
+
+.article-container > div.recent > a:nth-child(22) > div {
     width: 560px;
 }
 
-.article-container > a:nth-child(36) > div {
+.article-container > div.recent > a:nth-child(26) > div {
     width: 560px;
 }
 
-.article-container > a:nth-child(45) > div {
+.article-container > div.recent > a:nth-child(32) > div {
     width: 560px;
 }
 
-.article-container > a:nth-child(46) > div {
+.article-container > div.recent > a:nth-child(36) > div {
     width: 560px;
 }
 
+.article-container > div.recent > a:nth-child(42) > div {
+    width: 560px;
+}
 
+.article-container > div.recent > a:nth-child(43) > div {
+    width: 560px;
+    height: 440px;        
+}
 
+.article-container > div.recent > a:nth-child(44) > div {
+    height: 440px;        
+}
 
 
 h2 {
