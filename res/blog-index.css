@@ -40,10 +40,13 @@ li {
     overflow: hidden;
 
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4); 
+
+    font-size: 14px;
 }
 
 .article-entry:hover {
-    transform: translate(0px, -7px);
+    transform: scale(1.6);
+    z-index: 100;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.4); 
 }
 
