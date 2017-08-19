@@ -6,74 +6,137 @@
 
                 ga('create', 'UA-61162129-3', 'auto');
                 ga('send', 'pageview');
-            </script></head><body><header><div class="sns"><a target="_blank" href="https://twitter.com/intent/tweet?text=undefined%20https%3A%2F%2Faratama.github.io%2Fblog%2F98598af2b0e9a6206ef3"><img src="/res/twitter.png" alt="twitter button"></a><a target="brank" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Faratama.github.io%2Fblog%2F98598af2b0e9a6206ef3&amp;t=undefined"><img src="/res/facebook.png" alt="facebook button"></a><a target="brank" href="https://plus.google.com/share?url=https%3A%2F%2Faratama.github.io%2Fblog%2F98598af2b0e9a6206ef3"><img src="/res/google.png" alt="google plus button"></a><a target="brank" href="http://b.hatena.ne.jp/entry/https%3A%2F%2Faratama.github.io%2Fblog%2F98598af2b0e9a6206ef3"><img src="/res/hatena.png" alt="hatena bookmark button"></a><a target="brank" href="http://getpocket.com/edit?url=https%3A%2F%2Faratama.github.io%2Fblog%2F98598af2b0e9a6206ef3&amp;title=undefined"><img src="/res/pocket.png" alt="pocket button"></a></div><div class="block-centered"><div class="site-title"><a href="/">Admittedly <wbr>something <wbr>small.</a></div><div class="sub-title">ちょっと<wbr>小さいのは<wbr>たしかですが。</div></div></header><div class="content"><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" href="/res/article.css"><article id="rendered"><div class="date">2015年9月17日</div><h1 class="article-title"><a href=".">AffですべてのPromises/Generatorsを過去にする／そして何故我々は作用をモナドで抽象化すべきなのか</a></h1><p class="tags"><a href="/blog/tag/JavaScript"><span class="tag"><i class="fa fa-tag"></i>JavaScript</span></a><a href="/blog/tag/Haskell"><span class="tag"><i class="fa fa-tag"></i>Haskell</span></a><a href="/blog/tag/promise"><span class="tag"><i class="fa fa-tag"></i>promise</span></a><a href="/blog/tag/generator"><span class="tag"><i class="fa fa-tag"></i>generator</span></a><a href="/blog/tag/purescript"><span class="tag"><i class="fa fa-tag"></i>purescript</span></a></p><hr><div><p>PromiseやGeneratorのような機構を使ってもなお非同期処理は厄介だ、そしてもっとシンプルで便利な方法があるよ、という話です。前半の議論を元に、後半ではなぜプログラミング言語の作用をモナドで抽象すると便利なのかということの説明をしています。</p><p>関数型プログラミング言語は「副作用をなるべく減らすことで安全性を高めた言語」というように説明されることがありますが、すべての式が副作用を持たないという『純粋』関数型プログラミング言語が言語を参照透明にしてモナドを導入するのは決して「副作用はなるべく避けたほうが安全だから」という理由だけではないのです。長いですが、これでも結構削りました。</p><h1><a id="%E5%BA%8F%E7%9B%A4%E6%88%A6%E3%83%BBPromises%2FGenerators%E3%81%AE%E5%85%89%E3%81%A8%E5%BD%B1" class="anchor" href="#%E5%BA%8F%E7%9B%A4%E6%88%A6%E3%83%BBPromises%2FGenerators%E3%81%AE%E5%85%89%E3%81%A8%E5%BD%B1"><span class="header-link"></span></a>序盤戦・Promises/Generatorsの光と影</h1><h3><a id="Promises%2FGenerators%E3%81%A7%E4%B8%96%E7%95%8C%E3%81%AF%E3%81%A1%E3%82%87%E3%81%A3%E3%81%A8%E5%B9%B3%E5%92%8C%E3%81%AB%E3%81%AA%E3%82%8B" class="anchor" href="#Promises%2FGenerators%E3%81%A7%E4%B8%96%E7%95%8C%E3%81%AF%E3%81%A1%E3%82%87%E3%81%A3%E3%81%A8%E5%B9%B3%E5%92%8C%E3%81%AB%E3%81%AA%E3%82%8B"><span class="header-link"></span></a>Promises/Generatorsで世界はちょっと平和になる</h3><p>かつてはJavaScriptの非同期処理はコールバック地獄に陥ったり様々なパターンが混在したりして、『地獄』と呼ぶのに似つかわしい混沌とした状態にありましたが、最近になってPromiseとGeneratorが導入され、ようやくうまく書ける環境が整いつつあります<a class="link-footnote" href="#footnote-hell" name="link-hell">※</a>。</p><p>簡単な例として、Nodeで3つのファイル<code>foo.txt</code>、<code>bar.txt</code>、<code>baz.txt</code>を読み込んでつなげて出力したいとします。まずはNode形式の非同期処理関数をPromise化する関数<code>promisify</code>を次のように適当に定義しておきます。</p><pre><code class="js">function promisify(f){
+            </script></head><body><header><div class="sns"><a target="_blank" href="https://twitter.com/intent/tweet?text=undefined%20https%3A%2F%2Faratama.github.io%2Fblog%2F98598af2b0e9a6206ef3"><img src="/res/twitter.png" alt="twitter button"></a><a target="brank" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Faratama.github.io%2Fblog%2F98598af2b0e9a6206ef3&amp;t=undefined"><img src="/res/facebook.png" alt="facebook button"></a><a target="brank" href="https://plus.google.com/share?url=https%3A%2F%2Faratama.github.io%2Fblog%2F98598af2b0e9a6206ef3"><img src="/res/google.png" alt="google plus button"></a><a target="brank" href="http://b.hatena.ne.jp/entry/https%3A%2F%2Faratama.github.io%2Fblog%2F98598af2b0e9a6206ef3"><img src="/res/hatena.png" alt="hatena bookmark button"></a><a target="brank" href="http://getpocket.com/edit?url=https%3A%2F%2Faratama.github.io%2Fblog%2F98598af2b0e9a6206ef3&amp;title=undefined"><img src="/res/pocket.png" alt="pocket button"></a></div><div class="block-centered"><div class="site-title"><a href="/">Admittedly <wbr>something <wbr>small.</a></div><div class="sub-title">ちょっと<wbr>小さいのは<wbr>たしかですが。</div></div></header><div class="content"><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" href="/res/article.css"><article id="rendered"><div class="date">2015年9月17日</div><h1 class="article-title"><a href=".">AffですべてのPromises/Generatorsを過去にする／そして何故我々は作用をモナドで抽象化すべきなのか</a></h1><p class="tags"><a href="/blog/tag/JavaScript"><span class="tag"><i class="fa fa-tag"></i>JavaScript</span></a><a href="/blog/tag/Haskell"><span class="tag"><i class="fa fa-tag"></i>Haskell</span></a><a href="/blog/tag/promise"><span class="tag"><i class="fa fa-tag"></i>promise</span></a><a href="/blog/tag/generator"><span class="tag"><i class="fa fa-tag"></i>generator</span></a><a href="/blog/tag/purescript"><span class="tag"><i class="fa fa-tag"></i>purescript</span></a></p><hr><div><p>PromiseやGeneratorのような機構を使ってもなお非同期処理は厄介だ、そしてもっとシンプルで便利な方法があるよ、という話です。前半の議論を元に、後半ではなぜプログラミング言語の作用をモナドで抽象すると便利なのかということの説明をしています。</p>
+<p>関数型プログラミング言語は「副作用をなるべく減らすことで安全性を高めた言語」というように説明されることがありますが、すべての式が副作用を持たないという『純粋』関数型プログラミング言語が言語を参照透明にしてモナドを導入するのは決して「副作用はなるべく避けたほうが安全だから」という理由だけではないのです。長いですが、これでも結構削りました。</p>
+<h1>序盤戦・Promises/Generatorsの光と影</h1>
+<h3>Promises/Generatorsで世界はちょっと平和になる</h3>
+<p>かつてはJavaScriptの非同期処理はコールバック地獄に陥ったり様々なパターンが混在したりして、『地獄』と呼ぶのに似つかわしい混沌とした状態にありましたが、最近になってPromiseとGeneratorが導入され、ようやくうまく書ける環境が整いつつあります<a href="#footnote-hell" id="anchor-hell">※</a>。</p>
+<p>簡単な例として、Nodeで3つのファイル<code>foo.txt</code>、<code>bar.txt</code>、<code>baz.txt</code>を読み込んでつなげて出力したいとします。まずはNode形式の非同期処理関数をPromise化する関数<code>promisify</code>を次のように適当に定義しておきます。</p>
+<pre><code class="language-js">function promisify(f){
     return function(){
-        return new Promise((resolve, reject)=>{
-            f.apply(undefined, Array.prototype.slice.call(arguments).concat([(err, data)=>{
+        return new Promise((resolve, reject)=&gt;{
+            f.apply(undefined, Array.prototype.slice.call(arguments).concat([(err, data)=&gt;{
                 err ? reject(err) : resolve(data);
             }]));
         });
     };
-}</code></pre><p>この関数の定義の詳細はどうでもいいのですが、とにかくこれで<code>promisify(fs.readFile)</code>とすれはPromiseを返すような非同期な関数になるので、ジェネレータ関数をうまいこと処理してくれる<a href="https://github.com/tj/co">tj/co</a>を組み合わせて次のように書くことができるようになります。</p><pre><code class="js">co(function*(){
+}
+</code></pre>
+<p>この関数の定義の詳細はどうでもいいのですが、とにかくこれで<code>promisify(fs.readFile)</code>とすれはPromiseを返すような非同期な関数になるので、ジェネレータ関数をうまいこと処理してくれる<a href="https://github.com/tj/co">tj/co</a>を組み合わせて次のように書くことができるようになります。</p>
+<pre><code class="language-js">co(function*(){
     try{
-        var foo = yield promisify(fs.readFile)("foo.txt");
-        var bar = yield promisify(fs.readFile)("bar.txt");
-        var baz = yield promisify(fs.readFile)("baz.txt");
+        var foo = yield promisify(fs.readFile)(&quot;foo.txt&quot;);
+        var bar = yield promisify(fs.readFile)(&quot;bar.txt&quot;);
+        var baz = yield promisify(fs.readFile)(&quot;baz.txt&quot;);
         console.log(foo + bar + baz);
     }catch(err){
         console.log(err);
     }
-});</code></pre><p>ネストが深くなっていかないし、例外処理も<code>try-catch</code>で同期処理の時と同じように書くことができています。これでJavaScriptの非同期処理におけるコーディングの問題は概ね解決したといっていいでしょう。Generatorsを使えない環境もあるので、現実的には<a href="https://babeljs.io/">Babel</a>でバベることになるかもしれませんが、解決の道筋は与えられたといえます。ここまではJavaScript基礎編ですが、大丈夫でしょうか。</p><h3><a id="%E4%BD%95%E3%81%8B%E3%81%8C%E3%81%8A%E3%81%8B%E3%81%97%E3%81%84" class="anchor" href="#%E4%BD%95%E3%81%8B%E3%81%8C%E3%81%8A%E3%81%8B%E3%81%97%E3%81%84"><span class="header-link"></span></a>何かがおかしい</h3><p>さて、これで構文としては悪くないとは思うのですが、<code>yield promisify(fs.readFile)</code>という部分が3度も繰り返しているのが少し気になります。<code>promisify(fs.readFile)</code>の繰り返しについては、以下のように関数として括りだすことで重複を防げます。</p><pre><code class="js">function readFilePromise(path){
+});
+</code></pre>
+<p>ネストが深くなっていかないし、例外処理も<code>try-catch</code>で同期処理の時と同じように書くことができています。これでJavaScriptの非同期処理におけるコーディングの問題は概ね解決したといっていいでしょう。Generatorsを使えない環境もあるので、現実的には<a href="https://babeljs.io/">Babel</a>でバベることになるかもしれませんが、解決の道筋は与えられたといえます。ここまではJavaScript基礎編ですが、大丈夫でしょうか。</p>
+<h3>何かがおかしい</h3>
+<p>さて、これで構文としては悪くないとは思うのですが、<code>yield promisify(fs.readFile)</code>という部分が3度も繰り返しているのが少し気になります。<code>promisify(fs.readFile)</code>の繰り返しについては、以下のように関数として括りだすことで重複を防げます。</p>
+<pre><code class="language-js">function readFilePromise(path){
     return promisify(fs.readFile)(path);
-}</code></pre><p>しかし、<code>yield</code>の繰り返しについては、他の関数に括りだすというわけにはいきません。<code>promisify</code>はただの関数ですが、<strong><code>yield</code>は関数ではない</strong>からです。当たり前だろ！と思うかもしれませんが、なぜそんな指摘をするのかはあとでわかります。</p><p>それにまだ問題があります。たとえば、<strong><code>Array.prototype.forEach</code>を使った繰り返しの中では<code>yield</code>が使えない</strong>のです。</p><pre><code class="js">["foo.txt", "bar.txt", "baz.txt"].forEach(function(path){
+}
+</code></pre>
+<p>しかし、<code>yield</code>の繰り返しについては、他の関数に括りだすというわけにはいきません。<code>promisify</code>はただの関数ですが、<strong><code>yield</code>は関数ではない</strong>からです。当たり前だろ！と思うかもしれませんが、なぜそんな指摘をするのかはあとでわかります。</p>
+<p>それにまだ問題があります。たとえば、<strong><code>Array.prototype.forEach</code>を使った繰り返しの中では<code>yield</code>が使えない</strong>のです。</p>
+<pre><code class="language-js">[&quot;foo.txt&quot;, &quot;bar.txt&quot;, &quot;baz.txt&quot;].forEach(function(path){
    var content = yield readFilePromise(path);  // SyntaxError: Unexpected identifier
    console.log(content);
-});</code></pre><p>これは、<code>forEach</code>に渡すコールバック関数の中では、ジェネレータ関数とは別の関数の文脈になってしまうからです。次のようにもう一度<code>co</code>を呼び直せばうまくいくかと思いましたが、何も出力されませんでした。よくわかりません。</p><pre><code class="js">["foo.txt", "bar.txt", "baz.txt"].forEach(function(path){
+});
+</code></pre>
+<p>これは、<code>forEach</code>に渡すコールバック関数の中では、ジェネレータ関数とは別の関数の文脈になってしまうからです。次のようにもう一度<code>co</code>を呼び直せばうまくいくかと思いましたが、何も出力されませんでした。よくわかりません。</p>
+<pre><code class="language-js">[&quot;foo.txt&quot;, &quot;bar.txt&quot;, &quot;baz.txt&quot;].forEach(function(path){
     co(function*(){
         var content = yield readFilePromise(path);
         console.log(content);
     });
-});</code></pre><p>ここまできて<code>yield</code>と引き換えに<code>forEach</code>を失うとか悲しすぎです。もっとも、回避策がまったくないわけではなく、<code>co</code>は配列も扱えるので次のように書く手があります。</p><pre><code class="js">var contents = yield ["foo.txt", "bar.txt", "baz.txt"].map(path => promisify(fs.readFile)(path));
-console.log(contents.map(s => s.toString()).join(""));</code></pre><p>これでも動きますが、もともとの同期処理とは似ても似つかないコードになりました。同期処理の時と同じような書き方ができているわけではありません。</p><p>それに、静的型付けのTypeScriptは<code>yield</code>をどう扱うつもりなのでしょうか。<code>yield</code>にはどんなデータでも渡すことができますが、どのようなデータを正しく処理できるかはジェネレータ関数を受け取る<code>co</code>のような関数次第です。<code>co</code>は<code>Promise</code>だけでなく配列、オブジェクト、<code>Generator</code>オブジェクト、ジェネレータ関数までいろいろな値を受け付けます。<code>yield</code>のような構文を持ち込むと、それが関数でない以上例外的に扱って複雑な型付けをするか、<code>any</code>でガバガバ動的型付けすることになります。</p><p>Promise/Generatorで確かに問題は解決に近づいているものの、その場しのぎの奇策を打った結果、あちこちで隠し切れないボロがはみ出ている感じです。仕方ないだろ！それくらい我慢しろ！と思うかもしれませんが……もし、もっと単純で、言語そのものを変更するのではなく単なるライブラリを使うだけで、同期処理と同じように繰り返しを書くことができ、しかも静的型付けにも問題のない、そんな夢のような非同期処理の方法があったらどうでしょうか。</p><h1><a id="%E4%B8%AD%E7%9B%A4%E6%88%A6%3A%20PureScript-aff%E3%81%AE%E9%99%8D%E8%87%A8" class="anchor" href="#%E4%B8%AD%E7%9B%A4%E6%88%A6%3A%20PureScript-aff%E3%81%AE%E9%99%8D%E8%87%A8"><span class="header-link"></span></a>中盤戦: PureScript-affの降臨</h1><p>どうせ構文に手を入れたりBabelみたいなコンパイラを使うなら、JavaScriptを離れてPureScriptのようなAltJSを導入してしまう手があります。Scriptって名前に入っているからには、PureScriptはスクリプト言語なんでしょう。<strong>しかも名前がPで始まる</strong>んですよ！こうなるとPureScriptは<strong>P</strong>erl、<strong>P</strong>HP、<strong>P</strong>ython、<strong>P</strong>owerShellとかのPの一族だと考えるのが自然です。もうどう考えてもゆるゆるガバガバ、楽すぎて開発者を人として駄目にする、ぬるま湯のようなスクリプト言語に違いありません。</p><h3><a id="PureScript%E3%81%AE%E5%90%8C%E6%9C%9F%E5%87%A6%E7%90%86" class="anchor" href="#PureScript%E3%81%AE%E5%90%8C%E6%9C%9F%E5%87%A6%E7%90%86"><span class="header-link"></span></a>PureScriptの同期処理</h3><p>後の非同期処理のコードとの比較のため、まずはPureScriptで同期的な処理のほうがどうなるかの雰囲気を見てほしいと思います。重要でないのでPureScriptの構文の詳細について省きますが、なんとなく意味がわかるように解説を加えておきます。</p><pre><code class="hs">main = do
+});
+</code></pre>
+<p>ここまできて<code>yield</code>と引き換えに<code>forEach</code>を失うとか悲しすぎです。もっとも、回避策がまったくないわけではなく、<code>co</code>は配列も扱えるので次のように書く手があります。</p>
+<pre><code class="language-js">var contents = yield [&quot;foo.txt&quot;, &quot;bar.txt&quot;, &quot;baz.txt&quot;].map(path =&gt; promisify(fs.readFile)(path));
+console.log(contents.map(s =&gt; s.toString()).join(&quot;&quot;));
+</code></pre>
+<p>これでも動きますが、もともとの同期処理とは似ても似つかないコードになりました。同期処理の時と同じような書き方ができているわけではありません。</p>
+<p>それに、静的型付けのTypeScriptは<code>yield</code>をどう扱うつもりなのでしょうか。<code>yield</code>にはどんなデータでも渡すことができますが、どのようなデータを正しく処理できるかはジェネレータ関数を受け取る<code>co</code>のような関数次第です。<code>co</code>は<code>Promise</code>だけでなく配列、オブジェクト、<code>Generator</code>オブジェクト、ジェネレータ関数までいろいろな値を受け付けます。<code>yield</code>のような構文を持ち込むと、それが関数でない以上例外的に扱って複雑な型付けをするか、<code>any</code>でガバガバ動的型付けすることになります。</p>
+<p>Promise/Generatorで確かに問題は解決に近づいているものの、その場しのぎの奇策を打った結果、あちこちで隠し切れないボロがはみ出ている感じです。仕方ないだろ！それくらい我慢しろ！と思うかもしれませんが……もし、もっと単純で、言語そのものを変更するのではなく単なるライブラリを使うだけで、同期処理と同じように繰り返しを書くことができ、しかも静的型付けにも問題のない、そんな夢のような非同期処理の方法があったらどうでしょうか。</p>
+<h1>中盤戦: PureScript-affの降臨</h1>
+<p>どうせ構文に手を入れたりBabelみたいなコンパイラを使うなら、JavaScriptを離れてPureScriptのようなAltJSを導入してしまう手があります。Scriptって名前に入っているからには、PureScriptはスクリプト言語なんでしょう。<strong>しかも名前がPで始まる</strong>んですよ！こうなるとPureScriptは<strong>P</strong>erl、<strong>P</strong>HP、<strong>P</strong>ython、<strong>P</strong>owerShellとかのPの一族だと考えるのが自然です。もうどう考えてもゆるゆるガバガバ、楽すぎて開発者を人として駄目にする、ぬるま湯のようなスクリプト言語に違いありません。</p>
+<h3>PureScriptの同期処理</h3>
+<p>後の非同期処理のコードとの比較のため、まずはPureScriptで同期的な処理のほうがどうなるかの雰囲気を見てほしいと思います。重要でないのでPureScriptの構文の詳細について省きますが、なんとなく意味がわかるように解説を加えておきます。</p>
+<pre><code class="language-hs">main = do
     catchException (log &lt;&lt;&lt; show) do
-        foo &lt;- FSS.readTextFile UTF8 "foo.txt"
-        bar &lt;- FSS.readTextFile UTF8 "bar.txt"
-        baz &lt;- FSS.readTextFile UTF8 "baz.txt"
-        log (foo ++ bar ++ baz)</code></pre><ul>
+        foo &lt;- FSS.readTextFile UTF8 &quot;foo.txt&quot;
+        bar &lt;- FSS.readTextFile UTF8 &quot;bar.txt&quot;
+        baz &lt;- FSS.readTextFile UTF8 &quot;baz.txt&quot;
+        log (foo ++ bar ++ baz)
+</code></pre>
+<ul>
 <li>簡単のため、このテキストではimport節や型定義は省略しています。</li>
 <li><code>catchException</code>関数がJavaScriptの<code>try-catch</code>節に相当しています。</li>
 <li><code>log &lt;&lt;&lt; show</code>のところが<code>catch</code>に相当していて、例外が起きたときに例外オブジェクトを文字列にしてから標準出力することを指示しています。</li>
 <li><code>do</code>以降の一段インデントされているところがコードブロックになっており、<code>fs.readFileSync</code>に対応する<code>FSS.readTextFile</code>を順次呼び出して結果を得ています。<code>FSS</code>はモジュール<code>Node.FS.Sync</code>の別名です。</li>
 <li>最後に<code>console.log</code>に対応する<code>log</code>で結果の文字列を標準出力するだけです。</li>
 </ul>
-<p>多少字面が異なるだけで、やっていることはJavaScriptと大体同じようなものです。この中括弧のないスッカスカの見た目はCoffeeScriptやPythonを思わせます。この時点で人を堕落させる誘惑がほとばしっています。</p><p>ちなみに繰り返しは、JavaScriptの<code>forEach</code>関数みたいな感じで<code>for</code>関数を使います。</p><pre><code class="hs">for ["foo.txt", "bar.txt", "baz.txt"] \path -> do
+<p>多少字面が異なるだけで、やっていることはJavaScriptと大体同じようなものです。この中括弧のないスッカスカの見た目はCoffeeScriptやPythonを思わせます。この時点で人を堕落させる誘惑がほとばしっています。</p>
+<p>ちなみに繰り返しは、JavaScriptの<code>forEach</code>関数みたいな感じで<code>for</code>関数を使います。</p>
+<pre><code class="language-hs">for [&quot;foo.txt&quot;, &quot;bar.txt&quot;, &quot;baz.txt&quot;] \path -&gt; do
     content &lt;- FSS.readTextFile UTF8 path
-    log content</code></pre><p>同期処理はどの言語でもまあ問題はありません。問題は非同期処理です。</p><h3><a id="%E5%A4%A2%E3%81%AE%E3%82%88%E3%81%86%E3%81%AA%E6%96%B9%E6%B3%95%E3%81%AF%E3%81%82%E3%81%A3%E3%81%9F" class="anchor" href="#%E5%A4%A2%E3%81%AE%E3%82%88%E3%81%86%E3%81%AA%E6%96%B9%E6%B3%95%E3%81%AF%E3%81%82%E3%81%A3%E3%81%9F"><span class="header-link"></span></a>夢のような方法はあった</h3><p>PureScriptには<a href="https://github.com/slamdata/purescript-aff">purescript-aff</a>という便利な非同期処理ライブラリがあります。JavaScriptが<code>function*</code>というキーワードのついたジェネレータ関数のうえでだけ<code>yield</code>するように、purescript-affでは<code>Aff</code>と呼ばれる文脈の上でのみ非同期処理を実行していきます。まずは、先ほどJavaScriptでNode形式の関数をPromise化したのと同じように、Nodeの<code>fs.readFile</code>に相当する非同期なテキストファイル読み込み関数<code>Node.FS.Async.readTextFile</code>を<code>Aff</code>で使える形式で次のように定義し直します<a class="link-footnote" href="#footnote-resolve" name="link-resolve">※</a>。この定義の詳細は気にしなくて構いません。とにかく、この<code>readTextFileAff</code>は<code>Aff</code>という非同期な文脈の上で非同期にファイルを読み込むことができる関数になります。</p><pre><code class="hs">readTextFileAff encoding path = makeAff (\reject resolve -> Node.FS.Async.readTextFile.readTextFile encoding path (either reject resolve))</code></pre><p>これを使うと、先ほどのJavaScriptのコードは、PureScriptで次のように書くことができます。</p><pre><code class="hs">mainAff = launchAff do
+    log content
+</code></pre>
+<p>同期処理はどの言語でもまあ問題はありません。問題は非同期処理です。</p>
+<h3>夢のような方法はあった</h3>
+<p>PureScriptには<a href="https://github.com/slamdata/purescript-aff">purescript-aff</a>という便利な非同期処理ライブラリがあります。JavaScriptが<code>function*</code>というキーワードのついたジェネレータ関数のうえでだけ<code>yield</code>するように、purescript-affでは<code>Aff</code>と呼ばれる文脈の上でのみ非同期処理を実行していきます。まずは、先ほどJavaScriptでNode形式の関数をPromise化したのと同じように、Nodeの<code>fs.readFile</code>に相当する非同期なテキストファイル読み込み関数<code>Node.FS.Async.readTextFile</code>を<code>Aff</code>で使える形式で次のように定義し直します[^resolve]。この定義の詳細は気にしなくて構いません。とにかく、この<code>readTextFileAff</code>は<code>Aff</code>という非同期な文脈の上で非同期にファイルを読み込むことができる関数になります。</p>
+<p>[^resolve]: <code>readTextFileAff</code>の定義に、<code>reject</code>、<code>resolve</code>という引数を伴ったコールバックがあるのに気づいたでしょうか。この<code>resolve</code>や<code>reject</code>は、Promiseのコンストラクタ呼び出し<code>new Promise(function(resolve, reject){ ... })</code>に出てくるあの<code>resolve</code>/<code>reject</code>に相当するものです！同じような問題を解決しようとしているんですから、同じような構造が出てくるのは不思議ではありません。PromiseではPromiseのコンストラクタに<code>resolve</code>/<code>reject</code>という引数を持つような関数を渡すことで非同期な処理を作り出すのに対して、Affでは<code>makeAff</code>に<code>reject</code>/<code>resolve</code>という引数を持つ関数を渡すことで非同期な処理を作ります。なお、Haskell/PureScriptの習慣で、こういう時は例外→正常の順番で書いていく習慣があり、引数の順番は、Promiseでは<code>resolve</code>が先ですが、Affでは<code>reject</code>のほうが先になります。</p>
+<pre><code class="language-hs">readTextFileAff encoding path = makeAff (\reject resolve -&gt; Node.FS.Async.readTextFile.readTextFile encoding path (either reject resolve))
+</code></pre>
+<p>これを使うと、先ほどのJavaScriptのコードは、PureScriptで次のように書くことができます。</p>
+<pre><code class="language-hs">mainAff = launchAff do
     catchError (do
-        foo &lt;- readTextFileAff UTF8 "foo.txt"
-        bar &lt;- readTextFileAff UTF8 "bar.txt"
-        baz &lt;- readTextFileAff UTF8 "baz.txt"
+        foo &lt;- readTextFileAff UTF8 &quot;foo.txt&quot;
+        bar &lt;- readTextFileAff UTF8 &quot;bar.txt&quot;
+        baz &lt;- readTextFileAff UTF8 &quot;baz.txt&quot;
         liftEff (log (foo ++ bar ++ baz))
-    ) (\err -> do
+    ) (\err -&gt; do
         liftEff (log (message err))
-    )</code></pre><ul>
+    )
+</code></pre>
+<ul>
 <li><code>launchAff</code>は非同期処理を実際に起動する役割を持つ関数です。JavaScriptの<code>co</code>と同じような役目です。</li>
-<li><code>catchError</code><a class="link-footnote" href="#footnote-catchError" name="link-catchError">※</a>は<code>try-catch</code>節に相当する関数です</li>
+<li><code>catchError</code>[^catchError]は<code>try-catch</code>節に相当する関数です</li>
 <li><code>liftEff</code>関数はJavaScriptの<code>yield</code>と同じように同期と非同期の橋渡しをする役目があります。</li>
 <li><code>readTextFileAff</code>を順次呼び出して、最後に<code>liftEff</code>と<code>log</code>で出力しています。</li>
 </ul>
-<p>同期的な処理と同じように改行で区切って続けて書いていくだけで、逐次の非同期処理ができています。でもそれだけではありません。<code>liftEff</code>はJavaScriptの<code>yield</code>のように同期処理と非同期処理の橋渡しをするものなのですが、キーワードである<code>yield</code>と違って<strong><code>liftEff</code>はただの関数</strong>です。つまり、<code>liftEff (log (...))</code>というようなコードが重複していますが、次のような関数<code>logAff</code>を定義すると、<strong><code>liftEff</code>の呼び出しごと重複部分を括りだすことができます</strong>。</p><pre><code class="hs">logAff text = liftEff (log text)</code></pre><p>この<code>logAff</code>を使うと、先ほどの<code>liftEff (log (foo ++ bar ++ baz))</code>という呼び出しのところで、</p><pre><code class="hs">logAff (foo ++ bar ++ baz)</code></pre><p>と書くことができるのです。繰り返しも問題ありません。<code>Node.FS.Async.readTextFile</code>の代わりに<code>readTextFileAff</code>を使うだけで、<strong><code>for</code>も同期処理と同じように使うことができます</strong>。</p><pre><code class="hs">for ["foo.txt", "bar.txt", "baz.txt"] \path -> do
+<p>[^catchError]: そういえば同期処理のときは例外処理に<code>catchException</code>を使っていたのに、非同期の時は<code>catchError</code>に変わっているのが気になるひともいるかもしれません。本文では同期の時と非同期の時で書き方が変わらないから便利という話をしているにもかかわらずです。同期処理<code>Eff</code>のほうでも<code>catchError</code>を使うことはできるよう実装することはできそうですが、この辺りはPureScriptでは同期処理の例外をExtensible Effectsというのでより厳密に処理していることが関係しているように思います。</p>
+<p>同期的な処理と同じように改行で区切って続けて書いていくだけで、逐次の非同期処理ができています。でもそれだけではありません。<code>liftEff</code>はJavaScriptの<code>yield</code>のように同期処理と非同期処理の橋渡しをするものなのですが、キーワードである<code>yield</code>と違って**<code>liftEff</code>はただの関数<strong>です。つまり、<code>liftEff (log (...))</code>というようなコードが重複していますが、次のような関数<code>logAff</code>を定義すると、</strong><code>liftEff</code>の呼び出しごと重複部分を括りだすことができます**。</p>
+<pre><code class="language-hs">logAff text = liftEff (log text)
+</code></pre>
+<p>この<code>logAff</code>を使うと、先ほどの<code>liftEff (log (foo ++ bar ++ baz))</code>という呼び出しのところで、</p>
+<pre><code class="language-hs">logAff (foo ++ bar ++ baz)
+</code></pre>
+<p>と書くことができるのです。繰り返しも問題ありません。<code>Node.FS.Async.readTextFile</code>の代わりに<code>readTextFileAff</code>を使うだけで、<strong><code>for</code>も同期処理と同じように使うことができます</strong>。</p>
+<pre><code class="language-hs">for [&quot;foo.txt&quot;, &quot;bar.txt&quot;, &quot;baz.txt&quot;] \path -&gt; do
     content &lt;- readTextFileAff UTF8 path
-    logAff content</code></pre><p>また、<strong>非同期処理と同期処理を何度ネストしてもまったく問題ありません</strong>。次のように、<code>launchAff</code>と<code>liftEff</code>を使えばいくらでも自由に同期処理と非同期処理をネストして切り替えられます。こういう非同期処理と同期処理のネストは意外と頻繁に発生するので、そのようなややこしい処理でも素直に書けるというのは便利です。</p><pre><code class="hs">main = do                                                 -- mainは同期処理
+    logAff content
+</code></pre>
+<p>また、<strong>非同期処理と同期処理を何度ネストしてもまったく問題ありません</strong>。次のように、<code>launchAff</code>と<code>liftEff</code>を使えばいくらでも自由に同期処理と非同期処理をネストして切り替えられます。こういう非同期処理と同期処理のネストは意外と頻繁に発生するので、そのようなややこしい処理でも素直に書けるというのは便利です。</p>
+<pre><code class="language-hs">main = do                                                 -- mainは同期処理
     launchAff do                                          -- launchAffで同期処理部分から非同期処理へ切り替える
-        foo &lt;- readTextFileAff "foo.txt"                  -- ここは非同期処理
+        foo &lt;- readTextFileAff &quot;foo.txt&quot;                  -- ここは非同期処理
         liftEff do                                        -- liftEffで非同期処理部分から同期処理へ切り替える
-            bar &lt;- readTextFile "bar.txt"                 -- ここは同期処理
+            bar &lt;- readTextFile &quot;bar.txt&quot;                 -- ここは同期処理
             launchAff do                                  -- また非同期処理へ
-                baz &lt;- readTextFileAff "baz.txt"          -- ここは非同期処理
+                baz &lt;- readTextFileAff &quot;baz.txt&quot;          -- ここは非同期処理
                 liftEff do                                -- またまた同期処理へ
-                    bow &lt;- readTextFile "bow.txt"         -- ここは同期処理
-                    log foo</code></pre><p><code>Aff</code>には次のような利点があります。</p><ul>
+                    bow &lt;- readTextFile &quot;bow.txt&quot;         -- ここは同期処理
+                    log foo                               
+ 
+</code></pre>
+<p><code>Aff</code>には次のような利点があります。</p>
+<ul>
 <li><code>function*</code>や<code>yield</code>のような特殊な構文を持ち込む必要がありません。<code>Aff</code>で使うのはすべて通常の関数であり、<code>yield</code>の奇妙な振る舞いについて改めて学ばなくて良いので学ぶのも簡単です。</li>
 <li><code>liftEff</code>はただの関数ですから、<code>liftEff</code>ごと重複部分を別の関数にくくりだすことができます。</li>
 <li><code>for</code>のような繰り返し構造の中でも特に問題はありません。同期的な処理のときとまったく同じように書くことができます。</li>
@@ -81,37 +144,108 @@ console.log(contents.map(s => s.toString()).join(""));</code></pre><p>これで�
 <li>すべての式は厳密に静的型付けされています。TypeScriptにようにときおり<code>any</code>でガバガバにして誤魔化したりは一切していません</li>
 <li>もちろんエラー処理も直感的で、<code>throwError</code>関数を呼ぶだけでその非同期処理は中断し、エラーが自然に呼び出し元に伝わります。</li>
 </ul>
-<p>非同期処理のコールバック地獄のようなコーディング上の問題を、言語自体に新たな構文を付け加えて解決しようとするのはあまり好ましい方法とは言えません。言語の構文を拡張すると、コンパイラはもちろん、デバッガもエディタもリファクタリングツールも、ありとあらゆるツールで対応が必要になり、言語は複雑さを増し、学習コストは増大していきます。しかも、JavaScriptのように同一のスクリプトが複数の処理系で実行される場合、すべての処理系でその新しい構文が実装されていなければなりません。現実的にはBabelのようなコンパイラで処理系ごとの実装の差を吸収しないとどうにもならないでしょう。ライブラリだけでなんとか解決できれば理想ですが、PureScriptではその理想が本当に実現できてしまうのです。しかも、co/Generatorsにあったような、ネストするとうまく動かないという欠点もまったくありません。</p><p>JavaScriptだと、<code>yield</code>どころか、今後さらに<code>async</code>/<code>await</code>の導入まで検討されています。たかが非同期処理ごときのために、どれだけ言語を複雑にする気なのでしょうか。PureScriptなら、非同期処理をしてもコールバック地獄に陥らないし、ジェネレータ関数や<code>yield</code>のような異様な構文も学ばなくて大丈夫です。それどころか、<code>for</code>文や<code>try</code>/<code>catch</code>文すらありません。オブジェクト指向もなくJavaScriptの<code>this</code>の謎な振る舞いに悩まされる必要も、function式とラムダ式の微妙な違いに頭を抱えることもありません。プログラミングがこんなに簡単でいいのでしょうか。PureScriptでこんなに甘やかされてしまってはプログラミング技術も錆びついてしまいそうです！</p><h2><a id="Aff%E3%81%AF%E3%81%AA%E3%81%9C%E3%81%93%E3%82%93%E3%81%AA%E3%81%93%E3%81%A8%E3%81%8C%E3%81%A7%E3%81%8D%E3%82%8B%E3%81%AE%E3%81%8B" class="anchor" href="#Aff%E3%81%AF%E3%81%AA%E3%81%9C%E3%81%93%E3%82%93%E3%81%AA%E3%81%93%E3%81%A8%E3%81%8C%E3%81%A7%E3%81%8D%E3%82%8B%E3%81%AE%E3%81%8B"><span class="header-link"></span></a>Affはなぜこんなことができるのか</h2><p>JavaScriptでは非同期処理のたびにネストが積み上がっていったりして、言語にGeneratorsで<code>yield</code>という構文を追加する変更を加えてもなお、<code>Array.prototype.forEach</code>のような繰り返し構造の中で<code>yield</code>が使えない欠陥を残すという限界がありました。それに対して<code>purescript-aff</code>は、言語そのものに変更を加えることなく、単なる関数群を提供するだけで非同期処理でネストが積み上がる問題を解消し、繰り返しの<code>for</code>も同期処理のときとまったく同じように使えるという一貫性がとれています。</p><p><code>purescript-aff</code>はなぜこんなことができるのでしょうか。単なる関数を提供するだけでコールバック地獄が解消できるなら、JavaScriptでもGeneratorsは必要ないのでしょうか。一言で言えば、このようなことが可能なのは、PureScriptはモナドですべての作用<a class="link-footnote" href="#footnote-effect" name="link-effect">※</a>を抽象化して直接計算の対象にできるように言語自体が設計されているからなのです。JavaScriptでは作用を直接扱う方法が提供されていないので、構文そのものに手を加えないとうまく書くことができず、ライブラリだけでは解決できないのです。</p><h3><a id="JavaScript%E3%81%AE%E5%BC%8F%E3%81%8C%E8%A1%A8%E3%81%99%E3%82%82%E3%81%AE%E3%81%A8%E3%80%81PureScript%E3%81%AE%E5%BC%8F%E3%81%8C%E8%A1%A8%E3%81%99%E3%82%82%E3%81%AE%E3%81%AE%E9%81%95%E3%81%84" class="anchor" href="#JavaScript%E3%81%AE%E5%BC%8F%E3%81%8C%E8%A1%A8%E3%81%99%E3%82%82%E3%81%AE%E3%81%A8%E3%80%81PureScript%E3%81%AE%E5%BC%8F%E3%81%8C%E8%A1%A8%E3%81%99%E3%82%82%E3%81%AE%E3%81%AE%E9%81%95%E3%81%84"><span class="header-link"></span></a>JavaScriptの式が表すものと、PureScriptの式が表すものの違い</h3><p>JavaScriptで作用のある式が持つ値は<strong>作用の結果</strong>です。例えば、次の式</p><pre><code class="js">console.log("Hello")</code></pre><p>は、標準出力にHelloと出力する作用の結果、つまり<code>undefined</code>を値として持っています。また、</p><pre><code class="js">fs.readFileSync("foo.txt");</code></pre><p>という式は、このファイルfoo.txtを読み込むという作用の結果である、そのファイルの中身のテキストを値として持っています。このため、</p><pre><code class="js">var fooBar = fs.readFileSync("foo.txt") + fs.readFileSync("bar.txt");</code></pre><p>とすると、変数<code>fooBar</code>は<code>foo.txt</code>と<code>bar.txt</code>の中身を連結したものになります。当たり前じゃないか、と思うかもしれませんが、PureScriptでは同じような見た目の式がまったく異なる意味を持っています。例えば、関数<code>log</code>に引数<code>&quot;Hello&quot;</code>を与えた式、</p><pre><code class="hs">log "Hello"</code></pre><p>が持っている値は、「Helloという文字列を出力する作用」という<strong>作用そのもの</strong>です。「Helloという文字列を出力した結果」の文字列ではなく、作用そのものを表す<code>Eff</code>(作用、Effectの略から)という型の値になっています。同様に、</p><pre><code class="hs">FSS.readTextFile UTF8 "foo.txt"</code></pre><p>という式は、「foo.txtというテキストファイルを読み込む」という作用そのものを値として持っているのです。</p><h3><a id="%E4%BD%9C%E7%94%A8%E3%81%A9%E3%81%86%E3%81%97%E3%82%92%E8%A8%88%E7%AE%97%E3%81%99%E3%82%8B" class="anchor" href="#%E4%BD%9C%E7%94%A8%E3%81%A9%E3%81%86%E3%81%97%E3%82%92%E8%A8%88%E7%AE%97%E3%81%99%E3%82%8B"><span class="header-link"></span></a>作用どうしを計算する</h3><p><code>FSS.readTextFile UTF8 &quot;foo.txt&quot;</code>が表しているのは作用そのものですから、次のようには書くことはできません。</p><pre><code class="hs">fooBar = FSS.readTextFile UTF8 "foo.txt" ++ FSS.readTextFile UTF8 "bar.txt"        ---- コンパイルエラー！</code></pre><p><code>++</code>は文字列を連結する演算子であって<a class="link-footnote" href="#footnote-semigroup" name="link-semigroup">※</a>、作用どうしを連結する演算子ではないからです。作用どうしを連結する演算子というものは別にあって、例えば<code>&gt;&gt;</code>という演算子を使うと、次のように書くことができます。</p><pre><code class="hs">fooBar = FSS.readTextFile UTF8 "foo.txt" >> FSS.readTextFile UTF8 "bar.txt"</code></pre><p>このとき、<code>fooBar</code>は「<code>foo.txt</code>を読み込み、それから<code>bar.txt</code>を読み込むという作用」を表しているのです。PureScriptには他にも作用どうしを計算するような関数や演算子が多数定義されています。このような作用の取り扱いは、JavaScriptとPureScriptの決定的な違いになっています。</p><h3><a id="%E4%BD%9C%E7%94%A8%E3%81%AE%E7%B5%90%E6%9E%9C%E3%82%92%E6%89%B1%E3%81%86" class="anchor" href="#%E4%BD%9C%E7%94%A8%E3%81%AE%E7%B5%90%E6%9E%9C%E3%82%92%E6%89%B1%E3%81%86"><span class="header-link"></span></a>作用の結果を扱う</h3><p>それじゃあPureScriptで作用の<strong>結果</strong>を扱うにはどうしたらいいのかと思うかもしれませんが、もちろん作用の結果の方を扱う直接的な方法も提供されています。最初のJavaScriptの例と同じように、<code>foo.txt</code>と<code>bar.txt</code>を読み込んだ結果どうしを連結するには次のように書く方法があります。</p><pre><code class="hs">fooBar = do
-    foo &lt;- FSS.readTextFile UTF8 "foo.txt"
-    bar &lt;- FSS.readTextFile UTF8 "bar.txt"
-    log (foo ++ bar)</code></pre><p>あるいは、<code>&lt;$&gt;</code>、<code>&lt;*&gt;</code>という演算子を使って次のように書くこともできます。</p><pre><code class="hs">fooBar = (++) &lt;$> FSS.readTextFile UTF8 "foo.txt" &lt;*> FSS.readTextFile UTF8 "bar.txt" >>= log</code></pre><p><code>&lt;$&gt;</code>や<code>&lt;*&gt;</code>、<code>&gt;&gt;=</code>は演算子ですが、これは言語に組み込みのものではなく、ライブラリで提供されている普通の演算子に過ぎません。後者のほうはなんだか演算子だらけになっていて、見た目上JavaScriptよりややこしくなってることは確かで、この辺りに作用そのものを扱えるようにしたことの代償が見え隠れしています。でも、<code>&lt;$&gt;</code>や<code>&lt;*&gt;</code>の意味を詳しく知るとわかりますが、上のコードでやっていることは見た目から想像するものよりずっとシンプルな意味を持っていて、書くのは別に難しくはありません。考え方としては、まず単に次のように<code>readTextFile</code>を直接<code>++</code>で繋げられたらいいな、と考えます。</p><pre><code class="hs">FSS.readTextFile UTF8 "foo.txt" ++ FSS.readTextFile UTF8 "bar.txt"</code></pre><p>演算子<code>++</code>はカッコで囲んで<code>(++)</code>と書くと、以下のように通常の関数と同じ語順で適用を書くことができます。</p><pre><code class="hs">(++) (FSS.readTextFile UTF8 "foo.txt") (FSS.readTextFile UTF8 "bar.txt")</code></pre><p>気持ちとしては<code>(++)</code>関数に<code>FSS.readTextFile UTF8 &quot;foo.txt&quot;</code>　及び <code>FSS.readTextFile UTF8 &quot;bar.txt&quot;</code>という２つの引数を与えているわけです。この関数と引数の間に、<code>&lt;$&gt;</code>および<code>&lt;*&gt;</code>という演算子を挟みこむように書きます。</p><pre><code class="hs">(++) &lt;$> (FSS.readTextFile UTF8 "foo.txt") &lt;*> (FSS.readTextFile UTF8 "bar.txt")</code></pre><p>こうすると、うまく型が合ってコンパイルが通り、正しく動作します。一般的に言えば、普通の関数適用は<code>f x y z</code>というように引数を渡しますが、引数<code>x</code>,<code>y</code>,<code>z</code>がモナドな値のときは、</p><pre><code class="hs">f &lt;$> x &lt;*> y &lt;*> z</code></pre><p>というように<code>&lt;$&gt;</code>や<code>&lt;*&gt;</code>を挟むと<code>f</code>に適用することができるというイメージです。このような書き方をアプリカティブスタイルといい、モナドなら必ずこの書き方ができるので、慣れれば迷わずにスラスラ書けるようになります。演算子が多くてちょっと面倒臭いところはありますが、概念そのものはよく整理されているので一貫性はあります。</p><p>HaskellやPureScriptは作用そのものと作用の結果の両方をうまく扱えるように最初から設計されており、それゆえ作用そのものを計算することも容易ですし、作用の結果を扱うのも簡単なのです。</p><h3><a id="Aff" class="anchor" href="#Aff"><span class="header-link"></span></a>Aff</h3><p><code>Aff</code>という名前は<strong>A</strong>synchronous E<span/><strong>ff</strong>ectから来ていて、<code>Aff</code>もまた作用の一種であり、<code>Eff</code>と同様に計算の対象にすることができます。たとえば、非同期なファイル読み込み関数<code>readTextFileAff</code>を使って次のようなコード書くことが可能です。モナドで抽象化した作用はどんな作用でも<code>&gt;&gt;</code>という演算子で連結することができるようになっているのです。</p><pre><code class="hs">fooBarAff = readTextFileAff UTF8 "foo.txt" >> readTextFileAff UTF8 "bar.txt"</code></pre><p>このとき、<code>fooBarAff</code>は「foo.txtを非同期に読み込み、それが完了したら<code>bar.txt</code>を非同期に読み込むという非同期な作用」を表しています。作用そのものを直接扱うことができるので、作用どうしの連結のしかたはプログラムで自由にコントロールすることができます。この非同期な処理では裏ではNode形式のコールバックが動いて非同期な作用をつなげているのですが、その実装を完全に隠蔽して、見た目上まるで同期的な処理のように表現することができるのです。</p><h3><a id="%3Ccode%3Eyield%3C%2Fcode%3E%E3%81%A8%3Ccode%3EliftEff%3C%2Fcode%3E%E9%96%A2%E6%95%B0" class="anchor" href="#%3Ccode%3Eyield%3C%2Fcode%3E%E3%81%A8%3Ccode%3EliftEff%3C%2Fcode%3E%E9%96%A2%E6%95%B0"><span class="header-link"></span></a><code>yield</code>と<code>liftEff</code>関数</h3><p>JavaScriptの<code>yield</code>はPromiseのような非同期的な処理を表す値を同期的な処理に変換するような役割だとみなすことができます。それに対し、PureScriptの<code>liftEff</code>は、同期的な作用を非同期的な作用に変換するという逆の方向で非同期と同期の橋渡しをしています。これは<code>liftEff</code>が次のようなシグネチャを持っている<a class="link-footnote" href="#footnote-liftEff" name="link-liftEff">※</a>ことからも一目瞭然です。ここで、関数の型<code>f :: forall a b . a -&gt; b</code><a class="link-footnote" href="#footnote-math" name="link-math">※</a>は<code>a</code>を<code>b</code>に写す関数、プログラミング言語っぽくいえば、型<code>a</code>の引数を受け取り型<code>b</code>の返り値を返す関数のことです。</p><pre><code class="hs">liftEff :: forall a eff . Eff eff a -> Aff eff a</code></pre><p>これをみれば<code>Eff</code>を<code>Aff</code>に写す関数であることが一発でわかります。<code>yield</code>がどのように振る舞うのか理解するのは結構ややこしいですが、<code>liftEff</code>がやっていることは単に値の型を変換しているのだと捉えることができますし、しっかり静的型付けされているので、使い方を間違えようがありません。間違っていればコンパイルが通らず、間違っている行を教えてくれますし、正しくてコンパイルが通れば本当に正しく動きます。さっき筆者が<code>co</code>を２重にネストして呼び出したらうまくいかず、どこがどう悪かったのかもわからなかったのに比べれば、ずっとシンプルで明白、しかも安全です。</p><h1><a id="%E7%B5%82%E7%9B%A4%E6%88%A6%E3%83%BB%E4%BD%95%E6%95%85%E6%88%91%E3%80%85%E3%81%AF%E4%BD%9C%E7%94%A8%E3%82%92%E3%83%A2%E3%83%8A%E3%83%89%E3%81%A7%E6%8A%BD%E8%B1%A1%E5%8C%96%E3%81%99%E3%81%B9%E3%81%8D%E3%81%AA%E3%81%AE%E3%81%8B" class="anchor" href="#%E7%B5%82%E7%9B%A4%E6%88%A6%E3%83%BB%E4%BD%95%E6%95%85%E6%88%91%E3%80%85%E3%81%AF%E4%BD%9C%E7%94%A8%E3%82%92%E3%83%A2%E3%83%8A%E3%83%89%E3%81%A7%E6%8A%BD%E8%B1%A1%E5%8C%96%E3%81%99%E3%81%B9%E3%81%8D%E3%81%AA%E3%81%AE%E3%81%8B"><span class="header-link"></span></a>終盤戦・何故我々は作用をモナドで抽象化すべきなのか</h1><p>PureScriptは「すべての式が参照透明」つまり「どの関数の呼び出しでも副作用がない」という『純粋』関数型プログラミング言語なる超マイナーなジャンルのプログラミング言語です。一見してわかる通りこれは非常に強い制約であり、こんな極端な言語仕様を採用しているのは関数型プログラミング言語というマイナーなジャンルの中でも更にごく一部の言語に限られます。これらの言語について、「副作用のある式も都合に合わせて自由に選んで使えたほうが便利だろうに、なぜわざわざすべての式が参照透明などという極端なことをしなければならないのか」「なぜモナドとかいうややこしいものを導入してまで、参照透明性にこだわるのか」という疑問を抱く人も多いでしょう。</p><p>言語全体を参照透明性にする理由としてしばしば挙げられるものに、「下手に状態を書き換えるとバグの元になるから、副作用がない処理を組み合わせたほうが安全だ」というものがあります。でもJavaScriptのような動的な型付けな言語で状態を書き換えまくるようなコーディングを平気でこなしている人もいるわけで、その人に「副作用がないほうが堅牢なのが利点」などと説明しても納得は得難いでしょう。「そんなの下手に状態を変更しないように気をつけて書けばいいだけじゃん」といわれるだけです。そういう利点もあるとは筆者は思いますが、説得力に欠けるように思います。</p><p>Haskellの場合はまた特殊で、「評価戦略を遅延評価にしたかったから」というのが言語を参照透明にしてモナドを導入する強い理由になっているようです。遅延評価を前提にするならもう言語を参照透明にする理由は十分なのですが、それに比べると正格評価のPureScriptでは参照透明にしてモナドを導入する大きな理由がひとつ欠けていることになります。</p><p>それではPureScriptで言語を参照透明にする理由がないかというと、決してそんなことはないと筆者は思います。これまで見てきたように、作用をモナドとして抽象化し、作用そのものを計算の対象として扱えるととても便利なのです。作用を直接制御できると、同期処理とほとんど同じように非同期処理が書けたり、for文のような制御構造も要らなくなります。何もかもとてもシンプルになるのです。作用を直接扱うなんてことはめったにない、そんなのは特殊な用途のプログラミングだけだろう、などと思う人もいるかもしれませんが、現に我々は非同期な作用の扱いでこれだけ苦労しています。作用をデータとして扱うのは決して特殊な用途だけというものではありません。</p><p>JavaScriptのような言語を使っていると気づきませんが、作用をデータとして扱うと便利だという場面は実はあらゆるところに発生しているのです。作用の種類は同期的な作用<code>Eff</code>と非同期な作用<code>Aff</code>だけではありません。たとえば以前筆者が書いた記事の<a href="3d55b0e54565dbb286a7.html">グラフィックを描画する作用<code>Graphics</code></a>もまた作用の一種であり、特定の関数を呼ぶことで<code>Eff</code>や<code>Aff</code>と組み合わせることができます。見方を変えれば、<code>Aff</code>は非同期処理に特化した領域特化言語なので便利なんだと捉えることもできるでしょう。</p><p>言語を参照透明にすると、関数が直接副作用を起こすことは禁止、変数の書き換え禁止になるなど、一見とても不便そうに見えます。しかし実際に使ってみると、JavaScriptで<code>yield</code>が<code>forEach</code>の中で使えないというような不都合がPureScriptではなくなっていたり、むしろ自由になることも多いのです。逆説的ですが、制約こそが純粋関数型プログラミング言語に自由をもたらしています。</p><h1><a id="%E3%81%BE%E3%81%A8%E3%82%81" class="anchor" href="#%E3%81%BE%E3%81%A8%E3%82%81"><span class="header-link"></span></a>まとめ</h1><p>purescript-affを使うと：</p><ul>
+<p>非同期処理のコールバック地獄のようなコーディング上の問題を、言語自体に新たな構文を付け加えて解決しようとするのはあまり好ましい方法とは言えません。言語の構文を拡張すると、コンパイラはもちろん、デバッガもエディタもリファクタリングツールも、ありとあらゆるツールで対応が必要になり、言語は複雑さを増し、学習コストは増大していきます。しかも、JavaScriptのように同一のスクリプトが複数の処理系で実行される場合、すべての処理系でその新しい構文が実装されていなければなりません。現実的にはBabelのようなコンパイラで処理系ごとの実装の差を吸収しないとどうにもならないでしょう。ライブラリだけでなんとか解決できれば理想ですが、PureScriptではその理想が本当に実現できてしまうのです。しかも、co/Generatorsにあったような、ネストするとうまく動かないという欠点もまったくありません。</p>
+<p>JavaScriptだと、<code>yield</code>どころか、今後さらに<code>async</code>/<code>await</code>の導入まで検討されています。たかが非同期処理ごときのために、どれだけ言語を複雑にする気なのでしょうか。PureScriptなら、非同期処理をしてもコールバック地獄に陥らないし、ジェネレータ関数や<code>yield</code>のような異様な構文も学ばなくて大丈夫です。それどころか、<code>for</code>文や<code>try</code>/<code>catch</code>文すらありません。オブジェクト指向もなくJavaScriptの<code>this</code>の謎な振る舞いに悩まされる必要も、function式とラムダ式の微妙な違いに頭を抱えることもありません。プログラミングがこんなに簡単でいいのでしょうか。PureScriptでこんなに甘やかされてしまってはプログラミング技術も錆びついてしまいそうです！</p>
+<h2>Affはなぜこんなことができるのか</h2>
+<p>JavaScriptでは非同期処理のたびにネストが積み上がっていったりして、言語にGeneratorsで<code>yield</code>という構文を追加する変更を加えてもなお、<code>Array.prototype.forEach</code>のような繰り返し構造の中で<code>yield</code>が使えない欠陥を残すという限界がありました。それに対して<code>purescript-aff</code>は、言語そのものに変更を加えることなく、単なる関数群を提供するだけで非同期処理でネストが積み上がる問題を解消し、繰り返しの<code>for</code>も同期処理のときとまったく同じように使えるという一貫性がとれています。</p>
+<p><code>purescript-aff</code>はなぜこんなことができるのでしょうか。単なる関数を提供するだけでコールバック地獄が解消できるなら、JavaScriptでもGeneratorsは必要ないのでしょうか。一言で言えば、このようなことが可能なのは、PureScriptはモナドですべての作用<a href="#footnote-effect" id="anchor-effect">※</a>を抽象化して直接計算の対象にできるように言語自体が設計されているからなのです。JavaScriptでは作用を直接扱う方法が提供されていないので、構文そのものに手を加えないとうまく書くことができず、ライブラリだけでは解決できないのです。</p>
+<h3>JavaScriptの式が表すものと、PureScriptの式が表すものの違い</h3>
+<p>JavaScriptで作用のある式が持つ値は<strong>作用の結果</strong>です。例えば、次の式</p>
+<pre><code class="language-js">console.log(&quot;Hello&quot;)
+</code></pre>
+<p>は、標準出力にHelloと出力する作用の結果、つまり<code>undefined</code>を値として持っています。また、</p>
+<pre><code class="language-js">fs.readFileSync(&quot;foo.txt&quot;);
+</code></pre>
+<p>という式は、このファイルfoo.txtを読み込むという作用の結果である、そのファイルの中身のテキストを値として持っています。このため、</p>
+<pre><code class="language-js">var fooBar = fs.readFileSync(&quot;foo.txt&quot;) + fs.readFileSync(&quot;bar.txt&quot;);
+</code></pre>
+<p>とすると、変数<code>fooBar</code>は<code>foo.txt</code>と<code>bar.txt</code>の中身を連結したものになります。当たり前じゃないか、と思うかもしれませんが、PureScriptでは同じような見た目の式がまったく異なる意味を持っています。例えば、関数<code>log</code>に引数<code>&quot;Hello&quot;</code>を与えた式、</p>
+<pre><code class="language-hs">log &quot;Hello&quot;
+</code></pre>
+<p>が持っている値は、「Helloという文字列を出力する作用」という<strong>作用そのもの</strong>です。「Helloという文字列を出力した結果」の文字列ではなく、作用そのものを表す<code>Eff</code>(作用、Effectの略から)という型の値になっています。同様に、</p>
+<pre><code class="language-hs">FSS.readTextFile UTF8 &quot;foo.txt&quot; 
+</code></pre>
+<p>という式は、「foo.txtというテキストファイルを読み込む」という作用そのものを値として持っているのです。</p>
+<h3>作用どうしを計算する</h3>
+<p><code>FSS.readTextFile UTF8 &quot;foo.txt&quot;</code>が表しているのは作用そのものですから、次のようには書くことはできません。</p>
+<pre><code class="language-hs">fooBar = FSS.readTextFile UTF8 &quot;foo.txt&quot; ++ FSS.readTextFile UTF8 &quot;bar.txt&quot;        ---- コンパイルエラー！
+</code></pre>
+<p><code>++</code>は文字列を連結する演算子であって[^semigroup]、作用どうしを連結する演算子ではないからです。作用どうしを連結する演算子というものは別にあって、例えば<code>&gt;&gt;</code>という演算子を使うと、次のように書くことができます。</p>
+<p>[^semigroup]: 正確には<code>++</code>は「文字列を連結する演算子」というより「<code>Semigroup</code>を連結する演算子」です。余談ですが、<code>Aff</code>や<code>Eff</code>に<code>Semigroup</code>のインスタンスを与えればいいわけで、実は<code>FSS.readTextFile UTF8 &quot;foo.txt&quot; ++ FSS.readTextFile UTF8 &quot;bar.txt&quot;</code>というように<code>++</code>で直接つなげる書き方もできないわけではありません。</p>
+<pre><code class="language-hs">fooBar = FSS.readTextFile UTF8 &quot;foo.txt&quot; &gt;&gt; FSS.readTextFile UTF8 &quot;bar.txt&quot;
+</code></pre>
+<p>このとき、<code>fooBar</code>は「<code>foo.txt</code>を読み込み、それから<code>bar.txt</code>を読み込むという作用」を表しているのです。PureScriptには他にも作用どうしを計算するような関数や演算子が多数定義されています。このような作用の取り扱いは、JavaScriptとPureScriptの決定的な違いになっています。</p>
+<h3>作用の結果を扱う</h3>
+<p>それじゃあPureScriptで作用の<strong>結果</strong>を扱うにはどうしたらいいのかと思うかもしれませんが、もちろん作用の結果の方を扱う直接的な方法も提供されています。最初のJavaScriptの例と同じように、<code>foo.txt</code>と<code>bar.txt</code>を読み込んだ結果どうしを連結するには次のように書く方法があります。</p>
+<pre><code class="language-hs">fooBar = do
+    foo &lt;- FSS.readTextFile UTF8 &quot;foo.txt&quot;
+    bar &lt;- FSS.readTextFile UTF8 &quot;bar.txt&quot;
+    log (foo ++ bar)
+</code></pre>
+<p>あるいは、<code>&lt;$&gt;</code>、<code>&lt;*&gt;</code>という演算子を使って次のように書くこともできます。</p>
+<pre><code class="language-hs">fooBar = (++) &lt;$&gt; FSS.readTextFile UTF8 &quot;foo.txt&quot; &lt;*&gt; FSS.readTextFile UTF8 &quot;bar.txt&quot; &gt;&gt;= log
+</code></pre>
+<p><code>&lt;$&gt;</code>や<code>&lt;*&gt;</code>、<code>&gt;&gt;=</code>は演算子ですが、これは言語に組み込みのものではなく、ライブラリで提供されている普通の演算子に過ぎません。後者のほうはなんだか演算子だらけになっていて、見た目上JavaScriptよりややこしくなってることは確かで、この辺りに作用そのものを扱えるようにしたことの代償が見え隠れしています。でも、<code>&lt;$&gt;</code>や<code>&lt;*&gt;</code>の意味を詳しく知るとわかりますが、上のコードでやっていることは見た目から想像するものよりずっとシンプルな意味を持っていて、書くのは別に難しくはありません。考え方としては、まず単に次のように<code>readTextFile</code>を直接<code>++</code>で繋げられたらいいな、と考えます。</p>
+<pre><code class="language-hs:擬似コード">FSS.readTextFile UTF8 &quot;foo.txt&quot; ++ FSS.readTextFile UTF8 &quot;bar.txt&quot;
+</code></pre>
+<p>演算子<code>++</code>はカッコで囲んで<code>(++)</code>と書くと、以下のように通常の関数と同じ語順で適用を書くことができます。</p>
+<pre><code class="language-hs:擬似コード">(++) (FSS.readTextFile UTF8 &quot;foo.txt&quot;) (FSS.readTextFile UTF8 &quot;bar.txt&quot;)
+</code></pre>
+<p>気持ちとしては<code>(++)</code>関数に<code>FSS.readTextFile UTF8 &quot;foo.txt&quot;</code>　及び <code>FSS.readTextFile UTF8 &quot;bar.txt&quot;</code>という２つの引数を与えているわけです。この関数と引数の間に、<code>&lt;$&gt;</code>および<code>&lt;*&gt;</code>という演算子を挟みこむように書きます。</p>
+<pre><code class="language-hs:これは正しいコード">(++) &lt;$&gt; (FSS.readTextFile UTF8 &quot;foo.txt&quot;) &lt;*&gt; (FSS.readTextFile UTF8 &quot;bar.txt&quot;)
+</code></pre>
+<p>こうすると、うまく型が合ってコンパイルが通り、正しく動作します。一般的に言えば、普通の関数適用は<code>f x y z</code>というように引数を渡しますが、引数<code>x</code>,<code>y</code>,<code>z</code>がモナドな値のときは、</p>
+<pre><code class="language-hs">f &lt;$&gt; x &lt;*&gt; y &lt;*&gt; z
+</code></pre>
+<p>というように<code>&lt;$&gt;</code>や<code>&lt;*&gt;</code>を挟むと<code>f</code>に適用することができるというイメージです。このような書き方をアプリカティブスタイルといい、モナドなら必ずこの書き方ができるので、慣れれば迷わずにスラスラ書けるようになります。演算子が多くてちょっと面倒臭いところはありますが、概念そのものはよく整理されているので一貫性はあります。</p>
+<p>HaskellやPureScriptは作用そのものと作用の結果の両方をうまく扱えるように最初から設計されており、それゆえ作用そのものを計算することも容易ですし、作用の結果を扱うのも簡単なのです。</p>
+<h3>Aff</h3>
+<p><code>Aff</code>という名前は<strong>A</strong>synchronous E<span/><strong>ff</strong>ectから来ていて、<code>Aff</code>もまた作用の一種であり、<code>Eff</code>と同様に計算の対象にすることができます。たとえば、非同期なファイル読み込み関数<code>readTextFileAff</code>を使って次のようなコード書くことが可能です。モナドで抽象化した作用はどんな作用でも<code>&gt;&gt;</code>という演算子で連結することができるようになっているのです。</p>
+<pre><code class="language-hs">fooBarAff = readTextFileAff UTF8 &quot;foo.txt&quot; &gt;&gt; readTextFileAff UTF8 &quot;bar.txt&quot;
+</code></pre>
+<p>このとき、<code>fooBarAff</code>は「foo.txtを非同期に読み込み、それが完了したら<code>bar.txt</code>を非同期に読み込むという非同期な作用」を表しています。作用そのものを直接扱うことができるので、作用どうしの連結のしかたはプログラムで自由にコントロールすることができます。この非同期な処理では裏ではNode形式のコールバックが動いて非同期な作用をつなげているのですが、その実装を完全に隠蔽して、見た目上まるで同期的な処理のように表現することができるのです。</p>
+<h3><code>yield</code>と<code>liftEff</code>関数</h3>
+<p>JavaScriptの<code>yield</code>はPromiseのような非同期的な処理を表す値を同期的な処理に変換するような役割だとみなすことができます。それに対し、PureScriptの<code>liftEff</code>は、同期的な作用を非同期的な作用に変換するという逆の方向で非同期と同期の橋渡しをしています。これは<code>liftEff</code>が次のようなシグネチャを持っている<a href="#footnote-liftEff" id="anchor-liftEff">※</a>ことからも一目瞭然です。ここで、関数の型<code>f :: forall a b . a -&gt; b</code>[^math]は<code>a</code>を<code>b</code>に写す関数、プログラミング言語っぽくいえば、型<code>a</code>の引数を受け取り型<code>b</code>の返り値を返す関数のことです。</p>
+<p>[^math]: 数学でいえば $f : \forall {\rm A} {\rm B} .  {\rm A} \rightarrow {\rm B} $ みたいな感じでしょうか。Haskellがなぜ数学同様のシングルコロンじゃなくてダブルコロンにしたのかはわかりません。わざわざ数学のものと違える意味はないし、頻繁に使うトークンなのでシングルコロンにすべきだったと思うのですが。</p>
+<pre><code class="language-hs">liftEff :: forall a eff . Eff eff a -&gt; Aff eff a
+</code></pre>
+<p>これをみれば<code>Eff</code>を<code>Aff</code>に写す関数であることが一発でわかります。<code>yield</code>がどのように振る舞うのか理解するのは結構ややこしいですが、<code>liftEff</code>がやっていることは単に値の型を変換しているのだと捉えることができますし、しっかり静的型付けされているので、使い方を間違えようがありません。間違っていればコンパイルが通らず、間違っている行を教えてくれますし、正しくてコンパイルが通れば本当に正しく動きます。さっき筆者が<code>co</code>を２重にネストして呼び出したらうまくいかず、どこがどう悪かったのかもわからなかったのに比べれば、ずっとシンプルで明白、しかも安全です。</p>
+<h1>終盤戦・何故我々は作用をモナドで抽象化すべきなのか</h1>
+<p>PureScriptは「すべての式が参照透明」つまり「どの関数の呼び出しでも副作用がない」という『純粋』関数型プログラミング言語なる超マイナーなジャンルのプログラミング言語です。一見してわかる通りこれは非常に強い制約であり、こんな極端な言語仕様を採用しているのは関数型プログラミング言語というマイナーなジャンルの中でも更にごく一部の言語に限られます。これらの言語について、「副作用のある式も都合に合わせて自由に選んで使えたほうが便利だろうに、なぜわざわざすべての式が参照透明などという極端なことをしなければならないのか」「なぜモナドとかいうややこしいものを導入してまで、参照透明性にこだわるのか」という疑問を抱く人も多いでしょう。</p>
+<p>言語全体を参照透明性にする理由としてしばしば挙げられるものに、「下手に状態を書き換えるとバグの元になるから、副作用がない処理を組み合わせたほうが安全だ」というものがあります。でもJavaScriptのような動的な型付けな言語で状態を書き換えまくるようなコーディングを平気でこなしている人もいるわけで、その人に「副作用がないほうが堅牢なのが利点」などと説明しても納得は得難いでしょう。「そんなの下手に状態を変更しないように気をつけて書けばいいだけじゃん」といわれるだけです。そういう利点もあるとは筆者は思いますが、説得力に欠けるように思います。</p>
+<p>Haskellの場合はまた特殊で、「評価戦略を遅延評価にしたかったから」というのが言語を参照透明にしてモナドを導入する強い理由になっているようです。遅延評価を前提にするならもう言語を参照透明にする理由は十分なのですが、それに比べると正格評価のPureScriptでは参照透明にしてモナドを導入する大きな理由がひとつ欠けていることになります。</p>
+<p>それではPureScriptで言語を参照透明にする理由がないかというと、決してそんなことはないと筆者は思います。これまで見てきたように、作用をモナドとして抽象化し、作用そのものを計算の対象として扱えるととても便利なのです。作用を直接制御できると、同期処理とほとんど同じように非同期処理が書けたり、for文のような制御構造も要らなくなります。何もかもとてもシンプルになるのです。作用を直接扱うなんてことはめったにない、そんなのは特殊な用途のプログラミングだけだろう、などと思う人もいるかもしれませんが、現に我々は非同期な作用の扱いでこれだけ苦労しています。作用をデータとして扱うのは決して特殊な用途だけというものではありません。</p>
+<p>JavaScriptのような言語を使っていると気づきませんが、作用をデータとして扱うと便利だという場面は実はあらゆるところに発生しているのです。作用の種類は同期的な作用<code>Eff</code>と非同期な作用<code>Aff</code>だけではありません。たとえば以前筆者が書いた記事の<a href="3d55b0e54565dbb286a7.html">グラフィックを描画する作用<code>Graphics</code></a>もまた作用の一種であり、特定の関数を呼ぶことで<code>Eff</code>や<code>Aff</code>と組み合わせることができます。見方を変えれば、<code>Aff</code>は非同期処理に特化した領域特化言語なので便利なんだと捉えることもできるでしょう。</p>
+<p>言語を参照透明にすると、関数が直接副作用を起こすことは禁止、変数の書き換え禁止になるなど、一見とても不便そうに見えます。しかし実際に使ってみると、JavaScriptで<code>yield</code>が<code>forEach</code>の中で使えないというような不都合がPureScriptではなくなっていたり、むしろ自由になることも多いのです。逆説的ですが、制約こそが純粋関数型プログラミング言語に自由をもたらしています。</p>
+<h1>まとめ</h1>
+<p>purescript-affを使うと：</p>
+<ul>
 <li>purescript-affは非同期処理のコールバック地獄をうまく解決します。</li>
 <li>Promises/Generatorsのときのように<code>forEach</code>で問題を起こすこともありません。</li>
 <li>また、単なるライブラリなので新たな構文を導入することもありません。</li>
 </ul>
-<p>作用をモナドで抽象化すると：</p><ul>
+<p>作用をモナドで抽象化すると：</p>
+<ul>
 <li>あとから好きなだけ作用の種類を追加することができます。たとえば、ネイティブな作用<code>Eff</code>に加えて、あとから<code>Aff</code>や<code>Graphics</code>を始めいくらでも作用を追加することができます。これらの作用は一種の領域特化言語として機能します。</li>
 <li>あとから追加した作用の構文は、ネイティブな作用の構文とまったく同じです。あとから追加されたものだからといって構文が書きにくくなったりしません</li>
 <li>どの作用についても再利用可能な<code>for</code>などの関数を定義できるなど、強力な再利用性と一貫性をもたらします。</li>
 </ul>
-<p>おまけ：</p><ul>
+<p>おまけ：</p>
+<ul>
 <li>変数を直接書き換えられなくても、その代わりに「変更可能な状態を扱う作用」<code>ST</code>が提供され、それを使えば事実上変更可能な状態を利用することができるので、実際には不便はあまりありません。</li>
 <li>副作用をなくすと安全だからという理由だけで言語を純粋にしたりモナドを導入したわけではありません。</li>
 <li>PureScriptがPerlやPythonみたいなゆるふわスクリプト言語だとでも思ったか！まんまと騙されおって！PureScriptは、あの堅物のHaskellすら甘やかした作用をExtensible Effectsで更にギッチギチに締め上げるような、超ヘビー級静的型付け言語だ！残念だったな！</li>
 </ul>
-<h1><a id="%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE" class="anchor" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="header-link"></span></a>参考文献</h1><ul>
+<h1>参考文献</h1>
+<ul>
 <li>とくに何も見ずに書いたので、いい参考文献が思いつきませんでした</li>
 <li>あえて挙げるなら<a href="https://github.com/slamdata/purescript-aff">purescript-affのReadme</a>を読むと、このテキストで説明しなかった並列処理のやり方や失敗からの復帰のやり方とか書いてあって夢が広がるかもしれません。</li>
 <li><a href="http://haskell.cs.yale.edu/wp-content/uploads/2011/02/history.pdf">A History of Haskell: Being Lazy With Class</a> Haskellの開発の中心人物たちがその歴史を語っている第一級の資料。このテキストを書いているときにたまたま見つけました。私はあまり歴史学に興味がないので読んでないのですが、歴史好きの人はお勧めかも。PureScriptはできたてホヤホヤなので実際に使うとなると大冒険になります。実用にしたい人は素直に長年の実績があるHaskellを使いましょう。</li>
 </ul>
-<hr>
-<p class="footnote"><a href="#link-hell" name="footnote-hell">^</a>  ところで、Promiseでコールバック地獄が解決できるといわれることがたまにありますが、Promiseのようなライブラリを追加しただけではコールバック地獄は完全に解決できません。Generatorなしで解決している主張しているのは、関数を分割してネストを分解しているか、いわゆるメソッドチェーンで直前の非同期処理の結果だけを触っているかのどっちかでしょう。関数で分割すると深いネストはなくなりますが、本来ひとつの関数にまとまっているべき処理がバラバラになるので大きく可読性を損ないます。また、gulpで`gulp.src("foo.txt").pipe(browserify()).pipe(uglify()).pipe(gulp.dest("output"))`みたいに`pipe`でつなげるのは、それぞれの処理が直前の結果だけを扱う場合だけにしかうまくいきません。</p>
-<p class="footnote"><a href="#link-resolve" name="footnote-resolve">^</a>  `readTextFileAff`の定義に、`reject`、`resolve`という引数を伴ったコールバックがあるのに気づいたでしょうか。この`resolve`や`reject`は、Promiseのコンストラクタ呼び出し`new Promise(function(resolve, reject){ ... })`に出てくるあの`resolve`/`reject`に相当するものです！同じような問題を解決しようとしているんですから、同じような構造が出てくるのは不思議ではありません。PromiseではPromiseのコンストラクタに`resolve`/`reject`という引数を持つような関数を渡すことで非同期な処理を作り出すのに対して、Affでは`makeAff`に`reject`/`resolve`という引数を持つ関数を渡すことで非同期な処理を作ります。なお、Haskell/PureScriptの習慣で、こういう時は例外→正常の順番で書いていく習慣があり、引数の順番は、Promiseでは`resolve`が先ですが、Affでは`reject`のほうが先になります。</p>
-<p class="footnote"><a href="#link-catchError" name="footnote-catchError">^</a>  そういえば同期処理のときは例外処理に`catchException`を使っていたのに、非同期の時は`catchError`に変わっているのが気になるひともいるかもしれません。本文では同期の時と非同期の時で書き方が変わらないから便利という話をしているにもかかわらずです。同期処理`Eff`のほうでも`catchError`を使うことはできるよう実装することはできそうですが、この辺りはPureScriptでは同期処理の例外をExtensible Effectsというのでより厳密に処理していることが関係しているように思います。</p>
-<p class="footnote"><a href="#link-effect" name="footnote-effect">^</a>  このテキストの中では「副作用」と言ったり「作用」と言ったりしていますが、同じものを指して言っています。`readTextFileAff`のような関数にとって、ファイルを読み取るという作用は、計算の副産物どころか関数の目的そのものです。関数の主目的に対して「副」と付けるのはちょっとおかしいので、基本的には「作用」と呼びたいところです。でも「副作用」という言い方のほうがよく使われると思うのでわかりやすいでしょうし、どう呼ぶべきかけっこう迷っています。</p>
-<p class="footnote"><a href="#link-semigroup" name="footnote-semigroup">^</a>  正確には`++`は「文字列を連結する演算子」というより「`Semigroup`を連結する演算子」です。余談ですが、`Aff`や`Eff`に`Semigroup`のインスタンスを与えればいいわけで、実は`FSS.readTextFile UTF8 "foo.txt" ++ FSS.readTextFile UTF8 "bar.txt"`というように`++`で直接つなげる書き方もできないわけではありません。</p>
-<p class="footnote"><a href="#link-liftEff" name="footnote-liftEff">^</a>  `liftEff`は`MonadEff`型クラスのメンバであり、正確にはもっと一般的なシグネチャを持っています。でもここでは話がややこしくなるので特殊化したシグネチャを示しています。</p>
-<p class="footnote"><a href="#link-math" name="footnote-math">^</a>  数学でいえば $f : \forall {\rm A} {\rm B} \.  {\rm A} \rightarrow {\rm B} $ みたいな感じでしょうか。Haskellがなぜ数学同様のシングルコロンじゃなくてダブルコロンにしたのかはわかりません。わざわざ数学のものと違える意味はないし、頻繁に使うトークンなのでシングルコロンにすべきだったと思うのですが。</p></div></article></div><footer><div class="sns"><a target="_blank" href="https://twitter.com/intent/tweet?text=undefined%20https%3A%2F%2Faratama.github.io%2Fblog%2F98598af2b0e9a6206ef3"><img src="/res/twitter.png" alt="twitter button"></a><a target="brank" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Faratama.github.io%2Fblog%2F98598af2b0e9a6206ef3&amp;t=undefined"><img src="/res/facebook.png" alt="facebook button"></a><a target="brank" href="https://plus.google.com/share?url=https%3A%2F%2Faratama.github.io%2Fblog%2F98598af2b0e9a6206ef3"><img src="/res/google.png" alt="google plus button"></a><a target="brank" href="http://b.hatena.ne.jp/entry/https%3A%2F%2Faratama.github.io%2Fblog%2F98598af2b0e9a6206ef3"><img src="/res/hatena.png" alt="hatena bookmark button"></a><a target="brank" href="http://getpocket.com/edit?url=https%3A%2F%2Faratama.github.io%2Fblog%2F98598af2b0e9a6206ef3&amp;title=undefined"><img src="/res/pocket.png" alt="pocket button"></a></div><div class="block-centered footer-inner"><p class="copy">&amp;nbsp;</p><p class="author">このブログを書いてる人: 竹内稲穂</p></div><script>
+<hr />
+<p class="footnote"><a name="footnote-hell" href="#anchor-hell">^</a>ところで、Promiseでコールバック地獄が解決できるといわれることがたまにありますが、Promiseのようなライブラリを追加しただけではコールバック地獄は完全に解決できません。Generatorなしで解決している主張しているのは、関数を分割してネストを分解しているか、いわゆるメソッドチェーンで直前の非同期処理の結果だけを触っているかのどっちかでしょう。関数で分割すると深いネストはなくなりますが、本来ひとつの関数にまとまっているべき処理がバラバラになるので大きく可読性を損ないます。また、gulpで`gulp.src("foo.txt").pipe(browserify()).pipe(uglify()).pipe(gulp.dest("output"))`みたいに`pipe`でつなげるのは、それぞれの処理が直前の結果だけを扱う場合だけにしかうまくいきません。</p>
+<p class="footnote"><a name="footnote-effect" href="#anchor-effect">^</a>このテキストの中では「副作用」と言ったり「作用」と言ったりしていますが、同じものを指して言っています。`readTextFileAff`のような関数にとって、ファイルを読み取るという作用は、計算の副産物どころか関数の目的そのものです。関数の主目的に対して「副」と付けるのはちょっとおかしいので、基本的には「作用」と呼びたいところです。でも「副作用」という言い方のほうがよく使われると思うのでわかりやすいでしょうし、どう呼ぶべきかけっこう迷っています。</p>
+<p class="footnote"><a name="footnote-liftEff" href="#anchor-liftEff">^</a>`liftEff`は`MonadEff`型クラスのメンバであり、正確にはもっと一般的なシグネチャを持っています。でもここでは話がややこしくなるので特殊化したシグネチャを示しています。</p></div></article></div><footer><div class="sns"><a target="_blank" href="https://twitter.com/intent/tweet?text=undefined%20https%3A%2F%2Faratama.github.io%2Fblog%2F98598af2b0e9a6206ef3"><img src="/res/twitter.png" alt="twitter button"></a><a target="brank" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Faratama.github.io%2Fblog%2F98598af2b0e9a6206ef3&amp;t=undefined"><img src="/res/facebook.png" alt="facebook button"></a><a target="brank" href="https://plus.google.com/share?url=https%3A%2F%2Faratama.github.io%2Fblog%2F98598af2b0e9a6206ef3"><img src="/res/google.png" alt="google plus button"></a><a target="brank" href="http://b.hatena.ne.jp/entry/https%3A%2F%2Faratama.github.io%2Fblog%2F98598af2b0e9a6206ef3"><img src="/res/hatena.png" alt="hatena bookmark button"></a><a target="brank" href="http://getpocket.com/edit?url=https%3A%2F%2Faratama.github.io%2Fblog%2F98598af2b0e9a6206ef3&amp;title=undefined"><img src="/res/pocket.png" alt="pocket button"></a></div><div class="block-centered footer-inner"><p class="copy">&amp;nbsp;</p><p class="author">このブログを書いてる人: 竹内稲穂</p></div><script>
                     const poem = [
                         "なんにもない毎日が、なによりの宝物。",
                         "今日という日を、何度でも繰り返したい。",

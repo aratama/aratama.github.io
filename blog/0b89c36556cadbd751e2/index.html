@@ -6,44 +6,61 @@
 
                 ga('create', 'UA-61162129-3', 'auto');
                 ga('send', 'pageview');
-            </script></head><body><header><div class="sns"><a target="_blank" href="https://twitter.com/intent/tweet?text=undefined%20https%3A%2F%2Faratama.github.io%2Fblog%2F0b89c36556cadbd751e2"><img src="/res/twitter.png" alt="twitter button"></a><a target="brank" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Faratama.github.io%2Fblog%2F0b89c36556cadbd751e2&amp;t=undefined"><img src="/res/facebook.png" alt="facebook button"></a><a target="brank" href="https://plus.google.com/share?url=https%3A%2F%2Faratama.github.io%2Fblog%2F0b89c36556cadbd751e2"><img src="/res/google.png" alt="google plus button"></a><a target="brank" href="http://b.hatena.ne.jp/entry/https%3A%2F%2Faratama.github.io%2Fblog%2F0b89c36556cadbd751e2"><img src="/res/hatena.png" alt="hatena bookmark button"></a><a target="brank" href="http://getpocket.com/edit?url=https%3A%2F%2Faratama.github.io%2Fblog%2F0b89c36556cadbd751e2&amp;title=undefined"><img src="/res/pocket.png" alt="pocket button"></a></div><div class="block-centered"><div class="site-title"><a href="/">Admittedly <wbr>something <wbr>small.</a></div><div class="sub-title">ちょっと<wbr>小さいのは<wbr>たしかですが。</div></div></header><div class="content"><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" href="/res/article.css"><article id="rendered"><div class="date">2015年11月1日</div><h1 class="article-title"><a href=".">なるべく早くtimeoutする</a></h1><p class="tags"><a href="/blog/tag/JavaScript"><span class="tag"><i class="fa fa-tag"></i>JavaScript</span></a></p><hr><div><p>何十秒もかかる重いタスクがあり、それをブラウザ上のJavaScriptでなるべく早く完了させたいとします。でも同期的に一気にやろうとすると、たまには制御返せってブラウザに怒られるし、ページが固まってしまうので困ります。</p><p>たとえば、どうしても<a href="https://ja.wikipedia.org/wiki/%E3%82%B3%E3%83%A9%E3%83%83%E3%83%84%E3%81%AE%E5%95%8F%E9%A1%8C">コラッツの問題</a>を自分で確かめたくなっちゃったとします。<code>n</code>に操作を繰り返して1に到達するまでの回数を<code>collatz(n)</code>として、たとえば次のように一気にfor文で調べようとするとページ全体が固まってしまい、ユーザの操作で途中で止めることもできないのでよろしくありません。</p><pre><code class="js">for(var n = 1; n &lt;= 10000000; n++){
-    console.log(n + "は" + collatz(n) + "回の操作で1に到達します");
-}</code></pre><p>ベストなのはWebWorkersを使って別スレッドで処理することですが、Workerスレッド上ではDOMに触れないとかいろいろ制限があります。タスクの内容によってはWorkerの上ではできない、もしくは面倒くさいこともあるでしょう。</p><p>そのようなときには、タスクを分割して<code>setTimeout</code>や<code>setInterval</code>で非同期に処理する方法があります。コラッツの問題ならただの数値計算なのでWeb Workers上でやればいいですが、仮にこの問題がメインスレッド上でないとやりにくいタスクだったとします。具体的には次のような関数<code>sleep</code>を用意すると現代的でちょっとおしゃれかもしれません。</p><pre><code class="js">function sleep(){
-    return new Promise(resolve => setTimeout(resolve, 0));
-}</code></pre><p>呼び出す側ではジェネレータ関数の中で</p><pre><code class="js">for(var n = 1; n &lt;= 10000000; n++){
-    console.log(n + "は" + collatz(n) + "回の操作で1に到達します");
+            </script></head><body><header><div class="sns"><a target="_blank" href="https://twitter.com/intent/tweet?text=undefined%20https%3A%2F%2Faratama.github.io%2Fblog%2F0b89c36556cadbd751e2"><img src="/res/twitter.png" alt="twitter button"></a><a target="brank" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Faratama.github.io%2Fblog%2F0b89c36556cadbd751e2&amp;t=undefined"><img src="/res/facebook.png" alt="facebook button"></a><a target="brank" href="https://plus.google.com/share?url=https%3A%2F%2Faratama.github.io%2Fblog%2F0b89c36556cadbd751e2"><img src="/res/google.png" alt="google plus button"></a><a target="brank" href="http://b.hatena.ne.jp/entry/https%3A%2F%2Faratama.github.io%2Fblog%2F0b89c36556cadbd751e2"><img src="/res/hatena.png" alt="hatena bookmark button"></a><a target="brank" href="http://getpocket.com/edit?url=https%3A%2F%2Faratama.github.io%2Fblog%2F0b89c36556cadbd751e2&amp;title=undefined"><img src="/res/pocket.png" alt="pocket button"></a></div><div class="block-centered"><div class="site-title"><a href="/">Admittedly <wbr>something <wbr>small.</a></div><div class="sub-title">ちょっと<wbr>小さいのは<wbr>たしかですが。</div></div></header><div class="content"><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" href="/res/article.css"><article id="rendered"><div class="date">2015年11月1日</div><h1 class="article-title"><a href=".">なるべく早くtimeoutする</a></h1><p class="tags"><a href="/blog/tag/JavaScript"><span class="tag"><i class="fa fa-tag"></i>JavaScript</span></a></p><hr><div><p>何十秒もかかる重いタスクがあり、それをブラウザ上のJavaScriptでなるべく早く完了させたいとします。でも同期的に一気にやろうとすると、たまには制御返せってブラウザに怒られるし、ページが固まってしまうので困ります。</p>
+<p>たとえば、どうしても<a href="https://ja.wikipedia.org/wiki/%E3%82%B3%E3%83%A9%E3%83%83%E3%83%84%E3%81%AE%E5%95%8F%E9%A1%8C">コラッツの問題</a>を自分で確かめたくなっちゃったとします。<code>n</code>に操作を繰り返して1に到達するまでの回数を<code>collatz(n)</code>として、たとえば次のように一気にfor文で調べようとするとページ全体が固まってしまい、ユーザの操作で途中で止めることもできないのでよろしくありません。</p>
+<pre><code class="language-js">for(var n = 1; n &lt;= 10000000; n++){
+    console.log(n + &quot;は&quot; + collatz(n) + &quot;回の操作で1に到達します&quot;);
+}
+</code></pre>
+<p>ベストなのはWebWorkersを使って別スレッドで処理することですが、Workerスレッド上ではDOMに触れないとかいろいろ制限があります。タスクの内容によってはWorkerの上ではできない、もしくは面倒くさいこともあるでしょう。</p>
+<p>そのようなときには、タスクを分割して<code>setTimeout</code>や<code>setInterval</code>で非同期に処理する方法があります。コラッツの問題ならただの数値計算なのでWeb Workers上でやればいいですが、仮にこの問題がメインスレッド上でないとやりにくいタスクだったとします。具体的には次のような関数<code>sleep</code>を用意すると現代的でちょっとおしゃれかもしれません。</p>
+<pre><code class="language-js">function sleep(){
+    return new Promise(resolve =&gt; setTimeout(resolve, 0));
+}
+</code></pre>
+<p>呼び出す側ではジェネレータ関数の中で</p>
+<pre><code class="language-js">for(var n = 1; n &lt;= 10000000; n++){
+    console.log(n + &quot;は&quot; + collatz(n) + &quot;回の操作で1に到達します&quot;);
     yield sleep();
-}</code></pre><p>とループごとに一休みするだけで、ページ全体をブロックすることなく処理を行えます。ただし<code>setTimeout</code>を使うと、<code>setTimeout(f, 0)</code>として<code>delay</code>を0ミリ秒と指定しても最低でも数ミリ秒程度の遅延が生じます。とにかく早く終わらせたいときにはこの遅延が邪魔になるのですが、<code>postMessage</code>でメッセージを投げる → <code>onmessage</code>で即座にイベントを受け取ってタスクをこなす、というトリックを使うことで高速に非同期処理が繰り返せます。</p><p><a href="http://dbaron.org/log/20100309-faster-timeouts">こちら</a>の実装のコードを借りると、次の<code>setZeroTimeout</code>関数はほとんど瞬時に、でもあくまで非同期にコールバックしてくれます。</p><pre><code class="js">// Only add setZeroTimeout to the window object, and hide everything
+}
+</code></pre>
+<p>とループごとに一休みするだけで、ページ全体をブロックすることなく処理を行えます。ただし<code>setTimeout</code>を使うと、<code>setTimeout(f, 0)</code>として<code>delay</code>を0ミリ秒と指定しても最低でも数ミリ秒程度の遅延が生じます。とにかく早く終わらせたいときにはこの遅延が邪魔になるのですが、<code>postMessage</code>でメッセージを投げる → <code>onmessage</code>で即座にイベントを受け取ってタスクをこなす、というトリックを使うことで高速に非同期処理が繰り返せます。</p>
+<p><a href="http://dbaron.org/log/20100309-faster-timeouts">こちら</a>の実装のコードを借りると、次の<code>setZeroTimeout</code>関数はほとんど瞬時に、でもあくまで非同期にコールバックしてくれます。</p>
+<pre><code class="language-js">// Only add setZeroTimeout to the window object, and hide everything
 // else in a closure.
 (function () {
     var timeouts = [];
-    var messageName = "zero-timeout-message";
+    var messageName = &quot;zero-timeout-message&quot;;
 
     // Like setTimeout, but only takes a function argument.  There's
     // no time argument (always zero) and no arguments (you have to
     // use a closure).
     function setZeroTimeout(fn) {
         timeouts.push(fn);
-        window.postMessage(messageName, "*");
+        window.postMessage(messageName, &quot;*&quot;);
     }
 
     function handleMessage(event) {
-        if (event.source == window && event.data == messageName) {
+        if (event.source == window &amp;&amp; event.data == messageName) {
             event.stopPropagation();
-            if (timeouts.length > 0) {
+            if (timeouts.length &gt; 0) {
                 var fn = timeouts.shift();
                 fn();
             }
         }
     }
 
-    window.addEventListener("message", handleMessage, true);
+    window.addEventListener(&quot;message&quot;, handleMessage, true);
 
     // Add the one thing we want added to the window object.
     window.setZeroTimeout = setZeroTimeout;
-})();</code></pre><p>この<code>setZetoTimeout</code>を<code>setTimeout</code>の代わりに使うだけでずっと早く処理が終わります。<code>collatz(n)</code>のリアルタイム人気投票をすると<a href="https://jsfiddle.net/3ftgfusg/1/">こんな感じ</a>になります。ただし、<code>setTimeout</code>にはタブが裏に回るなどでページが非表示になると自動的に頻度を落として無用な処理を減らしてくれるという機能もあります。<code>setZeroTimeout</code>のほうはページが非表示だろうがお構いなしに全力疾走してしまいますが、それが迷惑な場面もあるでしょうから注意が必要です。使い道があるようなないような……。</p><h1><a id="%E5%8F%82%E8%80%83" class="anchor" href="#%E5%8F%82%E8%80%83"><span class="header-link"></span></a>参考</h1><ul>
-<li><a href="http://dbaron.org/log/20100309-faster-timeouts">http://dbaron.org/log/20100309-faster-timeouts</a></li>
-<li><a href="https://developer.mozilla.org/ja/docs/Web/API/Window/setTimeout">https://developer.mozilla.org/ja/docs/Web/API/Window/setTimeout</a></li>
+})();
+</code></pre>
+<p>この<code>setZetoTimeout</code>を<code>setTimeout</code>の代わりに使うだけでずっと早く処理が終わります。<code>collatz(n)</code>のリアルタイム人気投票をすると<a href="https://jsfiddle.net/3ftgfusg/1/">こんな感じ</a>になります。ただし、<code>setTimeout</code>にはタブが裏に回るなどでページが非表示になると自動的に頻度を落として無用な処理を減らしてくれるという機能もあります。<code>setZeroTimeout</code>のほうはページが非表示だろうがお構いなしに全力疾走してしまいますが、それが迷惑な場面もあるでしょうから注意が必要です。使い道があるようなないような……。</p>
+<h1>参考</h1>
+<ul>
+<li>http://dbaron.org/log/20100309-faster-timeouts</li>
+<li>https://developer.mozilla.org/ja/docs/Web/API/Window/setTimeout</li>
 </ul>
 </div></article></div><footer><div class="sns"><a target="_blank" href="https://twitter.com/intent/tweet?text=undefined%20https%3A%2F%2Faratama.github.io%2Fblog%2F0b89c36556cadbd751e2"><img src="/res/twitter.png" alt="twitter button"></a><a target="brank" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Faratama.github.io%2Fblog%2F0b89c36556cadbd751e2&amp;t=undefined"><img src="/res/facebook.png" alt="facebook button"></a><a target="brank" href="https://plus.google.com/share?url=https%3A%2F%2Faratama.github.io%2Fblog%2F0b89c36556cadbd751e2"><img src="/res/google.png" alt="google plus button"></a><a target="brank" href="http://b.hatena.ne.jp/entry/https%3A%2F%2Faratama.github.io%2Fblog%2F0b89c36556cadbd751e2"><img src="/res/hatena.png" alt="hatena bookmark button"></a><a target="brank" href="http://getpocket.com/edit?url=https%3A%2F%2Faratama.github.io%2Fblog%2F0b89c36556cadbd751e2&amp;title=undefined"><img src="/res/pocket.png" alt="pocket button"></a></div><div class="block-centered footer-inner"><p class="copy">&amp;nbsp;</p><p class="author">このブログを書いてる人: 竹内稲穂</p></div><script>
                     const poem = [

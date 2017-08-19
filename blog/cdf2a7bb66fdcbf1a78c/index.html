@@ -6,13 +6,25 @@
 
                 ga('create', 'UA-61162129-3', 'auto');
                 ga('send', 'pageview');
-            </script></head><body><header><div class="sns"><a target="_blank" href="https://twitter.com/intent/tweet?text=undefined%20https%3A%2F%2Faratama.github.io%2Fblog%2Fcdf2a7bb66fdcbf1a78c"><img src="/res/twitter.png" alt="twitter button"></a><a target="brank" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Faratama.github.io%2Fblog%2Fcdf2a7bb66fdcbf1a78c&amp;t=undefined"><img src="/res/facebook.png" alt="facebook button"></a><a target="brank" href="https://plus.google.com/share?url=https%3A%2F%2Faratama.github.io%2Fblog%2Fcdf2a7bb66fdcbf1a78c"><img src="/res/google.png" alt="google plus button"></a><a target="brank" href="http://b.hatena.ne.jp/entry/https%3A%2F%2Faratama.github.io%2Fblog%2Fcdf2a7bb66fdcbf1a78c"><img src="/res/hatena.png" alt="hatena bookmark button"></a><a target="brank" href="http://getpocket.com/edit?url=https%3A%2F%2Faratama.github.io%2Fblog%2Fcdf2a7bb66fdcbf1a78c&amp;title=undefined"><img src="/res/pocket.png" alt="pocket button"></a></div><div class="block-centered"><div class="site-title"><a href="/">Admittedly <wbr>something <wbr>small.</a></div><div class="sub-title">ちょっと<wbr>小さいのは<wbr>たしかですが。</div></div></header><div class="content"><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" href="/res/article.css"><article id="rendered"><div class="date">2016年12月18日</div><h1 class="article-title"><a href=".">モナドのまほう　第12話『RPGアツマールに私も集まーる』</a></h1><p class="tags"><a href="/blog/tag/RPGアツマール"><span class="tag"><i class="fa fa-tag"></i>RPGアツマール</span></a></p><hr><div><p><a href="5321d8cebce7b87851f6.html">第一話</a> / <a href="d057a411bfd10a0b7924.html">前回</a></p><p>ゲームを作る日記です。星屑のインテンツィオーネに負けないゲームを作りたいと思います。</p><h1><a id="Oimo%20vs%20Cannon" class="anchor" href="#Oimo%20vs%20Cannon"><span class="header-link"></span></a>Oimo vs Cannon</h1><p>衝突判定を自分で作ることも考えたんですが、まともにキャラクターを動かすにはかなりの量のコードが必要で、ほかのライブラリを使わずにやろうとすると自分で物理演算ライブラリを作っているようなものになってしまいそうです。物理エンジンをどうするか迷っていたんですが、JavaScript環境だとcannon.jsやoimo.js、ammo.js、bullet.jsなんかが知られています。ammo.jsやbullet.jsはC++/Bulletの移植なのでJavaScript環境だとAPIの設計や効率で問題が多く、cannonかoimoになると思います。それで、oimoのほうなんですが、</p><p><a href="49144efb-7148-cfa5-a385-af008da30816.png"><img src="49144efb-7148-cfa5-a385-af008da30816.png" alt="null"></a></p><ul>
-<li><a href="http://lo-th.github.io/Oimo.js/docs/index.html">http://lo-th.github.io/Oimo.js/docs/index.html</a></li>
+            </script></head><body><header><div class="sns"><a target="_blank" href="https://twitter.com/intent/tweet?text=undefined%20https%3A%2F%2Faratama.github.io%2Fblog%2Fcdf2a7bb66fdcbf1a78c"><img src="/res/twitter.png" alt="twitter button"></a><a target="brank" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Faratama.github.io%2Fblog%2Fcdf2a7bb66fdcbf1a78c&amp;t=undefined"><img src="/res/facebook.png" alt="facebook button"></a><a target="brank" href="https://plus.google.com/share?url=https%3A%2F%2Faratama.github.io%2Fblog%2Fcdf2a7bb66fdcbf1a78c"><img src="/res/google.png" alt="google plus button"></a><a target="brank" href="http://b.hatena.ne.jp/entry/https%3A%2F%2Faratama.github.io%2Fblog%2Fcdf2a7bb66fdcbf1a78c"><img src="/res/hatena.png" alt="hatena bookmark button"></a><a target="brank" href="http://getpocket.com/edit?url=https%3A%2F%2Faratama.github.io%2Fblog%2Fcdf2a7bb66fdcbf1a78c&amp;title=undefined"><img src="/res/pocket.png" alt="pocket button"></a></div><div class="block-centered"><div class="site-title"><a href="/">Admittedly <wbr>something <wbr>small.</a></div><div class="sub-title">ちょっと<wbr>小さいのは<wbr>たしかですが。</div></div></header><div class="content"><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" href="/res/article.css"><article id="rendered"><div class="date">2016年12月18日</div><h1 class="article-title"><a href=".">モナドのまほう　第12話『RPGアツマールに私も集まーる』</a></h1><p class="tags"><a href="/blog/tag/RPGアツマール"><span class="tag"><i class="fa fa-tag"></i>RPGアツマール</span></a></p><hr><div><p><a href="5321d8cebce7b87851f6.html">第一話</a> / <a href="d057a411bfd10a0b7924.html">前回</a></p>
+<p>ゲームを作る日記です。星屑のインテンツィオーネに負けないゲームを作りたいと思います。</p>
+<h1>Oimo vs Cannon</h1>
+<p>衝突判定を自分で作ることも考えたんですが、まともにキャラクターを動かすにはかなりの量のコードが必要で、ほかのライブラリを使わずにやろうとすると自分で物理演算ライブラリを作っているようなものになってしまいそうです。物理エンジンをどうするか迷っていたんですが、JavaScript環境だとcannon.jsやoimo.js、ammo.js、bullet.jsなんかが知られています。ammo.jsやbullet.jsはC++/Bulletの移植なのでJavaScript環境だとAPIの設計や効率で問題が多く、cannonかoimoになると思います。それで、oimoのほうなんですが、</p>
+<p><img src="49144efb-7148-cfa5-a385-af008da30816.png" alt="png.png" /></p>
+<ul>
+<li>http://lo-th.github.io/Oimo.js/docs/index.html</li>
 </ul>
-<p>明らかに円筒が浮いてる……。オブジェクトのあいだに大きな隙間ができたり、いつまでも安定せずにピクピク動いているオブジェクトがあります。パフォーマンスではcannonよりoimoのほうが優れているという話なのですが、oimoはどうも精度に問題が多いようです。Cannon.jsではそんな風に明らかに浮いている物体とかはないです。</p><ul>
-<li><a href="http://schteppe.github.io/cannon.js/examples/worker.html">http://schteppe.github.io/cannon.js/examples/worker.html</a></li>
+<p>明らかに円筒が浮いてる……。オブジェクトのあいだに大きな隙間ができたり、いつまでも安定せずにピクピク動いているオブジェクトがあります。パフォーマンスではcannonよりoimoのほうが優れているという話なのですが、oimoはどうも精度に問題が多いようです。Cannon.jsではそんな風に明らかに浮いている物体とかはないです。</p>
+<ul>
+<li>http://schteppe.github.io/cannon.js/examples/worker.html</li>
 </ul>
-<p>ドキュメントが揃っているのもcannon.jsのほうですし、今回はcannonにします。ボクセルで定義された地形をなるべく少ないAABBの組み合わせで表現するアルゴリズム、ありませんでしょうか。</p><h1><a id="%E3%83%8B%E3%82%B3%E3%83%8B%E3%82%B3%E3%81%AERPG%E3%82%A2%E3%83%84%E3%83%9E%E3%83%BC%E3%83%AB%E5%AF%BE%E5%BF%9C" class="anchor" href="#%E3%83%8B%E3%82%B3%E3%83%8B%E3%82%B3%E3%81%AERPG%E3%82%A2%E3%83%84%E3%83%9E%E3%83%BC%E3%83%AB%E5%AF%BE%E5%BF%9C"><span class="header-link"></span></a>ニコニコのRPGアツマール対応</h1><p>いつものように『ステラのまほう』をニコニコ動画で視聴しようとしたところ、ページ上部に謎のリンクが追加されていることに気付きました。</p><p><a href="e7a680d1-bb9c-1fb8-2b50-ccde188cdaa0.png"><img src="e7a680d1-bb9c-1fb8-2b50-ccde188cdaa0.png" alt="null"></a></p><p><a href="http://game.nicovideo.jp/atsumaru/">http://game.nicovideo.jp/atsumaru/</a></p><p>なんだこれは……たまげたなあ。ニコニコはゲーム投稿サービスまで始めたんですか。そういえばRPGツクールを売ってるエンターブレインはカドカワに吸収されたんでしたっけ。黒先輩めっちゃ推してますね。実況動画で見たことがあります。HTML5が実用的になってきてからゲーム投稿サイトが結構増えてきたらしく、日本語圏だけでもちょっと検索しただけでこれだけありました。</p><ul>
+<p>ドキュメントが揃っているのもcannon.jsのほうですし、今回はcannonにします。ボクセルで定義された地形をなるべく少ないAABBの組み合わせで表現するアルゴリズム、ありませんでしょうか。</p>
+<h1>ニコニコのRPGアツマール対応</h1>
+<p>いつものように『ステラのまほう』をニコニコ動画で視聴しようとしたところ、ページ上部に謎のリンクが追加されていることに気付きました。</p>
+<p><img src="e7a680d1-bb9c-1fb8-2b50-ccde188cdaa0.png" alt="atsumaru.png" /></p>
+<p>http://game.nicovideo.jp/atsumaru/</p>
+<p>なんだこれは……たまげたなあ。ニコニコはゲーム投稿サービスまで始めたんですか。そういえばRPGツクールを売ってるエンターブレインはカドカワに吸収されたんでしたっけ。黒先輩めっちゃ推してますね。実況動画で見たことがあります。HTML5が実用的になってきてからゲーム投稿サイトが結構増えてきたらしく、日本語圏だけでもちょっと検索しただけでこれだけありました。</p>
+<ul>
 <li><a href="http://9leap.net/">9leap</a></li>
 <li><a href="http://games.jsdo.it/">jsdo-it HTML5 Games</a></li>
 <li><a href="https://plicy.net/">PLiCy</a></li>
@@ -21,17 +33,30 @@
 <li><a href="http://opgame.jp/">opengame</a></li>
 <li><a href="http://game.nicovideo.jp/atsumaru/">RPGアツマール</a></li>
 </ul>
-<p>静的なウェブコンテンツをホストするだけですから、サービスとしては難しくないのかもしれません。9leapは名前だけ知っていて、あとのサービスは今回初めて知りました。探せばまだまだありそうです。ゲームが形になってきたら、こういうゲーム投稿サイトで公開するのもいいかもしれませんね。ひとまずRPGアツマールに投稿できるか実験してみます。とりあえずまるごとzipにして送りつければいいらしいので、やってみました。</p><pre><code class="undefined">許可されてないファイル形式です: .babylon
+<p>静的なウェブコンテンツをホストするだけですから、サービスとしては難しくないのかもしれません。9leapは名前だけ知っていて、あとのサービスは今回初めて知りました。探せばまだまだありそうです。ゲームが形になってきたら、こういうゲーム投稿サイトで公開するのもいいかもしれませんね。ひとまずRPGアツマールに投稿できるか実験してみます。とりあえずまるごとzipにして送りつければいいらしいので、やってみました。</p>
+<pre><code>許可されてないファイル形式です: .babylon
 許可されてないファイル形式です: .log
 許可されてないファイル形式です: .manifest
 許可されてないファイル形式です: .fx
 許可されてないファイル形式です: .less
 許可されてないファイル形式です: .scss
-許可されてないファイル形式です: .ico</code></pre><p>Oh... <code>.less</code>とかはFontAwesomeについてきたオマケとかが紛れ込んでるだけだから削除すればいいですが、<code>.babylon</code>と<code>.fx</code>だけはちょっと困りました。特に<code>.fx</code>は、babylon.jsがソーステキストから直接シェーダマテリアルを読み込めず、<code>.fx</code>の拡張子を持つファイルを読み込むようにハードコーディングされているので面倒です。babylonjsは何かと小回りが利きません。しかたないので、<code>.babylon</code>は<code>.json</code>に、<code>.fx</code>は<code>.txt</code>に拡張子を変えて、それからbabylonjs本体も中身に置換をかけて無理やり対応させました。あと、日本語を含むファイル名についても警告が出たので、念の為にファイル名をアルファベットにしておきました。</p><p>もうひとつ困ったのが解像度です。現状は<code>1280px * 720px</code>で作っているのですが、</p><blockquote>
-<p>※推奨解像度は816x624, 624x816, 768x432の3つです</p></blockquote>
-<p>とのことで、これ以上の解像度にしようとするとはみ出してしまいます。しかたないので、ニコニコ専用のスタイルシートを用意して追加で読み込ませて調整しました。タイトル画面とかに被せてる画像が1280*720用なので一部のアスペクト比がアレですが、ちゃんと動きました。</p><p><a href="6ef164ea-e74c-3ad7-0466-ec364cb7d3cd.png"><img src="6ef164ea-e74c-3ad7-0466-ec364cb7d3cd.png" alt="null"></a></p><p><a href="http://game.nicovideo.jp/atsumaru/games/gm799">こちら</a>で実際に閲覧できます。ネットワークの状態によってはうまく地形が描画されないバグがあるので、もし地形が表示されないようなら再読み込みしてみてください。現在は投稿一覧に反映されない開発中ステータスです。まだ今後も本当にアツマールで公開するのかは決めていませんが、もしアツマールに投稿したならご贔屓にどうぞ。ニコニコはなんにせよユーザが多いので、たくさんのひとに遊んでもらいたいならいいかもしれません。つーか9leapの解像度320×320はさすがに狭すぎやしませんか……。jsdo.itも狭いですが……。plicyは大画面にも対応していて、「R-15」とか「ksg」(ｸｿｹﾞｰ?)のカテゴリまであって懐が深そうですが、運営会社が何故か建築会社です。謎。</p><p>多少手間はかかりましたが、なんとでもなりそうです。残る問題として、PointerLock APIだけ下記のエラーが出て動きません。</p><blockquote>
-<p>Blocked pointer lock on an element because the element&#39;s frame is sandboxed and the &#39;allow-pointer-lock&#39; permission is not set.</p></blockquote>
-<p>( ´_ゝ｀)ﾌｰﾝ　RPGアツマールに投稿されているゲームはほとんどRPGツクールMV製ですし、さすがにPointerLockまでは許可されていなかったです。</p><p>アツマールはコメント流れるのがいかにもニコニコっぽく、不思議なことにちゃんとゲームの進行と連動してコメントが流れているようです。圧縮されていて読みづらいのですが、<code>html5.nicogame.jp/js/bundle.js</code>というファイルに<code>updateGamePositionKey</code>という関数があって、そこでそのシーンのセリフのsha256ハッシュ値をとり、それをゲームの場面ごとのキーとして、コメントと結びつけているみたいです。<code>this._tkoolGlobal</code>っていうのが<code>Window</code>で、<code>$</code>のプリフィックスをつけてグローバルにいろんなオブジェクトがばらまかれてますね。RPGツクールMV……。</p><pre><code class="undefined">$dataActors:Array[6]
+許可されてないファイル形式です: .ico
+</code></pre>
+<p>Oh... <code>.less</code>とかはFontAwesomeについてきたオマケとかが紛れ込んでるだけだから削除すればいいですが、<code>.babylon</code>と<code>.fx</code>だけはちょっと困りました。特に<code>.fx</code>は、babylon.jsがソーステキストから直接シェーダマテリアルを読み込めず、<code>.fx</code>の拡張子を持つファイルを読み込むようにハードコーディングされているので面倒です。babylonjsは何かと小回りが利きません。しかたないので、<code>.babylon</code>は<code>.json</code>に、<code>.fx</code>は<code>.txt</code>に拡張子を変えて、それからbabylonjs本体も中身に置換をかけて無理やり対応させました。あと、日本語を含むファイル名についても警告が出たので、念の為にファイル名をアルファベットにしておきました。</p>
+<p>もうひとつ困ったのが解像度です。現状は<code>1280px * 720px</code>で作っているのですが、</p>
+<blockquote>
+<p>※推奨解像度は816x624, 624x816, 768x432の3つです</p>
+</blockquote>
+<p>とのことで、これ以上の解像度にしようとするとはみ出してしまいます。しかたないので、ニコニコ専用のスタイルシートを用意して追加で読み込ませて調整しました。タイトル画面とかに被せてる画像が1280*720用なので一部のアスペクト比がアレですが、ちゃんと動きました。</p>
+<p><img src="6ef164ea-e74c-3ad7-0466-ec364cb7d3cd.png" alt="nicogame2.png" /></p>
+<p><a href="http://game.nicovideo.jp/atsumaru/games/gm799">こちら</a>で実際に閲覧できます。ネットワークの状態によってはうまく地形が描画されないバグがあるので、もし地形が表示されないようなら再読み込みしてみてください。現在は投稿一覧に反映されない開発中ステータスです。まだ今後も本当にアツマールで公開するのかは決めていませんが、もしアツマールに投稿したならご贔屓にどうぞ。ニコニコはなんにせよユーザが多いので、たくさんのひとに遊んでもらいたいならいいかもしれません。つーか9leapの解像度320×320はさすがに狭すぎやしませんか……。jsdo.itも狭いですが……。plicyは大画面にも対応していて、「R-15」とか「ksg」(ｸｿｹﾞｰ?)のカテゴリまであって懐が深そうですが、運営会社が何故か建築会社です。謎。</p>
+<p>多少手間はかかりましたが、なんとでもなりそうです。残る問題として、PointerLock APIだけ下記のエラーが出て動きません。</p>
+<blockquote>
+<p>Blocked pointer lock on an element because the element's frame is sandboxed and the 'allow-pointer-lock' permission is not set.</p>
+</blockquote>
+<p>( ´_ゝ｀)ﾌｰﾝ　RPGアツマールに投稿されているゲームはほとんどRPGツクールMV製ですし、さすがにPointerLockまでは許可されていなかったです。</p>
+<p>アツマールはコメント流れるのがいかにもニコニコっぽく、不思議なことにちゃんとゲームの進行と連動してコメントが流れているようです。圧縮されていて読みづらいのですが、<code>html5.nicogame.jp/js/bundle.js</code>というファイルに<code>updateGamePositionKey</code>という関数があって、そこでそのシーンのセリフのsha256ハッシュ値をとり、それをゲームの場面ごとのキーとして、コメントと結びつけているみたいです。<code>this._tkoolGlobal</code>っていうのが<code>Window</code>で、<code>$</code>のプリフィックスをつけてグローバルにいろんなオブジェクトがばらまかれてますね。RPGツクールMV……。</p>
+<pre><code>$dataActors:Array[6]
 $dataAnimations:Array[121]
 $dataArmors:Array[6]
 $dataClasses:Array[7]
@@ -60,14 +85,25 @@ $gameTimer:Game_Timer
 $gameTroop:Game_Troop
 $gameVariables:Game_Variables
 $plugins:Array[1]
-$testEvent:null</code></pre><p>誰かに話しかけたりしてイベントが始まると画面下部にメッセージウィンドウが表示されますが、<code>this._tkoolGlobal.$gameMessage._texts</code>がそのテキストになっていて、シーンを移動するごとにこれを蓄積しているようです。それで、シーンが切り替わるごとにダイジェストを計算して<code>gamePositionKey</code>という場面を表すユニークなキーにしているみたいです。これをコメントと結びつけて、シーンごとに表示するコメントを選んでいるわけですね。大まかな仕組みはわかったので、頑張ればツクール製でないゲームでもコメントに対応させることは不可能ではなさそうです。なかなか大変そうですが。あんまり調べると怒られそうですね。それよりAPIを公開してくれると嬉しいです。</p><p>アツマールの利用規約には以下の文言があって、それを気にする人もいるみたいです。</p><blockquote>
-<p>なお、投稿者は、運営会社及び運営会社が指定する第三者に対して著作者人格権その他いかなる権利の主張及び行使も行わないものとします。</p></blockquote>
-<p>要するにゲーム実況とか二次創作とかのネタに使われても文句言うなってことですね。ニコニコのクリ奨に使われても文句は言えないという規約になっています。コメントを被せること自体がそもそもある種の改変ですし、サービスの性質上やむを得ないとは思います。ニコニコ動画は無法地帯だし、しかたないね。私も以前ニコニコでゲーム実況やってましたし、その辺は気にならないですけど。</p><p>筆者は『ステラのまほう』を応援しています。</p><h1><a id="%E8%BF%BD%E8%A8%98" class="anchor" href="#%E8%BF%BD%E8%A8%98"><span class="header-link"></span></a>追記</h1><blockquote>
-<ol>
+$testEvent:null
+</code></pre>
+<p>誰かに話しかけたりしてイベントが始まると画面下部にメッセージウィンドウが表示されますが、<code>this._tkoolGlobal.$gameMessage._texts</code>がそのテキストになっていて、シーンを移動するごとにこれを蓄積しているようです。それで、シーンが切り替わるごとにダイジェストを計算して<code>gamePositionKey</code>という場面を表すユニークなキーにしているみたいです。これをコメントと結びつけて、シーンごとに表示するコメントを選んでいるわけですね。大まかな仕組みはわかったので、頑張ればツクール製でないゲームでもコメントに対応させることは不可能ではなさそうです。なかなか大変そうですが。あんまり調べると怒られそうですね。それよりAPIを公開してくれると嬉しいです。</p>
+<p>アツマールの利用規約には以下の文言があって、それを気にする人もいるみたいです。</p>
+<blockquote>
+<p>なお、投稿者は、運営会社及び運営会社が指定する第三者に対して著作者人格権その他いかなる権利の主張及び行使も行わないものとします。</p>
+</blockquote>
+<p>要するにゲーム実況とか二次創作とかのネタに使われても文句言うなってことですね。ニコニコのクリ奨に使われても文句は言えないという規約になっています。コメントを被せること自体がそもそもある種の改変ですし、サービスの性質上やむを得ないとは思います。ニコニコ動画は無法地帯だし、しかたないね。私も以前ニコニコでゲーム実況やってましたし、その辺は気にならないですけど。</p>
+<p>筆者は『ステラのまほう』を応援しています。</p>
+<h1>追記</h1>
+<blockquote>
+<ol start="7">
 <li>「ゲーム」とは、利用者が<strong>RPGツクールを利用して制作された</strong>RPGツクールの二次的著作物であるゲームソフトのことをいいます。</li>
 </ol>
 </blockquote>
-<p><a href="http://game.nicovideo.jp/atsumaru/term">http://game.nicovideo.jp/atsumaru/term</a> </p><p>ちょっ……「ゲーム」とはRPGツクールを利用して制作されたものだけを指すらしいです。そんなわけで、利用規約ではそれ以外のものについての規定がなく、OKともダメとも書かれてません。もし怒られたらまた考えます。</p><h1><a id="%E6%AC%A1%E3%81%AE%E3%81%8A%E8%A9%B1" class="anchor" href="#%E6%AC%A1%E3%81%AE%E3%81%8A%E8%A9%B1"><span class="header-link"></span></a>次のお話</h1><ul>
+<p>http://game.nicovideo.jp/atsumaru/term</p>
+<p>ちょっ……「ゲーム」とはRPGツクールを利用して制作されたものだけを指すらしいです。そんなわけで、利用規約ではそれ以外のものについての規定がなく、OKともダメとも書かれてません。もし怒られたらまた考えます。</p>
+<h1>次のお話</h1>
+<ul>
 <li><a href="c9701d80db46b7850f58.html">第13話</a></li>
 </ul>
 </div></article></div><footer><div class="sns"><a target="_blank" href="https://twitter.com/intent/tweet?text=undefined%20https%3A%2F%2Faratama.github.io%2Fblog%2Fcdf2a7bb66fdcbf1a78c"><img src="/res/twitter.png" alt="twitter button"></a><a target="brank" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Faratama.github.io%2Fblog%2Fcdf2a7bb66fdcbf1a78c&amp;t=undefined"><img src="/res/facebook.png" alt="facebook button"></a><a target="brank" href="https://plus.google.com/share?url=https%3A%2F%2Faratama.github.io%2Fblog%2Fcdf2a7bb66fdcbf1a78c"><img src="/res/google.png" alt="google plus button"></a><a target="brank" href="http://b.hatena.ne.jp/entry/https%3A%2F%2Faratama.github.io%2Fblog%2Fcdf2a7bb66fdcbf1a78c"><img src="/res/hatena.png" alt="hatena bookmark button"></a><a target="brank" href="http://getpocket.com/edit?url=https%3A%2F%2Faratama.github.io%2Fblog%2Fcdf2a7bb66fdcbf1a78c&amp;title=undefined"><img src="/res/pocket.png" alt="pocket button"></a></div><div class="block-centered footer-inner"><p class="copy">&amp;nbsp;</p><p class="author">このブログを書いてる人: 竹内稲穂</p></div><script>
