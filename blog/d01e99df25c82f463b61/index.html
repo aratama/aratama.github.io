@@ -6,7 +6,7 @@
 
                 ga('create', 'UA-61162129-3', 'auto');
                 ga('send', 'pageview');
-            </script></head><body><header><div class="block-centered"><div class="site-title"><a href="/">Admittedly <wbr>something <wbr>small.</a></div><div class="sub-title">ちょっと<wbr>小さいのは<wbr>たしかですが。</div></div></header><div class="content"><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" href="/res/article.css"><article id="rendered"><div class="date">2017年2月5日</div><h1 class="article-title"><a href=".">rollup-plugin-pursでPureScriptのモジュールを結合する(インライン化、デッドコード排除)</a></h1><p class="tags"><a href="/blog/tag/purescript"><span class="tag"><i class="fa fa-tag"></i>purescript</span></a><a href="/blog/tag/rollup.js"><span class="tag"><i class="fa fa-tag"></i>rollup.js</span></a></p><hr><div><p>現状のPureScriptでは、コンパイル後のモジュールを結合するのに</p><ul>
+            </script></head><body><header><div class="sns"><a target="_blank" href="https://twitter.com/intent/tweet?text=%E3%81%A1%E3%82%87%E3%81%A3%E3%81%A8%E5%B0%8F%E3%81%95%E3%81%84%E3%81%AE%E3%81%AF%E3%81%9F%E3%81%97%E3%81%8B%E3%81%A7%E3%81%99%E3%81%8C%E3%80%82%20https%3A%2F%2Faratama.github.io%2Fblog%2Fd01e99df25c82f463b61"><img src="/res/twitter.png"></a><a target="_brank" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Faratama.github.io%2Fblog%2Fd01e99df25c82f463b61&amp;t=%E3%81%A1%E3%82%87%E3%81%A3%E3%81%A8%E5%B0%8F%E3%81%95%E3%81%84%E3%81%AE%E3%81%AF%E3%81%9F%E3%81%97%E3%81%8B%E3%81%A7%E3%81%99%E3%81%8C%E3%80%82"><img src="/res/facebook.png"></a><a target="_brank" href="https://plus.google.com/share?url=https%3A%2F%2Faratama.github.io%2Fblog%2Fd01e99df25c82f463b61"><img src="/res/google.png"></a><a target="_brank" href="http://b.hatena.ne.jp/entry/https%3A%2F%2Faratama.github.io%2Fblog%2Fd01e99df25c82f463b61"><img src="/res/hatena.png"></a><a target="_brank" href="http://getpocket.com/edit?url=https%3A%2F%2Faratama.github.io%2Fblog%2Fd01e99df25c82f463b61&amp;title=%E3%81%A1%E3%82%87%E3%81%A3%E3%81%A8%E5%B0%8F%E3%81%95%E3%81%84%E3%81%AE%E3%81%AF%E3%81%9F%E3%81%97%E3%81%8B%E3%81%A7%E3%81%99%E3%81%8C%E3%80%82&quot;"><img src="/res/pocket.png"></a></div><div class="block-centered"><div class="site-title"><a href="/">Admittedly <wbr>something <wbr>small.</a></div><div class="sub-title">ちょっと<wbr>小さいのは<wbr>たしかですが。</div></div></header><div class="content"><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" href="/res/article.css"><article id="rendered"><div class="date">2017年2月5日</div><h1 class="article-title"><a href=".">rollup-plugin-pursでPureScriptのモジュールを結合する(インライン化、デッドコード排除)</a></h1><p class="tags"><a href="/blog/tag/purescript"><span class="tag"><i class="fa fa-tag"></i>purescript</span></a><a href="/blog/tag/rollup.js"><span class="tag"><i class="fa fa-tag"></i>rollup.js</span></a></p><hr><div><p>現状のPureScriptでは、コンパイル後のモジュールを結合するのに</p><ul>
 <li>browserifyやwebpackを使って通常のCommonjsモジュールとして結合する方法（でかい）</li>
 <li>psc-bundleを使って結合する方法（デッドコード削除が効くので、こっちのほうが断然結合後のファイルサイズが小さい。ただしかなり遅いし、PureScriptから出力されたCommonjsモジュールしか結合できないので、それ以外のCommonJSモジュールを結合するにはさらにwebpackなどをキメる必要がある）</li>
 </ul>
@@ -14,76 +14,12 @@
 <li>psc-bundleと同様のデッドコード排除が効きます</li>
 <li>さらにインライン化もある程度効くようで、結合後のファイルサイズのさらなる削減とともに、実行効率の向上も期待できます</li>
 </ul>
-<p>となんだかとても良さげです。使い方はrollupをインストールして、</p><pre><code class="undefined">$ npm install -g rollup</code></pre><p>rollup-plugin-pursをインストールして、</p><pre><code class="undefined">$ npm install --save-dev rollup-plugin-purs</code></pre><p>なんかこんな感じに<code>rollup.config.js</code>を書いて、</p><pre><code class="js">import purs from &quot;rollup-plugin-purs&quot;;
-
-export default {
-  entry: &quot;src/Main.purs&quot;,
-  dest: &quot;bundle.js&quot;,
-  format: &quot;iife&quot;,
-  sourceMap: true,
-  plugins: [
-    purs()
-  ]
-};</code></pre><p>rollupを実行するだけです。</p><pre><code class="undefined">$ rollup --config</code></pre><p>たとえば、</p><pre><code class="haskell">sum x y = x + y
-
-main = logShow (sum 20 22)</code></pre><p>こんなかんじのコードをpsc-bundleで結合すると、</p><pre><code class="js">  var sum = function (dictSemiring) {
-      return function (x) {
-          return function (y) {
-              return Data_Semiring.add(dictSemiring)(x)(y);
-          };
-      };
-  };
-  var main = Control_Monad_Eff_Console.logShow(Data_Show.showInt)(sum(Data_Semiring.semiringInt)(20)(22));</code></pre><p>こんな感じのコードがそのまま結合されるのですが、rollup-plugin-pursで結合した場合は、</p><pre><code class="js">  var _main = _logShow_uncurried(_showInt, ((_semiringInt.add)(20)(22)));</code></pre><p>だけが吐かれて、<code>sum</code>の呼び出しがインライン化されて消滅してるのが確認できました。また、<code>_logShow_uncurried</code>という関数が見えますが、これは関数<code>_logShow</code>のカリー化を解除したバージョンで、次のような関数がrollup-plugin-pursによって自動的に定義されます。</p><pre><code class="js">  var _logShow_uncurried = function (_dictShow, _a) {
-    return _log2((_dictShow.show)(_a));
-  };</code></pre><p>そして、引数がすべて与えられた場合はカリー化が解除されたバージョンが使われるようになるようです。PureScriptは関数がデフォルトでカリー化されるので関数呼び出しが多くなり効率上のオーバーヘッドが大きいのですが、これで少しはオーバーヘッドが低減できそうです。ただし、私が試した範囲ではエラーが出て結合できないモジュールもありました。なんかシングルクォーテーションがついた名前の関数がお気に召さないようです。まだ実用的な完成度とまでは言えませんが、メリットが多いので今後に期待したいところです。</p><p>まだ議論の最中のようですが、pscも将来的にはES6モジュールを吐くようになるかもしれません。また、ブラウザ環境などでもES6 modulesが使えるようになれば、psc-bundleのようなツールで結合する必要自体がなくなるかもしれません。つーかES6 Modulesはやくしろよ！今どきモジュールがない言語なんてアホくさくて使ってられんわ！</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>参考</h1><ul>
+<p>となんだかとても良さげです。使い方はrollupをインストールして、</p><pre><code class="undefined">%24%20npm%20install%20-g%20rollup</code></pre><p>rollup-plugin-pursをインストールして、</p><pre><code class="undefined">%24%20npm%20install%20--save-dev%20rollup-plugin-purs</code></pre><p>なんかこんな感じに<code>rollup.config.js</code>を書いて、</p><pre><code class="js">import%20purs%20from%20%22rollup-plugin-purs%22%3B%0A%0Aexport%20default%20%7B%0A%20%20entry%3A%20%22src/Main.purs%22%2C%0A%20%20dest%3A%20%22bundle.js%22%2C%0A%20%20format%3A%20%22iife%22%2C%0A%20%20sourceMap%3A%20true%2C%0A%20%20plugins%3A%20%5B%0A%20%20%20%20purs%28%29%0A%20%20%5D%0A%7D%3B</code></pre><p>rollupを実行するだけです。</p><pre><code class="undefined">%24%20rollup%20--config</code></pre><p>たとえば、</p><pre><code class="haskell">sum%20x%20y%20%3D%20x%20+%20y%0A%0Amain%20%3D%20logShow%20%28sum%2020%2022%29</code></pre><p>こんなかんじのコードをpsc-bundleで結合すると、</p><pre><code class="js">%20%20var%20sum%20%3D%20function%20%28dictSemiring%29%20%7B%0A%20%20%20%20%20%20return%20function%20%28x%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20return%20function%20%28y%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20return%20Data_Semiring.add%28dictSemiring%29%28x%29%28y%29%3B%0A%20%20%20%20%20%20%20%20%20%20%7D%3B%0A%20%20%20%20%20%20%7D%3B%0A%20%20%7D%3B%0A%20%20var%20main%20%3D%20Control_Monad_Eff_Console.logShow%28Data_Show.showInt%29%28sum%28Data_Semiring.semiringInt%29%2820%29%2822%29%29%3B</code></pre><p>こんな感じのコードがそのまま結合されるのですが、rollup-plugin-pursで結合した場合は、</p><pre><code class="js">%20%20var%20_main%20%3D%20_logShow_uncurried%28_showInt%2C%20%28%28_semiringInt.add%29%2820%29%2822%29%29%29%3B</code></pre><p>だけが吐かれて、<code>sum</code>の呼び出しがインライン化されて消滅してるのが確認できました。また、<code>_logShow_uncurried</code>という関数が見えますが、これは関数<code>_logShow</code>のカリー化を解除したバージョンで、次のような関数がrollup-plugin-pursによって自動的に定義されます。</p><pre><code class="js">%20%20var%20_logShow_uncurried%20%3D%20function%20%28_dictShow%2C%20_a%29%20%7B%0A%20%20%20%20return%20_log2%28%28_dictShow.show%29%28_a%29%29%3B%0A%20%20%7D%3B</code></pre><p>そして、引数がすべて与えられた場合はカリー化が解除されたバージョンが使われるようになるようです。PureScriptは関数がデフォルトでカリー化されるので関数呼び出しが多くなり効率上のオーバーヘッドが大きいのですが、これで少しはオーバーヘッドが低減できそうです。ただし、私が試した範囲ではエラーが出て結合できないモジュールもありました。なんかシングルクォーテーションがついた名前の関数がお気に召さないようです。まだ実用的な完成度とまでは言えませんが、メリットが多いので今後に期待したいところです。</p><p>まだ議論の最中のようですが、pscも将来的にはES6モジュールを吐くようになるかもしれません。また、ブラウザ環境などでもES6 modulesが使えるようになれば、psc-bundleのようなツールで結合する必要自体がなくなるかもしれません。つーかES6 Modulesはやくしろよ！今どきモジュールがない言語なんてアホくさくて使ってられんわ！</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>参考</h1><ul>
 <li><a href="https://github.com/Pauan/rollup-plugin-purs/issues/6">https://github.com/Pauan/rollup-plugin-purs/issues/6</a> 一部のコードでエラーが起こるのは、acornの既知の問題っぽいです。すでに修正されているので、rollupがバージョンアップされれば直るかも</li>
 <li><a href="https://github.com/purescript/purescript/issues/2574#issuecomment-277434874">https://github.com/purescript/purescript/issues/2574#issuecomment-277434874</a> </li>
 <li><a href="https://github.com/Pauan/rollup-plugin-purs">https://github.com/Pauan/rollup-plugin-purs</a></li>
 </ul>
-</div><div>
-    
-<hr>
-
-<div class="snsbuttons">
-
-    <!-- Twitter -->
-    <a href="https://twitter.com/share" class="twitter-share-button" data-related="cubbit2">Tweet</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-
-    <!-- Hatena -->
-    <div>
-        <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
-    </div>
-
-    <!-- line -->
-    <div>
-        <div class="line-it-button" style="display: none;" data-type="share-a" data-lang="ja" ></div>
-        <script src="//scdn.line-apps.com/n/line_it/thirdparty/loader.min.js" async="async" defer="defer" ></script>
-    </div>
-
-    <!--facebook -->
-    <div>
-        <div id="fb-root"></div>
-        <script>(function(d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.8";
-        fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));</script>
-        <div class="fb-like" data-href="https://aratama.github.io/blog/d01e99df25c82f463b61.md" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="false"></div>
-    </div>
-
-    <!-- google+ -->
-    <div>
-        <script src="https://apis.google.com/js/platform.js" async defer>
-        {lang: 'ja'}
-        </script>
-        <div class="g-plusone" data-size="medium"></div>
-    </div>
-
-</div>
-
-</div></article></div><footer><div class="block-centered footer-inner"><p class="copy">&amp;nbsp;</p><p class="author">このブログを書いてる人: 竹内稲穂</p></div><script>
+</div></article></div><footer><div class="sns"><a target="_blank" href="https://twitter.com/intent/tweet?text=%E3%81%A1%E3%82%87%E3%81%A3%E3%81%A8%E5%B0%8F%E3%81%95%E3%81%84%E3%81%AE%E3%81%AF%E3%81%9F%E3%81%97%E3%81%8B%E3%81%A7%E3%81%99%E3%81%8C%E3%80%82%20https%3A%2F%2Faratama.github.io%2Fblog%2Fd01e99df25c82f463b61"><img src="/res/twitter.png"></a><a target="_brank" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Faratama.github.io%2Fblog%2Fd01e99df25c82f463b61&amp;t=%E3%81%A1%E3%82%87%E3%81%A3%E3%81%A8%E5%B0%8F%E3%81%95%E3%81%84%E3%81%AE%E3%81%AF%E3%81%9F%E3%81%97%E3%81%8B%E3%81%A7%E3%81%99%E3%81%8C%E3%80%82"><img src="/res/facebook.png"></a><a target="_brank" href="https://plus.google.com/share?url=https%3A%2F%2Faratama.github.io%2Fblog%2Fd01e99df25c82f463b61"><img src="/res/google.png"></a><a target="_brank" href="http://b.hatena.ne.jp/entry/https%3A%2F%2Faratama.github.io%2Fblog%2Fd01e99df25c82f463b61"><img src="/res/hatena.png"></a><a target="_brank" href="http://getpocket.com/edit?url=https%3A%2F%2Faratama.github.io%2Fblog%2Fd01e99df25c82f463b61&amp;title=%E3%81%A1%E3%82%87%E3%81%A3%E3%81%A8%E5%B0%8F%E3%81%95%E3%81%84%E3%81%AE%E3%81%AF%E3%81%9F%E3%81%97%E3%81%8B%E3%81%A7%E3%81%99%E3%81%8C%E3%80%82&quot;"><img src="/res/pocket.png"></a></div><div class="block-centered footer-inner"><p class="copy">&amp;nbsp;</p><p class="author">このブログを書いてる人: 竹内稲穂</p></div><script>
                     const poem = [
                         "なんにもない毎日が、なによりの宝物。",
                         "今日という日を、何度でも繰り返したい。",

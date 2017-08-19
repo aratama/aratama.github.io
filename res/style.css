@@ -13,10 +13,9 @@ li, p {
 }
 
 body {
-    background-color: #white;
+    background-color: white;
     padding: 0;
     margin: 0;
-    
 }
 
 header {
@@ -26,7 +25,7 @@ header {
     position: relative;
     box-shadow: 0 0 20px 0px rgba(0, 0, 0, 0.3);
 
-    background-image: url(/img/MIYA160131480493_TP_V.jpg);
+    background-image: url(/res/uyuni.jpg);
     background-size: cover;
 }
 
@@ -64,14 +63,15 @@ footer {
     color: white;
     background-color: #3b3a56;
 
-    height: 320px;
     position: relative;    
-    line-height: 320px;
-
+    
     text-align: center;
     box-shadow: 0 0 20px 0px rgba(0, 0, 0, 0.3);
 
-    overflow: hidden;
+    /* overflow: hidden; */
+    background-image: url(/res/uyuni.jpg);
+    background-size: cover;
+    background-position: bottom;
 }
 
 footer .block-centered {
@@ -226,10 +226,47 @@ li {
 
 
 
+div.sns {
+    transform: translateY(-40px);
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
 
+div.sns img {
+    width: 80px;
+    height: 80px;
+    margin-left: 20px;
+    margin-right: 20px;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.7);
+    transition-property: all; 
+    transition-duration: 0.2s;
+}
 
+div.sns img:hover {
+    transform: scale(1.4);
+}
 
+header div.sns {
+    transform: none;
+    text-align: right;
+    margin: 20px;
+    right: 0;
+    opacity: 0.35;
+    transition-property: all; 
+    transition-duration: 0.2s;
+}
 
+header div.sns:hover {
+    opacity: 1.0;
+}
+
+header div.sns img {
+    width: 32px;
+    height: 32px;
+    margin-left: 8px;
+    margin-right: 8px;
+}
 
 
 

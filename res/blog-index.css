@@ -7,6 +7,7 @@ article {
 
 .article-container {
     padding: 30px;
+    margin-bottom: 100px;
     width: 960px;
 
     /* max-width: 960px; */

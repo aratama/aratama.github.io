@@ -6,126 +6,34 @@
 
                 ga('create', 'UA-61162129-3', 'auto');
                 ga('send', 'pageview');
-            </script></head><body><header><div class="block-centered"><div class="site-title"><a href="/">Admittedly <wbr>something <wbr>small.</a></div><div class="sub-title">ちょっと<wbr>小さいのは<wbr>たしかですが。</div></div></header><div class="content"><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" href="/res/article.css"><article id="rendered"><div class="date">2017年7月1日</div><h1 class="article-title"><a href=".">5分でわかる、シンプルな仮想DOMライブラリMaquetteの紹介</a></h1><p class="tags"><a href="/blog/tag/JavaScript"><span class="tag"><i class="fa fa-tag"></i>JavaScript</span></a><a href="/blog/tag/VirtualDom"><span class="tag"><i class="fa fa-tag"></i>VirtualDom</span></a><a href="/blog/tag/Maquette"><span class="tag"><i class="fa fa-tag"></i>Maquette</span></a></p><hr><div><p><a href="36625a22-8ea3-9f8d-355b-9448cfd2e69c.png"><img src="36625a22-8ea3-9f8d-355b-9448cfd2e69c.png"></img></a></p><p>仮想DOMなUIライブラリ<strong>Maquette</strong>(マケット)を紹介します。JavaScriptで仮想DOMといえばReact/Redux一択みたいな雰囲気ですが、あれはいろいろ複雑すぎ巨大すぎであんまり好きじゃないので、JavaScriptから手軽に使えるUIライブラリを探していました。ご存知のように仮想DOM実装は雨後の筍のように登場していて、要求を満たすライブラリは複数あったのですが、<a href="http://maquettejs.org/tutorial/01-intro.html">公式サイトのチュートリアルが可愛かった</a>のでこれにしました。公式サイトはこっちです。</p><ul>
+            </script></head><body><header><div class="sns"><a target="_blank" href="https://twitter.com/intent/tweet?text=%E3%81%A1%E3%82%87%E3%81%A3%E3%81%A8%E5%B0%8F%E3%81%95%E3%81%84%E3%81%AE%E3%81%AF%E3%81%9F%E3%81%97%E3%81%8B%E3%81%A7%E3%81%99%E3%81%8C%E3%80%82%20https%3A%2F%2Faratama.github.io%2Fblog%2F36fcf600b618e6722554"><img src="/res/twitter.png"></a><a target="_brank" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Faratama.github.io%2Fblog%2F36fcf600b618e6722554&amp;t=%E3%81%A1%E3%82%87%E3%81%A3%E3%81%A8%E5%B0%8F%E3%81%95%E3%81%84%E3%81%AE%E3%81%AF%E3%81%9F%E3%81%97%E3%81%8B%E3%81%A7%E3%81%99%E3%81%8C%E3%80%82"><img src="/res/facebook.png"></a><a target="_brank" href="https://plus.google.com/share?url=https%3A%2F%2Faratama.github.io%2Fblog%2F36fcf600b618e6722554"><img src="/res/google.png"></a><a target="_brank" href="http://b.hatena.ne.jp/entry/https%3A%2F%2Faratama.github.io%2Fblog%2F36fcf600b618e6722554"><img src="/res/hatena.png"></a><a target="_brank" href="http://getpocket.com/edit?url=https%3A%2F%2Faratama.github.io%2Fblog%2F36fcf600b618e6722554&amp;title=%E3%81%A1%E3%82%87%E3%81%A3%E3%81%A8%E5%B0%8F%E3%81%95%E3%81%84%E3%81%AE%E3%81%AF%E3%81%9F%E3%81%97%E3%81%8B%E3%81%A7%E3%81%99%E3%81%8C%E3%80%82&quot;"><img src="/res/pocket.png"></a></div><div class="block-centered"><div class="site-title"><a href="/">Admittedly <wbr>something <wbr>small.</a></div><div class="sub-title">ちょっと<wbr>小さいのは<wbr>たしかですが。</div></div></header><div class="content"><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" href="/res/article.css"><article id="rendered"><div class="date">2017年7月1日</div><h1 class="article-title"><a href=".">5分でわかる、シンプルな仮想DOMライブラリMaquetteの紹介</a></h1><p class="tags"><a href="/blog/tag/JavaScript"><span class="tag"><i class="fa fa-tag"></i>JavaScript</span></a><a href="/blog/tag/VirtualDom"><span class="tag"><i class="fa fa-tag"></i>VirtualDom</span></a><a href="/blog/tag/Maquette"><span class="tag"><i class="fa fa-tag"></i>Maquette</span></a></p><hr><div><p><a href="36625a22-8ea3-9f8d-355b-9448cfd2e69c.png"><img src="36625a22-8ea3-9f8d-355b-9448cfd2e69c.png"></img></a></p><p>仮想DOMなUIライブラリ<strong>Maquette</strong>(マケット)を紹介します。JavaScriptで仮想DOMといえばReact/Redux一択みたいな雰囲気ですが、あれはいろいろ複雑すぎ巨大すぎであんまり好きじゃないので、JavaScriptから手軽に使えるUIライブラリを探していました。ご存知のように仮想DOM実装は雨後の筍のように登場していて、要求を満たすライブラリは複数あったのですが、<a href="http://maquettejs.org/tutorial/01-intro.html">公式サイトのチュートリアルが可愛かった</a>のでこれにしました。公式サイトはこっちです。</p><ul>
 <li><a href="http://maquettejs.org/">maquettejs.org</a></li>
 </ul>
-<p>Maquetteは<a href="https://facebook.github.io/react/">React</a>をはじめ<a href="https://mithril.js.org/">Mithril</a>、<a href="https://github.com/Raynos/mercury">Mercury</a>に影響を受けているそうです。でもMaquetteはこれらのライブラリよりもさらに機能が絞られたシンプルなもので、習得しやすくて軽いところが好きです。Maquetteはググっても日本語の情報がほとんどなかったので、誰かの参考になればと思います。</p><p>なお、Maquetteとはフランス語で『模型』を意味するんだとか。オープンソース(MITライセンス)で、開発しているのはAFAS Softwareというオランダの会社のようです。</p><h1><a name="maquette-" class="anchor" href="#maquette-"><span class="header-link"></span></a>Maquetteの導入</h1><p>インストールはCDNからが一番ラクでしょう。<strong>&quot;Only weighs 3Kb gzipped&quot;</strong>だそうです。軽いですね。&quot;19kb min+gzip　コンパクトなランタイム。&quot;とか掲げてるVueが冗談みたいです。</p><pre><code class="html">&lt;script src=&quot;//cdnjs.cloudflare.com/ajax/libs/maquette/2.4.1/maquette.min.js&quot;&gt;&lt;/script&gt;</code></pre><p>これでグローバルに<code>maquette</code>オブジェクトが使えるようになります。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ページの描画</h1><p>まずは、描画関数で便利なように、<code>maquette.h</code>関数を変数に束縛しておきましょう。</p><pre><code class="javascript">const h = maquette.h;</code></pre><p><strong>Maquetteでは、ReactのJSXやVue、Angularのような独自のテンプレートのようなものは使いません</strong>。ここで定義した<code>h</code>関数を使って、ただのJavaScriptコードとして仮想DOMノードを定義していきます。Maquetteの<code>h</code>関数は<a href="https://github.com/hyperhype/hyperscript">HyperScript</a>の<code>h</code>に相当するもので、</p><pre><code class="js">h(&quot;要素名#ID.クラス名&quot;, { 属性名: 値 }, 子のノード)</code></pre><p>というような形式で呼び出すと、仮想DOMのノードを生成します。この関数の詳細については割愛しますので、<a href="http://maquettejs.org/docs/typedoc/interfaces/_maquette_.h.html">APIドキュメント</a>を参照してください。これを使って、例えば次のように描画関数を定義します。</p><pre><code class="javascript">function render(){
-    return h(&quot;body&quot;, [&quot;Hello, World&quot;]);
-}</code></pre><p><code>h(&quot;body&quot;, [&quot;Hello, World&quot;])</code>はHTMLでいう<code>&lt;body&gt;&quot;Hello, World&quot;&lt;/body&gt;</code>に相当する表現です。</p><p>あとは、<code>maquette.createProjector</code>で<code>Projector</code>オブジェクトを作成します。これは仮想DOMから実際のDOMを構築するのに使われるオブジェクトです。あとはその<code>Projector</code>の<code>merge</code>メソッドを呼んでHTMLの要素や先ほど定義した描画関数<code>render</code>とを結びつけると、その要素に対してDOM描画のサイクルが動き出します。</p><pre><code class="javascript">const projector = maquette.createProjector();
-projector.merge(document.body, render);</code></pre><p>基本的にはこれだけです。シンプルですね。完全なコードはJSFiddleに置いておきました。</p><ul>
+<p>Maquetteは<a href="https://facebook.github.io/react/">React</a>をはじめ<a href="https://mithril.js.org/">Mithril</a>、<a href="https://github.com/Raynos/mercury">Mercury</a>に影響を受けているそうです。でもMaquetteはこれらのライブラリよりもさらに機能が絞られたシンプルなもので、習得しやすくて軽いところが好きです。Maquetteはググっても日本語の情報がほとんどなかったので、誰かの参考になればと思います。</p><p>なお、Maquetteとはフランス語で『模型』を意味するんだとか。オープンソース(MITライセンス)で、開発しているのはAFAS Softwareというオランダの会社のようです。</p><h1><a name="maquette-" class="anchor" href="#maquette-"><span class="header-link"></span></a>Maquetteの導入</h1><p>インストールはCDNからが一番ラクでしょう。<strong>&quot;Only weighs 3Kb gzipped&quot;</strong>だそうです。軽いですね。&quot;19kb min+gzip　コンパクトなランタイム。&quot;とか掲げてるVueが冗談みたいです。</p><pre><code class="html">%3Cscript%20src%3D%22//cdnjs.cloudflare.com/ajax/libs/maquette/2.4.1/maquette.min.js%22%3E%3C/script%3E</code></pre><p>これでグローバルに<code>maquette</code>オブジェクトが使えるようになります。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ページの描画</h1><p>まずは、描画関数で便利なように、<code>maquette.h</code>関数を変数に束縛しておきましょう。</p><pre><code class="javascript">const%20h%20%3D%20maquette.h%3B</code></pre><p><strong>Maquetteでは、ReactのJSXやVue、Angularのような独自のテンプレートのようなものは使いません</strong>。ここで定義した<code>h</code>関数を使って、ただのJavaScriptコードとして仮想DOMノードを定義していきます。Maquetteの<code>h</code>関数は<a href="https://github.com/hyperhype/hyperscript">HyperScript</a>の<code>h</code>に相当するもので、</p><pre><code class="js">h%28%22%u8981%u7D20%u540D%23ID.%u30AF%u30E9%u30B9%u540D%22%2C%20%7B%20%u5C5E%u6027%u540D%3A%20%u5024%20%7D%2C%20%u5B50%u306E%u30CE%u30FC%u30C9%29</code></pre><p>というような形式で呼び出すと、仮想DOMのノードを生成します。この関数の詳細については割愛しますので、<a href="http://maquettejs.org/docs/typedoc/interfaces/_maquette_.h.html">APIドキュメント</a>を参照してください。これを使って、例えば次のように描画関数を定義します。</p><pre><code class="javascript">function%20render%28%29%7B%0A%20%20%20%20return%20h%28%22body%22%2C%20%5B%22Hello%2C%20World%22%5D%29%3B%0A%7D</code></pre><p><code>h(&quot;body&quot;, [&quot;Hello, World&quot;])</code>はHTMLでいう<code>&lt;body&gt;&quot;Hello, World&quot;&lt;/body&gt;</code>に相当する表現です。</p><p>あとは、<code>maquette.createProjector</code>で<code>Projector</code>オブジェクトを作成します。これは仮想DOMから実際のDOMを構築するのに使われるオブジェクトです。あとはその<code>Projector</code>の<code>merge</code>メソッドを呼んでHTMLの要素や先ほど定義した描画関数<code>render</code>とを結びつけると、その要素に対してDOM描画のサイクルが動き出します。</p><pre><code class="javascript">const%20projector%20%3D%20maquette.createProjector%28%29%3B%0Aprojector.merge%28document.body%2C%20render%29%3B</code></pre><p>基本的にはこれだけです。シンプルですね。完全なコードはJSFiddleに置いておきました。</p><ul>
 <li><a href="https://jsfiddle.net/d8a8c9ve/2/">jsfiddle</a></li>
 </ul>
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>アプリケーションの状態</h1><p>Reactだと、<code>getInitialState</code>で初期状態を取得し、<code>setState</code>で状態を更新するとかそういう状態管理の仕組みがありますが、<strong>Maquetteにそのような状態を扱うAPIはありません</strong>。なので、適当に<code>state</code>とかそういう名前の変数を定義して、描画関数からそれを参照すればいいだけです。</p><pre><code class="js">var state = new Date();
-
-function render(){
-  return h(&quot;body&quot;, [state.toISOString()]);
-}</code></pre><ul>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>アプリケーションの状態</h1><p>Reactだと、<code>getInitialState</code>で初期状態を取得し、<code>setState</code>で状態を更新するとかそういう状態管理の仕組みがありますが、<strong>Maquetteにそのような状態を扱うAPIはありません</strong>。なので、適当に<code>state</code>とかそういう名前の変数を定義して、描画関数からそれを参照すればいいだけです。</p><pre><code class="js">var%20state%20%3D%20new%20Date%28%29%3B%0A%0Afunction%20render%28%29%7B%0A%20%20return%20h%28%22body%22%2C%20%5Bstate.toISOString%28%29%5D%29%3B%0A%7D</code></pre><ul>
 <li><a href="https://jsfiddle.net/d8a8c9ve/1/">jsfiddle</a></li>
 </ul>
-<p>状態オブジェクトはJSONライクなオブジェクトにするべきとか、状態変更のときに状態オブジェクトを直接変更してはダメで必ず<code>setState</code>を通さなくてはならないとか、そういった規約はありません。シンプル・イズ・ベストです。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>イベントハンドリングと状態の変更</h1><p>イベントハンドラの書きかたはHyperScriptと同様で、<code>h</code>関数の引数に与えるプロパティのテーブルに、イベントに対応する属性としてイベントハンドラを与えればいいだけです。たとえばマウスクリックなら、その要素の仮想DOMノードの属性に<code>onclick</code>を次のように追加するだけです。</p><pre><code class="js">var state = false;
-
-function onButtonClick(e){
-    state = ! state;
-}
-
-function render(){
-  return h(&quot;body&quot;, [
-      h(&quot;p&quot;, state),
-      h(&quot;button&quot;, { onclick: onButtonClick }, &quot;Toggle&quot;)
-  ]);
-}</code></pre><ul>
+<p>状態オブジェクトはJSONライクなオブジェクトにするべきとか、状態変更のときに状態オブジェクトを直接変更してはダメで必ず<code>setState</code>を通さなくてはならないとか、そういった規約はありません。シンプル・イズ・ベストです。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>イベントハンドリングと状態の変更</h1><p>イベントハンドラの書きかたはHyperScriptと同様で、<code>h</code>関数の引数に与えるプロパティのテーブルに、イベントに対応する属性としてイベントハンドラを与えればいいだけです。たとえばマウスクリックなら、その要素の仮想DOMノードの属性に<code>onclick</code>を次のように追加するだけです。</p><pre><code class="js">var%20state%20%3D%20false%3B%0A%0Afunction%20onButtonClick%28e%29%7B%0A%20%20%20%20state%20%3D%20%21%20state%3B%0A%7D%0A%0Afunction%20render%28%29%7B%0A%20%20return%20h%28%22body%22%2C%20%5B%0A%20%20%20%20%20%20h%28%22p%22%2C%20state%29%2C%0A%20%20%20%20%20%20h%28%22button%22%2C%20%7B%20onclick%3A%20onButtonClick%20%7D%2C%20%22Toggle%22%29%0A%20%20%5D%29%3B%0A%7D</code></pre><ul>
 <li><a href="https://jsfiddle.net/pmLga0he/3/">jsfiddle</a></li>
 </ul>
-<p>また、イベントハンドラでアプリケーションの状態を変更したいときは、単に状態を格納している変数の中身を書き換えるだけです。</p><pre><code class="js">state = ! state;</code></pre><p>なんかもう説明する必要があるのかどうかもわからないほど単純なことですが、Reactのようなライブラリではいろいろと制約がやかましいので、Maquetteではそういったお約束は不要だということを強調する意味で説明を付け加えました。Reduxのようにアクション作れ純粋にしろなどといった規約も特にないので、あとは好きに書けばいいと思います。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ページの再描画</h1><p>Reactで<code>setState</code>で状態を更新した時に再描画が行われますが、Maquetteではそういった仕組みはありません。ではどのタイミングで再描画が行われるかというと、<strong>イベントハンドラの実行が完了したら自動的にDOMが再描画されます</strong>。イベントが起きたからといって状態が変更されているとは限らないわけで、本当に再描画が必要なのかもわからなくてもイベントが起きたらとりあえず再描画しておく、というのはいかにも乱暴ですが、そういう雑なことをしてもちゃんと動くから便利なのが仮想DOMという技術です。</p><p>ただし、マウスクリックなどの仮想DOMノードに関連付けられるイベントでは自動的に再描画されるのですが、<code>setTimeout</code>のような非同期な状態変化はMaquetteがそれを検知できないので、自動的には再描画されません。非同期処理に応じてUIを更新する場合は、次のように明示的に<code>Projector#scheduleRender</code>メソッドを呼び出して再描画を指示する必要があります。</p><pre><code class="js">async function onButtonClick(e){
-    state = &quot;Fetching...&quot;;
-    projector.scheduleRender();
-    const res = await fetch(&quot;https://api.github.com/users&quot;);
-    users = await res.json(); 
-    state = &quot;Complete.&quot;;
-    projector.scheduleRender();
-}</code></pre><ul>
+<p>また、イベントハンドラでアプリケーションの状態を変更したいときは、単に状態を格納している変数の中身を書き換えるだけです。</p><pre><code class="js">state%20%3D%20%21%20state%3B</code></pre><p>なんかもう説明する必要があるのかどうかもわからないほど単純なことですが、Reactのようなライブラリではいろいろと制約がやかましいので、Maquetteではそういったお約束は不要だということを強調する意味で説明を付け加えました。Reduxのようにアクション作れ純粋にしろなどといった規約も特にないので、あとは好きに書けばいいと思います。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>ページの再描画</h1><p>Reactで<code>setState</code>で状態を更新した時に再描画が行われますが、Maquetteではそういった仕組みはありません。ではどのタイミングで再描画が行われるかというと、<strong>イベントハンドラの実行が完了したら自動的にDOMが再描画されます</strong>。イベントが起きたからといって状態が変更されているとは限らないわけで、本当に再描画が必要なのかもわからなくてもイベントが起きたらとりあえず再描画しておく、というのはいかにも乱暴ですが、そういう雑なことをしてもちゃんと動くから便利なのが仮想DOMという技術です。</p><p>ただし、マウスクリックなどの仮想DOMノードに関連付けられるイベントでは自動的に再描画されるのですが、<code>setTimeout</code>のような非同期な状態変化はMaquetteがそれを検知できないので、自動的には再描画されません。非同期処理に応じてUIを更新する場合は、次のように明示的に<code>Projector#scheduleRender</code>メソッドを呼び出して再描画を指示する必要があります。</p><pre><code class="js">async%20function%20onButtonClick%28e%29%7B%0A%20%20%20%20state%20%3D%20%22Fetching...%22%3B%0A%20%20%20%20projector.scheduleRender%28%29%3B%0A%20%20%20%20const%20res%20%3D%20await%20fetch%28%22https%3A//api.github.com/users%22%29%3B%0A%20%20%20%20users%20%3D%20await%20res.json%28%29%3B%20%0A%20%20%20%20state%20%3D%20%22Complete.%22%3B%0A%20%20%20%20projector.scheduleRender%28%29%3B%0A%7D</code></pre><ul>
 <li><a href="https://jsfiddle.net/pmLga0he/4/">jsfiddle</a></li>
 </ul>
-<p>ここでは安直にも一番手軽でわかりやすいasync/awaitで非同期処理を書きましたが、もちろんPromiseでグダグダに書こうが、伝統的コールバック地獄でコテコテに書こうが、Redux/Sagaとかでヘロヘロに書こうが、好きな方法を選べます。<code>projector.scheduleRender</code>を呼べば再描画されるというだけの話なので、どんな方法とでも組み合わせることができます。非同期処理に伴うアプリケーションの状態変化も、単に変数を書き換えるだけで十分です。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>コンポーネント</h1><p>Maquetteはフレームワークではないので、<strong>コンポーネントについての規約などは特にない</strong>そうです。というわけで好きに書いていいのですが、ひとつの方法としては、<code>render</code>のような共通の名前のプロパティで描画関数を持つオブジェクトを作ればいいでしょう。</p><pre><code class="js">function createCounter(){
-    function onButtonClick(e){
-        count += 1;
-    }
-    var count = 0;
-    return {
-        render: function(){
-            return h(&quot;div&quot;, { key: this }, [
-                h(&quot;button&quot;, { onclick: onButtonClick }, &quot;Increment&quot;),            
-                h(&quot;span&quot;, count)
-            ]);
-        }
-    };
-}</code></pre><p>あとは、そのコンポーネントオブジェクトをそれぞれ作成し、描画関数内でそのコンポーネントの<code>render</code>関数を呼び出して描画します。これで、それぞれのコンポーネントの実体を独立して描画し操作できます。</p><pre><code class="js">const comp1 = createCounter();
-const comp2 = createCounter();
-const comp3 = createCounter();
-
-function render(){
-  return h(&quot;body&quot;, [
-    comp1.render(),
-    comp2.render(),
-    comp3.render()    
-  ]);
-}</code></pre><ul>
+<p>ここでは安直にも一番手軽でわかりやすいasync/awaitで非同期処理を書きましたが、もちろんPromiseでグダグダに書こうが、伝統的コールバック地獄でコテコテに書こうが、Redux/Sagaとかでヘロヘロに書こうが、好きな方法を選べます。<code>projector.scheduleRender</code>を呼べば再描画されるというだけの話なので、どんな方法とでも組み合わせることができます。非同期処理に伴うアプリケーションの状態変化も、単に変数を書き換えるだけで十分です。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>コンポーネント</h1><p>Maquetteはフレームワークではないので、<strong>コンポーネントについての規約などは特にない</strong>そうです。というわけで好きに書いていいのですが、ひとつの方法としては、<code>render</code>のような共通の名前のプロパティで描画関数を持つオブジェクトを作ればいいでしょう。</p><pre><code class="js">function%20createCounter%28%29%7B%0A%20%20%20%20function%20onButtonClick%28e%29%7B%0A%20%20%20%20%20%20%20%20count%20+%3D%201%3B%0A%20%20%20%20%7D%0A%20%20%20%20var%20count%20%3D%200%3B%0A%20%20%20%20return%20%7B%0A%20%20%20%20%20%20%20%20render%3A%20function%28%29%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20return%20h%28%22div%22%2C%20%7B%20key%3A%20this%20%7D%2C%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20h%28%22button%22%2C%20%7B%20onclick%3A%20onButtonClick%20%7D%2C%20%22Increment%22%29%2C%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20h%28%22span%22%2C%20count%29%0A%20%20%20%20%20%20%20%20%20%20%20%20%5D%29%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%3B%0A%7D</code></pre><p>あとは、そのコンポーネントオブジェクトをそれぞれ作成し、描画関数内でそのコンポーネントの<code>render</code>関数を呼び出して描画します。これで、それぞれのコンポーネントの実体を独立して描画し操作できます。</p><pre><code class="js">const%20comp1%20%3D%20createCounter%28%29%3B%0Aconst%20comp2%20%3D%20createCounter%28%29%3B%0Aconst%20comp3%20%3D%20createCounter%28%29%3B%0A%0Afunction%20render%28%29%7B%0A%20%20return%20h%28%22body%22%2C%20%5B%0A%20%20%20%20comp1.render%28%29%2C%0A%20%20%20%20comp2.render%28%29%2C%0A%20%20%20%20comp3.render%28%29%20%20%20%20%0A%20%20%5D%29%3B%0A%7D</code></pre><ul>
 <li><a href="https://jsfiddle.net/e2mqp0z1/3/">jsfiddle</a></li>
 </ul>
-<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>３つの注意事項</h1><p>主に効率上の都合で、以下の３つの制約が設けられています（<a href="http://maquettejs.org/docs/rules.html">３つのルール</a>）。以下のルールのうち、(2)は違反していていても実行時エラーが出ず、期待通りの動作にならないので、特に注意が必要です。(1)と(3)は違反すると実行時エラーになるので、エラーの意味がわかるように頭に入れておきましょう。</p><h3><a name="-1-" class="anchor" href="#-1-"><span class="header-link"></span></a>(1) 再描画の時にイベントハンドラを変更してはいけない</h3><p>イベントハンドラとなる関数の定義は、先ほどのサンプルコードのように<strong>描画関数の外</strong>に置くようにします。イベントハンドラを次のように描画関数の中で定義すると、再描画のたびにイベントハンドラとなる関数オブジェクトが新たに作成されてしまいますが、これは効率を悪化させるのでエラーが出るようになっています。</p><pre><code class="js">// これはダメ！
-h(&quot;button&quot;, { onclick: e =&gt; state = ! state }, &quot;Toggle&quot;)</code></pre><h3><a name="-2-" class="anchor" href="#-2-"><span class="header-link"></span></a>(2) プロパティのリストの構成を変えてはいけない</h3><p>同じ仮想DOMノードに対して、再描画のたびにプロパティのテーブルの構成を変えてはいけません。たとえば、HTMLの<code>disabled</code>属性は状態に応じてつけたり外したりすることがありますが、あるときのプロパティは<code>{}</code>、別の状態では<code>{ disabled: &quot;&quot; }</code>というように、状態に合わせてプロパティを増やしたり減らしたりはできません。あるときのプロパティは<code>{ disabled: true }</code>、別の状態では<code>{ disabled: false }</code>というように、プロパティの構成は同じままで、値のみが変わっていくように書きます。</p><p>具体的には、次のようにしてもうまく<code>disabled</code>属性が切り替わりません。ずっと<code>disable</code>属性がついたままになります。</p><pre><code class="js">state ? h(&quot;input&quot;, {}) : h(&quot;input&quot;, { disabled: &quot;&quot; }),</code></pre><p>これは、再描画時にプロパティのテーブルとして<code>{}</code>を渡しても、既存の<code>disabled</code>属性を検出してそれを削除したりはしないからです。プロパティの値として<code>false</code>を渡すとその属性が無いことになるので、次のようにするといいようです。</p><pre><code class="js">h(&quot;input&quot;, { disabled: state })</code></pre><ul>
+<h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>３つの注意事項</h1><p>主に効率上の都合で、以下の３つの制約が設けられています（<a href="http://maquettejs.org/docs/rules.html">３つのルール</a>）。以下のルールのうち、(2)は違反していていても実行時エラーが出ず、期待通りの動作にならないので、特に注意が必要です。(1)と(3)は違反すると実行時エラーになるので、エラーの意味がわかるように頭に入れておきましょう。</p><h3><a name="-1-" class="anchor" href="#-1-"><span class="header-link"></span></a>(1) 再描画の時にイベントハンドラを変更してはいけない</h3><p>イベントハンドラとなる関数の定義は、先ほどのサンプルコードのように<strong>描画関数の外</strong>に置くようにします。イベントハンドラを次のように描画関数の中で定義すると、再描画のたびにイベントハンドラとなる関数オブジェクトが新たに作成されてしまいますが、これは効率を悪化させるのでエラーが出るようになっています。</p><pre><code class="js">//%20%u3053%u308C%u306F%u30C0%u30E1%uFF01%0Ah%28%22button%22%2C%20%7B%20onclick%3A%20e%20%3D%3E%20state%20%3D%20%21%20state%20%7D%2C%20%22Toggle%22%29</code></pre><h3><a name="-2-" class="anchor" href="#-2-"><span class="header-link"></span></a>(2) プロパティのリストの構成を変えてはいけない</h3><p>同じ仮想DOMノードに対して、再描画のたびにプロパティのテーブルの構成を変えてはいけません。たとえば、HTMLの<code>disabled</code>属性は状態に応じてつけたり外したりすることがありますが、あるときのプロパティは<code>{}</code>、別の状態では<code>{ disabled: &quot;&quot; }</code>というように、状態に合わせてプロパティを増やしたり減らしたりはできません。あるときのプロパティは<code>{ disabled: true }</code>、別の状態では<code>{ disabled: false }</code>というように、プロパティの構成は同じままで、値のみが変わっていくように書きます。</p><p>具体的には、次のようにしてもうまく<code>disabled</code>属性が切り替わりません。ずっと<code>disable</code>属性がついたままになります。</p><pre><code class="js">state%20%3F%20h%28%22input%22%2C%20%7B%7D%29%20%3A%20h%28%22input%22%2C%20%7B%20disabled%3A%20%22%22%20%7D%29%2C</code></pre><p>これは、再描画時にプロパティのテーブルとして<code>{}</code>を渡しても、既存の<code>disabled</code>属性を検出してそれを削除したりはしないからです。プロパティの値として<code>false</code>を渡すとその属性が無いことになるので、次のようにするといいようです。</p><pre><code class="js">h%28%22input%22%2C%20%7B%20disabled%3A%20state%20%7D%29</code></pre><ul>
 <li><a href="https://jsfiddle.net/ec79rquy/4/">jsfiddle</a></li>
 </ul>
-<h3><a name="-3-" class="anchor" href="#-3-"><span class="header-link"></span></a>(3) 複数の子が含まれる場合、互いに区別できるようにしなければならない</h3><p>ある要素に複数の子のノードが含まれる場合、IDやクラス、あるいはキーで、それらが互いに区別できるようになっていなければなりません。たとえば、次のように単に<code>li</code>要素を並べると、最初の描画では成功したように見えますが、再描画したときにエラーになります。</p><pre><code class="js">h(&quot;ul&quot;,  new Array(state).fill(0).map((e, i) =&gt; h(&quot;li&quot;, i)))</code></pre><p>これを避けるには、<code>key</code>プロパティに一意な値を設定します。この場合は、インデックスの値を設定すればいいでしょう。</p><pre><code class="js">h(&quot;ul&quot;,  new Array(state).fill(0).map((e, i) =&gt; h(&quot;li&quot;, { key: i }, i)))</code></pre><ul>
+<h3><a name="-3-" class="anchor" href="#-3-"><span class="header-link"></span></a>(3) 複数の子が含まれる場合、互いに区別できるようにしなければならない</h3><p>ある要素に複数の子のノードが含まれる場合、IDやクラス、あるいはキーで、それらが互いに区別できるようになっていなければなりません。たとえば、次のように単に<code>li</code>要素を並べると、最初の描画では成功したように見えますが、再描画したときにエラーになります。</p><pre><code class="js">h%28%22ul%22%2C%20%20new%20Array%28state%29.fill%280%29.map%28%28e%2C%20i%29%20%3D%3E%20h%28%22li%22%2C%20i%29%29%29</code></pre><p>これを避けるには、<code>key</code>プロパティに一意な値を設定します。この場合は、インデックスの値を設定すればいいでしょう。</p><pre><code class="js">h%28%22ul%22%2C%20%20new%20Array%28state%29.fill%280%29.map%28%28e%2C%20i%29%20%3D%3E%20h%28%22li%22%2C%20%7B%20key%3A%20i%20%7D%2C%20i%29%29%29</code></pre><ul>
 <li><a href="https://jsfiddle.net/ec79rquy/5/">jsfiddle</a></li>
 </ul>
 <h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>さいごに</h1><p>Maquetteは最小限ながら必要なものは揃っているという感じで、学習コストも小さくて比較的扱いやすいライブラリだと思います。あとは、ブラウザ上でステージクリア形式で遊べるチュートリアルをやると楽しいんじゃないでしょうか。</p><p>HyperScript形式でのノードの定義は、慣れるまでは読みづらいと感じるかもしれません。でも、JSXなんて見かけだけHTMLに似せているだけで、別に便利な構文でもなんでもありません。独自テンプレートなんて、見た目がHTMLに似ているというだけで、学習コストが増えるし、ビルドのプロセスが複雑になるし、ソースコードと実行中のコードが異なってしまうし、もともとJavaScriptが持っている機能が制限されるしで、嬉しくもなんともないです。あれはHTMLに慣れきった体の生理的違和感を和らげるためだけのものであって、純粋に機能としてみれば、機能の強化どころか弱体化です。MquetteやMercuryのように、ただのJavaScriptだけで書いていくのが一番シンプルかつ機能的だと思います。</p><p>筆者は関数型プログラミング言語、特に純粋関数型な言語が好きなので、本気で書くとき＆個人的に作るときはPureScriptなんかを使いたいです。でもどうしてもJavaScriptのような言語を直接使わなくてはならないときもありますし、そういう場合は関数型らしい概念を積極的に持ち込もうとは思わないです。ReduxはElm Architectureを参考にして作られていますが、あれは純粋関数型言語であるElmだから威力を発揮するアーキテクチャであって、JavaScriptに持ち込んでも辛いだけであまり旨味はないと思います。普通に書けば自動的に純粋になるElmに比べると、純粋でないJavaScriptでコードを純粋に保つのははるかに大変ですし、ホットスワッピングやタイムトラベリングを使わなければあんまりメリットにもなりません。普通にJavaScriptっぽいコードを書くのが一番です。</p><p>そう考えると、最小限の機能のみで構成されていて余計な制約や哲学を持ち込まないMaquetteは、あくまでJavaScriptのライブラリとしての立場を堅実に保った、合理的で地に足の着いたライブラリではないかと感じるところです。</p><h1><a name="-" class="anchor" href="#-"><span class="header-link"></span></a>参考文献</h1><ul>
 <li><a href="http://maquettejs.org/">http://maquettejs.org/</a> 公式サイト</li>
 </ul>
-</div><div>
-    
-<hr>
-
-<div class="snsbuttons">
-
-    <!-- Twitter -->
-    <a href="https://twitter.com/share" class="twitter-share-button" data-related="cubbit2">Tweet</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-
-    <!-- Hatena -->
-    <div>
-        <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
-    </div>
-
-    <!-- line -->
-    <div>
-        <div class="line-it-button" style="display: none;" data-type="share-a" data-lang="ja" ></div>
-        <script src="//scdn.line-apps.com/n/line_it/thirdparty/loader.min.js" async="async" defer="defer" ></script>
-    </div>
-
-    <!--facebook -->
-    <div>
-        <div id="fb-root"></div>
-        <script>(function(d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.8";
-        fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));</script>
-        <div class="fb-like" data-href="https://aratama.github.io/blog/36fcf600b618e6722554.md" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="false"></div>
-    </div>
-
-    <!-- google+ -->
-    <div>
-        <script src="https://apis.google.com/js/platform.js" async defer>
-        {lang: 'ja'}
-        </script>
-        <div class="g-plusone" data-size="medium"></div>
-    </div>
-
-</div>
-
-</div></article></div><footer><div class="block-centered footer-inner"><p class="copy">&amp;nbsp;</p><p class="author">このブログを書いてる人: 竹内稲穂</p></div><script>
+</div></article></div><footer><div class="sns"><a target="_blank" href="https://twitter.com/intent/tweet?text=%E3%81%A1%E3%82%87%E3%81%A3%E3%81%A8%E5%B0%8F%E3%81%95%E3%81%84%E3%81%AE%E3%81%AF%E3%81%9F%E3%81%97%E3%81%8B%E3%81%A7%E3%81%99%E3%81%8C%E3%80%82%20https%3A%2F%2Faratama.github.io%2Fblog%2F36fcf600b618e6722554"><img src="/res/twitter.png"></a><a target="_brank" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Faratama.github.io%2Fblog%2F36fcf600b618e6722554&amp;t=%E3%81%A1%E3%82%87%E3%81%A3%E3%81%A8%E5%B0%8F%E3%81%95%E3%81%84%E3%81%AE%E3%81%AF%E3%81%9F%E3%81%97%E3%81%8B%E3%81%A7%E3%81%99%E3%81%8C%E3%80%82"><img src="/res/facebook.png"></a><a target="_brank" href="https://plus.google.com/share?url=https%3A%2F%2Faratama.github.io%2Fblog%2F36fcf600b618e6722554"><img src="/res/google.png"></a><a target="_brank" href="http://b.hatena.ne.jp/entry/https%3A%2F%2Faratama.github.io%2Fblog%2F36fcf600b618e6722554"><img src="/res/hatena.png"></a><a target="_brank" href="http://getpocket.com/edit?url=https%3A%2F%2Faratama.github.io%2Fblog%2F36fcf600b618e6722554&amp;title=%E3%81%A1%E3%82%87%E3%81%A3%E3%81%A8%E5%B0%8F%E3%81%95%E3%81%84%E3%81%AE%E3%81%AF%E3%81%9F%E3%81%97%E3%81%8B%E3%81%A7%E3%81%99%E3%81%8C%E3%80%82&quot;"><img src="/res/pocket.png"></a></div><div class="block-centered footer-inner"><p class="copy">&amp;nbsp;</p><p class="author">このブログを書いてる人: 竹内稲穂</p></div><script>
                     const poem = [
                         "なんにもない毎日が、なによりの宝物。",
                         "今日という日を、何度でも繰り返したい。",
