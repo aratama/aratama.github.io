@@ -21,11 +21,46 @@
 <li><a href="http://opgame.jp/">opengame</a></li>
 <li><a href="http://game.nicovideo.jp/atsumaru/">RPGアツマール</a></li>
 </ul>
-<p>静的なウェブコンテンツをホストするだけですから、サービスとしては難しくないのかもしれません。9leapは名前だけ知っていて、あとのサービスは今回初めて知りました。探せばまだまだありそうです。ゲームが形になってきたら、こういうゲーム投稿サイトで公開するのもいいかもしれませんね。ひとまずRPGアツマールに投稿できるか実験してみます。とりあえずまるごとzipにして送りつければいいらしいので、やってみました。</p><pre><code class="undefined">%u8A31%u53EF%u3055%u308C%u3066%u306A%u3044%u30D5%u30A1%u30A4%u30EB%u5F62%u5F0F%u3067%u3059%3A%20.babylon%0A%u8A31%u53EF%u3055%u308C%u3066%u306A%u3044%u30D5%u30A1%u30A4%u30EB%u5F62%u5F0F%u3067%u3059%3A%20.log%0A%u8A31%u53EF%u3055%u308C%u3066%u306A%u3044%u30D5%u30A1%u30A4%u30EB%u5F62%u5F0F%u3067%u3059%3A%20.manifest%0A%u8A31%u53EF%u3055%u308C%u3066%u306A%u3044%u30D5%u30A1%u30A4%u30EB%u5F62%u5F0F%u3067%u3059%3A%20.fx%0A%u8A31%u53EF%u3055%u308C%u3066%u306A%u3044%u30D5%u30A1%u30A4%u30EB%u5F62%u5F0F%u3067%u3059%3A%20.less%0A%u8A31%u53EF%u3055%u308C%u3066%u306A%u3044%u30D5%u30A1%u30A4%u30EB%u5F62%u5F0F%u3067%u3059%3A%20.scss%0A%u8A31%u53EF%u3055%u308C%u3066%u306A%u3044%u30D5%u30A1%u30A4%u30EB%u5F62%u5F0F%u3067%u3059%3A%20.ico</code></pre><p>Oh... <code>.less</code>とかはFontAwesomeについてきたオマケとかが紛れ込んでるだけだから削除すればいいですが、<code>.babylon</code>と<code>.fx</code>だけはちょっと困りました。特に<code>.fx</code>は、babylon.jsがソーステキストから直接シェーダマテリアルを読み込めず、<code>.fx</code>の拡張子を持つファイルを読み込むようにハードコーディングされているので面倒です。babylonjsは何かと小回りが利きません。しかたないので、<code>.babylon</code>は<code>.json</code>に、<code>.fx</code>は<code>.txt</code>に拡張子を変えて、それからbabylonjs本体も中身に置換をかけて無理やり対応させました。あと、日本語を含むファイル名についても警告が出たので、念の為にファイル名をアルファベットにしておきました。</p><p>もうひとつ困ったのが解像度です。現状は<code>1280px * 720px</code>で作っているのですが、</p><blockquote>
+<p>静的なウェブコンテンツをホストするだけですから、サービスとしては難しくないのかもしれません。9leapは名前だけ知っていて、あとのサービスは今回初めて知りました。探せばまだまだありそうです。ゲームが形になってきたら、こういうゲーム投稿サイトで公開するのもいいかもしれませんね。ひとまずRPGアツマールに投稿できるか実験してみます。とりあえずまるごとzipにして送りつければいいらしいので、やってみました。</p><pre><code class="undefined">許可されてないファイル形式です: .babylon
+許可されてないファイル形式です: .log
+許可されてないファイル形式です: .manifest
+許可されてないファイル形式です: .fx
+許可されてないファイル形式です: .less
+許可されてないファイル形式です: .scss
+許可されてないファイル形式です: .ico</code></pre><p>Oh... <code>.less</code>とかはFontAwesomeについてきたオマケとかが紛れ込んでるだけだから削除すればいいですが、<code>.babylon</code>と<code>.fx</code>だけはちょっと困りました。特に<code>.fx</code>は、babylon.jsがソーステキストから直接シェーダマテリアルを読み込めず、<code>.fx</code>の拡張子を持つファイルを読み込むようにハードコーディングされているので面倒です。babylonjsは何かと小回りが利きません。しかたないので、<code>.babylon</code>は<code>.json</code>に、<code>.fx</code>は<code>.txt</code>に拡張子を変えて、それからbabylonjs本体も中身に置換をかけて無理やり対応させました。あと、日本語を含むファイル名についても警告が出たので、念の為にファイル名をアルファベットにしておきました。</p><p>もうひとつ困ったのが解像度です。現状は<code>1280px * 720px</code>で作っているのですが、</p><blockquote>
 <p>※推奨解像度は816x624, 624x816, 768x432の3つです</p></blockquote>
 <p>とのことで、これ以上の解像度にしようとするとはみ出してしまいます。しかたないので、ニコニコ専用のスタイルシートを用意して追加で読み込ませて調整しました。タイトル画面とかに被せてる画像が1280*720用なので一部のアスペクト比がアレですが、ちゃんと動きました。</p><p><a href="6ef164ea-e74c-3ad7-0466-ec364cb7d3cd.png"><img src="6ef164ea-e74c-3ad7-0466-ec364cb7d3cd.png" alt="null"></a></p><p><a href="http://game.nicovideo.jp/atsumaru/games/gm799">こちら</a>で実際に閲覧できます。ネットワークの状態によってはうまく地形が描画されないバグがあるので、もし地形が表示されないようなら再読み込みしてみてください。現在は投稿一覧に反映されない開発中ステータスです。まだ今後も本当にアツマールで公開するのかは決めていませんが、もしアツマールに投稿したならご贔屓にどうぞ。ニコニコはなんにせよユーザが多いので、たくさんのひとに遊んでもらいたいならいいかもしれません。つーか9leapの解像度320×320はさすがに狭すぎやしませんか……。jsdo.itも狭いですが……。plicyは大画面にも対応していて、「R-15」とか「ksg」(ｸｿｹﾞｰ?)のカテゴリまであって懐が深そうですが、運営会社が何故か建築会社です。謎。</p><p>多少手間はかかりましたが、なんとでもなりそうです。残る問題として、PointerLock APIだけ下記のエラーが出て動きません。</p><blockquote>
 <p>Blocked pointer lock on an element because the element&#39;s frame is sandboxed and the &#39;allow-pointer-lock&#39; permission is not set.</p></blockquote>
-<p>( ´_ゝ｀)ﾌｰﾝ　RPGアツマールに投稿されているゲームはほとんどRPGツクールMV製ですし、さすがにPointerLockまでは許可されていなかったです。</p><p>アツマールはコメント流れるのがいかにもニコニコっぽく、不思議なことにちゃんとゲームの進行と連動してコメントが流れているようです。圧縮されていて読みづらいのですが、<code>html5.nicogame.jp/js/bundle.js</code>というファイルに<code>updateGamePositionKey</code>という関数があって、そこでそのシーンのセリフのsha256ハッシュ値をとり、それをゲームの場面ごとのキーとして、コメントと結びつけているみたいです。<code>this._tkoolGlobal</code>っていうのが<code>Window</code>で、<code>$</code>のプリフィックスをつけてグローバルにいろんなオブジェクトがばらまかれてますね。RPGツクールMV……。</p><pre><code class="undefined">%24dataActors%3AArray%5B6%5D%0A%24dataAnimations%3AArray%5B121%5D%0A%24dataArmors%3AArray%5B6%5D%0A%24dataClasses%3AArray%5B7%5D%0A%24dataCommonEvents%3AArray%5B5%5D%0A%24dataEnemies%3AArray%5B15%5D%0A%24dataItems%3AArray%5B6%5D%0A%24dataMap%3AObject%0A%24dataMapInfos%3AArray%5B19%5D%0A%24dataSkills%3AArray%5B12%5D%0A%24dataStates%3AArray%5B11%5D%0A%24dataSystem%3AObject%0A%24dataTilesets%3AArray%5B7%5D%0A%24dataTroops%3AArray%5B23%5D%0A%24dataWeapons%3AArray%5B6%5D%0A%24gameActors%3AGame_Actors%0A%24gameMap%3AGame_Map%0A%24gameMessage%3AGame_Message%0A%24gameParty%3AGame_Party%0A%24gamePlayer%3AGame_Player%0A%24gameScreen%3AGame_Screen%0A%24gameSelfSwitches%3AGame_SelfSwitches%0A%24gameSwitches%3AGame_Switches%0A%24gameSystem%3AGame_System%0A%24gameTemp%3AGame_Temp%0A%24gameTimer%3AGame_Timer%0A%24gameTroop%3AGame_Troop%0A%24gameVariables%3AGame_Variables%0A%24plugins%3AArray%5B1%5D%0A%24testEvent%3Anull</code></pre><p>誰かに話しかけたりしてイベントが始まると画面下部にメッセージウィンドウが表示されますが、<code>this._tkoolGlobal.$gameMessage._texts</code>がそのテキストになっていて、シーンを移動するごとにこれを蓄積しているようです。それで、シーンが切り替わるごとにダイジェストを計算して<code>gamePositionKey</code>という場面を表すユニークなキーにしているみたいです。これをコメントと結びつけて、シーンごとに表示するコメントを選んでいるわけですね。大まかな仕組みはわかったので、頑張ればツクール製でないゲームでもコメントに対応させることは不可能ではなさそうです。なかなか大変そうですが。あんまり調べると怒られそうですね。それよりAPIを公開してくれると嬉しいです。</p><p>アツマールの利用規約には以下の文言があって、それを気にする人もいるみたいです。</p><blockquote>
+<p>( ´_ゝ｀)ﾌｰﾝ　RPGアツマールに投稿されているゲームはほとんどRPGツクールMV製ですし、さすがにPointerLockまでは許可されていなかったです。</p><p>アツマールはコメント流れるのがいかにもニコニコっぽく、不思議なことにちゃんとゲームの進行と連動してコメントが流れているようです。圧縮されていて読みづらいのですが、<code>html5.nicogame.jp/js/bundle.js</code>というファイルに<code>updateGamePositionKey</code>という関数があって、そこでそのシーンのセリフのsha256ハッシュ値をとり、それをゲームの場面ごとのキーとして、コメントと結びつけているみたいです。<code>this._tkoolGlobal</code>っていうのが<code>Window</code>で、<code>$</code>のプリフィックスをつけてグローバルにいろんなオブジェクトがばらまかれてますね。RPGツクールMV……。</p><pre><code class="undefined">$dataActors:Array[6]
+$dataAnimations:Array[121]
+$dataArmors:Array[6]
+$dataClasses:Array[7]
+$dataCommonEvents:Array[5]
+$dataEnemies:Array[15]
+$dataItems:Array[6]
+$dataMap:Object
+$dataMapInfos:Array[19]
+$dataSkills:Array[12]
+$dataStates:Array[11]
+$dataSystem:Object
+$dataTilesets:Array[7]
+$dataTroops:Array[23]
+$dataWeapons:Array[6]
+$gameActors:Game_Actors
+$gameMap:Game_Map
+$gameMessage:Game_Message
+$gameParty:Game_Party
+$gamePlayer:Game_Player
+$gameScreen:Game_Screen
+$gameSelfSwitches:Game_SelfSwitches
+$gameSwitches:Game_Switches
+$gameSystem:Game_System
+$gameTemp:Game_Temp
+$gameTimer:Game_Timer
+$gameTroop:Game_Troop
+$gameVariables:Game_Variables
+$plugins:Array[1]
+$testEvent:null</code></pre><p>誰かに話しかけたりしてイベントが始まると画面下部にメッセージウィンドウが表示されますが、<code>this._tkoolGlobal.$gameMessage._texts</code>がそのテキストになっていて、シーンを移動するごとにこれを蓄積しているようです。それで、シーンが切り替わるごとにダイジェストを計算して<code>gamePositionKey</code>という場面を表すユニークなキーにしているみたいです。これをコメントと結びつけて、シーンごとに表示するコメントを選んでいるわけですね。大まかな仕組みはわかったので、頑張ればツクール製でないゲームでもコメントに対応させることは不可能ではなさそうです。なかなか大変そうですが。あんまり調べると怒られそうですね。それよりAPIを公開してくれると嬉しいです。</p><p>アツマールの利用規約には以下の文言があって、それを気にする人もいるみたいです。</p><blockquote>
 <p>なお、投稿者は、運営会社及び運営会社が指定する第三者に対して著作者人格権その他いかなる権利の主張及び行使も行わないものとします。</p></blockquote>
 <p>要するにゲーム実況とか二次創作とかのネタに使われても文句言うなってことですね。ニコニコのクリ奨に使われても文句は言えないという規約になっています。コメントを被せること自体がそもそもある種の改変ですし、サービスの性質上やむを得ないとは思います。ニコニコ動画は無法地帯だし、しかたないね。私も以前ニコニコでゲーム実況やってましたし、その辺は気にならないですけど。</p><p>筆者は『ステラのまほう』を応援しています。</p><h1><a id="%E8%BF%BD%E8%A8%98" class="anchor" href="#%E8%BF%BD%E8%A8%98"><span class="header-link"></span></a>追記</h1><blockquote>
 <ol>

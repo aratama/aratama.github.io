@@ -11,9 +11,49 @@
 </ul>
 <blockquote>
 <p>Proc#callがださい</p></blockquote>
-<p>たとえば、ふたつの引数の和を出力する関数<code>add</code>や<code>sum</code>について考えてみます。PythonやJavaScriptなら次のようなコードを書くことができます。</p><pre><code class="py">def%20add%28x%2C%20y%29%3A%0A%20%20%20%20print%28x%20+%20y%29%0A%0Asum%20%3D%20add%20%20%20%20%23%20%u305D%u306E%u307E%u307E%u4EE3%u5165%u3067%u304D%u308B%0A%0Aadd%281%2C%202%29%20%0Asum%281%2C%202%29%20%20%20%20%23%20add%u3068sum%u306E%u547C%u3073%u51FA%u3057%u65B9%u306B%u9055%u3044%u306F%u306A%u3044</code></pre><pre><code class="js">function%20add%28x%2C%20y%29%7B%0A%20%20%20%20console.log%28x%20+%20y%29%3B%0A%7D%0A%0Asum%20%3D%20add%20%20%20%20//%20%u305D%u306E%u307E%u307E%u4EE3%u5165%u3067%u304D%u308B%0A%0Aadd%281%2C%202%29%20%0Asum%281%2C%202%29%20%20%20%20//%20add%u3068sum%u306E%u547C%u3073%u51FA%u3057%u65B9%u306B%u9055%u3044%u306F%u306A%u3044</code></pre><p>しかし、Rubyではメソッドをそのまま他の変数に代入したりはできず、<code>proc</code>や<code>lambda</code>で<code>Proc</code>オブジェクトを作ってから渡さなければなりませんし、受け取った側も<code>call</code>をつかって呼ぶ必要があります。これは<code>apply</code>メソッドを呼ばなければならないJavaあたりでも同じですね。</p><pre><code class="ruby">def%20add%28x%2C%20y%29%0A%20%20%20%20puts%20%28x%20+%20y%29%0Aend%0A%0Asum%20%3D%20proc%7B%7Cx%2C%20y%7C%20add%28x%2C%20y%29%7D%20%20%23%20proc%u3084lambda%u3067%u5305%u3080%u5FC5%u8981%u304C%u3042%u308B%0A%0Aadd%201%2C%202%20%20%20%20%20%20%20%20%20%20%0Asum.call%201%2C%202%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23call%u3067%u547C%u3073%u51FA%u3059%u5FC5%u8981%u304C%u3042%u308A%u3001add%u3068sum%u306E%u4F7F%u3044%u65B9%u304C%u7570%u306A%u3063%u3066%u3057%u307E%u3046</code></pre><p>なるほどこれはダサい。でもこれにはRuby側の反論もあって、Rubyでは引数がないときはメソッド呼び出しで括弧を省略できるという利点もあります。</p><pre><code class="js">function%20answer%28%29%7B%0A%20%20%20%20console.log%2842%29%0A%7D%0A%0Aanswer%28%29%20%20%20%20%20%20%20%20//%20%u62EC%u5F27%u304C%u3044%u308B</code></pre><pre><code class="ruby">def%20answer%0A%20%20%20%20puts%2042%0Aend%0A%0Aanswer%20%20%20%20%20%20%20%20%20%20%20%20%23%20%u62EC%u5F27%u304C%u3044%u3089%u306A%u3044</code></pre><blockquote>
+<p>たとえば、ふたつの引数の和を出力する関数<code>add</code>や<code>sum</code>について考えてみます。PythonやJavaScriptなら次のようなコードを書くことができます。</p><pre><code class="py">def add(x, y):
+    print(x + y)
+
+sum = add    # そのまま代入できる
+
+add(1, 2) 
+sum(1, 2)    # addとsumの呼び出し方に違いはない</code></pre><pre><code class="js">function add(x, y){
+    console.log(x + y);
+}
+
+sum = add    // そのまま代入できる
+
+add(1, 2) 
+sum(1, 2)    // addとsumの呼び出し方に違いはない</code></pre><p>しかし、Rubyではメソッドをそのまま他の変数に代入したりはできず、<code>proc</code>や<code>lambda</code>で<code>Proc</code>オブジェクトを作ってから渡さなければなりませんし、受け取った側も<code>call</code>をつかって呼ぶ必要があります。これは<code>apply</code>メソッドを呼ばなければならないJavaあたりでも同じですね。</p><pre><code class="ruby">def add(x, y)
+    puts (x + y)
+end
+
+sum = proc{|x, y| add(x, y)}  # procやlambdaで包む必要がある
+
+add 1, 2          
+sum.call 1, 2                 #callで呼び出す必要があり、addとsumの使い方が異なってしまう</code></pre><p>なるほどこれはダサい。でもこれにはRuby側の反論もあって、Rubyでは引数がないときはメソッド呼び出しで括弧を省略できるという利点もあります。</p><pre><code class="js">function answer(){
+    console.log(42)
+}
+
+answer()        // 括弧がいる</code></pre><pre><code class="ruby">def answer
+    puts 42
+end
+
+answer            # 括弧がいらない</code></pre><blockquote>
 <p>私もちょっとダサい、っつーか扱い辛いと感じることがあります。が、これは文中にも書いてある通り、Rubyに価値を与えている独特なスタイルとのトレードオフでしょう。</p></blockquote>
-<p>JavaScriptやPythonにこのような括弧の省略を導入しようとしても、関数オブジェクトそのものを表す構文と衝突してしまうので不可能です。そんなわけで、これを見る限り必ずしもどちらがいいと言い切れないようにみえるのですが……。</p><h1><a id="Haskell%2FPureScript%E3%81%A7%E3%81%AF" class="anchor" href="#Haskell%2FPureScript%E3%81%A7%E3%81%AF"><span class="header-link"></span></a>Haskell/PureScriptでは</h1><p>Haskell/PureScriptでは、このジレンマが解決します。</p><pre><code class="haskell">add%20x%20y%20%3D%20logShow%20%28x%20+%20y%29%20%20%20%20--%20add%u306B%u306F%u5F15%u6570%u304C%u3042%u308A%u307E%u3059%0A%0Asum%20%3D%20add%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20--%20%u95A2%u6570%u306F%u7B2C%u4E00%u7D1A%u306A%u306E%u3067%u3001%u666E%u901A%u306B%u4EE3%u5165%u3067%u304D%u307E%u3059%0A%0Aanswer%20%3D%20logShow%2042%20%20%20%20%20%20%20%20%20%20--%20answer%u306B%u306F%u5F15%u6570%u304C%u3042%u308A%u307E%u305B%u3093%0A%0AfortyTwo%20%3D%20answer%20%20%20%20%20%20%20%20%20%20%20--%20answer%u306E%u5024%u3082%u7B2C%u4E00%u7D1A%u306A%u306E%u3067%u3001%u305D%u306E%u307E%u307E%u5225%u306E%u5909%u6570%u306B%u4EE3%u5165%u3059%u308B%u3053%u3068%u3082%u3067%u304D%u307E%u3059%0A%0Amain%20%3D%20do%0A%20%20%20%20add%201%202%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20--%203%u304C%u51FA%u529B%u3055%u308C%u307E%u3059%u3002%u5F15%u6570%u304C%u3042%u308B%u5834%u5408%u306F%u3082%u3061%u308D%u3093%u666E%u901A%u306B%u547C%u3073%u51FA%u305B%u307E%u3059%0A%20%20%20%20sum%201%202%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20--%203%u304C%u51FA%u529B%u3055%u308C%u307E%u3059%u3002add%u3068sum%u306B%u547C%u3073%u51FA%u3057%u304B%u305F%u306E%u9055%u3044%u306F%u3042%u308A%u307E%u305B%u3093%0A%20%20%20%20answer%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20--%2042%u304C%u51FA%u529B%u3055%u308C%u307E%u3059%u3002%u5F15%u6570%u304C%u306A%u3044%u5834%u5408%u3082%u3001%u3082%u3061%u308D%u3093%u62EC%u5F27%u306F%u3042%u308A%u307E%u305B%u3093%0A%20%20%20%20fortyTwo%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20--%2042%u304C%u51FA%u529B%u3055%u308C%u307E%u3059%u3002fortyTwo%u3068answer%u306F%u540C%u3058%u3082%u306E%u3092%u6307%u3057%u3066%u3044%u308B%u304B%u3089%u3067%u3059</code></pre><p>Rubyの『引数のない関数呼び出しで括弧を省略できる』という利点と、Python/JavaScriptの『通常の関数呼び出しと、関数オブジェクトの呼び出しを区別しない』という利点の、ふたつの利点が両立しています。ふしぎ！Haskell/PureScriptでは何故こんなことができるのか、上のコードの各部はどういう意味なのか、どんな順序で実行が進んでいくのか、自分で考えてみると面白いかもしれません<a class="link-footnote" href="#footnote-sample" name="link-sample">※</a>。</p><p>それに、上のPureScriptのコードを良く見ると、ピリオドもなければコロンもないし、カンマのひとつすら存在しません。予約語はコードブロックの始まりを告げる<code>do</code>のみ。Pythonのようにインデントでブロックが表現されているなど、異様なまでにコードの見た目がスッキリしているのがわかると思います。これもHaskell/PureScriptのコードの特徴です。極限まで構文上のノイズが絞られていて筆者はすごく読みやすいと思うのですが、何故か読みにくいと言われることもあります。</p><blockquote>
+<p>JavaScriptやPythonにこのような括弧の省略を導入しようとしても、関数オブジェクトそのものを表す構文と衝突してしまうので不可能です。そんなわけで、これを見る限り必ずしもどちらがいいと言い切れないようにみえるのですが……。</p><h1><a id="Haskell%2FPureScript%E3%81%A7%E3%81%AF" class="anchor" href="#Haskell%2FPureScript%E3%81%A7%E3%81%AF"><span class="header-link"></span></a>Haskell/PureScriptでは</h1><p>Haskell/PureScriptでは、このジレンマが解決します。</p><pre><code class="haskell">add x y = logShow (x + y)    -- addには引数があります
+
+sum = add                    -- 関数は第一級なので、普通に代入できます
+
+answer = logShow 42          -- answerには引数がありません
+
+fortyTwo = answer           -- answerの値も第一級なので、そのまま別の変数に代入することもできます
+
+main = do
+    add 1 2                  -- 3が出力されます。引数がある場合はもちろん普通に呼び出せます
+    sum 1 2                  -- 3が出力されます。addとsumに呼び出しかたの違いはありません
+    answer                   -- 42が出力されます。引数がない場合も、もちろん括弧はありません
+    fortyTwo                 -- 42が出力されます。fortyTwoとanswerは同じものを指しているからです</code></pre><p>Rubyの『引数のない関数呼び出しで括弧を省略できる』という利点と、Python/JavaScriptの『通常の関数呼び出しと、関数オブジェクトの呼び出しを区別しない』という利点の、ふたつの利点が両立しています。ふしぎ！Haskell/PureScriptでは何故こんなことができるのか、上のコードの各部はどういう意味なのか、どんな順序で実行が進んでいくのか、自分で考えてみると面白いかもしれません<a class="link-footnote" href="#footnote-sample" name="link-sample">※</a>。</p><p>それに、上のPureScriptのコードを良く見ると、ピリオドもなければコロンもないし、カンマのひとつすら存在しません。予約語はコードブロックの始まりを告げる<code>do</code>のみ。Pythonのようにインデントでブロックが表現されているなど、異様なまでにコードの見た目がスッキリしているのがわかると思います。これもHaskell/PureScriptのコードの特徴です。極限まで構文上のノイズが絞られていて筆者はすごく読みやすいと思うのですが、何故か読みにくいと言われることもあります。</p><blockquote>
 <p>これは文法の問題なので、もしかしたらこれらを両立させる文法をもった言語が将来開発されるかもしれません。</p></blockquote>
 <p>15年以上前からあります。使っている人が少なすぎて、あまり知られていませんが……。</p><p>引数がないときの括弧を省こうとするなど、Rubyを使う人はそういう構文上のオーバーヘッドを嫌う人が多いのかもしれません。Haskell/PureScriptはとにかく構文が簡潔ですから、Rubyが好きな人にも向いているんじゃないかと。このような細かいところは正直どうでもいいと私は思うのですが、私は普段『同期的な作用と非同期な作用をモナドで抽象化すると一貫性が生まれて便利だよ』みたいな重大なポイントについて利点の説明をしては『意味わかんねーよ文章長えよカス！』という感じで罵られているので、今回は『関数の引数の有無や第一級かどうかについて便利さと単純さが両立するよ』という、わかりやすいポイントについてなるべく簡潔に説明をしました。</p><hr>
 <p class="footnote"><a href="#link-sample" name="footnote-sample">^</a>  もっとも、Haskell/PureScriptを知らない人は絶対にわからないと思いますが。なお、これはPureScriptのコードなので、実行の順序がぐちゃぐちゃになるHaskell特有の変態仕様『遅延評価』は関係がありません</p></div></article></div><footer><div class="sns"><a target="_blank" href="https://twitter.com/intent/tweet?text=undefined%20https%3A%2F%2Faratama.github.io%2Fblog%2F6c82aeb99476c5917783"><img src="/res/twitter.png" alt="twitter button"></a><a target="brank" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Faratama.github.io%2Fblog%2F6c82aeb99476c5917783&amp;t=undefined"><img src="/res/facebook.png" alt="facebook button"></a><a target="brank" href="https://plus.google.com/share?url=https%3A%2F%2Faratama.github.io%2Fblog%2F6c82aeb99476c5917783"><img src="/res/google.png" alt="google plus button"></a><a target="brank" href="http://b.hatena.ne.jp/entry/https%3A%2F%2Faratama.github.io%2Fblog%2F6c82aeb99476c5917783"><img src="/res/hatena.png" alt="hatena bookmark button"></a><a target="brank" href="http://getpocket.com/edit?url=https%3A%2F%2Faratama.github.io%2Fblog%2F6c82aeb99476c5917783&amp;title=undefined"><img src="/res/pocket.png" alt="pocket button"></a></div><div class="block-centered footer-inner"><p class="copy">&amp;nbsp;</p><p class="author">このブログを書いてる人: 竹内稲穂</p></div><script>
