@@ -19,14 +19,16 @@ body {
 }
 
 header {
-    /* background-color: #3b3a56; */
+    background-color: #33302f;
     color: white;
     font-size: 40px;
     position: relative;
     box-shadow: 0 0 20px 0px rgba(0, 0, 0, 0.3);
 
+    /*
     background-image: url(/res/uyuni.jpg);
     background-size: cover;
+    */
 }
 
 
@@ -61,7 +63,7 @@ header a:hover {
 
 footer {
     color: white;
-    /* background-color: #3b3a56; */
+    background-color: #33302f;
 
     position: relative;    
     
@@ -69,9 +71,11 @@ footer {
     box-shadow: 0 0 20px 0px rgba(0, 0, 0, 0.3);
 
     /* overflow: hidden; */
+    /*
     background-image: url(/res/uyuni.jpg);
     background-size: cover;
     background-position: bottom;
+    */
 }
 
 footer .block-centered {
