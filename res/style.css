@@ -29,6 +29,8 @@ header {
     background-image: url(/res/uyuni.jpg);
     background-size: cover;
     */
+
+    text-shadow: 0 0 30px white;
 }
 
 
@@ -306,3 +308,18 @@ header div.sns img {
     background-size: cover;
     z-index: -100;
 }
+
+
+::-webkit-scrollbar {
+    width: 20px;
+  }
+   
+::-webkit-scrollbar-thumb {
+    background: #33302f;
+    border-radius: 20px;
+  }
+  
+::-webkit-scrollbar-track {
+    background: #B0A29D;
+    border-radius: 20px;
+  }

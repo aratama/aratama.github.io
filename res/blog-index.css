@@ -157,8 +157,7 @@ li {
 }
 
 
-h2 {
-    opacity: 0.4; 
+.article-container h2 {
     border-bottom: solid 1px grey;
     clear: both;
     font-size: 12px;
