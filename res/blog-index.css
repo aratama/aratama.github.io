@@ -7,16 +7,12 @@ article {
 
 .article-container {
     padding: 30px;
+    margin-top: 50px;    
     margin-bottom: 100px;
     width: 960px;
-
-    /* max-width: 960px; */
     transition-property: all;
     transition-duration: 0.3s;
-
-
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.4);
-    transform: translateY(-60px);
     background-color: rgba(255, 255, 255, 0.45);
 }
 
