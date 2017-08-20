@@ -16,12 +16,12 @@ window.addEventListener("DOMContentLoaded", function(){
     function render(){
         const r = window.scrollY / 30;
         return h("div.background", [
-            gear(0, 0.15, 0.05, 0.35, 0.5, r),
-            gear(0, 0.8, 0.4, 0.2, 0.3, -r),
-            gear(0, 0.15, 0.7, 0.03, 0.5, -r),
-            gear(0, 0.3, 0.15, 0.15, 0.7, -r),
-            gear(0, 0.4, 0.70, 0.1, 1.0, r),
-            gear(0, 0.4, -0.1, -0.1, 1.0, r)
+            gear(0, 0.15, 0.05, 0.35, 0.5, r * 0.5),
+            gear(0, 0.8, 0.4, 0.2, 0.3, -r * 0.3),
+            gear(0, 0.15, 0.7, 0.03, 0.5, -r * 0.7),
+            gear(0, 0.3, 0.15, 0.15, 0.7, -r * 0.6),
+            gear(0, 0.4, 0.70, 0.1, 1.0, r * 0.8),
+            gear(0, 0.4, -0.1, -0.1, 1.0, r * 0.9)
         ]);      
     }
 
