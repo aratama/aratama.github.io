@@ -23,7 +23,43 @@ h1 {
     font-family: 'Kanit', sans-serif;
     float: left;
     text-align: center;
+
+    width: 437px;
+    height: 422px;
 }
+
+h1 div:nth-child(1) {
+    font-size: 182pt;
+}
+
+h1 div:nth-child(2) {
+    font-size: 172pt;
+}
+
+h1 div:nth-child(3) {
+    font-size: 100pt;
+}
+
+h1:hover div {
+    font-size: 0;
+}
+
+h1:hover div:nth-child(1):before {
+    content: "AND";
+    font-size: 92pt;
+}
+
+h1:hover div:nth-child(2):before {
+    content: "GO";
+    font-size: 242pt;
+}
+
+h1:hover div:nth-child(3):before {
+    content: "HOME";
+    font-size: 120pt;
+}
+
+
 
 p {
     color: #777777;
@@ -47,9 +83,9 @@ p {
     <body>
         <a href="/">
             <h1>
-                <div style="font-size: 182pt;">404</div>
-                <div style="font-size: 172pt;">NOT</div>
-                <div style="font-size: 100pt;">FOUND</div>
+                <div>404</div>
+                <div>NOT</div>
+                <div>FOUND</div>
             </h1>
         </a>
         <p>
