@@ -1,0 +1,230 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+html, body {
+    background-color: black;
+    color: white;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    cursor: default;
+    font-family: 'Roboto', sans-serif;
+}
+
+.root {
+    width: 100%;
+    height: 100%;    
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    font-size: 3vh;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    opacity: 0.2;
+    text-align: right;
+    padding: 4vmin;
+}
+
+.display {
+    flex-grow: 1.0;
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    align-items: center;
+}
+
+.display .colon {
+    font-size: 50vmin;    
+    margin: 2vmin;
+}
+
+.display.over .colon {
+    color: red;
+}
+
+.display .digit {
+    display: flex;
+    flex-direction: column;
+}
+
+.display .digit .number {
+    font-size: 65vmin;
+    line-height: 0.9;
+    pointer-events: none;
+}
+
+.display.over .digit .number {
+    color: red;
+}
+
+.display .digit .triangle {
+    font-size: 8vmin;    
+    text-align: center;
+    opacity: 0.3;
+    cursor: pointer;
+    line-height: 1.0;
+    transition-property: opacity;
+    transition-duration: 0.3s;
+}
+
+.display .digit .triangle:hover {
+    opacity: 0.8;
+}
+
+.display .digit .triangle:active {
+    opacity: 1.0;
+}
+
+.display .digit .triangle.disabled {
+    opacity: 0.0;
+    pointer-events: none;
+}
+
+
+.remaining {
+    font-size: 10vmin;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+}
+
+.controls {
+    flex-grow: 0.0;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding-bottom: 4vmin;
+    /* border: solid 1px white; */
+    display: flex;
+    justify-content: center;
+}
+
+.controls button {
+
+    margin: 1vmin;
+    margin-left: 6vmin;
+    margin-right: 6vmin;
+    padding: 1vmin;
+
+    font-size: 6vmin;
+    width: 10vmin;
+    height: 10vmin;
+    text-align: center;
+
+    color: black;
+    background-color: white;
+    border: none;
+    border-radius: 50%;
+
+    cursor: pointer;
+
+    opacity: 0.4;
+    transition-property: opacity;
+    transition-duration: 0.3s;
+}
+
+.controls button:hover {
+    opacity: 0.8;
+}
+
+.controls button:active {
+    opacity: 1.0;
+}
+
+.controls button.disabled {
+    opacity: 0.15;
+    pointer-events: none;
+}
+
+.progress {
+    height: 4vmin;
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.bar {
+    position: absolute;
+    right: 0px;
+    width: 100%;
+    height: 100%;
+    transition-property: width;
+    transition-duration: 0.3s;
+    background-color: white;
+}
+
+
+
+.help {
+    position: absolute;
+    width: 100%;    
+    height: 100%;
+    transition-property: opacity;
+    transition-duration: 0.3s;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.help.hidden {
+    opacity: 0.0;
+    pointer-events: none;
+}
+
+.help .dialog {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0 ;
+    width: 85vmin;
+    height: 60vmin;
+    font-size: 5vmin;
+    color: black;
+    box-shadow: 0 0 20px 2px rgba(0, 0, 0, 0.5);
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 2vmin;
+    text-align: center;
+}
+
+.help h1 {
+    text-align: center;
+    word-break: keep-all;
+}
+
+.help h2 {
+    text-align: center;
+    font-size: 3vmin;
+    word-break: keep-all;
+}
+
+.help p {
+    font-size: 3vmin;
+    word-break: keep-all;
+}
+
+.help .timerID {
+    display: flex;
+    font-size: 5vmin;
+    align-items: center;
+    justify-content: center;
+}
+
+.help .timerID input {
+    font-size: 5vmin;
+    width: 8em;
+}
+
+.help button {
+    border: none;
+    border-radius: 8px;
+    background-color: white;
+    color: black;
+    box-shadow: 0 0 8px 0 black;
+    padding: 1vmin;
+    padding-left: 2vmin;
+    padding-right: 2vmin;
+    font-size: 5vmin;
+}
