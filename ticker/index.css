@@ -235,3 +235,22 @@ html, body {
     padding-right: 2vmin;
     font-size: 5vmin;
 }
+
+.help .timerID {
+    margin: 3vmin;
+}
+
+.help .timerID input {
+    margin-left: 3vmin;
+}
+
+.help .usage {
+    margin: 3vmin;
+    text-align: left;
+    width: 60vmin;
+}
+
+.help .usage h3 {
+    text-align: left;
+    font-size: 4vmin;
+}
