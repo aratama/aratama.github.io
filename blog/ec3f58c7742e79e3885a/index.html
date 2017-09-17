@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@cubbit2"><meta name="twitter:creator" content="@cubbit2"><meta name="twitter:title" content="PureScriptのUIライブラリまとめ - ちょっと小さいのはたしかですが。"><meta name="twitter:description" content="# おすすめ
 
 * 選ぶのが面倒なら、ひとまず**Halogen**を選べばいいと思います。ElmやReact/Reduxに似ている**Pux**もわりと人気があるようです
-* [こちら](https://github.com/alexmingoia/purescript-pux"><meta name="twitter:image" content="https://aratama.github.io/blog/ec3f58c7742e79e3885a/thumbnail.jpg"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="icon.png"><link rel="stylesheet" href="/res/reset.css"><link rel="stylesheet" href="/res/style.css"><title>PureScriptのUIライブラリまとめ - ちょっと小さいのはたしかですが。</title><script src="//cdnjs.cloudflare.com/ajax/libs/maquette/2.4.1/maquette.min.js"></script><script src="/res/gears.js"></script><script>
+* [こちら](https://github.com/alexmingoia/purescript-pux"><meta name="twitter:image" content="https://aratama.github.io/blog/ec3f58c7742e79e3885a/thumbnail.jpg"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/icon.png"><link rel="stylesheet" href="/res/reset.css"><link rel="stylesheet" href="/res/style.css"><title>PureScriptのUIライブラリまとめ - ちょっと小さいのはたしかですが。</title><script src="//cdnjs.cloudflare.com/ajax/libs/maquette/2.4.1/maquette.min.js"></script><script src="/res/gears.js"></script><script>
                 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
                 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
                 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -13,7 +13,7 @@
 <li>選ぶのが面倒なら、ひとまず<strong>Halogen</strong>を選べばいいと思います。ElmやReact/Reduxに似ている<strong>Pux</strong>もわりと人気があるようです</li>
 <li><a href="https://github.com/alexmingoia/purescript-pux/issues/67">こちら</a>も参考になるかも</li>
 <li>ここに載っていないものがあったらぜひ教えてください</li>
-<li>なお、ここで紹介されているものは仮想DOM系のものばかりで、古典的なAPI設計のUIライブラリは皆無です。わざわざそんな不便なものを使う理由はないからです。</li>
+<li>なお、ここで紹介されているものの大半は仮想DOM系のものです。古典的なDOM操作によるUIライブラリはpurescript-domとpurescript-jqueryだけですが、わざわざそんな不便なものを使う理由はないです。</li>
 </ul>
 <h1>メンテナンスが継続されているor新しいライブラリ</h1>
 <h2><a href="https://github.com/slamdata/purescript-halogen">halogen</a></h2>
@@ -75,18 +75,18 @@
 <li>汎用のUIライブラリではない</li>
 <li><a href="http://sharkdp.github.io/try-flare/">Try Flare!</a> でブラウザ上で実験できる</li>
 </ul>
-<h2><a href="https://github.com/bodil/purescript-vdom">vdom</a></h2>
-<ul>
-<li>既存のJavaScript製ライブラリのバインディングではない、PureScript製の仮想DOM実装</li>
-<li>作っているのはpulpなんかも作っているBodilさん</li>
-<li>DOMのインターフェイスが抽象化されているので、サーバサイドレンダリングなんかもできるようです</li>
-<li>バインディングではオーバーヘッドが大きいから、PureScriptネイティブな仮想DOM実装あったらいいね、と誰かが言っていたのを見かけたきがしましたが、ついに実装する人が出てきたかと。期待してます</li>
-</ul>
 <h2><a href="https://github.com/slamdata/purescript-halogen-vdom">halogen-vdom</a></h2>
 <ul>
 <li>Halogenで使うために試験的に作られた低レベルな仮想DOM実装らしいです</li>
 </ul>
 <h1>あんまりメンテナンスされてないライブラリ</h1>
+<h2><a href="https://github.com/bodil/purescript-vdom">vdom</a></h2>
+<ul>
+<li>既存のJavaScript製ライブラリのバインディングではない、PureScript製の仮想DOM実装</li>
+<li>作っているのはpulpなんかも作っているBodilさん</li>
+<li>DOMのインターフェイスが抽象化されているので、サーバサイドレンダリングなんかもできるようです</li>
+<li>バインディングではオーバーヘッドが大きいから、PureScriptネイティブな仮想DOM実装あったらいいね、と誰かが言っていたのを見かけたきがしましたが、ついに実装する人が出てきたかと。~~期待してます~~ purescript-halogen-vdomが出てきたのでお役御免っぽい</li>
+</ul>
 <h2><a href="https://github.com/zrho/purescript-optic-ui/">optic-ui</a></h2>
 <ul>
 <li>中身はMatt-Esch/virtual-dom</li>
@@ -105,15 +105,24 @@
 </ul>
 <h2><a href="https://github.com/philopon/purescript-html">html</a></h2>
 <p>middle level virtual-dom binding for purescript.だそうです。なんかパフォーマンスがいいらしいです。</p>
-<h2><a href="https://github.com/mechairoi/purescript-frp-rabbit">purescript-frp-rabbit</a></h2>
+<h2><a href="https://github.com/mechairoi/purescript-frp-rabbit">frp-rabbit</a></h2>
 <ul>
 <li>ご注文はうさぎですか？</li>
+</ul>
+<h2><a href="https://github.com/natefaubion/purescript-spork">spork</a></h2>
+<ul>
+<li>Halogenも作ってるnatefaubionさんが作ったライブラリ</li>
+<li>中身はpurescript-halogen-vdom</li>
+<li>Elmっぽい感じ</li>
+<li>パフォーマンス重視っぽい</li>
+<li>試作品でいろいろ作りかけみたいです</li>
 </ul>
 <h1>直接使うのはおすすめできない</h1>
 <h2><a href="https://github.com/purescript-contrib/purescript-dom">dom</a></h2>
 <ul>
 <li>生DOM生バインディング</li>
 <li>各種UIライブラリの基礎部分として使われる低レベルなライブラリ</li>
+<li>と思いきや、実際には低レベルな部分でもほとんど使われてない</li>
 <li>型が厳密で純粋なPureScriptは生DOM操作とはとにかく相性が悪いので、『Halogenは難しいからひとまず生DOMで……』というのは本当にお勧めできません</li>
 <li>いろいろ面倒くさいのでメインに据えるのはまったくおすすめできない</li>
 <li>これ以外のUIフレームワークで対応しきれなくなったときだけ補助的に使うのが吉</li>
@@ -124,6 +133,8 @@
 <ul>
 <li>よほどjQueryに思い入れのある人以外おすすめできない。</li>
 <li>なぜこんなものがあるのか、存在意義が謎。</li>
+<li>何これ？</li>
+<li>誰が使うの？</li>
 <li><a href="https://github.com/purescript-contrib/purescript-jquery/issues/32">作った本人も使ってない</a>っておっしゃっています。</li>
 </ul>
 </div></article></div><footer><div class="sns"><a target="_blank" href="https://twitter.com/intent/tweet?text=PureScript%E3%81%AEUI%E3%83%A9%E3%82%A4%E3%83%96%E3%83%A9%E3%83%AA%E3%81%BE%E3%81%A8%E3%82%81%20-%20%E3%81%A1%E3%82%87%E3%81%A3%E3%81%A8%E5%B0%8F%E3%81%95%E3%81%84%E3%81%AE%E3%81%AF%E3%81%9F%E3%81%97%E3%81%8B%E3%81%A7%E3%81%99%E3%81%8C%E3%80%82 https%3A%2F%2Faratama.github.io%2Fblog%2Fec3f58c7742e79e3885a"><img src="/res/twitter.png" alt="twitter button"></a><a target="brank" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Faratama.github.io%2Fblog%2Fec3f58c7742e79e3885a&amp;t=PureScript%E3%81%AEUI%E3%83%A9%E3%82%A4%E3%83%96%E3%83%A9%E3%83%AA%E3%81%BE%E3%81%A8%E3%82%81%20-%20%E3%81%A1%E3%82%87%E3%81%A3%E3%81%A8%E5%B0%8F%E3%81%95%E3%81%84%E3%81%AE%E3%81%AF%E3%81%9F%E3%81%97%E3%81%8B%E3%81%A7%E3%81%99%E3%81%8C%E3%80%82"><img src="/res/facebook.png" alt="facebook button"></a><a target="brank" href="https://plus.google.com/share?url=https%3A%2F%2Faratama.github.io%2Fblog%2Fec3f58c7742e79e3885a"><img src="/res/google.png" alt="google plus button"></a><a target="brank" href="http://b.hatena.ne.jp/entry/https%3A%2F%2Faratama.github.io%2Fblog%2Fec3f58c7742e79e3885a"><img src="/res/hatena.png" alt="hatena bookmark button"></a><a target="brank" href="http://getpocket.com/edit?url=https%3A%2F%2Faratama.github.io%2Fblog%2Fec3f58c7742e79e3885a&amp;title=PureScript%E3%81%AEUI%E3%83%A9%E3%82%A4%E3%83%96%E3%83%A9%E3%83%AA%E3%81%BE%E3%81%A8%E3%82%81%20-%20%E3%81%A1%E3%82%87%E3%81%A3%E3%81%A8%E5%B0%8F%E3%81%95%E3%81%84%E3%81%AE%E3%81%AF%E3%81%9F%E3%81%97%E3%81%8B%E3%81%A7%E3%81%99%E3%81%8C%E3%80%82"><img src="/res/pocket.png" alt="pocket button"></a></div><div class="block-centered footer-inner"><p class="copy">&amp;nbsp;</p><p class="author">このブログを書いてる人: 竹内稲穂</p></div><script>

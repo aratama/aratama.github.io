@@ -1,15 +1,13 @@
-<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@cubbit2"><meta name="twitter:creator" content="@cubbit2"><meta name="twitter:title" content="純粋関数型スクリプト言語PureScriptのはじめかた。コンパイラの使いかたからサーバサイド/クライアントサイドアプリケーション開発まで - ちょっと小さいのはたしかですが。"><meta name="twitter:description" content="# はじめに
-
-&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;ja&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;&amp;quot;PureScript is more like Haskell than Haskell itself.&amp;q"><meta name="twitter:image" content="https://aratama.github.io/blog/2316b58162cfec150460/thumbnail.jpg"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="icon.png"><link rel="stylesheet" href="/res/reset.css"><link rel="stylesheet" href="/res/style.css"><title>純粋関数型スクリプト言語PureScriptのはじめかた。コンパイラの使いかたからサーバサイド/クライアントサイドアプリケーション開発まで - ちょっと小さいのはたしかですが。</title><script src="//cdnjs.cloudflare.com/ajax/libs/maquette/2.4.1/maquette.min.js"></script><script src="/res/gears.js"></script><script>
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@cubbit2"><meta name="twitter:creator" content="@cubbit2"><meta name="twitter:title" content="純粋関数型スクリプト言語PureScriptのはじめかた。コンパイラの使いかたからサーバサイド/クライアントサイドアプリケーション開発まで - ちょっと小さいのはたしかですが。"><meta name="twitter:description" content="&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;ja&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;&amp;quot;PureScript is more like Haskell than Haskell itself.&amp;quot; – `"><meta name="twitter:image" content="https://aratama.github.io/blog/2316b58162cfec150460/thumbnail.jpg"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/icon.png"><link rel="stylesheet" href="/res/reset.css"><link rel="stylesheet" href="/res/style.css"><title>純粋関数型スクリプト言語PureScriptのはじめかた。コンパイラの使いかたからサーバサイド/クライアントサイドアプリケーション開発まで - ちょっと小さいのはたしかですが。</title><script src="//cdnjs.cloudflare.com/ajax/libs/maquette/2.4.1/maquette.min.js"></script><script src="/res/gears.js"></script><script>
                 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
                 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
                 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
                 })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
                 ga('create', 'UA-61162129-3', 'auto');
                 ga('send', 'pageview');
-            </script></head><body><div class="background"></div><header><div class="sns"><a target="_blank" href="https://twitter.com/intent/tweet?text=%E7%B4%94%E7%B2%8B%E9%96%A2%E6%95%B0%E5%9E%8B%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88%E8%A8%80%E8%AA%9EPureScript%E3%81%AE%E3%81%AF%E3%81%98%E3%82%81%E3%81%8B%E3%81%9F%E3%80%82%E3%82%B3%E3%83%B3%E3%83%91%E3%82%A4%E3%83%A9%E3%81%AE%E4%BD%BF%E3%81%84%E3%81%8B%E3%81%9F%E3%81%8B%E3%82%89%E3%82%B5%E3%83%BC%E3%83%90%E3%82%B5%E3%82%A4%E3%83%89%2F%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88%E3%82%B5%E3%82%A4%E3%83%89%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E9%96%8B%E7%99%BA%E3%81%BE%E3%81%A7%20-%20%E3%81%A1%E3%82%87%E3%81%A3%E3%81%A8%E5%B0%8F%E3%81%95%E3%81%84%E3%81%AE%E3%81%AF%E3%81%9F%E3%81%97%E3%81%8B%E3%81%A7%E3%81%99%E3%81%8C%E3%80%82 https%3A%2F%2Faratama.github.io%2Fblog%2F2316b58162cfec150460"><img src="/res/twitter.png" alt="twitter button"></a><a target="brank" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Faratama.github.io%2Fblog%2F2316b58162cfec150460&amp;t=%E7%B4%94%E7%B2%8B%E9%96%A2%E6%95%B0%E5%9E%8B%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88%E8%A8%80%E8%AA%9EPureScript%E3%81%AE%E3%81%AF%E3%81%98%E3%82%81%E3%81%8B%E3%81%9F%E3%80%82%E3%82%B3%E3%83%B3%E3%83%91%E3%82%A4%E3%83%A9%E3%81%AE%E4%BD%BF%E3%81%84%E3%81%8B%E3%81%9F%E3%81%8B%E3%82%89%E3%82%B5%E3%83%BC%E3%83%90%E3%82%B5%E3%82%A4%E3%83%89%2F%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88%E3%82%B5%E3%82%A4%E3%83%89%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E9%96%8B%E7%99%BA%E3%81%BE%E3%81%A7%20-%20%E3%81%A1%E3%82%87%E3%81%A3%E3%81%A8%E5%B0%8F%E3%81%95%E3%81%84%E3%81%AE%E3%81%AF%E3%81%9F%E3%81%97%E3%81%8B%E3%81%A7%E3%81%99%E3%81%8C%E3%80%82"><img src="/res/facebook.png" alt="facebook button"></a><a target="brank" href="https://plus.google.com/share?url=https%3A%2F%2Faratama.github.io%2Fblog%2F2316b58162cfec150460"><img src="/res/google.png" alt="google plus button"></a><a target="brank" href="http://b.hatena.ne.jp/entry/https%3A%2F%2Faratama.github.io%2Fblog%2F2316b58162cfec150460"><img src="/res/hatena.png" alt="hatena bookmark button"></a><a target="brank" href="http://getpocket.com/edit?url=https%3A%2F%2Faratama.github.io%2Fblog%2F2316b58162cfec150460&amp;title=%E7%B4%94%E7%B2%8B%E9%96%A2%E6%95%B0%E5%9E%8B%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88%E8%A8%80%E8%AA%9EPureScript%E3%81%AE%E3%81%AF%E3%81%98%E3%82%81%E3%81%8B%E3%81%9F%E3%80%82%E3%82%B3%E3%83%B3%E3%83%91%E3%82%A4%E3%83%A9%E3%81%AE%E4%BD%BF%E3%81%84%E3%81%8B%E3%81%9F%E3%81%8B%E3%82%89%E3%82%B5%E3%83%BC%E3%83%90%E3%82%B5%E3%82%A4%E3%83%89%2F%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88%E3%82%B5%E3%82%A4%E3%83%89%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E9%96%8B%E7%99%BA%E3%81%BE%E3%81%A7%20-%20%E3%81%A1%E3%82%87%E3%81%A3%E3%81%A8%E5%B0%8F%E3%81%95%E3%81%84%E3%81%AE%E3%81%AF%E3%81%9F%E3%81%97%E3%81%8B%E3%81%A7%E3%81%99%E3%81%8C%E3%80%82"><img src="/res/pocket.png" alt="pocket button"></a></div><div class="block-centered"><div class="site-title"><a href="/">Admittedly <wbr>something <wbr>small.</a></div><div class="sub-title">ちょっと<wbr>小さいのは<wbr>たしかですが。</div></div></header><div class="content"><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" href="/res/article.css"><article id="rendered"><div class="date">2016年9月16日</div><h1 class="article-title"><a href=".">純粋関数型スクリプト言語PureScriptのはじめかた。コンパイラの使いかたからサーバサイド/クライアントサイドアプリケーション開発まで</a></h1><p class="tags"><a href="/blog/tag/JavaScript"><span class="tag"><i class="fa fa-tag"></i>JavaScript</span></a><a href="/blog/tag/Haskell"><span class="tag"><i class="fa fa-tag"></i>Haskell</span></a><a href="/blog/tag/purescript"><span class="tag"><i class="fa fa-tag"></i>purescript</span></a><a href="/blog/tag/関数型プログラミング"><span class="tag"><i class="fa fa-tag"></i>関数型プログラミング</span></a></p><hr><div><h1>はじめに</h1>
-<blockquote class="twitter-tweet" data-lang="ja"><p lang="en" dir="ltr">&quot;PureScript is more like Haskell than Haskell itself.&quot; – `<a href="https://twitter.com/thebeardedzug">@thebeardedzug</a></p>&mdash; Rahul Goma Phulore (@missingfaktor) <a href="https://twitter.com/missingfaktor/status/845400837841195009">2017年3月24日</a></blockquote>
+            </script></head><body><div class="background"></div><header><div class="sns"><a target="_blank" href="https://twitter.com/intent/tweet?text=%E7%B4%94%E7%B2%8B%E9%96%A2%E6%95%B0%E5%9E%8B%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88%E8%A8%80%E8%AA%9EPureScript%E3%81%AE%E3%81%AF%E3%81%98%E3%82%81%E3%81%8B%E3%81%9F%E3%80%82%E3%82%B3%E3%83%B3%E3%83%91%E3%82%A4%E3%83%A9%E3%81%AE%E4%BD%BF%E3%81%84%E3%81%8B%E3%81%9F%E3%81%8B%E3%82%89%E3%82%B5%E3%83%BC%E3%83%90%E3%82%B5%E3%82%A4%E3%83%89%2F%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88%E3%82%B5%E3%82%A4%E3%83%89%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E9%96%8B%E7%99%BA%E3%81%BE%E3%81%A7%20-%20%E3%81%A1%E3%82%87%E3%81%A3%E3%81%A8%E5%B0%8F%E3%81%95%E3%81%84%E3%81%AE%E3%81%AF%E3%81%9F%E3%81%97%E3%81%8B%E3%81%A7%E3%81%99%E3%81%8C%E3%80%82 https%3A%2F%2Faratama.github.io%2Fblog%2F2316b58162cfec150460"><img src="/res/twitter.png" alt="twitter button"></a><a target="brank" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Faratama.github.io%2Fblog%2F2316b58162cfec150460&amp;t=%E7%B4%94%E7%B2%8B%E9%96%A2%E6%95%B0%E5%9E%8B%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88%E8%A8%80%E8%AA%9EPureScript%E3%81%AE%E3%81%AF%E3%81%98%E3%82%81%E3%81%8B%E3%81%9F%E3%80%82%E3%82%B3%E3%83%B3%E3%83%91%E3%82%A4%E3%83%A9%E3%81%AE%E4%BD%BF%E3%81%84%E3%81%8B%E3%81%9F%E3%81%8B%E3%82%89%E3%82%B5%E3%83%BC%E3%83%90%E3%82%B5%E3%82%A4%E3%83%89%2F%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88%E3%82%B5%E3%82%A4%E3%83%89%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E9%96%8B%E7%99%BA%E3%81%BE%E3%81%A7%20-%20%E3%81%A1%E3%82%87%E3%81%A3%E3%81%A8%E5%B0%8F%E3%81%95%E3%81%84%E3%81%AE%E3%81%AF%E3%81%9F%E3%81%97%E3%81%8B%E3%81%A7%E3%81%99%E3%81%8C%E3%80%82"><img src="/res/facebook.png" alt="facebook button"></a><a target="brank" href="https://plus.google.com/share?url=https%3A%2F%2Faratama.github.io%2Fblog%2F2316b58162cfec150460"><img src="/res/google.png" alt="google plus button"></a><a target="brank" href="http://b.hatena.ne.jp/entry/https%3A%2F%2Faratama.github.io%2Fblog%2F2316b58162cfec150460"><img src="/res/hatena.png" alt="hatena bookmark button"></a><a target="brank" href="http://getpocket.com/edit?url=https%3A%2F%2Faratama.github.io%2Fblog%2F2316b58162cfec150460&amp;title=%E7%B4%94%E7%B2%8B%E9%96%A2%E6%95%B0%E5%9E%8B%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88%E8%A8%80%E8%AA%9EPureScript%E3%81%AE%E3%81%AF%E3%81%98%E3%82%81%E3%81%8B%E3%81%9F%E3%80%82%E3%82%B3%E3%83%B3%E3%83%91%E3%82%A4%E3%83%A9%E3%81%AE%E4%BD%BF%E3%81%84%E3%81%8B%E3%81%9F%E3%81%8B%E3%82%89%E3%82%B5%E3%83%BC%E3%83%90%E3%82%B5%E3%82%A4%E3%83%89%2F%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88%E3%82%B5%E3%82%A4%E3%83%89%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E9%96%8B%E7%99%BA%E3%81%BE%E3%81%A7%20-%20%E3%81%A1%E3%82%87%E3%81%A3%E3%81%A8%E5%B0%8F%E3%81%95%E3%81%84%E3%81%AE%E3%81%AF%E3%81%9F%E3%81%97%E3%81%8B%E3%81%A7%E3%81%99%E3%81%8C%E3%80%82"><img src="/res/pocket.png" alt="pocket button"></a></div><div class="block-centered"><div class="site-title"><a href="/">Admittedly <wbr>something <wbr>small.</a></div><div class="sub-title">ちょっと<wbr>小さいのは<wbr>たしかですが。</div></div></header><div class="content"><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" href="/res/article.css"><article id="rendered"><div class="date">2016年9月16日</div><h1 class="article-title"><a href=".">純粋関数型スクリプト言語PureScriptのはじめかた。コンパイラの使いかたからサーバサイド/クライアントサイドアプリケーション開発まで</a></h1><p class="tags"><a href="/blog/tag/JavaScript"><span class="tag"><i class="fa fa-tag"></i>JavaScript</span></a><a href="/blog/tag/Haskell"><span class="tag"><i class="fa fa-tag"></i>Haskell</span></a><a href="/blog/tag/purescript"><span class="tag"><i class="fa fa-tag"></i>purescript</span></a><a href="/blog/tag/関数型プログラミング"><span class="tag"><i class="fa fa-tag"></i>関数型プログラミング</span></a></p><hr><div><blockquote class="twitter-tweet" data-lang="ja"><p lang="en" dir="ltr">&quot;PureScript is more like Haskell than Haskell itself.&quot; – `<a href="https://twitter.com/thebeardedzug">@thebeardedzug</a></p>&mdash; Rahul Goma Phulore (@missingfaktor) <a href="https://twitter.com/missingfaktor/status/845400837841195009">2017年3月24日</a></blockquote>
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+<h1>はじめに</h1>
 <p>スクリプト言語**<a href="http://www.purescript.org/">PureScript</a>**の開発環境構築から簡単なアプリケーションの作成までの手順を紹介します。この記事ではHalogenというユーザインターフェイスのフレームワークや、Hyperというサーバサイドフレームワークを動かすところまでを紹介しています。そのため、コマンドライン環境のような基本的な環境だけではなく、シングルページアプリケーションのような実用性の高いアプリケーションを作って試せるようになっています。ブラウザ環境で動けば、ウェブページに組み込んで自分が作ったアプリケーションを簡単に他の人に見せられますし、<a href="http://electron.atom.io/">Electron</a>を使って単独で動くウィンドウアプリケーションなんかも作ることができるなど夢が広がりますね。</p>
 <h2>PureScriptとはどんな言語？</h2>
 <p>PureScriptにはいろいろな側面がありますが、まずは<strong>AltJS</strong>、つまりJavaScriptを主なコンパイルターゲットとする言語であるのが大きな特徴でしょう。ブラウザ環境やNode環境での実行が主眼に置かれており、JavaScriptでは難しかった大規模な開発に耐えうる極めて高い堅牢性や可読性を備えています。また、膨大なJavaScriptのライブラリ資産を比較的簡単に活用できるほか、PureScriptのソースコードとそこから出力されるJavaScriptコードを対比させながら学べるという利点もあります。なお、C++やErlangのバックエンドの開発も行われています。</p>
@@ -29,21 +27,65 @@
 <h1>Node環境での開発</h1>
 <p>まずは一番シンプルに、Nodeのコマンドライン環境でPureScriptコードを動かすところまで説明します。</p>
 <h2>コンパイラのインストール</h2>
-<p>何をするにも、まずはコンパイラが必要です。nodeがインストールしてあれば、最新版のコンパイラをインストールするには次のコマンド一発だけです。</p>
-<pre><code class="language-bash">$ npm install -g purescript
+<p>何をするにも、まずはコンパイラが必要です。nodeがインストールされていることを確認したら、次のコマンドで最新版のコンパイラ<strong>purs</strong>とビルドツール<strong>pulp</strong>、パッケージマネージャ<strong>bower</strong>をインストールしてください(もちろんBowerがすでにインストールされているのであれば省いて構いません)。</p>
+<pre><code class="language-bash">$ npm install --global purescript pulp bower
 </code></pre>
-<p>ここではグローバルにインストールしていますが、もちろんお好みでローカルにインストールしても構いません。コンパイル済みバイナリパッケージのインストールなら数十秒で終わると思います。</p>
-<h2>ソースファイルの作成</h2>
-<p>HelloWorldのソースファイルを作成しましょう。新しいプロジェクトのために適当なディレクトリを作成して、そこに<code>src/Main.purs</code>というファイルを作成し、次のようなコードをコピペして保存してください。PureScriptソースファイルの拡張子は<code>.purs</code>を使います。</p>
+<p>ここでは<code>--global</code>オプションをつけてグローバルにインストールしていますが、もちろんお好みでローカルにインストールしても構いません。</p>
+<h2>プロジェクトの作成</h2>
+<p>まずはプロジェクトを作成しましょう。どこかに空のディレクトリを作成して、そこに移動しましょう。そして<code>pulp init</code>コマンドを実行します。ここでは、<code>hello</code>ディレクトリを作って、その中で<code>pulp init</code>を実行しています。</p>
+<pre><code class="language-shell-session">$ mkdir hello
+$ cd hello
+$ pulp init
+</code></pre>
+<p>成功すると、次のようなファイルやディレクトリで構成されるサンプルプロジェクトが作成されると思います。</p>
+<ul>
+<li>.gitignore</li>
+<li>.purs-repl</li>
+<li>bower.json</li>
+<li>bower_components
+<ul>
+<li>...</li>
+</ul>
+</li>
+<li>src
+<ul>
+<li>Main.purs</li>
+</ul>
+</li>
+<li>test
+<ul>
+<li>Main.purs</li>
+</ul>
+</li>
+</ul>
+<p><code>src</code>がPureScriptソースコードを保存するディレクトリです。<code>src/Main.purs</code>というファイルを開いてみましょう。PureScriptソースファイルの拡張子は<code>.purs</code>を使います。次のようなコードが書かれているかと思います。</p>
 <pre><code class="language-haskell:src/Main.purs">module Main where
 
 import Prelude
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 
-main :: Eff (console :: CONSOLE) Unit
-main = log &quot;Hello, world!&quot;
+main :: forall e. Eff (console :: CONSOLE | e) Unit
+main = do
+  log &quot;Hello sailor!&quot;
+
 </code></pre>
+<h2>pulpを利用したビルドと実行</h2>
+<p>次に、このサンプルプロジェクトのプログラムを動かしてみましょう。アプリケーションを起動するには**<code>pulp run</code>コマンド**を実行します。<code>pulp run</code>を実行すると自動的に再ビルドも行われます。</p>
+<pre><code class="language-shell-session">$ pulp run
+* Building project in path/to/hello
+Compiling Data.Boolean
+Compiling Control.Semigroupoid
+
+...
+
+Compiling Main
+Compiling PSCI.Support
+* Build successful.
+Hello sailor!
+</code></pre>
+<p>こんな感じで、コンパイルされたモジュールの名前がだらーっと出力されたあと、アプリケーションが起動して<code>Hello sailor!</code>が出力されたことがわかります。</p>
+<p>なお、プログラムの実行はせずにビルドだけを行うには、<strong><code>pulp build</code>コマンド</strong>を使います。また、テストを実施するには**<code>pulp test</code>コマンド<strong>を使います。</strong><code>pulp test</code>コマンド**を実行すると、<code>src/Main.purs</code>にある<code>Main</code>モジュールではなく、<code>test/Main.purs</code>ファイルの<code>Test.Main</code>モジュールが実行されます。</p>
 <h2>PureScriptパッケージのインストール</h2>
 <p>PureScriptコンパイラには一切のライブラリが付属しておらず、コンパイラのみでは標準出力はおろか足し算すらできません。すべてのライブラリがコンパイラから完全に分離されているので、まずはプロジェクトにbowerで必要なPureScriptパッケージをインストールしなければなりません。標準出力を行うには<a href="https://pursuit.purescript.org/packages/purescript-console"><code>purescript-console</code>パッケージ</a>を使いますので、インストールしておきましょう。<code>bower install</code>でパッケージ名を指定するだけです。</p>
 <pre><code class="language-bash">$ bower install --save purescript-console

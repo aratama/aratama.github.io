@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@cubbit2"><meta name="twitter:creator" content="@cubbit2"><meta name="twitter:title" content="【翻訳】なぜPureScriptを使うべきなのか - ちょっと小さいのはたしかですが。"><meta name="twitter:description" content="
-この記事は[Phil Freeman, &quot;Why You Should Use PureScript&quot;](https://gist.github.com/paf31/adfd15fbb1ac8b99fc68be2c9aca8427)の邦訳です。この記事の原著者のフィルさんは、P"><meta name="twitter:image" content="https://aratama.github.io/blog/96a4a202a9a3471a9b4c/thumbnail.jpg"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="icon.png"><link rel="stylesheet" href="/res/reset.css"><link rel="stylesheet" href="/res/style.css"><title>【翻訳】なぜPureScriptを使うべきなのか - ちょっと小さいのはたしかですが。</title><script src="//cdnjs.cloudflare.com/ajax/libs/maquette/2.4.1/maquette.min.js"></script><script src="/res/gears.js"></script><script>
+この記事は[Phil Freeman, &quot;Why You Should Use PureScript&quot;](https://gist.github.com/paf31/adfd15fbb1ac8b99fc68be2c9aca8427)の邦訳です。この記事の原著者のフィルさんは、P"><meta name="twitter:image" content="https://aratama.github.io/blog/96a4a202a9a3471a9b4c/thumbnail.jpg"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/icon.png"><link rel="stylesheet" href="/res/reset.css"><link rel="stylesheet" href="/res/style.css"><title>【翻訳】なぜPureScriptを使うべきなのか - ちょっと小さいのはたしかですが。</title><script src="//cdnjs.cloudflare.com/ajax/libs/maquette/2.4.1/maquette.min.js"></script><script src="/res/gears.js"></script><script>
                 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
                 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
                 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -45,7 +45,7 @@
 <li>複雑なパターンマッチングで、すべての可能性を網羅しているか</li>
 <li>可変のデータ構造への参照が漏れていないか</li>
 <li>SQLインジェクション攻撃を回避する適切な手順が取られているか</li>
-<li>アプリケーションがうっかり<a href="https://hackage.haskell.org/package/acme-missiles-0.3/docs/Acme-Missiles.html">ミサイルを発射</a>を発射してしまわないか</li>
+<li>アプリケーションがうっかり<a href="https://hackage.haskell.org/package/acme-missiles-0.3/docs/Acme-Missiles.html">ミサイルを発射</a>してしまわないか</li>
 </ul>
 <p>PureScriptの型システムは、これらすべてのバグはもとより、さまざまなバグを確実に防ぐ手段を与えてくれます。</p>
 <h2>優れたレコード</h2>
@@ -92,8 +92,8 @@
 <p>まあ要するに、PureScriptコンパイラの開発にお金を出してくれるひとがいないということです。これはいつか変わることがあるかもしれませんが、今のところは長期間のサポートを期待するのは無理です。PureScriptは他のオープンソースライブラリと同じように扱うのをお勧めします。</p>
 <p>まあそうは言っても、でももしあなたがどうしてももっと良いサポートを必要としているのであれば、小銭と交換でってことになるかも知れませんね。</p>
 <h2>『ドキュメントが足りない』</h2>
-<p>高品質なドキュメントを提供するために最善を尽くしていますが、複雑な考え方をわかりやすく説明するのは難しい問題ではあります。</p>
-<p><a href="https://github.com/purescript/documentation">プルリクエストは歓迎です</a>! もしドキュメントを改善する方法について考えがあるのなら、ぜひ教えて下さい。でも、もし<code>Functor</code>を<code>Mappable</code>に改名するつもりはないと私たちが言ったとしても、どうか落ち着いてください。</p>
+<p>高品質なドキュメントを提供しようと最善を尽くしていますが、複雑な考え方をわかりやすく説明するのは難しい問題ではあります。</p>
+<p><a href="https://github.com/purescript/documentation">プルリクエストは歓迎です</a>! もしドキュメントを改善する方法について何かアイデアがあれば、ぜひ教えて下さい。でも、もし<code>Functor</code>を<code>Mappable</code>に改名するつもりはないと私たちが言ったとしても、どうか落ち着いてください。</p>
 <h2>『PureScriptは変更が早過ぎる』</h2>
 <p>PureScriptは1.0に到達するまでは破壊的変更が続くでしょうが、このマイルストーンはかなり近づいています。いろいろと安定してきていますし、0.12.0から1.0までは破壊的変更はあまり多くないと思います。</p>
 <h2>『Bowerは好きじゃない』</h2>
