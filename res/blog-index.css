@@ -14,6 +14,27 @@ article {
     transition-duration: 0.3s;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.4);
     background-color: rgba(255, 255, 255, 0.45);
+
+
+
+}
+
+
+div.pickups {
+    display: grid;
+    grid-template-columns: repeat(3, 260px);
+    grid-template-rows: repeat(1, 200px);
+    grid-row-gap: 60px;
+    grid-column-gap: 60px;    
+}
+
+div.recent {
+    display: grid;
+    grid-template-columns: repeat(3, 260px);
+    grid-template-rows: repeat(8, 200px);
+    grid-auto-flow: row;
+    grid-row-gap: 60px;
+    grid-column-gap: 60px;
 }
 
 
@@ -23,13 +44,19 @@ li {
 }
 
 .article-entry {
-    width: 260px;
 
+    /*
+    width: 260px;
     height: 200px; 
+*/
+
     list-style-type: none;
-    margin: 20px;
+    /* margin: 20px; */
     position: relative;
-    float: left;
+    
+    /* float: left; */
+
+    
     transition-property: all;
     transition-duration: 0.3s;    
 
@@ -38,13 +65,18 @@ li {
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4); 
 
     font-size: 14px;
+
+    width: 100%;
+    height: 100%;
 }
 
+/*
 .article-entry:hover {
     transform: scale(1.6);
     z-index: 100;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.4); 
 }
+*/
 
 .article-entry .thumbnail {
     background-size: cover;
@@ -89,75 +121,79 @@ li {
 
 
 
-.article-container > div.recent > a:nth-child(1) > div {
-    width: 560px;
-    height: 440px;
+.article-container > h2 {
+    margin-top: 40px;
+    margin-bottom: 40px;
 }
 
-.article-container > div.recent > a:nth-child(2) > div {
-    height: 440px;
+.article-container > div.recent > a:nth-child(1) {
+    grid-column-end: span 2;
+    grid-row-end: span 2;
 }
 
-.article-container > div.recent > a:nth-child(3) > div {
-    width: 860px;
+.article-container > div.recent > a:nth-child(2) {
+    grid-column-end: span 1;
+    grid-row-end: span 2;
 }
 
-.article-container > div.recent > a:nth-child(4) > div {
-    height: 440px;
+.article-container > div.recent > a:nth-child(3) {
+    grid-column-end: span 3;
+    grid-row-end: span 1;
 }
 
-.article-container > div.recent > a:nth-child(7) > div {
-    width: 560px;
+.article-container > div.recent > a:nth-child(4) {
+    grid-column-end: span 1;
+    grid-row-end: span 2;
 }
 
-.article-container > div.recent > a:nth-child(11) > div {
-    width: 560px;
+.article-container > div.recent > a:nth-child(7) {
+    grid-column-end: span 2;
+    grid-row-end: span 1;
 }
 
-.article-container > div.recent > a:nth-child(17) > div {
-    width: 560px;
+.article-container > div.recent > a:nth-child(11) {
+    grid-column-end: span 2;
+    grid-row-end: span 1;
 }
 
-.article-container > div.recent > a:nth-child(18) > div {
-    width: 560px;
-    height: 440px;    
+.article-container > div.recent > a:nth-child(17) {
+    grid-column-end: span 2;
+    grid-row-end: span 1;
 }
-
-.article-container > div.recent > a:nth-child(22) > div {
-    width: 560px;
-}
-
-.article-container > div.recent > a:nth-child(26) > div {
-    width: 560px;
-}
-
-.article-container > div.recent > a:nth-child(32) > div {
-    width: 560px;
-}
-
-.article-container > div.recent > a:nth-child(36) > div {
-    width: 560px;
-}
-
-.article-container > div.recent > a:nth-child(42) > div {
-    width: 560px;
-}
-
-.article-container > div.recent > a:nth-child(43) > div {
-    width: 560px;
-    height: 440px;        
-}
-
-.article-container > div.recent > a:nth-child(44) > div {
-    height: 440px;        
-}
-
 
 .article-container h2 {
     border-bottom: solid 1px grey;
     clear: both;
     font-size: 12px;
     letter-spacing: 0.5em;
+}
+
+
+.tagLists {
+    margin-top: 20px;
+}
+
+.tagLists > .tagList {
+    width: 100%;
+    background-color: white;
+    display: block;
+    text-align: center;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
+    padding: 1.5em;
+    text-decoration: none;
+    color: black;
+}
+
+.article-container .articles {
+    margin-top: 60px;
+    width: 100%;
+    background-color: white;
+    display: block;
+    text-align: center;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
+    padding: 1.5em;
+    text-decoration: none;
+    color: black;
 }
 
 
