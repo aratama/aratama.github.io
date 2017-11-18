@@ -201,16 +201,24 @@ li {
         transform: none;
     }
 
+    div.pickups {
+        display: block;
+    }
+
+    div.recent {
+        display: block;
+    }
+
     .article-entry {
         width: 100% !important;
         height: initial !important; 
         margin: 0px;
         margin-top: 22px;
         padding: 0px;
-        float: none;
+        display: block;
     }
 
-    .article-entry .thumbnail {
+    .article-entry > .thumbnail {
         height: 80px;
     }
 
