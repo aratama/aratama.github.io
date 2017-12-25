@@ -86,6 +86,7 @@ li {
     color: black;
     transition-property: all; 
     transition-duration: 0.3s;
+    pointer-events: none;
 }
 
 
