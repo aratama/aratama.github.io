@@ -1,0 +1,15 @@
+{
+  "short_name": "Capriccio",
+  "name": "Capriccio",
+  "icons": [
+    {
+      "src": "favicon.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ],
+  "start_url": "./index.html",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
