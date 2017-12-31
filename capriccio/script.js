@@ -11,7 +11,7 @@ const instruments = {
     "Crash Cymbal": "Crash-Cymbal-1.wav",
     "Hi Hat": "Closed-Hi-Hat-1.wav",
     "Snare": "Hip-Hop-Snare-1.wav",
-    "Bass Drum": "Bass-Drum-2.wav"
+    "Bass Drum": "Dry-Kick.wav"
 };
 
 async function initializeAudio(){
