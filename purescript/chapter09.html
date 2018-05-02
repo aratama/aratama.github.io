@@ -65,7 +65,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
     </header>
 
     <div class="markdown-body content">
-      <p class="previous" style="visibility:hidden;"><a href="index.html">&lt; 目次に戻る</a></p>
+      <p class="home" style="visibility:hidden;"><a href="index.html">&lt; 目次に戻る</a></p>
 <h1 id="キャンバスグラフィックス"><span class="header-section-number">9</span> キャンバスグラフィックス</h1>
 <h2 id="この章の目標"><span class="header-section-number">9.1</span> この章の目標</h2>
 <p>この章のコード例では、PureScriptでHTML5のCanvas APIを使用して2Dグラフィックスを生成する <code>purescript-canvas</code>パッケージに焦点をあててコードを拡張していきます。</p>
@@ -83,8 +83,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">main <span class="fu">=</span> void <span class="fu">$</span> unsafePartial <span class="kw">do</span>
   <span class="dt">Just</span> canvas <span class="ot">&lt;-</span> getCanvasElementById <span class="st">&quot;canvas&quot;</span>
   ctx <span class="ot">&lt;-</span> getContext2D canvas</code></pre></div>
-<p><strong>注意</strong>：<code>unsafePartial</code>への呼び出しはここでは必要です。これは <code>getCanvasElementById</code>の結果のパターンマッチングが部分的であり、 <code>Just</code>値コンストラクタだけにマッチするためです。ここではこれで問題ありませんが、プロダクションコードではおそらく <code>Nothing</code>値コンストラクタにマッチさせ、適切なエラーメッセージを提供したほうがよいでしょう。</p>
-<p>これらのアクションの型は <code>PSCi</code>を使うかドキュメントを見ると確認できます。</p>
+<p><strong>注意</strong>：この<code>unsafePartial</code>の呼び出しは必須です。これは <code>getCanvasElementById</code>の結果のパターンマッチングが部分的で、<code>Just</code>値構築子だけと照合するためです。ここではこれで問題ありませんが、実際の製品のコードではおそらく<code>Nothing</code>値構築子と照合させ、適切なエラーメッセージを提供したほうがよいでしょう。</p>
+<p>これらのアクションの型は、<code>PSCi</code>を使うかドキュメントを見ると確認できます。</p>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">getCanvasElementById ::</span> forall eff<span class="fu">.</span> <span class="dt">String</span> <span class="ot">-&gt;</span>
   <span class="dt">Eff</span> (<span class="ot">canvas ::</span> <span class="dt">Canvas</span> <span class="fu">|</span> eff) (<span class="dt">Maybe</span> <span class="dt">CanvasElement</span>)
 
@@ -106,7 +106,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
     , w<span class="fu">:</span> <span class="fl">100.0</span>
     , h<span class="fu">:</span> <span class="fl">100.0</span>
     }</code></pre></div>
-<p>mainモジュールに <code>Example.Rectangle</code>の名前を与え、この長方形のコード例をビルドしましょう。</p>
+<p>mainモジュールの名前として<code>Example.Rectangle</code>を指定して、この長方形のコード例をビルドしましょう。</p>
 <pre class="text"><code>$ mkdir dist/
 $ pulp build -O --main Example.Rectangle --to dist/Main.js</code></pre>
 <p>それでは <code>html/index.html</code>ファイルを開き、このコードによってキャンバスの中央に青い四角形が描画されていることを確認してみましょう。</p>
@@ -163,9 +163,9 @@ translate dx dy shape <span class="fu">=</span> shape
 <li><code>closePath</code>は開始位置と現在位置を結ぶ線分を描画し、パスを閉じます。</li>
 </ul>
 <p>このコード片を実行すると、二等辺三角形を塗りつぶされます。</p>
-<p><code>Example.Shapes</code>をmainモジュールとして指定して、この例をビルドしましょう。</p>
+<p>mainモジュールとして<code>Example.Shapes</code>を指定して、この例をビルドしましょう。</p>
 <pre class="text"><code>$ pulp build -O --main Example.Shapes --to dist/Main.js</code></pre>
-<p>そしてもう一度 <code>html/index.html</code>を開き、結果を確認して下さい。キャンバスに３つの異なる型が描画されるはずです。</p>
+<p>そしてもう一度 <code>html/index.html</code>を開き、結果を確認してください。キャンバスに３つの異なる図形が描画されるはずです。</p>
 <blockquote>
 <h2 id="演習" class="unnumbered">演習</h2>
 <ol type="1">
@@ -189,7 +189,7 @@ translate dx dy shape <span class="fu">=</span> shape
   setStrokeStyle <span class="st">&quot;#000000&quot;</span> ctx</code></pre></div>
 <p>次のコードでは <code>forE</code>アクションを使って <code>0</code>から <code>100</code>までの整数について繰り返しをしています。</p>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">  for_ (<span class="dv">1</span> <span class="fu">..</span> <span class="dv">100</span>) \_ <span class="ot">-&gt;</span> <span class="kw">do</span></code></pre></div>
-<p>これらの数は <code>0</code>から <code>1</code>の間に無作為に分布しています。これらはそれぞれ <code>x</code>座標、 <code>y</code>座標、半径 <code>r</code>を表しています。</p>
+<p>これらの数は <code>0</code>から <code>1</code>の間に無作為に分布しており、それぞれ <code>x</code>座標、 <code>y</code>座標、半径 <code>r</code>を表しています。</p>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">    x <span class="ot">&lt;-</span> random
     y <span class="ot">&lt;-</span> random
     r <span class="ot">&lt;-</span> random</code></pre></div>
@@ -204,7 +204,7 @@ translate dx dy shape <span class="fu">=</span> shape
     fillPath ctx path
     strokePath ctx path</code></pre></div>
 <p><code>forE</code>に渡された関数が正しい型を持つようにするため、最後の行は必要であることに注意してください。</p>
-<p><code>Example.Random</code>をmainモジュールとして指定して、この例をビルドしましょう。</p>
+<p>mainモジュールとして<code>Example.Random</code>を指定して、この例をビルドしましょう。</p>
 <pre class="text"><code>$ pulp build -O --main Example.Random --to dist/Main.js</code></pre>
 <p><code>html/index.html</code>を開いて、結果を確認してみましょう。</p>
 <h2 id="座標変換"><span class="header-section-number">9.6</span> 座標変換</h2>
@@ -449,12 +449,12 @@ M -&gt; MRFRMLFLMLFLMRFRM</code></pre>
            <span class="fu">|</span> <span class="fu">...</span></code></pre></div>
 <p>この手法は <code>purescript-drawing</code>パッケージでも採用されており、描画前にさまざまな方法でデータとしてシーンを操作することができるという柔軟性をもたらしています。</p>
 <p>次の章では、PureScriptの<strong>外部関数インタフェース</strong>(foreign function interface)を使って、既存のJavaScriptの関数をラップした <code>purescript-canvas</code>のようなライブラリを実装する方法について説明します。</p>
-      <p class="previous" style="visibility:hidden;"><a href="index.html">&lt; 目次に戻る</a></p>
+      <p class="home" style="visibility:hidden;"><a href="index.html">&lt; 目次に戻る</a></p>
     </div>
 
     <script>
         if(location.pathname !== "/purescript/" && location.pathname !== "/purescript/index.html"){
-            Array.prototype.forEach.call(document.querySelectorAll(".previous"), function(elem){
+            Array.prototype.forEach.call(document.querySelectorAll(".home"), function(elem){
                 elem.style.visibility = "visible";
             });
         }
