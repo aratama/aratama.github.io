@@ -259,7 +259,9 @@ Nothing</code></pre>
 <ol type="1">
 <li><p>(簡単)<code>lift2</code>を使って、オプショナルな引数に対して働く、数に対する演算子 <code>+</code>、 <code>-</code>、 <code>*</code>、 <code>/</code>の持ち上げられたバージョンを書いてください。</p></li>
 <li><p>(やや難しい) 上で与えられた <code>lift3</code>の定義について、 <code>&lt;$&gt;</code>と <code>&lt;*&gt;</code>の型が整合していることを確認して下さい。</p></li>
-<li><p>(難しい) 型 <code>forall a f. (Applicative f) =&gt; Maybe (f a) -&gt; f (Maybe a)</code>を持つ関数 <code>combineMaybe</code>を書いてください。この関数は副作用をもつオプショナルな計算をとり、オプショナルな結果をもつ副作用のある計算を返します。</p></li>
+<li><p>(難しい) 次の型を持つ関数<code>combineMaybe</code>を書いてください。</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">combineMaybe <span class="fu">:</span> forall a f<span class="fu">.</span> (<span class="dt">Applicative</span> f) <span class="ot">=&gt;</span> <span class="dt">Maybe</span> (f a) <span class="ot">-&gt;</span> f (<span class="dt">Maybe</span> a)</code></pre></div>
+<p>この関数は副作用をもつオプショナルな計算をとり、オプショナルな結果をもつ副作用のある計算を返します。</p></li>
 </ol>
 </blockquote>
 <h2 id="applicativeによる検証-1"><span class="header-section-number">7.9</span> Applicativeによる検証</h2>
