@@ -95,20 +95,20 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul>
 <p>この章ではこれらのツールのインストール方法と設定を説明します。</p>
 <h2 id="purescriptのインストール"><span class="header-section-number">2.3</span> PureScriptのインストール</h2>
-<p>PureScriptコンパイラをインストールするときにお勧めなのは、<a href="http://purescript.org">PureScriptのウェブサイト</a>からバイナリディストリビューションとしてダウンロードする方法です。 PureScriptコンパイラおよび関連する実行ファイルがパス上で利用できるかどうか確認をしてください。確認のために、コマンドラインでPureScriptコンパイラを実行してみましょう。</p>
+<p>PureScriptコンパイラをインストールするときにお勧めなのは、<a href="http://purescript.org">PureScriptのウェブサイト</a>からバイナリ配布物としてダウンロードする方法です。PureScriptコンパイラおよび関連する実行ファイルが、パス上で利用できるかどうか確認をしてください。試しに、コマンドラインでPureScriptコンパイラを実行してみましょう。</p>
 <pre class="text"><code>$ purs</code></pre>
 <p>PureScriptコンパイラをインストールする他の選択肢としては、次のようなものがあります。</p>
 <ul>
-<li>NPMを使用する: <code>npm install -g purescript</code></li>
-<li>ソースコードからコンパイルを行う。この方法については、PureScriptのWebサイトが参考になります</li>
+<li>NPMを使用する。<code>npm install -g purescript</code></li>
+<li>ソースコードからコンパイルを行う。この方法については、PureScriptのWebサイトが参考になります。</li>
 </ul>
 <h2 id="各ツールのインストール"><span class="header-section-number">2.4</span> 各ツールのインストール</h2>
 <p>もし<a href="http://nodejs.org/">NodeJS</a>がインストールされていないなら、NodeJSをインストールする必要があります。そうするとシステムに <code>npm</code>パッケージマネージャもインストールされるはずです。 <code>npm</code>がインストールされ、パス上で利用可能であることを確認してください。</p>
-<p><code>npm</code>がインストールされたら、 <code>pulp</code>と <code>bower</code>もインストールする必要があります。プロジェクトがどこで作業しているかにかかわらずこれらのコマンドラインツールを利用可能にするため、通常はグローバルにインストールしておくのがいいでしょう。</p>
+<p><code>npm</code>がインストールされたら、 <code>pulp</code>と <code>bower</code>もインストールする必要があります。プロジェクトがどこで作業しているかにかかわらずこれらのコマンドラインツールが利用可能であるようにするため、通常はグローバルにインストールしておくのがいいでしょう。</p>
 <pre class="text"><code>$ npm install -g pulp bower</code></pre>
 <p>これで、最初のPureScriptプロジェクトを作成するために必要なすべてのツールの用意ができたことになります。</p>
 <h2 id="hello-purescript"><span class="header-section-number">2.5</span> Hello, PureScript!</h2>
-<p>まずはシンプルに始めましょう。PureScriptコンパイラ <code>pulp</code>を直接使用して、基本的なHello World! プログラムをコンパイルします。 まず最初に、空のディレクトリ <code>my-project</code>を作成し、そこで <code>pulp init</code>を実行し ます。</p>
+<p>まずはシンプルに始めましょう。PureScriptコンパイラ<code>pulp</code>を直接使用して、基本的なHello World! プログラムをコンパイルします。 最初に空のディレクトリ<code>my-project</code>を作成し、そこで<code>pulp init</code>を実行します。</p>
 <pre class="text"><code>$ mkdir my-project
 $ cd my-project
 $ pulp init
@@ -118,8 +118,8 @@ $ pulp init
 $ ls
 
 bower.json  src     test</code></pre>
-<p>Pulpは2つのディレクトリ <code>src</code>、 <code>test</code>と設定ファイル <code>bower.json</code>を作成してくれます。 <code>src</code>ディレクトリにはソースコードファイルを保存し、 <code>test</code>ディレクトリにはテストコードファイルを保存します。 <code>test</code>ディレクトリについては、この本の後半で使用します。</p>
-<p><code>src/Main.purs</code>という名前のファイルに、以下のコードを貼り付けます。</p>
+<p>Pulpは<code>src</code>と<code>test</code>という2つのディレクトリと設定ファイル<code>bower.json</code>を作成してくれます。<code>src</code>ディレクトリにはソースコードファイルを保存し、<code>test</code>ディレクトリにはテストコードファイルを保存します。<code>test</code>ディレクトリはこの本の後半で使います。</p>
+<p><code>src/Main.purs</code>という名前のファイルに、以下のコードを貼り付けてください。</p>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">module</span> <span class="dt">Main</span> <span class="kw">where</span>
 
 <span class="kw">import </span><span class="dt">Control.Monad.Eff.Console</span>
@@ -146,7 +146,7 @@ Hello, World!</code></pre>
 * Building project in ~/my-project
 * Build successful.
 * Browserifying...</code></pre>
-<p>これに続いて、大量のJavaScriptコードがコンソールに表示されます。 これは<a href="http://browserify.org/">Browserify</a>ツールの出力で、<strong>Prelude</strong>と呼ばれる標準のPureScriptライブラリに加えて、 <code>src</code>ディレクトリのコードにも適用されます。 このJavaScriptコードをファイルに保存し、HTML文書に含めることもできます。 これを試しに実行してみると、ブラウザのコンソールに&quot;Hello、World！&quot;という文章が出力されます。</p>
+<p>これに続いて、大量のJavaScriptコードがコンソールに表示されます。 これは<a href="http://browserify.org/">Browserify</a>の出力で、<strong>Prelude</strong>と呼ばれる標準のPureScriptライブラリに加え、<code>src</code>ディレクトリのコードにも適用されます。このJavaScriptコードをファイルに保存し、HTML文書に含めることもできます。これを試しに実行してみると、ブラウザのコンソールに&quot;Hello、World！&quot;という文章が出力されます。</p>
 <h2 id="使用されていないコードを取り除く"><span class="header-section-number">2.7</span> 使用されていないコードを取り除く</h2>
 <p>Pulpは代替コマンド <code>pulp build</code>を提供しています。 <code>-O</code>オプションで<strong>未使用コードの削除</strong>を適用すると、不要なJavaScriptを出力から取り除くことができます。</p>
 <pre class="text"><code>$ pulp build -O --to output.js
