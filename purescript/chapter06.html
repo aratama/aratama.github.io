@@ -69,7 +69,7 @@
 <p>型クラスの最初に扱う例は、すでに何回か見てきた関数に関係します。 <code>show</code>は何らかの値を取りそれを文字列として表示する関数です。</p>
 <p><code>show</code>は <code>Prelude</code>モジュールの <code>Show</code>と呼ばれる型クラスで次のように定義されています。</p>
 <pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-type">Show</span> a <span class="hljs-keyword">where</span></span>
-  show :: a -&gt; <span class="hljs-type">String</span>
+  show :: a -> <span class="hljs-type">String</span>
 </code></pre>
 <p>このコードでは、型変数 <code>a</code>でパラメータ化された、 <code>Show</code>という新しい<strong>型クラス</strong>(type class)を宣言しています。</p>
 <p>型クラス<strong>インスタンス</strong>には、型クラスで定義された関数の、その型に特殊化された実装が含まれています。</p>
@@ -135,7 +135,7 @@ No type class instance was found for
 <h3>Eq型クラス</h3>
 <p><code>Eq</code>型クラスは、2つの値が等しいかどうかを調べる<code>eq</code>関数を定義しています。等値演算子(<code>==</code>)は<code>eq</code>の別名にすぎません。</p>
 <pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-type">Eq</span> a <span class="hljs-keyword">where</span></span>
-  eq :: a -&gt; a -&gt; <span class="hljs-type">Boolean</span>
+  eq :: a -> a -> <span class="hljs-type">Boolean</span>
 </code></pre>
 <p>異なる型の2つの値を比較しても意味がありませんから、いずれの演算子も2つの引数が同じ型を持つ必要があることに注意してください。</p>
 <p><code>PSCi</code>で <code>Eq</code>型クラスを試してみましょう。</p>
@@ -149,8 +149,8 @@ true
 <p><code>Ord</code>型クラスは順序付け可能な型に対して2つの値を比較する <code>compare</code>関数を定義します。 <code>compare</code>関数が定義されていると、比較演算子 <code><</code>、 <code>></code>と、その仲間 <code><=</code>、 <code>>=</code>も定義されます。</p>
 <pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">data</span> <span class="hljs-type">Ordering</span> = <span class="hljs-type">LT</span> | <span class="hljs-type">EQ</span> | <span class="hljs-type">GT</span></span>
 <span class="hljs-class">
-<span class="hljs-keyword">class</span> <span class="hljs-type">Eq</span> a &lt;= <span class="hljs-type">Ord</span> a <span class="hljs-keyword">where</span></span>
-  compare :: a -&gt; a -&gt; <span class="hljs-type">Ordering</span>
+<span class="hljs-keyword">class</span> <span class="hljs-type">Eq</span> a <= <span class="hljs-type">Ord</span> a <span class="hljs-keyword">where</span></span>
+  compare :: a -> a -> <span class="hljs-type">Ordering</span>
 </code></pre>
 <p><code>compare</code>関数は2つの値を比較して <code>Ordering</code>の3つの値のうちいずれかを返します。</p>
 <ul>
@@ -168,30 +168,30 @@ LT
 <h3>Num型クラス</h3>
 <p><code>Field</code>型クラスは加算、減算、乗算、除算などの数値演算子を使用可能な型を示します。必要に応じて再利用できるように、これらの演算子を抽象化するわけです。</p>
 <p><strong>注意</strong>: 関数呼び出しが型クラスの実装に基いて呼び出されるのとは対照的に、型クラス <code>Eq</code>や <code>Ord</code>のクラスと同様に、 <code>Field</code>型のクラスはPureScriptでは特別に扱われ、 <code>1 + 2 * 3</code>のような単純な式は単純なJavaScriptへと変換されます。</p>
-<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EuclideanRing</span> <span class="hljs-title">a</span> &lt;</span>= Field a
+<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EuclideanRing</span> <span class="hljs-title">a</span> <</span>= Field a
 </code></pre>
 <p><code>Field</code>型クラスは、いくつかのより抽象的な<strong>上位クラス</strong>(Super Class)が組み合わさってできています。これは、その型は<code>Field</code>型クラスの操作をすべてを提供しているわけではないが、その一部を提供する、というように抽象的に説明することができます。この型クラスは抽象的なすべてではないいくつかの数値演算子をサポートしています。例えば、自然数の型は加算および乗算については閉じていますが、減算については閉じていないため、この型は<code>Semiring</code>クラス(これは<code>Num</code>の上位クラスです)のインスタンスですが、<code>Ring</code>や<code>Field</code>のインスタンスではありません。</p>
 <p>上位クラスについては、この章の後半で詳しく説明します。しかし、すべての数値型クラスの階層について述べるのはこの章の目的から外れているため、この内容に興味のある読者は<code>purescript-prelude</code>内の <code>Field</code>に関するドキュメントを参照してください。</p>
 <h3>半群とモノイド</h3>
 <p><code>Semigroup</code>(半群)型クラスは、連結演算子 <code>append</code>を提供する型を示します。</p>
 <pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-type">Semigroup</span> a <span class="hljs-keyword">where</span></span>
-  append :: a -&gt; a -&gt; a
+  append :: a -> a -> a
 </code></pre>
 <p>普通の文字列連結について文字列は半群をなし、同様に配列も半群をなします。その他の標準的なインスタンスの幾つかは、 <code>purescript-monoid</code>パッケージで提供されています。</p>
 <p>以前に見た <code><></code>連結演算子は、 <code>append</code>の別名として提供されています。</p>
 <p><code>purescript-monoid</code>パッケージで提供されている <code>Monoid</code>型クラスは、 <code>mempty</code>と呼ばれる空の値の概念で <code>Semigroup</code>型クラスを拡張します。</p>
-<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-type">Semigroup</span> m &lt;= <span class="hljs-type">Monoid</span> m <span class="hljs-keyword">where</span></span>
+<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-type">Semigroup</span> m <= <span class="hljs-type">Monoid</span> m <span class="hljs-keyword">where</span></span>
   mempty :: m
 </code></pre>
 <p>文字列や配列はモノイドの簡単な例になっています。</p>
 <p><code>Monoid</code>型クラスインスタンスでは、「空」の値から始めて新たな値を合成していき、その型で<strong>累積</strong>した結果を返すにはどうするかを記述する型クラスです。例えば、畳み込みを使っていくつかのモノイドの値の配列を連結する関数を書くことができます。 <code>PSCi</code>で試すと次のようになります。</p>
-<pre><code class="language-haskell">&gt; <span class="hljs-keyword">import</span> Data.Monoid
-&gt; <span class="hljs-keyword">import</span> Data.Foldable
+<pre><code class="language-haskell">> <span class="hljs-keyword">import</span> Data.Monoid
+> <span class="hljs-keyword">import</span> Data.Foldable
 
-&gt; foldl append mempty [<span class="hljs-string">"Hello"</span>, <span class="hljs-string">" "</span>, <span class="hljs-string">"World"</span>]  
+> foldl append mempty [<span class="hljs-string">"Hello"</span>, <span class="hljs-string">" "</span>, <span class="hljs-string">"World"</span>]  
 <span class="hljs-string">"Hello World"</span>
 
-&gt; foldl append mempty [[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], [<span class="hljs-number">4</span>, <span class="hljs-number">5</span>], [<span class="hljs-number">6</span>]]
+> foldl append mempty [[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], [<span class="hljs-number">4</span>, <span class="hljs-number">5</span>], [<span class="hljs-number">6</span>]]
 [<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>]
 </code></pre>
 <p><code>purescript-monoid</code>パッケージにはモノイドと半群の多くの例を提供しており、これらを本書で扱っていきます。</p>
@@ -200,9 +200,9 @@ LT
 <p>また、 <code>Foldable</code>型クラスは、配列や <code>Maybe</code>などのいくつかの標準的なコンテナのインスタンスを含む <code>purescript-foldable-traversable</code>パッケージで提供されています。</p>
 <p><code>Foldable</code>クラスに属する関数の型シグネチャは、これまで見てきたものよりも少し複雑です。</p>
 <pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-type">Foldable</span> f <span class="hljs-keyword">where</span></span>
-  foldr :: <span class="hljs-keyword">forall</span> a b. (a -&gt; b -&gt; b) -&gt; b -&gt; f a -&gt; b
-  foldl :: <span class="hljs-keyword">forall</span> a b. (b -&gt; a -&gt; b) -&gt; b -&gt; f a -&gt; b
-  foldMap :: <span class="hljs-keyword">forall</span> a m. <span class="hljs-type">Monoid</span> m =&gt; (a -&gt; m) -&gt; f a -&gt; m
+  foldr :: <span class="hljs-keyword">forall</span> a b. (a -> b -> b) -> b -> f a -> b
+  foldl :: <span class="hljs-keyword">forall</span> a b. (b -> a -> b) -> b -> f a -> b
+  foldMap :: <span class="hljs-keyword">forall</span> a m. <span class="hljs-type">Monoid</span> m => (a -> m) -> f a -> m
 </code></pre>
 <p>この定義は <code>f</code>を配列の型構築子だと特殊化して考えてみるとわかりやすくなります。この場合、すべての <code>a</code>について <code>f a</code>を <code>Array a</code>に置き換える事ができますが、 <code>foldl</code>と <code>foldr</code>の型が、最初に見た配列に対する畳み込みの型になるとわかります。</p>
 <p><code>foldMap</code>についてはどうでしょうか？これは <code>forall a m. Monoid m => (a -> m) -> Array a -> m</code>になります。この型シグネチャは、型 <code>m</code>が <code>Monoid</code>型クラスのインスタンスであればどんな型でも返り値の型として選ぶことができると言っています。配列の要素をそのモノイドの値へと変換する関数を提供すれば、そのモノイドの構造を利用して配列を畳み込み、ひとつの値にして返すことができます。</p>
@@ -217,7 +217,7 @@ LT
 <h3>関手と型クラス則</h3>
 <p>PureScriptで副作用を伴う関数型プログラミングのスタイルを可能にするための <code>Functor</code>と <code>Applicative</code>、 <code>Monad</code>といった型クラスがPreludeでは定義されています。これらの抽象については本書で後ほど扱いますが、まずは「持ち上げ演算子」 <code>map</code>の形ですでに見てきた <code>Functor</code>型クラスの定義を見てみましょう。</p>
 <pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-type">Functor</span> f <span class="hljs-keyword">where</span></span>
-  map :: <span class="hljs-keyword">forall</span> a b. (a -&gt; b) -&gt; f a -&gt; f b
+  map :: <span class="hljs-keyword">forall</span> a b. (a -> b) -> f a -> f b
 </code></pre>
 <p>演算子 <code>map</code>関数（別名<code><$></code>）は関数をそのデータ構造まで「持ち上げる」(lift)ことができます。ここで「持ち上げ」という言葉の具体的な定義は問題のデータ構造に依りますが、すでにいくつかの単純な型についてその動作を見てきました。</p>
 <pre><code class="language-text">> import Prelude
@@ -256,19 +256,19 @@ LT
 <p><code>Complex</code>について、 <code>Show</code>と <code>Eq</code>のインスタンスを定義してください。</p>
 <h2>6.5 型注釈</h2>
 <p>型クラスを使うと、関数の型に制約を加えることができます。例を示しましょう。 <code>Eq</code>型クラスのインスタンスで定義された等値性を使って、３つの値が等しいかどうかを調べる関数を書きたいとします。</p>
-<pre><code class="language-haskell"><span class="hljs-title">threeAreEqual</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Eq</span> a =&gt; a -&gt; a -&gt; a -&gt; <span class="hljs-type">Boolean</span>
-<span class="hljs-title">threeAreEqual</span> a1 a2 a3 = a1 == a2 &amp;&amp; a2 == a3
+<pre><code class="language-haskell"><span class="hljs-title">threeAreEqual</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Eq</span> a => a -> a -> a -> <span class="hljs-type">Boolean</span>
+<span class="hljs-title">threeAreEqual</span> a1 a2 a3 = a1 == a2 && a2 == a3
 </code></pre>
 <p>この型宣言は <code>forall</code>を使って定義された通常の多相型のようにも見えます。しかし、太い矢印 <code>=></code>で型の残りの部分から区切られた、型クラス制約(type class constraint)<code>Eq a</code>があります。</p>
 <p>インポートされたモジュールのどれかに <code>a</code>に対する <code>Eq</code>インスタンスが存在するなら、どんな型 <code>a</code>を選んでも <code>threeAsEqual</code>を呼び出すことができる、とこの型は言っています。</p>
 <p>制約された型には複数の型クラスインスタンスを含めることができますし、インスタンスの型は単純な型変数に限定されません。 <code>Ord</code>と <code>Show</code>のインスタンスを使って2つの値を比較する例を次に示します。</p>
-<pre><code class="language-haskell"><span class="hljs-title">showCompare</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Ord</span> a =&gt; <span class="hljs-type">Show</span> a =&gt; a -&gt; a -&gt; <span class="hljs-type">String</span>
-<span class="hljs-title">showCompare</span> a1 a2 | a1 &lt; a2 =
-  show a1 &lt;&gt; <span class="hljs-string">" is less than "</span> &lt;&gt; show a2
-<span class="hljs-title">showCompare</span> a1 a2 | a1 &gt; a2 =
-  show a1 &lt;&gt; <span class="hljs-string">" is greater than "</span> &lt;&gt; show a2
+<pre><code class="language-haskell"><span class="hljs-title">showCompare</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Ord</span> a => <span class="hljs-type">Show</span> a => a -> a -> <span class="hljs-type">String</span>
+<span class="hljs-title">showCompare</span> a1 a2 | a1 < a2 =
+  show a1 <> <span class="hljs-string">" is less than "</span> <> show a2
+<span class="hljs-title">showCompare</span> a1 a2 | a1 > a2 =
+  show a1 <> <span class="hljs-string">" is greater than "</span> <> show a2
 <span class="hljs-title">showCompare</span> a1 a2 =
-  show a1 &lt;&gt; <span class="hljs-string">" is equal to "</span> &lt;&gt; show a2
+  show a1 <> <span class="hljs-string">" is equal to "</span> <> show a2
 </code></pre>
 <p><code>=></code>シンボルを複数回使って複数の制約を指定できることに注意してください。複数の引数のカリー化された関数を定義するのと同様です。しかし、2つの記号を混同しないように注意してください。</p>
 <ul>
@@ -304,11 +304,11 @@ forall a. Semiring a => a -> a
 <h2>6.7 インスタンスの依存関係</h2>
 <p>制約された型を使うと関数の実装が型クラスインスタンスに依存できるように、型クラスインスタンスの実装は他の型クラスインスタンスに依存することができます。これにより、型を使ってプログラムの実装を推論するという、プログラム推論の強力な形式を提供します。</p>
 <p><code>Show</code>型クラスを例に考えてみましょう。要素を <code>show</code>する方法があるとき、その要素の配列を <code>show</code>する型クラスインスタンスを書くことができます。</p>
-<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">instance</span> showArray :: <span class="hljs-type">Show</span> a =&gt; <span class="hljs-type">Show</span> (<span class="hljs-type">Array</span> <span class="hljs-title">a</span>) <span class="hljs-keyword">where</span></span>
+<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">instance</span> showArray :: <span class="hljs-type">Show</span> a => <span class="hljs-type">Show</span> (<span class="hljs-type">Array</span> <span class="hljs-title">a</span>) <span class="hljs-keyword">where</span></span>
   ...
 </code></pre>
 <p>型クラスインスタンスが複数の他のインスタンスに依存する場合、括弧で囲んでそれらのインスタンスをコンマで区切り、それを<code>=></code>シンボルの左側に置く必要があります。</p>
-<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">instance</span> showEither :: (<span class="hljs-type">Show</span> <span class="hljs-title">a</span>, <span class="hljs-type">Show</span> <span class="hljs-title">b</span>) =&gt; <span class="hljs-type">Show</span> (<span class="hljs-type">Either</span> <span class="hljs-title">a</span> <span class="hljs-title">b</span>) <span class="hljs-keyword">where</span></span>
+<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">instance</span> showEither :: (<span class="hljs-type">Show</span> <span class="hljs-title">a</span>, <span class="hljs-type">Show</span> <span class="hljs-title">b</span>) => <span class="hljs-type">Show</span> (<span class="hljs-type">Either</span> <span class="hljs-title">a</span> <span class="hljs-title">b</span>) <span class="hljs-keyword">where</span></span>
   ...
 </code></pre>
 <p>これらの2つの型クラスインスタンスは <code>purescript-prelude</code>ライブラリにあります。</p>
@@ -363,7 +363,7 @@ data Extended a = Finite a | Infinite
 <pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">data</span> <span class="hljs-type">OneMore</span> f a = <span class="hljs-type">OneMore</span> a (<span class="hljs-title">f</span> <span class="hljs-title">a</span>)</span>
 </code></pre>
 <p>このコンテナ <code>OneMore f</code>もまた順序を持っています。ここで、新しい要素は任意の <code>f</code>の要素よりも前にきます。この <code>OneMore f</code>の <code>Foldable</code>インスタンスを書いてみましょう。</p>
-<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">instance</span> foldableOneMore :: <span class="hljs-type">Foldable</span> f =&gt; <span class="hljs-type">Foldable</span> (<span class="hljs-type">OneMore</span> <span class="hljs-title">f</span>) <span class="hljs-keyword">where</span></span>
+<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">instance</span> foldableOneMore :: <span class="hljs-type">Foldable</span> f => <span class="hljs-type">Foldable</span> (<span class="hljs-type">OneMore</span> <span class="hljs-title">f</span>) <span class="hljs-keyword">where</span></span>
 </code></pre>
 </li>
 </ol>
@@ -377,7 +377,7 @@ data Extended a = Finite a | Infinite
 <span class="hljs-keyword">import</span> Data.String <span class="hljs-keyword">as</span> String
 <span class="hljs-class">
 <span class="hljs-keyword">class</span> <span class="hljs-type">Stream</span> stream element <span class="hljs-keyword">where</span></span>
-  uncons :: stream -&gt; <span class="hljs-type">Maybe</span> { head :: element, tail :: stream }
+  uncons :: stream -> <span class="hljs-type">Maybe</span> { head :: element, tail :: stream }
 <span class="hljs-class">
 <span class="hljs-keyword">instance</span> streamArray :: <span class="hljs-type">Stream</span> (<span class="hljs-type">Array</span> <span class="hljs-title">a</span>) a <span class="hljs-keyword">where</span></span>
   uncons = <span class="hljs-type">Array</span>.uncons
@@ -393,11 +393,11 @@ data Extended a = Finite a | Infinite
 <span class="hljs-keyword">import</span> Data.Maybe (<span class="hljs-type">Maybe(..)</span>)
 <span class="hljs-keyword">import</span> Data.Monoid (<span class="hljs-title">class</span> <span class="hljs-type">Monoid</span>, <span class="hljs-title">mempty</span>)
 
-<span class="hljs-title">foldStream</span> :: <span class="hljs-keyword">forall</span> l e m. <span class="hljs-type">Stream</span> l e =&gt; <span class="hljs-type">Monoid</span> m =&gt; (e -&gt; m) -&gt; l -&gt; m
+<span class="hljs-title">foldStream</span> :: <span class="hljs-keyword">forall</span> l e m. <span class="hljs-type">Stream</span> l e => <span class="hljs-type">Monoid</span> m => (e -> m) -> l -> m
 <span class="hljs-title">foldStream</span> f list =
   <span class="hljs-keyword">case</span> uncons list <span class="hljs-keyword">of</span>
-    <span class="hljs-type">Nothing</span> -&gt; mempty
-    <span class="hljs-type">Just</span> cons -&gt; f cons.head &lt;&gt; foldStream f cons.tail
+    <span class="hljs-type">Nothing</span> -> mempty
+    <span class="hljs-type">Just</span> cons -> f cons.head <> foldStream f cons.tail
 </code></pre>
 <p><code>PSCi</code>で使って、異なる <code>Stream</code>の型や異なる <code>Monoid</code>の型について <code>foldStream</code>を呼び出してみましょう。</p>
 <h2>6.9 関数従属性</h2>
@@ -425,8 +425,8 @@ Consider adding a type annotation.
 </code></pre>
 <p>ここでは、コンパイラが <code>streamString</code>インスタンスを選択することを期待しています。結局のところ、 <code>String</code>は <code>Char</code>のストリームであり、他の型のストリームであってはなりません。</p>
 <p>コンパイラは自動的にその排除を行うことはできず、 <code>streamString</code>インスタンスに引き渡すことはできません。しかし、型クラス定義にヒントを追加すると、コンパイラを助けることができます。</p>
-<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-type">Stream</span> stream element | stream -&gt; element <span class="hljs-keyword">where</span></span>
-  uncons :: stream -&gt; <span class="hljs-type">Maybe</span> { head :: element, tail :: stream }
+<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-type">Stream</span> stream element | stream -> element <span class="hljs-keyword">where</span></span>
+  uncons :: stream -> <span class="hljs-type">Maybe</span> { head :: element, tail :: stream }
 </code></pre>
 <p>ここで、 <code>stream -> element</code>は<strong>関数従属性</strong>(functional dependency)と呼ばれます。関数従属性は、多変数型クラスの型引数間の関数関係を宣言します。この関数の依存関係は、ストリーム型から（一意の）要素型への関数があることをコンパイラに伝えるので、コンパイラがストリーム型を知っていれば要素型へ適用できます。</p>
 <p>このヒントは、コンパイラが上記の <code>genericTail</code>関数の正しい型を推論するのに十分です。</p>
@@ -440,9 +440,9 @@ forall stream element. Stream stream element => stream -> Maybe stream
 <h2>6.10 型変数のない型クラス</h2>
 <p>ゼロ個の型変数を持つ型クラスを定義することもできます！これらは関数に対するコンパイル時のアサーションに対応しており、型システム内のコードの大域的な性質を追跡することができます。</p>
 <p>たとえば、型システムを使って部分関数の使用を追跡したいとしましょう。すでに <code>Data.Array.Partial</code>で定義されている <code>head</code>と <code>tail</code>の部分関数を確認します。</p>
-<pre><code class="language-haskell"><span class="hljs-title">head</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Partial</span> =&gt; <span class="hljs-type">Array</span> a -&gt; a
+<pre><code class="language-haskell"><span class="hljs-title">head</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Partial</span> => <span class="hljs-type">Array</span> a -> a
 
-<span class="hljs-title">tail</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Partial</span> =&gt; <span class="hljs-type">Array</span> a -&gt; <span class="hljs-type">Array</span> a
+<span class="hljs-title">tail</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Partial</span> => <span class="hljs-type">Array</span> a -> <span class="hljs-type">Array</span> a
 </code></pre>
 <p><code>Partial</code>モジュールの <code>Partial</code>型クラスのインスタンスを定義していないことに注意してください。こうすると目的を達成できます。このままの定義では <code>head</code>関数を使用しようとすると型エラーになるのです。</p>
 <pre><code class="language-text">> head [1, 2, 3]
@@ -452,11 +452,11 @@ No type class instance was found for
   Prim.Partial
 </code></pre>
 <p>代わりに、これらの部分関数を利用するすべての関数で <code>Partial</code>制約を再発行する方法ができます。</p>
-<pre><code class="language-haskell"><span class="hljs-title">secondElement</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Partial</span> =&gt; <span class="hljs-type">Array</span> a -&gt; a
+<pre><code class="language-haskell"><span class="hljs-title">secondElement</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Partial</span> => <span class="hljs-type">Array</span> a -> a
 <span class="hljs-title">secondElement</span> xs = head (tail xs)
 </code></pre>
 <p>前章で見た <code>unsafePartial</code>関数を使用し、部分関数を通常の関数（unsafely）として扱うことができます。 この関数は <code>Partial.Unsafe</code>モジュールで定義されています。</p>
-<pre><code class="language-haskell"><span class="hljs-title">unsafePartial</span> :: <span class="hljs-keyword">forall</span> a. (<span class="hljs-type">Partial</span> =&gt; a) -&gt; a
+<pre><code class="language-haskell"><span class="hljs-title">unsafePartial</span> :: <span class="hljs-keyword">forall</span> a. (<span class="hljs-type">Partial</span> => a) -> a
 </code></pre>
 <p><code>Partial</code>制約は関数の矢印の左側の括弧の中に現れますが、外側の <code>forall</code>では現れません。 つまり、 <code>unsafePartial</code>は部分的な値から通常の値への関数です。</p>
 <h2>6.11 上位クラス</h2>
@@ -474,8 +474,8 @@ No type class instance was found for
 <ol>
 <li>
 <p>(やや難しい) 次の <code>Action</code>クラスは、ある型の動作(action)を定義する、多変数型クラスです。</p>
-<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-type">Monoid</span> m &lt;= <span class="hljs-type">Action</span> m a <span class="hljs-keyword">where</span></span>
-  act :: m -&gt; a -&gt; a
+<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-type">Monoid</span> m <= <span class="hljs-type">Action</span> m a <span class="hljs-keyword">where</span></span>
+  act :: m -> a -> a
 </code></pre>
 <p><strong>act</strong>はモノイドがどうやって他の型の値を変更するのに使われるのかを説明する関数です。この動作が　モノイドの連結演算子に従っていると期待しましょう。</p>
 <ul>
@@ -518,21 +518,21 @@ No type class instance was found for
 <p>最初の性質はまさに型クラスの法則のように見える一方で、２番目の性質はもっとぼんやりとした規約に従っていて、PureScriptの型システムによって確実に強制できるようなものではなさそうです。しかし、これは型クラスについて次のような直感的理解を与えるはずです。</p>
 <pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">newtype</span> <span class="hljs-type">HashCode</span> = <span class="hljs-type">HashCode</span> <span class="hljs-type">Int</span></span>
 
-<span class="hljs-title">hashCode</span> :: <span class="hljs-type">Int</span> -&gt; <span class="hljs-type">HashCode</span>
+<span class="hljs-title">hashCode</span> :: <span class="hljs-type">Int</span> -> <span class="hljs-type">HashCode</span>
 <span class="hljs-title">hashCode</span> h = <span class="hljs-type">HashCode</span> (h `mod` <span class="hljs-number">65535</span>)
 <span class="hljs-class">
-<span class="hljs-keyword">class</span> <span class="hljs-type">Eq</span> a &lt;= <span class="hljs-type">Hashable</span> a <span class="hljs-keyword">where</span></span>
-  hash :: a -&gt; <span class="hljs-type">HashCode</span>
+<span class="hljs-keyword">class</span> <span class="hljs-type">Eq</span> a <= <span class="hljs-type">Hashable</span> a <span class="hljs-keyword">where</span></span>
+  hash :: a -> <span class="hljs-type">HashCode</span>
 </code></pre>
 <p>これに、 <code>a == b</code>ならば <code>hash a == hash b</code>という関係性の法則が付随しています。</p>
 <p>この節の残りの部分を費やして、 <code>Hashable</code>型クラスに関連付けられているインスタンスと関数のライブラリを構築していきます。</p>
 <p>決定的な方法でハッシュ値を結合する方法が必要になります。</p>
-<pre><code class="language-haskell"><span class="hljs-title">combineHashes</span> :: <span class="hljs-type">HashCode</span> -&gt; <span class="hljs-type">HashCode</span> -&gt; <span class="hljs-type">HashCode</span>
+<pre><code class="language-haskell"><span class="hljs-title">combineHashes</span> :: <span class="hljs-type">HashCode</span> -> <span class="hljs-type">HashCode</span> -> <span class="hljs-type">HashCode</span>
 <span class="hljs-title">combineHashes</span> (<span class="hljs-type">HashCode</span> h1) (<span class="hljs-type">HashCode</span> h2) = hashCode (<span class="hljs-number">73</span> * h1 + <span class="hljs-number">51</span> * h2)
 </code></pre>
 <p><code>combineHashes</code>関数は、２つのハッシュ値を混ぜて結果を0-65535の間に分布します。</p>
 <p>それでは、入力の種類を制限する <code>Hashable</code>制約を使う関数を書いてみましょう。ハッシュ関数を必要とするよくある目的としては、2つの値が同じハッシュ値にハッシュされるかどうかを決定することです。 <code>hashEqual</code>関係はそのような機能を提供します。</p>
-<pre><code class="language-haskell"><span class="hljs-title">hashEqual</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Hashable</span> a =&gt; a -&gt; a -&gt; <span class="hljs-type">Boolean</span>
+<pre><code class="language-haskell"><span class="hljs-title">hashEqual</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Hashable</span> a => a -> a -> <span class="hljs-type">Boolean</span>
 <span class="hljs-title">hashEqual</span> = eq `on` hash
 </code></pre>
 <p>この関数はハッシュ同値性を定義するために <code>Data.Function</code>の <code>on</code>関数を使っていますが、このハッシュ同値性の定義は『それぞれの値が <code>hash</code>関数に渡されたあとで２つの値が等しいなら、それらの値は「ハッシュ同値」である』というように宣言的に読めるはずです。</p>
@@ -547,15 +547,15 @@ No type class instance was found for
 </code></pre>
 <p>整数のインスタンスでは、 <code>Data.Char</code>の <code>toCharCode</code>関数を使うと<code>Char</code>をハッシュするインスタンスを作成できます。</p>
 <pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">instance</span> hashChar :: <span class="hljs-type">Hashable</span> <span class="hljs-type">Char</span> <span class="hljs-keyword">where</span></span>
-  hash = hash &lt;&lt;&lt; toCharCode
+  hash = hash <<< toCharCode
 </code></pre>
 <p>（要素型が <code>Hashable</code>のインスタンスでもあるならば）配列の要素に <code>hash</code>関数を <code>map</code>してから、 <code>combineHashes</code>関数の結果を使ってハッシュを左側に畳み込むことで、配列のインスタンスを定義します。</p>
-<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">instance</span> hashArray :: <span class="hljs-type">Hashable</span> a =&gt; <span class="hljs-type">Hashable</span> (<span class="hljs-type">Array</span> <span class="hljs-title">a</span>) <span class="hljs-keyword">where</span></span>
-  hash = foldl combineHashes (hashCode <span class="hljs-number">0</span>) &lt;&lt;&lt; map hash
+<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">instance</span> hashArray :: <span class="hljs-type">Hashable</span> a => <span class="hljs-type">Hashable</span> (<span class="hljs-type">Array</span> <span class="hljs-title">a</span>) <span class="hljs-keyword">where</span></span>
+  hash = foldl combineHashes (hashCode <span class="hljs-number">0</span>) <<< map hash
 </code></pre>
 <p>すでに書いたより単純なインスタンスを使用して新たなインスタンスを構築する方法に注目してください。 <code>String</code>を<code>Char</code>の配列に変換し、この新たな<code>Array</code>インスタンスを使って<code>String</code>インスタンスを定義しましょう。</p>
 <pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">instance</span> hashString :: <span class="hljs-type">Hashable</span> <span class="hljs-type">String</span> <span class="hljs-keyword">where</span></span>
-  hash = hash &lt;&lt;&lt; toCharArray
+  hash = hash <<< toCharArray
 </code></pre>
 <p>これらの <code>Hashable</code>インスタンスが先ほどの型クラスの法則を満たしていることを証明するにはどうしたらいいでしょうか。同じ値が等しいハッシュ値を持っていることを確認する必要があります。 <code>Int</code>、 <code>Char</code>、 <code>String</code>、 <code>Boolean</code>の場合は、 <code>Eq</code>の意味では同じ値でも厳密には同じではない、というような型の値は存在しないので簡単です。</p>
 <p>もっと面白い型についてはどうでしょうか。この場合、配列の長さに関する帰納を使うと、型クラスの法則を証明することができます。長さゼロの唯一の配列は <code>[]</code>です。配列の <code>Eq</code>の定義により、任意の二つの空でない配列は、それらの先頭の要素が同じで配列の残りの部分が等しいとき、その時に限り等しくなります。この帰納的な仮定により、配列の残りの部分は同じハッシュ値を持ちますし、もし <code>Hashable a</code>インスタンスがこの法則を満たすなら、先頭の要素も同じハッシュ値をもつことがわかります。したがって、２つの配列は同じハッシュ値を持ち、 <code>Hashable（Array a）</code>も同様に型クラス法則を満たしています。</p>

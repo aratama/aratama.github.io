@@ -74,7 +74,7 @@
 </code></pre>
 <p><code>Element</code>型はHTMLの要素を表しており、各要素は要素名、属性のペア​​の配列と、要素の内容でで構成されています。 <code>content</code>プロパティでは、 <code>Maybe</code>タイプを使って要素が開いている(他の要素やテキストを含む)か閉じているかを示しています。</p>
 <p>このライブラリの鍵となる機能は次の関数です。</p>
-<pre><code class="language-haskell"><span class="hljs-title">render</span> :: <span class="hljs-type">Element</span> -&gt; <span class="hljs-type">String</span>
+<pre><code class="language-haskell"><span class="hljs-title">render</span> :: <span class="hljs-type">Element</span> -> <span class="hljs-type">String</span>
 </code></pre>
 <p>この関数はHTML要素をHTML文字列として出力します。 <code>PSCi</code>で明示的に適当な型の値を構築し、ライブラリのこのバージョンを試してみましょう。</p>
 <pre><code class="language-text">$ pulp repl
@@ -117,7 +117,7 @@ unit
 <h2>14.4 スマート構築子</h2>
 <p>最初に導入する手法は方法は単純なものですが、とても効果的です。モジュールの使用者にデータの表現を露出する代わりに、モジュールエクスポートリスト(module exports list)を使ってデータ構築子 <code>Element</code>、 <code>Content</code>、 <code>Attribute</code>を隠蔽し、正しいことが明らかなデータだけ構築する、いわゆる<strong>スマート構築子</strong>(smart constructors)だけをエクスポートします。</p>
 <p>例を示しましょう。まず、HTML要素を作成するための便利な関数を提供します。</p>
-<pre><code class="language-haskell"><span class="hljs-title">element</span> :: <span class="hljs-type">String</span> -&gt; <span class="hljs-type">Array</span> <span class="hljs-type">Attribute</span> -&gt; <span class="hljs-type">Maybe</span> (<span class="hljs-type">Array</span> <span class="hljs-type">Content</span>) -&gt; <span class="hljs-type">Element</span>
+<pre><code class="language-haskell"><span class="hljs-title">element</span> :: <span class="hljs-type">String</span> -> <span class="hljs-type">Array</span> <span class="hljs-type">Attribute</span> -> <span class="hljs-type">Maybe</span> (<span class="hljs-type">Array</span> <span class="hljs-type">Content</span>) -> <span class="hljs-type">Element</span>
 <span class="hljs-title">element</span> name attribs content = <span class="hljs-type">Element</span>
   { name:      name
   , attribs:   attribs
@@ -125,13 +125,13 @@ unit
   }
 </code></pre>
 <p>次に、 <code>element</code>関数を適用することによってHTML要素を作成する、スマート構築子を作成します。</p>
-<pre><code class="language-haskell"><span class="hljs-title">a</span> :: <span class="hljs-type">Array</span> <span class="hljs-type">Attribute</span> -&gt; <span class="hljs-type">Array</span> <span class="hljs-type">Content</span> -&gt; <span class="hljs-type">Element</span>
+<pre><code class="language-haskell"><span class="hljs-title">a</span> :: <span class="hljs-type">Array</span> <span class="hljs-type">Attribute</span> -> <span class="hljs-type">Array</span> <span class="hljs-type">Content</span> -> <span class="hljs-type">Element</span>
 <span class="hljs-title">a</span> attribs content = element <span class="hljs-string">"a"</span> attribs (<span class="hljs-type">Just</span> content)
 
-<span class="hljs-title">p</span> :: <span class="hljs-type">Array</span> <span class="hljs-type">Attribute</span> -&gt; <span class="hljs-type">Array</span> <span class="hljs-type">Content</span> -&gt; <span class="hljs-type">Element</span>
+<span class="hljs-title">p</span> :: <span class="hljs-type">Array</span> <span class="hljs-type">Attribute</span> -> <span class="hljs-type">Array</span> <span class="hljs-type">Content</span> -> <span class="hljs-type">Element</span>
 <span class="hljs-title">p</span> attribs content = element <span class="hljs-string">"p"</span> attribs (<span class="hljs-type">Just</span> content)
 
-<span class="hljs-title">img</span> :: <span class="hljs-type">Array</span> <span class="hljs-type">Attribute</span> -&gt; <span class="hljs-type">Element</span>
+<span class="hljs-title">img</span> :: <span class="hljs-type">Array</span> <span class="hljs-type">Attribute</span> -> <span class="hljs-type">Element</span>
 <span class="hljs-title">img</span> attribs = element <span class="hljs-string">"img"</span> attribs <span class="hljs-type">Nothing</span>
 </code></pre>
 <p>最後に、正しいデータ構造だけを構築することがわかっているこれらの関数をエクスポートするように、モジュールエクスポートリストを更新します。</p>
@@ -161,14 +161,14 @@ unit
 <li>閉じた要素は、構築するときに内容を含めることはできません。</li>
 </ul>
 <p><code>Content</code>型にもとても簡単にこの手法を適用することができます。単にエクスポートリストから <code>Content</code>型のデータ構築子を取り除き、次のスマート構築子を提供します。</p>
-<pre><code class="language-haskell"><span class="hljs-title">text</span> :: <span class="hljs-type">String</span> -&gt; <span class="hljs-type">Content</span>
+<pre><code class="language-haskell"><span class="hljs-title">text</span> :: <span class="hljs-type">String</span> -> <span class="hljs-type">Content</span>
 <span class="hljs-title">text</span> = <span class="hljs-type">TextContent</span>
 
-<span class="hljs-title">elem</span> :: <span class="hljs-type">Element</span> -&gt; <span class="hljs-type">Content</span>
+<span class="hljs-title">elem</span> :: <span class="hljs-type">Element</span> -> <span class="hljs-type">Content</span>
 <span class="hljs-title">elem</span> = <span class="hljs-type">ElementContent</span>
 </code></pre>
 <p><code>Attribute</code>型にも同じ手法を適用してみましょう。まず、属性のための汎用のスマート構築子を用意します。最初の試みとしては、次のようなものになるかもしれません。</p>
-<pre><code class="language-haskell"><span class="hljs-title">attribute</span> :: <span class="hljs-type">String</span> -&gt; <span class="hljs-type">String</span> -&gt; <span class="hljs-type">Attribute</span>
+<pre><code class="language-haskell"><span class="hljs-title">attribute</span> :: <span class="hljs-type">String</span> -> <span class="hljs-type">String</span> -> <span class="hljs-type">Attribute</span>
 <span class="hljs-title">attribute</span> key value = <span class="hljs-type">Attribute</span>
   { key: key
   , value: value
@@ -180,7 +180,7 @@ unit
 <pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">newtype</span> <span class="hljs-type">AttributeKey</span> = <span class="hljs-type">AttributeKey</span> <span class="hljs-type">String</span></span>
 </code></pre>
 <p>それから、この演算子を次のように変更します。</p>
-<pre><code class="language-haskell"><span class="hljs-title">attribute</span> :: <span class="hljs-type">AttributeKey</span> -&gt; <span class="hljs-type">String</span> -&gt; <span class="hljs-type">Attribute</span>
+<pre><code class="language-haskell"><span class="hljs-title">attribute</span> :: <span class="hljs-type">AttributeKey</span> -> <span class="hljs-type">String</span> -> <span class="hljs-type">Attribute</span>
 <span class="hljs-title">attribute</span> (<span class="hljs-type">AttributeKey</span> key) value = <span class="hljs-type">Attribute</span>
   { key: key
   , value: value
@@ -244,7 +244,7 @@ unit
 </li>
 <li>
 <p>(やや難しい)　<code>checked</code>と <code>disabled</code>など、値を要求しないHTML属性がありますが、これらは次のような<strong>空の属性</strong>として表示されるかもしれません。</p>
-<pre><code class="language-html">&lt;input disabled&gt;
+<pre><code class="language-html"><input disabled>
 </code></pre>
 <p>空の属性を扱えるように <code>Attribute</code>の表現を変更してください。要素に空の属性を追加するために、 <code>attribute</code>または <code>:=</code>の代わりに使える関数を記述してください。</p>
 </li>
@@ -258,7 +258,7 @@ unit
     , height := "bar"
     ]
 
-&lt;img src="cat.jpg" width="foo" height="bar" /&gt;
+<img src="cat.jpg" width="foo" height="bar" />
 unit
 </code></pre>
 <p>ここでの問題は、 <code>width</code>と <code>height</code>についての文字列値を提供しているということで、ここで与えることができるのはピクセルやパーセントの単位の数値だけであるべきです。</p>
@@ -267,7 +267,7 @@ unit
 </code></pre>
 <p>定義の右辺に対応する型 <code>a</code>の値が存在しないので、この型変数 <code>a</code>は<strong>幻影型</strong>と呼ばれています。この型 <code>a</code>はコンパイル時により多くの情報を提供するためだけに存在しています。任意の型 <code>AttributeKey a</code>の値は実行時には単なる文字列ですが、そのキーに関連付けられた値に期待されている型を教えてくれます。</p>
 <p><code>AttributeKey</code>の新しい形式で受け取るように、 <code>attribute</code>関数の型を次のように変更します。</p>
-<pre><code class="language-haskell"><span class="hljs-title">attribute</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">IsValue</span> a =&gt; <span class="hljs-type">AttributeKey</span> a -&gt; a -&gt; <span class="hljs-type">Attribute</span>
+<pre><code class="language-haskell"><span class="hljs-title">attribute</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">IsValue</span> a => <span class="hljs-type">AttributeKey</span> a -> a -> <span class="hljs-type">Attribute</span>
 <span class="hljs-title">attribute</span> (<span class="hljs-type">AttributeKey</span> key) value = <span class="hljs-type">Attribute</span>
   { key: key
   , value: toValue value
@@ -276,7 +276,7 @@ unit
 <p>ここで、幻影型の引数 <code>a</code>は、属性キーと属性値が互換性のある型を持っていることを確認するために使われます。使用者は <code>AttributeKey a</code>を型の値を直接作成できないので(ライブラリで提供されている定数を介してのみ得ることができます)、すべての属性が正しくなります。</p>
 <p><code>IsValue</code>制約は、キーに関連付けられた値がなんであれ、その値を文字列に変換し、生成したHTML内に出力できることを保証します。 <code>IsValue</code>型クラスは次のように定義されています。</p>
 <pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-type">IsValue</span> a <span class="hljs-keyword">where</span></span>
-  toValue :: a -&gt; <span class="hljs-type">String</span>
+  toValue :: a -> <span class="hljs-type">String</span>
 </code></pre>
 <p><code>String</code>と <code>Int</code>型についての型クラスインスタンスも提供しておきます。</p>
 <pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">instance</span> stringIsValue :: <span class="hljs-type">IsValue</span> <span class="hljs-type">String</span> <span class="hljs-keyword">where</span></span>
@@ -314,7 +314,7 @@ height = AttributeKey <span class="hljs-string">"height"</span>
 …   ]
 … ^D
 
-&lt;img src="cat.jpg" width="100" height="200" /&gt;
+<img src="cat.jpg" width="100" height="200" />
 unit
 </code></pre>
 <div class="exercise"><h2>演習</h2><ol>
@@ -381,13 +381,13 @@ unit
   }
 </code></pre>
 <p>また、 <code>Content</code>モナドについての新しいモナドのアクションになる <code>elem</code>と <code>text</code>関数を変更する必要があります。これを行うには、 <code>Control.Monad.Free</code>モジュールで提供されている <code>liftF</code>関数を使います。この関数の(簡略化された)型は次のようになっています。</p>
-<pre><code class="language-haskell"><span class="hljs-title">liftF</span> :: <span class="hljs-keyword">forall</span> f a. (<span class="hljs-type">Functor</span> f) =&gt; f a -&gt; <span class="hljs-type">Free</span> f a
+<pre><code class="language-haskell"><span class="hljs-title">liftF</span> :: <span class="hljs-keyword">forall</span> f a. (<span class="hljs-type">Functor</span> f) => f a -> <span class="hljs-type">Free</span> f a
 </code></pre>
 <p><code>liftF</code>は、何らかの型 <code>a</code>について、型 <code>f a</code>の値からFreeモナドのアクションを構築できるようにします。今回の場合、 <code>ContentF</code>型構築子のデータ構築子を次のようにそのまま使うだけです。</p>
-<pre><code class="language-haskell"><span class="hljs-title">text</span> :: <span class="hljs-type">String</span> -&gt; <span class="hljs-type">Content</span> <span class="hljs-type">Unit</span>
+<pre><code class="language-haskell"><span class="hljs-title">text</span> :: <span class="hljs-type">String</span> -> <span class="hljs-type">Content</span> <span class="hljs-type">Unit</span>
 <span class="hljs-title">text</span> s = liftF $ <span class="hljs-type">TextContent</span> s unit
 
-<span class="hljs-title">elem</span> :: <span class="hljs-type">Element</span> -&gt; <span class="hljs-type">Content</span> <span class="hljs-type">Unit</span>
+<span class="hljs-title">elem</span> :: <span class="hljs-type">Element</span> -> <span class="hljs-type">Content</span> <span class="hljs-type">Unit</span>
 <span class="hljs-title">elem</span> e = liftF $ <span class="hljs-type">ElementContent</span> e unit
 </code></pre>
 <p>他にもコードの変更はありますが、興味深い変更は <code>render</code>関数に対してのものです。ここでは、このFreeモナドを<strong>解釈</strong>しなければいけません。</p>
@@ -396,40 +396,40 @@ unit
 <pre><code class="language-haskell"><span class="hljs-title">runFree</span>
   :: <span class="hljs-keyword">forall</span> f a
    . <span class="hljs-type">Functor</span> f
-  =&gt; (f (<span class="hljs-type">Free</span> f a) -&gt; <span class="hljs-type">Free</span> f a)
-  -&gt; <span class="hljs-type">Free</span> f a
-  -&gt; a
+  => (f (<span class="hljs-type">Free</span> f a) -> <span class="hljs-type">Free</span> f a)
+  -> <span class="hljs-type">Free</span> f a
+  -> a
 
 <span class="hljs-title">runFreeM</span>
   :: <span class="hljs-keyword">forall</span> f m a
    . (<span class="hljs-type">Functor</span> f, <span class="hljs-type">MonadRec</span> m)
-  =&gt; (f (<span class="hljs-type">Free</span> f a) -&gt; m (<span class="hljs-type">Free</span> f a))
-  -&gt; <span class="hljs-type">Free</span> f a
-  -&gt; m a
+  => (f (<span class="hljs-type">Free</span> f a) -> m (<span class="hljs-type">Free</span> f a))
+  -> <span class="hljs-type">Free</span> f a
+  -> m a
 </code></pre>
 <p><code>runFree</code>関数は、<strong>純粋な</strong>結果を計算するために使用されます。 <code>runFreeM</code>関数は、フリーモナドの動作を解釈するためにモナドを使用することを可能にします</p>
 <p>厳密には、 <code>MonadRec</code>のより強い制約を満たすモナド <code>m</code>を使用する制限がされています。これはスタックオーバーフローを心配する必要がないことを意味します。なぜなら <code>m</code>は安全な<strong>末尾再帰モナド</strong>(monadic tail recursion)をサポートするからです。</p>
 <p>まず、アクションを解釈することができるモナドを選ばなければなりません。 <code>Writer String</code>モナドを使って、結果のHTML文字列を累積することにします。</p>
 <p>新しい <code>render</code>メソッドは補助関数 <code>renderElement</code>に移譲して開始し、 <code>Writer</code>モナドで計算を実行するため <code>execWriter</code>を使用します。</p>
-<pre><code class="language-haskell"><span class="hljs-title">render</span> :: <span class="hljs-type">Element</span> -&gt; <span class="hljs-type">String</span>
-<span class="hljs-title">render</span> = execWriter &lt;&lt;&lt; renderElement
+<pre><code class="language-haskell"><span class="hljs-title">render</span> :: <span class="hljs-type">Element</span> -> <span class="hljs-type">String</span>
+<span class="hljs-title">render</span> = execWriter <<< renderElement
 </code></pre>
 <p><code>renderElement</code>はwhereブロックで定義されています。</p>
 <pre><code class="language-haskell">  <span class="hljs-keyword">where</span>
-    renderElement :: <span class="hljs-type">Element</span> -&gt; <span class="hljs-type">Writer</span> <span class="hljs-type">String</span> <span class="hljs-type">Unit</span>
+    renderElement :: <span class="hljs-type">Element</span> -> <span class="hljs-type">Writer</span> <span class="hljs-type">String</span> <span class="hljs-type">Unit</span>
     renderElement (<span class="hljs-type">Element</span> e) = <span class="hljs-keyword">do</span>
 </code></pre>
 <p><code>renderElement</code>の定義は簡単で、いくつかの小さな文字列を累積するために <code>Writer</code>モナドの <code>tell</code>アクションを使っています。</p>
-<pre><code class="language-haskell">      tell <span class="hljs-string">"&lt;"</span>
+<pre><code class="language-haskell">      tell <span class="hljs-string">"<"</span>
       tell e.name
-      for_ e.attribs $ \x -&gt; <span class="hljs-keyword">do</span>
+      for_ e.attribs $ \x -> <span class="hljs-keyword">do</span>
         tell <span class="hljs-string">" "</span>
         renderAttribute x
       renderContent e.content
 </code></pre>
 <p>次に、同じように簡単な <code>renderAttribute</code>関数を定義します。</p>
 <pre><code class="language-haskell">    <span class="hljs-keyword">where</span>
-      renderAttribute :: <span class="hljs-type">Attribute</span> -&gt; <span class="hljs-type">Writer</span> <span class="hljs-type">String</span> <span class="hljs-type">Unit</span>
+      renderAttribute :: <span class="hljs-type">Attribute</span> -> <span class="hljs-type">Writer</span> <span class="hljs-type">String</span> <span class="hljs-type">Unit</span>
       renderAttribute (<span class="hljs-type">Attribute</span> x) = <span class="hljs-keyword">do</span>
         tell x.key
         tell <span class="hljs-string">"=\""</span>
@@ -437,17 +437,17 @@ unit
         tell <span class="hljs-string">"\""</span>
 </code></pre>
 <p><code>renderContent</code>関数は、もっと興味深いものです。ここでは、 <code>runFreeM</code>関数を使って、Freeモナドの内部で補助関数 <code>renderContentItem</code>に移譲する計算を解釈しています。</p>
-<pre><code class="language-haskell">      renderContent :: <span class="hljs-type">Maybe</span> (<span class="hljs-type">Content</span> <span class="hljs-type">Unit</span>) -&gt; <span class="hljs-type">Writer</span> <span class="hljs-type">String</span> <span class="hljs-type">Unit</span>
-      renderContent <span class="hljs-type">Nothing</span> = tell <span class="hljs-string">" /&gt;"</span>
+<pre><code class="language-haskell">      renderContent :: <span class="hljs-type">Maybe</span> (<span class="hljs-type">Content</span> <span class="hljs-type">Unit</span>) -> <span class="hljs-type">Writer</span> <span class="hljs-type">String</span> <span class="hljs-type">Unit</span>
+      renderContent <span class="hljs-type">Nothing</span> = tell <span class="hljs-string">" />"</span>
       renderContent (<span class="hljs-type">Just</span> content) = <span class="hljs-keyword">do</span>
-        tell <span class="hljs-string">"&gt;"</span>
+        tell <span class="hljs-string">">"</span>
         runFreeM renderContentItem content
-        tell <span class="hljs-string">"&lt;/"</span>
+        tell <span class="hljs-string">"</"</span>
         tell e.name
-        tell <span class="hljs-string">"&gt;"</span>
+        tell <span class="hljs-string">">"</span>
 </code></pre>
 <p><code>renderContentItem</code>の型は <code>runFreeM</code>の型シグネチャから推測することができます。関手 <code>f</code>は型構築子 <code>ContentF</code>で、モナド <code>m</code>は解釈している計算のモナド、つまり <code>Writer String</code>です。これにより <code>renderContentItem</code>について次の型シグネチャがわかります。</p>
-<pre><code class="language-haskell">      renderContentItem :: <span class="hljs-type">ContentF</span> (<span class="hljs-type">Content</span> <span class="hljs-type">Unit</span>) -&gt; <span class="hljs-type">Writer</span> <span class="hljs-type">String</span> (<span class="hljs-type">Content</span> <span class="hljs-type">Unit</span>)
+<pre><code class="language-haskell">      renderContentItem :: <span class="hljs-type">ContentF</span> (<span class="hljs-type">Content</span> <span class="hljs-type">Unit</span>) -> <span class="hljs-type">Writer</span> <span class="hljs-type">String</span> (<span class="hljs-type">Content</span> <span class="hljs-type">Unit</span>)
 </code></pre>
 <p><code>ContentF</code>の二つのデータ構築子でパターン照合するだけで、この関数を実装することができます。</p>
 <pre><code class="language-haskell">      renderContentItem (<span class="hljs-type">TextContent</span> s rest) = <span class="hljs-keyword">do</span>
@@ -469,7 +469,7 @@ unit
 …   text "A cat"
 … ^D
 
-&lt;p&gt;&lt;img src="cat.jpg" /&gt;A cat&lt;/p&gt;
+<p><img src="cat.jpg" />A cat</p>
 unit
 </code></pre>
 <div class="exercise"><h2>演習</h2><ol>
@@ -488,7 +488,7 @@ unit
 <p>最初の手順は、名前の型を新しく追加することです。</p>
 <pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">newtype</span> <span class="hljs-type">Name</span> = <span class="hljs-type">Name</span> <span class="hljs-type">String</span></span>
 
-<span class="hljs-title">runName</span> :: <span class="hljs-type">Name</span> -&gt; <span class="hljs-type">String</span>
+<span class="hljs-title">runName</span> :: <span class="hljs-type">Name</span> -> <span class="hljs-type">String</span>
 <span class="hljs-title">runName</span> (<span class="hljs-type">Name</span> n) = n
 </code></pre>
 <p>繰り返しになりますが、 <code>Name</code>は <code>String</code>のnewtypeとして定義しており、モジュールのエクスポートリスト内でデータ構築子をエクスポートしないように注意する必要があります。</p>
@@ -503,7 +503,7 @@ unit
 <span class="hljs-class">
 <span class="hljs-keyword">instance</span> hrefIsValue :: <span class="hljs-type">IsValue</span> <span class="hljs-type">Href</span> <span class="hljs-keyword">where</span></span>
   toValue (<span class="hljs-type">URLHref</span> url) = url
-  toValue (<span class="hljs-type">AnchorHref</span> (<span class="hljs-type">Name</span> nm)) = <span class="hljs-string">"#"</span> &lt;&gt; nm
+  toValue (<span class="hljs-type">AnchorHref</span> (<span class="hljs-type">Name</span> nm)) = <span class="hljs-string">"#"</span> <> nm
 </code></pre>
 <p><code>href</code>属性の型の値を変更して、この新しい <code>Href</code>型の使用を強制します。また、要素をアンカーに変換するのに使う新しい <code>name</code>属性を作成します。</p>
 <pre><code class="language-haskell"><span class="hljs-title">href</span> :: <span class="hljs-type">AttributeKey</span> <span class="hljs-type">Href</span>
@@ -516,14 +516,14 @@ unit
 <pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">data</span> <span class="hljs-type">ContentF</span> a</span>
   = <span class="hljs-type">TextContent</span> <span class="hljs-type">String</span> a
   | <span class="hljs-type">ElementContent</span> <span class="hljs-type">Element</span> a
-  | <span class="hljs-type">NewName</span> (<span class="hljs-type">Name</span> -&gt; a)
+  | <span class="hljs-type">NewName</span> (<span class="hljs-type">Name</span> -> a)
 </code></pre>
 <p><code>NewName</code>データ構築子は型 <code>Name</code>の値を返すアクションに対応しています。データ構築子の引数として <code>Name</code>を要求するのではなく、型 <code>Name -> a</code>の<strong>関数</strong>を提供するように使用者に要求していることに注意してください。型 <code>a</code>は<strong>計算の残り</strong>を表していることを思い出すと、この関数は、型 <code>Name</code>の値が返されたあとで、計算を継続する方法を提供するというように直感的に理解することができます。</p>
 <p>新しいデータ構築子を考慮するように、 <code>ContentF</code>についての <code>Functor</code>インスタンスを更新する必要があります。</p>
 <pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">instance</span> functorContentF :: <span class="hljs-type">Functor</span> <span class="hljs-type">ContentF</span> <span class="hljs-keyword">where</span></span>
   map f (<span class="hljs-type">TextContent</span> s x) = <span class="hljs-type">TextContent</span> s (f x)
   map f (<span class="hljs-type">ElementContent</span> e x) = <span class="hljs-type">ElementContent</span> e (f x)
-  map f (<span class="hljs-type">NewName</span> k) = <span class="hljs-type">NewName</span> (f &lt;&lt;&lt; k)
+  map f (<span class="hljs-type">NewName</span> k) = <span class="hljs-type">NewName</span> (f <<< k)
 </code></pre>
 <p>そして、先ほど述べたように、 <code>liftF</code>関数を使うと新しいアクションを構築することができます。</p>
 <pre><code class="language-haskell">newName :: Content Name
@@ -535,13 +535,13 @@ newName = liftF $ NewName id
 </code></pre>
 <p>Int型の引数は状態の型で、この場合は増加していくカウンタとして振る舞う数であり、一意な名前を生成するのに使われます。</p>
 <p><code>Writer</code>と <code>WriterT</code>モナドはそれらのアクションを抽象化するのに同じ型クラスメンバを使うので、どのアクションも変更する必要がありません。必要なのは、 <code>Writer String</code>への参照すべてを <code>Interp</code>で置き換えることだけです。しかし、この計算を実行するために使われるハンドラを変更しなければいけません。 <code>execWriter</code>の代わりに、 <code>evalState</code>を使います。</p>
-<pre><code class="language-haskell"><span class="hljs-title">render</span> :: <span class="hljs-type">Element</span> -&gt; <span class="hljs-type">String</span>
+<pre><code class="language-haskell"><span class="hljs-title">render</span> :: <span class="hljs-type">Element</span> -> <span class="hljs-type">String</span>
 <span class="hljs-title">render</span> e = evalState (execWriterT (renderElement e)) <span class="hljs-number">0</span>
 </code></pre>
 <p>新しい <code>NewName</code>データ構築子を解釈するために、 <code>renderContentItem</code>に新しい場合分けを追加しなければいけません。</p>
 <pre><code class="language-haskell"><span class="hljs-title">renderContentItem</span> (<span class="hljs-type">NewName</span> k) = <span class="hljs-keyword">do</span>
-  n &lt;- get
-  <span class="hljs-keyword">let</span> fresh = <span class="hljs-type">Name</span> $ <span class="hljs-string">"name"</span> &lt;&gt; show n
+  n <- get
+  <span class="hljs-keyword">let</span> fresh = <span class="hljs-type">Name</span> $ <span class="hljs-string">"name"</span> <> show n
   put $ n + <span class="hljs-number">1</span>
   pure (k fresh)
 </code></pre>

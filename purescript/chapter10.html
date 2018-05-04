@@ -73,11 +73,11 @@
 <p>例として以下のような簡単なモジュールを見てみましょう。</p>
 <pre><code class="language-haskell"><span class="hljs-keyword">module</span> Test <span class="hljs-keyword">where</span>
 
-<span class="hljs-title">gcd</span> :: <span class="hljs-type">Int</span> -&gt; <span class="hljs-type">Int</span> -&gt; <span class="hljs-type">Int</span>
+<span class="hljs-title">gcd</span> :: <span class="hljs-type">Int</span> -> <span class="hljs-type">Int</span> -> <span class="hljs-type">Int</span>
 <span class="hljs-title">gcd</span> <span class="hljs-number">0</span> m = m
 <span class="hljs-title">gcd</span> n <span class="hljs-number">0</span> = n
 <span class="hljs-title">gcd</span> n m
-  | n &gt; m     = gcd (n - m) m
+  | n > m     = gcd (n - m) m
   | otherwise = gcd (m - n) n
 </code></pre>
 <p>この関数は、減算を繰り返すことによって2つの数の最大公約数を見つけます。関数を定義するのにPureScriptを使いたくなるかもしれない良い例となっていますが、JavaScriptからそれを呼び出すためには条件があります。
@@ -167,10 +167,10 @@ Two.create = <span class="hljs-function"><span class="hljs-keyword">function</sp
 <h2>10.8 量化された型の実行時表現</h2>
 <p>量化された型(多相型)の式は、制限された表現を実行時に持っています。実際には、量化された型の式が比較的少数与えられたとき、とても効率的に解決できることを意味しています。</p>
 <p>例えば、次の多相型を考えてみます。</p>
-<pre><code class="language-haskell"><span class="hljs-title">forall</span> a. a -&gt; a
+<pre><code class="language-haskell"><span class="hljs-title">forall</span> a. a -> a
 </code></pre>
 <p>この型を持っている関数にはどんなものがあるでしょうか。少なくともひとつはこの型を持つ関数が存在しています。すなわち、 <code>Prelude</code>で定義されている恒等関数 <code>id</code>です。</p>
-<pre><code class="language-haskell"><span class="hljs-title">id</span> :: <span class="hljs-keyword">forall</span> a. a -&gt; a
+<pre><code class="language-haskell"><span class="hljs-title">id</span> :: <span class="hljs-keyword">forall</span> a. a -> a
 <span class="hljs-title">id</span> a = a
 </code></pre>
 <p>実のところ、 <code>id</code>の関数はこの型の<strong>唯一の</strong>(全)関数です！これは確かに間違いなさそうに見えますが(この型を持った <code>id</code>とは明らかに異なる式を書こうとしてみてください)、これを確かめるにはどうしたらいいでしょうか。これは型の実行時表現を考えることによって確認することができます。</p>
@@ -190,8 +190,8 @@ Two.create = <span class="hljs-function"><span class="hljs-keyword">function</sp
 <h2>10.9 制約された型の実行時表現</h2>
 <p>型クラス制約を持つ関数は、実行時に面白い表現を持っています。関数の振る舞いはコンパイラによって選ばれた型クラスのインスタンスに依存する可能性があるため、関数には選択したインスタンスから提供された型クラスの関数の実装が含まれてた<strong>型クラス辞書</strong>(type class dictionary)と呼ばれる追加の引数が与えられています。</p>
 <p>例えば、 <code>Show</code>型クラスを使用している制約された型を持つ、次のような単純なPureScript関数について考えます。</p>
-<pre><code class="language-haskell"><span class="hljs-title">shout</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Show</span> a =&gt; a -&gt; <span class="hljs-type">String</span>
-<span class="hljs-title">shout</span> a = show a &lt;&gt; <span class="hljs-string">"!!!"</span>
+<pre><code class="language-haskell"><span class="hljs-title">shout</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Show</span> a => a -> <span class="hljs-type">String</span>
+<span class="hljs-title">shout</span> a = show a <> <span class="hljs-string">"!!!"</span>
 </code></pre>
 <p>このコードから生成されるJavaScriptは次のようになります。</p>
 <pre><code class="language-javascript"><span class="hljs-keyword">var</span> shout = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">dict</span>) </span>{
@@ -208,8 +208,8 @@ Two.create = <span class="hljs-function"><span class="hljs-keyword">function</sp
 <li>
 <p>(簡単) これらの型の実行時の表現は何でしょうか。</p>
 <pre><code class="language-haskell"><span class="hljs-title">forall</span> a. a
-<span class="hljs-title">forall</span> a. a -&gt; a -&gt; a
-<span class="hljs-title">forall</span> a. <span class="hljs-type">Ord</span> a =&gt; <span class="hljs-type">Array</span> a -&gt; <span class="hljs-type">Boolean</span>
+<span class="hljs-title">forall</span> a. a -> a -> a
+<span class="hljs-title">forall</span> a. <span class="hljs-type">Ord</span> a => <span class="hljs-type">Array</span> a -> <span class="hljs-type">Boolean</span>
 </code></pre>
 <p>これらの型を持つ式についてわかることはなんでしょうか。</p>
 </li>
@@ -230,7 +230,7 @@ node> encodeURIComponent('Hello World')
 <p>次のような外部インポート宣言を使うと、この関数に型を割り当てることができます。</p>
 <pre><code class="language-haskell"><span class="hljs-keyword">module</span> Data.URI <span class="hljs-keyword">where</span>
 
-<span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> encodeURIComponent :: <span class="hljs-type">String</span> -&gt; <span class="hljs-type">String</span>
+<span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> encodeURIComponent :: <span class="hljs-type">String</span> -> <span class="hljs-type">String</span>
 </code></pre>
 <p>また、外部JavaScriptモジュールを書く必要があります。上記のモジュールを<code>src/Data/URI.purs</code>として保存した場合、次のような外部JavaScriptモジュールを<code>src/Data/URI.js</code>として保存します。</p>
 <pre><code class="language-javascript"><span class="hljs-meta">"use strict"</span>;
@@ -261,7 +261,7 @@ exports.encodeURIComponent = <span class="hljs-built_in">encodeURIComponent</spa
 </code></pre>
 <p>しかし、この関数には問題があります。型 <code>forall a. Array a -> a</code>を与えようとしても、空の配列に対してこの関数は <code>undefined</code>を返します。したがって、この特殊な場合を処理するために、ラッパー関数を使用する必要があります。</p>
 <p>簡単な方法としては、空の配列の場合に例外を投げる方法があります。厳密に言えば、純粋な関数は例外を投げるべきではありませんが、デモンストレーションの目的ではこれで十分ですし、安全性でないということを関数名で示しておけばいいでしょう。</p>
-<pre><code class="language-haskell"><span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> unsafeHead :: forall a. <span class="hljs-type">Array</span> a -&gt; a
+<pre><code class="language-haskell"><span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> unsafeHead :: forall a. <span class="hljs-type">Array</span> a -> a
 </code></pre>
 <p>JavaScriptモジュールでは、 <code>unsafeHead</code>を以下のように定義することができます。</p>
 <pre><code class="language-haskell">exports.unsafeHead = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">arr</span>) </span>{
@@ -276,7 +276,7 @@ exports.encodeURIComponent = <span class="hljs-built_in">encodeURIComponent</spa
 <p>失敗した場合に例外を投げるという方法は、あまり理想的とはいえません。PureScriptのコードでは、欠けた値のような副作用は型システムを使って扱うのが普通です。この手法としては <code>Maybe</code>型構築子を使う方法もありますが、この節ではFFIを使用した別の解決策を扱います。</p>
 <p>実行時には型 <code>a</code>のように表現されますが <code>undefined</code>の値も許容するような新しい型 <code>Undefined a</code>を定義したいとしましょう。</p>
 <p><strong>外部インポート宣言</strong>とFFIを使うと、<strong>外部型</strong>(foreign type)を定義することができます。構文は外部関数を定義するのと似ています。</p>
-<pre><code class="language-haskell"><span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> data <span class="hljs-type">Undefined</span> :: <span class="hljs-type">Type</span> -&gt; <span class="hljs-type">Type</span>
+<pre><code class="language-haskell"><span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> data <span class="hljs-type">Undefined</span> :: <span class="hljs-type">Type</span> -> <span class="hljs-type">Type</span>
 </code></pre>
 <p>この予約語 <code>data</code>は値ではなく定義している型を表していることに注意してください。型シグネチャの代わりに、新しい型の<strong>種</strong>を与えます。このとき、種 <code>Undefined</code>が <code>Type -> Type</code>であると宣言しています。つまり <code>Undefined</code>は型構築子です。</p>
 <p>これで <code>head</code>の定義を簡素化することができます。</p>
@@ -285,12 +285,12 @@ exports.encodeURIComponent = <span class="hljs-built_in">encodeURIComponent</spa
 };
 </code></pre>
 <p>PureScriptモジュールには以下を追加します。</p>
-<pre><code class="language-haskell"><span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> head :: forall a. <span class="hljs-type">Array</span> a -&gt; <span class="hljs-type">Undefined</span> a
+<pre><code class="language-haskell"><span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> head :: forall a. <span class="hljs-type">Array</span> a -> <span class="hljs-type">Undefined</span> a
 </code></pre>
 <p>2点変更がある注意してください。 <code>head</code>関数の本体ははるかに簡単で、もしその値が未定義であったとしても <code>arr[0]</code>を返し、型シグネチャはこの関数が未定義の値を返すことがあるという事実を反映するよう変更されています。</p>
 <p>この関数はその型の適切な実行時表現を持っていますが、型 <code>Undefined a</code>の値を使用する方法がありませんので、まったく役に立ちません。しかし、FFIを使用して新しい関数を幾つか書くことによって、それを修正することができます！</p>
 <p>次の関数は、値が定義されているかどうかを教えてくれる最も基本的な関数です。</p>
-<pre><code class="language-haskell"><span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> isUndefined :: forall a. <span class="hljs-type">Undefined</span> a -&gt; <span class="hljs-type">Boolean</span>
+<pre><code class="language-haskell"><span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> isUndefined :: forall a. <span class="hljs-type">Undefined</span> a -> <span class="hljs-type">Boolean</span>
 </code></pre>
 <p>JavaScriptモジュールで次のように簡単に定義できます。</p>
 <pre><code class="language-javascript">exports.isUndefined = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">value</span>) </span>{
@@ -298,14 +298,14 @@ exports.encodeURIComponent = <span class="hljs-built_in">encodeURIComponent</spa
 };
 </code></pre>
 <p>PureScriptから <code>isUndefined</code>と <code>head</code>を一緒に使用すると、便利な関数を定義することができます。</p>
-<pre><code class="language-haskell"><span class="hljs-title">isEmpty</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Array</span> a -&gt; <span class="hljs-type">Boolean</span>
-<span class="hljs-title">isEmpty</span> = isUndefined &lt;&lt;&lt; head
+<pre><code class="language-haskell"><span class="hljs-title">isEmpty</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Array</span> a -> <span class="hljs-type">Boolean</span>
+<span class="hljs-title">isEmpty</span> = isUndefined <<< head
 </code></pre>
 <p>ここで、定義されたこの外部関数はとても簡単であり、PureScriptの型検査器を使うことによる利益をなるべく多く得るということを意味します。一般に外部関数は可能な限り小さく保ち、アプリケーションの処理はPureScriptコードへ移動しておくことをおすすめします。</p>
 <h2>10.13 多変数​関数</h2>
 <p>PureScriptのPreludeには、興味深い外部型がいくつかも含まれています。すでに扱ってきたように、PureScriptの関数型は単一の引数だけを取りますが、<strong>カリー化</strong>(Currying)を使うと複数の引数の関数をシミュレートすることができます。これには明らかな利点があります。関数を部分適用することができ、関数型の型クラスインスタンスを与えることができます。ただし、効率上のペナルティが生じます。パフォーマンス重視するコードでは、複数の引数を受け入れる本物のJavaScript関数を定義することが必要な場合があります。Preludeではそのような関数を安全に扱うことができるようにする外部型が定義されています。</p>
 <p>たとえば、Preludeの <code>Data.Function.Uncurried</code>モジュールには次の外部型宣言があります。</p>
-<pre><code class="language-haskell"><span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> data <span class="hljs-type">Fn2</span> :: <span class="hljs-type">Type</span> -&gt; <span class="hljs-type">Type</span> -&gt; <span class="hljs-type">Type</span> -&gt; <span class="hljs-type">Type</span>
+<pre><code class="language-haskell"><span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> data <span class="hljs-type">Fn2</span> :: <span class="hljs-type">Type</span> -> <span class="hljs-type">Type</span> -> <span class="hljs-type">Type</span> -> <span class="hljs-type">Type</span>
 </code></pre>
 <p>これは3つの型引数を取る型構築子 <code>Fn2</code>を定義します。 <code>Fn2 a b c</code>は、型 <code>a</code>と <code>b</code>の２つの引数、返り値の型 <code>c</code>をもつJavaScript関数の型を表現しています。</p>
 <p>Preludeでは0引数から10引数までの関数について同様の型構築子が定義されています。</p>
@@ -313,13 +313,13 @@ exports.encodeURIComponent = <span class="hljs-built_in">encodeURIComponent</spa
 <pre><code class="language-haskell"><span class="hljs-keyword">import</span> Data.Function.Uncurried
 
 <span class="hljs-title">divides</span> :: <span class="hljs-type">Fn2</span> <span class="hljs-type">Int</span> <span class="hljs-type">Int</span> <span class="hljs-type">Boolean</span>
-<span class="hljs-title">divides</span> = mkFn2 \n m -&gt; m % n == <span class="hljs-number">0</span>
+<span class="hljs-title">divides</span> = mkFn2 \n m -> m % n == <span class="hljs-number">0</span>
 </code></pre>
 <p>そして、 <code>runFn2</code>関数を使うと、2引数の関数を適用することができます。</p>
-<pre><code class="language-haskell">&gt; runFn2 divides <span class="hljs-number">2</span> <span class="hljs-number">10</span>
+<pre><code class="language-haskell">> runFn2 divides <span class="hljs-number">2</span> <span class="hljs-number">10</span>
 <span class="hljs-literal">true</span>
 
-&gt; runFn2 divides <span class="hljs-number">3</span> <span class="hljs-number">10</span>
+> runFn2 divides <span class="hljs-number">3</span> <span class="hljs-number">10</span>
 <span class="hljs-literal">false</span>
 </code></pre>
 <p>ここで重要なのは、引数がすべて適用されるなら、コンパイラは <code>mkFn2</code>関数や <code>runFn2</code>関数を<strong>インライン化</strong>するということです。そのため、生成されるコードはとてもコンパクトになります。</p>
@@ -330,7 +330,7 @@ exports.encodeURIComponent = <span class="hljs-built_in">encodeURIComponent</spa
 <h2>10.14 副作用の表現</h2>
 <p><code>Eff</code>モナドもPreludeの外部型として定義されています。その実行時表現はとても簡単です。型 <code>Eff eff a</code>の式は、任意の副作用を実行し型 <code>a</code>の適切な実行時表現で値を返す、引数なしのJavaScript関数へと評価されます。</p>
 <p><code>Eff</code>型の構築子の定義は、 <code>Control.Monad.Eff</code>モジュールで次のように与えられています。</p>
-<pre><code class="language-haskell"><span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> data <span class="hljs-type">Eff</span> :: # <span class="hljs-type">Effect</span> -&gt; <span class="hljs-type">Type</span> -&gt; <span class="hljs-type">Type</span>
+<pre><code class="language-haskell"><span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> data <span class="hljs-type">Eff</span> :: # <span class="hljs-type">Effect</span> -> <span class="hljs-type">Type</span> -> <span class="hljs-type">Type</span>
 </code></pre>
 <p><code>Eff</code>型の構築子は作用の行と返り値の型によってパラメータ化されおり、それが種に反映されることを思い出してください。</p>
 <p>簡単な例として、 <code>purescript-random</code>パッケージで定義される <code>random</code>関数を考えてみてください。その型は次のようなものでした。</p>
@@ -343,7 +343,7 @@ exports.encodeURIComponent = <span class="hljs-built_in">encodeURIComponent</spa
 </code></pre>
 <p><code>random</code>関数は実行時には引数なしの関数として表現されていることに注目してください。これは乱数生成という副作用を実行しそれを返しますが、返り値は <code>Number</code>型の実行時表現と一致します。それは <code>null</code>でないJavaScriptの数です。</p>
 <p>もう少し興味深い例として、 Preludeの <code>Control.Monad.Eff.Console</code>モジュールで定義された <code>log</code>関数を考えてみましょう。 <code>log</code>関数は次の型を持っています。</p>
-<pre><code class="language-haskell"><span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> log :: forall eff. <span class="hljs-type">String</span> -&gt; <span class="hljs-type">Eff</span> (console :: <span class="hljs-type">CONSOLE</span> | eff) <span class="hljs-type">Unit</span>
+<pre><code class="language-haskell"><span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> log :: forall eff. <span class="hljs-type">String</span> -> <span class="hljs-type">Eff</span> (console :: <span class="hljs-type">CONSOLE</span> | eff) <span class="hljs-type">Unit</span>
 </code></pre>
 <p>この定義は次のようになっています。</p>
 <pre><code class="language-javascript">exports.log = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">s</span>) </span>{
@@ -368,7 +368,7 @@ exports.encodeURIComponent = <span class="hljs-built_in">encodeURIComponent</spa
 </code></pre>
 <p><code>Alert</code>は種 <code>Effect</code>が与えられており、 <code>Alert</code>が型ではなく作用であることを示しています。</p>
 <p>次に、 <code>alert</code>アクションが定義されています。 <code>alert</code>アクションはポップアップを表示し、作用の行に <code>Alert</code>作用を追加します。</p>
-<pre><code class="language-haskell"><span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> alert :: forall eff. <span class="hljs-type">String</span> -&gt; <span class="hljs-type">Eff</span> (alert :: <span class="hljs-type">ALERT</span> | eff) <span class="hljs-type">Unit</span>
+<pre><code class="language-haskell"><span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> alert :: forall eff. <span class="hljs-type">String</span> -> <span class="hljs-type">Eff</span> (alert :: <span class="hljs-type">ALERT</span> | eff) <span class="hljs-type">Unit</span>
 </code></pre>
 <p>JavaScriptモジュールは簡単で、 <code>alert</code>関数を <code>exports</code>変数に代入して定義します。</p>
 <pre><code class="language-javascript"><span class="hljs-meta">"use strict"</span>;
@@ -388,9 +388,9 @@ exports.alert = <span class="hljs-function"><span class="hljs-keyword">function<
 </code></pre>
 <p><code>Control.Monad.Eff.Storage</code>モジュールには、ローカルストレージから値を取得する <code>getItem</code>と、ローカルストレージに値を挿入したり値を更新する <code>setItem</code>という、２つのアクションが定義されています。この二つの関数は、次のような型を持っています。</p>
 <pre><code class="language-haskell"><span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> getItem :: forall eff . <span class="hljs-type">String</span>
-  -&gt; <span class="hljs-type">Eff</span> (storage :: <span class="hljs-type">STORAGE</span> | eff) <span class="hljs-type">Foreign</span>
+  -> <span class="hljs-type">Eff</span> (storage :: <span class="hljs-type">STORAGE</span> | eff) <span class="hljs-type">Foreign</span>
 <span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> setItem :: forall eff . <span class="hljs-type">String</span>
-  -&gt; <span class="hljs-type">String</span> -&gt; <span class="hljs-type">Eff</span> (storage :: <span class="hljs-type">STORAGE</span> | eff) <span class="hljs-type">Unit</span>
+  -> <span class="hljs-type">String</span> -> <span class="hljs-type">Eff</span> (storage :: <span class="hljs-type">STORAGE</span> | eff) <span class="hljs-type">Unit</span>
 </code></pre>
 <p>興味のある読者は、このモジュールのソースコードでこれらのアクションがどのように定義されているか調べてみてください。</p>
 <p><code>setItem</code>はキーと値(両方とも文字列)を受け取り、指定されたキーでローカルストレージに値を格納する計算を返します。</p>
@@ -431,8 +431,8 @@ exports.alert = <span class="hljs-function"><span class="hljs-keyword">function<
 > import Data.Foreign.JSON
 </code></pre>
 <p><code>Foreign</code>な値を取得するためには、JSON文書を解析するのがいいでしょう。 <code>purescript-foreign</code>では次の2つの関数が定義されています。</p>
-<pre><code class="language-haskell"><span class="hljs-title">parseJSON</span> :: <span class="hljs-type">String</span> -&gt; <span class="hljs-type">F</span> <span class="hljs-type">Foreign</span>
-<span class="hljs-title">decodeJSON</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Decode</span> a =&gt; <span class="hljs-type">String</span> -&gt; <span class="hljs-type">F</span> a
+<pre><code class="language-haskell"><span class="hljs-title">parseJSON</span> :: <span class="hljs-type">String</span> -> <span class="hljs-type">F</span> <span class="hljs-type">Foreign</span>
+<span class="hljs-title">decodeJSON</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Decode</span> a => <span class="hljs-type">String</span> -> <span class="hljs-type">F</span> a
 </code></pre>
 <p>型構築子<code>F</code>は、実際には<code>Data.Foreign</code>で定義されている型同義語です。</p>
 <pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-type">F</span> = <span class="hljs-type">Except</span> (<span class="hljs-type">NonEmptyList</span> <span class="hljs-type">ForeignError</span>)</span>
@@ -492,12 +492,12 @@ Right [1, 2, 3]
 <p>保存ボタンをクリックすると、JSON文書への直列化を行う<code>encode</code>関数に<code>FormData</code>型の値が渡されます。<code>FormData</code>型はレコードのnewtypeで、<code>encode</code>が渡された<code>FormData</code>型の値はJSON<strong>オブジェクト</strong>として直列化されます。これは、JSONエンコーダを定義する際に<code>unwrapSingleConstructors</code>オプションを指定したためです。</p>
 <p>この<code>Decode</code>型クラスのインスタンスは、<code>decodeJSON</code>とともにローカル·ストレージから取得したJSON文書を解析するために次のように使われています。</p>
 <pre><code class="language-haskell"><span class="hljs-title">loadSavedData</span> = <span class="hljs-keyword">do</span>
-  item &lt;- getItem <span class="hljs-string">"person"</span>
+  item <- getItem <span class="hljs-string">"person"</span>
 
   <span class="hljs-keyword">let</span>
     savedData :: <span class="hljs-type">Either</span> (<span class="hljs-type">NonEmptyList</span> <span class="hljs-type">ForeignError</span>) (<span class="hljs-type">Maybe</span> <span class="hljs-type">FormData</span>)
     savedData = runExcept <span class="hljs-keyword">do</span>
-      jsonOrNull &lt;- traverse readString =&lt;&lt; readNullOrUndefined item
+      jsonOrNull <- traverse readString =<< readNullOrUndefined item
       traverse decodeJSON jsonOrNull
 </code></pre>
 <p><code>savedData</code>アクションは２つの手順にわけて <code>FormData</code>構造を読み取ります。まず、 <code>getItem</code>から得た <code>Foreign</code>値を解析します。 <code>jsonOrNull</code>の型はコンパイラによって <code>Null String</code>だと推論されます(読者への演習：　この型はどのように推論されているのでしょうか？)。 <code>traverse</code>関数は <code>readJSON</code>を <code>Maybe.String</code>型の結果の(不足しているかもしれない)要素へと適用するのに使われます。 <code>readJSON</code>について推論される型クラスのインスタンスはちょうどさっき書いたもので、型 <code>F (Maybe FormData)</code>の値で結果を返します。</p>

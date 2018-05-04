@@ -132,7 +132,7 @@ forall a b c. (a -> b -> c) -> b -> a -> c
 forall a b. a -> b -> a
 </code></pre>
 <p>ファイルのトップレベルでは、等号の直前に引数を指定することで関数を定義することができます。</p>
-<pre><code class="language-haskell"><span class="hljs-title">add</span> :: <span class="hljs-type">Int</span> -&gt; <span class="hljs-type">Int</span> -&gt; <span class="hljs-type">Int</span>
+<pre><code class="language-haskell"><span class="hljs-title">add</span> :: <span class="hljs-type">Int</span> -> <span class="hljs-type">Int</span> -> <span class="hljs-type">Int</span>
 <span class="hljs-title">add</span> x y = x + y
 </code></pre>
 <p>バックスラッシュに続けて空白文字で区切られた引数名のリストを書くことで、関数をインラインで定義することもできます。PSCiで複数行の宣言を入力するには、 <code>：paste</code>コマンドを使用して"paste mode"に入ります。このモードでは、<strong>Control-D</strong>キーシーケンスを使用して宣言を終了します。</p>
@@ -232,17 +232,17 @@ Type
 <p>PureScriptの<strong>種システム</strong>は他にも面白い種に対応していますが、それらについては本書の他の部分で見ていくことになるでしょう。</p>
 <h2>3.8 住所録の項目の表示</h2>
 <p>それでは最初に、文字列で住所録の項目を表現するような関数を書いてみましょう。まずは関数に型を与えることから始めます。型の定義は省略することも可能ですが、ドキュメントとしても役立つので型を書いておくようにすると良いでしょう。型宣言は関数の名前とその型を <code>::</code>記号で区切るようにして書きます。</p>
-<pre><code class="language-haskell"><span class="hljs-title">showEntry</span> :: <span class="hljs-type">Entry</span> -&gt; <span class="hljs-type">String</span>
+<pre><code class="language-haskell"><span class="hljs-title">showEntry</span> :: <span class="hljs-type">Entry</span> -> <span class="hljs-type">String</span>
 </code></pre>
 <p><code>showEntry</code>は引数として <code>Entry</code>を取り <code>string</code>を返す関数であるということを、この型シグネチャは言っています。 <code>showEntry</code>の定義は次のとおりです。</p>
-<pre><code class="language-haskell"><span class="hljs-title">showEntry</span> entry = entry.lastName &lt;&gt; <span class="hljs-string">", "</span> &lt;&gt;
-                  entry.firstName &lt;&gt; <span class="hljs-string">": "</span> &lt;&gt; 
+<pre><code class="language-haskell"><span class="hljs-title">showEntry</span> entry = entry.lastName <> <span class="hljs-string">", "</span> <>
+                  entry.firstName <> <span class="hljs-string">": "</span> <> 
                   showAddress entry.address
 </code></pre>
 <p>この関数は <code>Entry</code>レコードの３つのフィールドを連結し、単一の文字列にします。ここで使用される <code>showAddress</code>は <code>address</code>フィールドを連接し、単一の文字列にする関数です。 <code>showAddress</code>の定義は次のとおりです。</p>
-<pre><code class="language-haskell"><span class="hljs-title">showAddress</span> :: <span class="hljs-type">Address</span> -&gt; <span class="hljs-type">String</span>
-<span class="hljs-title">showAddress</span> addr = addr.street &lt;&gt; <span class="hljs-string">", "</span> &lt;&gt;
-                   addr.city &lt;&gt; <span class="hljs-string">", "</span> &lt;&gt;
+<pre><code class="language-haskell"><span class="hljs-title">showAddress</span> :: <span class="hljs-type">Address</span> -> <span class="hljs-type">String</span>
+<span class="hljs-title">showAddress</span> addr = addr.street <> <span class="hljs-string">", "</span> <>
+                   addr.city <> <span class="hljs-string">", "</span> <>
                    addr.state
 </code></pre>
 <p>関数定義は関数の名前で始まり、引数名のリストが続きます。関数の結果は等号の後ろに定義します。フィールドはドットに続けてフィールド名を書くことで参照することができます。PureScriptでは、文字列連結はJavaScriptのような単一のプラス記号ではなく、ダイアモンド演算子（ <code><></code>）を使用します。</p>
@@ -276,7 +276,7 @@ Type
 emptyBook = empty
 </code></pre>
 <p>既存の住所録に値を挿入する関数も必要でしょう。この関数を <code>insertEntry</code>と呼ぶことにします。関数の型を与えることから始めましょう。</p>
-<pre><code class="language-haskell"><span class="hljs-title">insertEntry</span> :: <span class="hljs-type">Entry</span> -&gt; <span class="hljs-type">AddressBook</span> -&gt; <span class="hljs-type">AddressBook</span>
+<pre><code class="language-haskell"><span class="hljs-title">insertEntry</span> :: <span class="hljs-type">Entry</span> -> <span class="hljs-type">AddressBook</span> -> <span class="hljs-type">AddressBook</span>
 </code></pre>
 <p><code>insertEntry</code>は、最初の引数として <code>Entry</code>、第二引数として <code>AddressBook</code>を取り、新しい <code>AddressBook</code>を返すということを、この型シグネチャは言っています。</p>
 <p>既存の <code>AddressBook</code>を直接変更することはしません。その代わりに、同じデータが含まれている新しい <code>AddressBook</code>を返すようにします。このように、 <code>AddressBook</code>は<strong>永続データ構造</strong>(persistent data structure)の一例となっています。これはPureScriptにおける重要な考え方です。変更はコードの副作用であり、コードの振る舞いについての判断するのを難しくします。そのため、我々は可能な限り純粋な関数や不変のデータを好むのです。</p>
@@ -289,10 +289,10 @@ emptyBook = empty
 forall a. a -> List a -> List a
 </code></pre>
 <p><code>Cons</code>は、なんらかの型 <code>a</code>の値と、型 <code>a</code>を要素に持つリストを引数にとり、同じ型の要素を持つ新しいリストを返すということを、この型シグネチャは言っています。 <code>a</code>を <code>Entry</code>型として特殊化してみましょう。</p>
-<pre><code class="language-haskell"><span class="hljs-type">Entry</span> -&gt; <span class="hljs-type">List</span> <span class="hljs-type">Entry</span> -&gt; <span class="hljs-type">List</span> <span class="hljs-type">Entry</span>
+<pre><code class="language-haskell"><span class="hljs-type">Entry</span> -> <span class="hljs-type">List</span> <span class="hljs-type">Entry</span> -> <span class="hljs-type">List</span> <span class="hljs-type">Entry</span>
 </code></pre>
 <p>しかし、 <code>List Entry</code>はまさに <code>AddressBook</code>ですから、次と同じになります。</p>
-<pre><code class="language-haskell"><span class="hljs-type">Entry</span> -&gt; <span class="hljs-type">AddressBook</span> -&gt; <span class="hljs-type">AddressBook</span>
+<pre><code class="language-haskell"><span class="hljs-type">Entry</span> -> <span class="hljs-type">AddressBook</span> -> <span class="hljs-type">AddressBook</span>
 </code></pre>
 <p>今回の場合、すでに適切な入力があります。 <code>Entry</code>と <code>AddressBook</code>に <code>Cons</code>を適用すると、新しい <code>AddressBook</code>を得ることができます。これこそまさに私たちが求めていた関数です！</p>
 <p><code>insertEntry</code>の実装は次のようになります。</p>
@@ -302,7 +302,7 @@ forall a. a -> List a -> List a
 <h2>3.11 カリー化された関数</h2>
 <p>PureScriptでは、関数は常にひとつの引数だけを取ります。 <code>insertEntry</code>関数は２つの引数を取るように見えますが、これは実際には<strong>カリー化された関数</strong>(curried function)の一例となっています。</p>
 <p><code>insertEntry</code>の型に含まれる <code>-></code>は右結合の演算子であり、つまりこの型はコンパイラによって次のように解釈されます。</p>
-<pre><code class="language-haskell"><span class="hljs-type">Entry</span> -&gt; (<span class="hljs-type">AddressBook</span> -&gt; <span class="hljs-type">AddressBook</span>)
+<pre><code class="language-haskell"><span class="hljs-type">Entry</span> -> (<span class="hljs-type">AddressBook</span> -> <span class="hljs-type">AddressBook</span>)
 </code></pre>
 <p>すなわち、 <code>insertEntry</code>は関数を返す関数である、ということです！この関数は単一の引数 <code>Entry</code>を取り、それから単一の引数 <code>AddressBook</code>を取り新しい <code>AddressBook</code>を返す新しい関数を返すのです。</p>
 <p>これは例えば、最初の引数だけを与えると <code>insertEntry</code>を<strong>部分適用</strong>(partial application)できることを意味します。 <code>PSCi</code>でこの結果の型を見てみましょう。</p>
@@ -321,15 +321,15 @@ AddressBook
 <p>これは関数適用が左結合であるためで、なぜ単に空白で区切るだけで関数に引数を与えることができるのかも説明にもなっています。</p>
 <p>本書では今後、「２引数の関数」というように表現することがあることに注意してください。これはあくまで、最初の引数を取り別の関数を返す、カリー化された関数を意味していると考えてください。</p>
 <p>今度は <code>insertEntry</code>の定義について考えてみます。</p>
-<pre><code class="language-haskell"><span class="hljs-title">insertEntry</span> :: <span class="hljs-type">Entry</span> -&gt; <span class="hljs-type">AddressBook</span> -&gt; <span class="hljs-type">AddressBook</span>
+<pre><code class="language-haskell"><span class="hljs-title">insertEntry</span> :: <span class="hljs-type">Entry</span> -> <span class="hljs-type">AddressBook</span> -> <span class="hljs-type">AddressBook</span>
 <span class="hljs-title">insertEntry</span> entry book = <span class="hljs-type">Cons</span> entry book
 </code></pre>
 <p>もし式の右辺に明示的に括弧をつけるなら、 <code>（Cons entry）book</code>となります。 <code>insertEntry entry</code>はその引数が単に関数 <code>(Cons entry)</code>に渡されるような関数だということです。この2つの関数はどんな入力についても同じ結果を返しますから、つまりこれらは同じ関数です！よって、両辺から引数 <code>book</code>を削除できます。</p>
-<pre><code class="language-haskell"><span class="hljs-title">insertEntry</span> :: <span class="hljs-type">Entry</span> -&gt; <span class="hljs-type">AddressBook</span> -&gt; <span class="hljs-type">AddressBook</span>
+<pre><code class="language-haskell"><span class="hljs-title">insertEntry</span> :: <span class="hljs-type">Entry</span> -> <span class="hljs-type">AddressBook</span> -> <span class="hljs-type">AddressBook</span>
 <span class="hljs-title">insertEntry</span> entry = <span class="hljs-type">Cons</span> entry
 </code></pre>
 <p>そして、同様の理由で両辺から <code>entry</code>も削除することができます。</p>
-<pre><code class="language-haskell"><span class="hljs-title">insertEntry</span> :: <span class="hljs-type">Entry</span> -&gt; <span class="hljs-type">AddressBook</span> -&gt; <span class="hljs-type">AddressBook</span>
+<pre><code class="language-haskell"><span class="hljs-title">insertEntry</span> :: <span class="hljs-type">Entry</span> -> <span class="hljs-type">AddressBook</span> -> <span class="hljs-type">AddressBook</span>
 <span class="hljs-title">insertEntry</span> = <span class="hljs-type">Cons</span>
 </code></pre>
 <p>この処理は<strong>イータ変換</strong>(eta conversion)と呼ばれ、引数を参照することなく関数を定義する<strong>ポイントフリー形式</strong>(point-free form)へと関数を書き換えるのに使うことができます。</p>
@@ -353,21 +353,21 @@ forall a. List a -> Maybe a
 <p><code>filter</code>はカリー化された２引数の関数です。最初の引数は、リストの要素を取り <code>Boolean</code>値を結果として返す関数です。第２引数は要素のリストで、返り値は別のリストです。</p>
 <p><code>head</code>は引数としてリストをとり、 <code>Maybe a</code>という今まで見たことがないような型を返します。 <code>Maybe a</code>は型 <code>a</code>のオプショナルな値、つまり <code>a</code>の値を持つか持たないかのどちらかの値を示しており、JavaScriptのような言語で値がないことを示すために使われる <code>null</code>の型安全な代替手段を提供します。これについては後の章で詳しく扱います。</p>
 <p><code>filter</code>と <code>head</code>の全称量化された型は、PureScriptコンパイラによって次のように<strong>特殊化</strong>(specialized)されます。</p>
-<pre><code class="language-haskell"><span class="hljs-title">filter</span> :: (<span class="hljs-type">Entry</span> -&gt; <span class="hljs-type">Boolean</span>) -&gt; <span class="hljs-type">AddressBook</span> -&gt; <span class="hljs-type">AddressBook</span>
+<pre><code class="language-haskell"><span class="hljs-title">filter</span> :: (<span class="hljs-type">Entry</span> -> <span class="hljs-type">Boolean</span>) -> <span class="hljs-type">AddressBook</span> -> <span class="hljs-type">AddressBook</span>
 
-<span class="hljs-title">head</span> :: <span class="hljs-type">AddressBook</span> -&gt; <span class="hljs-type">Maybe</span> <span class="hljs-type">Entry</span>
+<span class="hljs-title">head</span> :: <span class="hljs-type">AddressBook</span> -> <span class="hljs-type">Maybe</span> <span class="hljs-type">Entry</span>
 </code></pre>
 <p>検索する関数の引数として姓と名前を渡す必要があるのもわかっています。</p>
 <p><code>filter</code>に渡す関数も必要になることもわかります。この関数を <code>filterEntry</code>と呼ぶことにしましょう。 <code>filterEntry</code>は <code>Entry -> Boolean</code>という型を持っています。 <code>filter filterEntry</code>という関数適用の式は、 <code>AddressBook -> AddressBook</code>という型を持つでしょう。もしこの関数の結果を <code>head</code>関数に渡すと、型 <code>Maybe Entry</code>の結果を得ることになります。</p>
 <p>これまでのことをまとめると、この <code>findEntry</code>関数の妥当な型シグネチャは次のようになります。</p>
-<pre><code class="language-haskell"><span class="hljs-title">findEntry</span> :: <span class="hljs-type">String</span> -&gt; <span class="hljs-type">String</span> -&gt; <span class="hljs-type">AddressBook</span> -&gt; <span class="hljs-type">Maybe</span> <span class="hljs-type">Entry</span>
+<pre><code class="language-haskell"><span class="hljs-title">findEntry</span> :: <span class="hljs-type">String</span> -> <span class="hljs-type">String</span> -> <span class="hljs-type">AddressBook</span> -> <span class="hljs-type">Maybe</span> <span class="hljs-type">Entry</span>
 </code></pre>
 <p><code>findEntry</code>は、姓と名前の2つの文字列、および <code>AddressBook</code>を引数にとり、 <code>Maybe Entry</code>という型の値を結果として返すということを、この型シグネチャは言っています。結果の <code>Maybe Entry</code>という型は、名前が住所録で発見された場合にのみ <code>Entry</code>の値を持ちます。</p>
 <p>そして、 <code>findEntry</code>の定義は次のようになります。</p>
 <pre><code class="language-haskell"><span class="hljs-title">findEntry</span> firstName lastName book = head $ filter filterEntry book
   <span class="hljs-keyword">where</span>
-    filterEntry :: <span class="hljs-type">Entry</span> -&gt; <span class="hljs-type">Boolean</span>
-    filterEntry entry = entry.firstName == firstName &amp;&amp; entry.lastName == lastName
+    filterEntry :: <span class="hljs-type">Entry</span> -> <span class="hljs-type">Boolean</span>
+    filterEntry entry = entry.firstName == firstName && entry.lastName == lastName
 </code></pre>
 <p>一歩づつこのコードの動きを調べてみましょう。</p>
 <p><code>findEntry</code>は、どちらも文字列型である <code>firstName</code>と <code>lastName</code>、 <code>AddressBook</code>型の <code>book</code>という3つの名前をスコープに導入します</p>
@@ -378,7 +378,7 @@ forall a. List a -> Maybe a
 <p>上でみた <code>findEntry</code>のコードでは、少し異なる形式の関数適用が使用されています。 <code>head</code>関数は中置の <code>$</code>演算子を使って式 <code>filter filterEntry book</code>に適用されています。</p>
 <p>これは <code>head (filter filterEntry book)</code>という通常の関数適用と同じ意味です。</p>
 <p><code>($)</code>はPreludeで定義されている <code>apply</code>関数の別名で、次のように定義されています。</p>
-<pre><code class="language-haskell"><span class="hljs-title">apply</span> :: <span class="hljs-keyword">forall</span> a b. (a -&gt; b) -&gt; a -&gt; b
+<pre><code class="language-haskell"><span class="hljs-title">apply</span> :: <span class="hljs-keyword">forall</span> a b. (a -> b) -> a -> b
 <span class="hljs-title">apply</span> f x = f x
 
 <span class="hljs-keyword">infixr</span> <span class="hljs-number">0</span> apply as $
@@ -396,15 +396,15 @@ forall a. List a -> Maybe a
 <p>引数 <code>book</code>が関数 <code>filter filterEntry</code>に渡され、この適用の結果が <code>head</code>に渡されることに注目してください。これは言いかたを変えれば、 <code>filter filterEntry</code>と <code>head</code>の<strong>合成</strong>(composition) に <code>book</code>は渡されるということです。</p>
 <p>PureScriptの関数合成演算子は <code><<<</code>と <code>>>></code>です。前者は「逆方向の合成」であり、後者は「順方向の合成」です。</p>
 <p>いずれかの演算子を使用して <code>findEntry</code>の右辺を書き換えることができます。逆順の合成を使用すると、右辺は次のようになります。</p>
-<pre><code class="language-haskell">(head &lt;&lt;&lt; filter filterEntry) book
+<pre><code class="language-haskell">(head <<< filter filterEntry) book
 </code></pre>
 <p>この形式なら最初の定義にイータ変換の技を適用することができ、 <code>findEntry</code>は最終的に次のような形式に到達します。</p>
-<pre><code class="language-haskell"><span class="hljs-title">findEntry</span> firstName lastName = head &lt;&lt;&lt; filter filterEntry
+<pre><code class="language-haskell"><span class="hljs-title">findEntry</span> firstName lastName = head <<< filter filterEntry
   <span class="hljs-keyword">where</span>
     ...
 </code></pre>
 <p>右辺を次のようにしても同じです。</p>
-<pre><code class="language-haskell">filter filterEntry &gt;&gt;&gt; head
+<pre><code class="language-haskell">filter filterEntry >>> head
 </code></pre>
 <p>どちらにしても、これは「 <code>findEntry</code>はフィルタリング関数と <code>head</code>関数の合成である」という <code>findEntry</code>関数のわかりやすい定義を与えます。</p>
 <p>どちらの定義のほうがわかりやすいかの判断はお任せしますが、このように関数を部品として捉え、関数はひとつの役目だけをこなし、機能を関数合成で組み立てるというように考えると有用なことがよくあります。</p>

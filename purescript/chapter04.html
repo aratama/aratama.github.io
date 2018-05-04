@@ -63,13 +63,13 @@
 <p>再帰は<strong>分割統治</strong>(Divide and conquer)戦略と密接な関係があります。分割統治とはすなわち、いろいろな入力に対する問題を解決するために、入力を小さな部分に分割し、それぞれの部分について問題を解いて、部分ごとの答えから最終的な答えを組み立てるということです。</p>
 <p>それでは、PureScriptにおける再帰の簡単な例をいくつか見てみましょう。</p>
 <p>次は<strong>階乗関数</strong>(factorial function)のよくある例です。</p>
-<pre><code class="language-haskell"><span class="hljs-title">fact</span> :: <span class="hljs-type">Int</span> -&gt; <span class="hljs-type">Int</span>
+<pre><code class="language-haskell"><span class="hljs-title">fact</span> :: <span class="hljs-type">Int</span> -> <span class="hljs-type">Int</span>
 <span class="hljs-title">fact</span> <span class="hljs-number">0</span> = <span class="hljs-number">1</span>
 <span class="hljs-title">fact</span> n = n * fact (n - <span class="hljs-number">1</span>)
 </code></pre>
 <p>部分問題へ問題を分割することによって階乗関数がどのように計算されるかがわかります。より小さい数へと階乗を計算していくということです。ゼロに到達すると答えは直ちに求まります。</p>
 <p>次は<strong>フィボナッチ関数</strong>(Fibonacci function)を計算するという、これまたよくある例です。</p>
-<pre><code class="language-haskell"><span class="hljs-title">fib</span> :: <span class="hljs-type">Int</span> -&gt; <span class="hljs-type">Int</span>
+<pre><code class="language-haskell"><span class="hljs-title">fib</span> :: <span class="hljs-type">Int</span> -> <span class="hljs-type">Int</span>
 <span class="hljs-title">fib</span> <span class="hljs-number">0</span> = <span class="hljs-number">1</span>
 <span class="hljs-title">fib</span> <span class="hljs-number">1</span> = <span class="hljs-number">1</span>
 <span class="hljs-title">fib</span> n = fib (n - <span class="hljs-number">1</span>) + fib (n - <span class="hljs-number">2</span>)
@@ -84,7 +84,7 @@
 <span class="hljs-keyword">import</span> Data.Array.Partial (<span class="hljs-title">tail</span>)
 <span class="hljs-keyword">import</span> Partial.Unsafe (<span class="hljs-title">unsafePartial</span>)
 
-<span class="hljs-title">length</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Array</span> a -&gt; <span class="hljs-type">Int</span>
+<span class="hljs-title">length</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Array</span> a -> <span class="hljs-type">Int</span>
 <span class="hljs-title">length</span> arr =
   <span class="hljs-keyword">if</span> null arr
     <span class="hljs-keyword">then</span> <span class="hljs-number">0</span>
@@ -249,10 +249,10 @@ factors 10
 <p>機能は実現できましたが、このコードの可読性は大幅に向上することができます。 <code>map</code>や <code>concatMap</code>は基本的な関数で、<strong>do記法</strong>(do notation)と呼ばれる特別な構文の基盤をなしています(もっと厳密にいえば、それらの一般化である <code>map</code>と <code>bind</code>が基盤をなしています)。</p>
 <p><strong>注意</strong>：<code>map</code>と <code>concatMap</code>が<strong>配列内包表記</strong>を書けるようにしているように、もっと一般的な演算子である <code>map</code>と <code>bind</code>は<strong>モナド内包表記</strong>(monad comprehensions)と呼ばれているものを書けるようにします。本書の後半では<strong>モナド</strong>(monad)の例をたっぷり見ていくことになります。</p>
 <p>do記法を使うと、先ほどの <code>factors</code>関数を次のように書き直すことができます。</p>
-<pre><code class="language-haskell"><span class="hljs-title">factors</span> :: <span class="hljs-type">Int</span> -&gt; <span class="hljs-type">Array</span> (<span class="hljs-type">Array</span> <span class="hljs-type">Int</span>)
-<span class="hljs-title">factors</span> n = filter (\xs -&gt; product xs == n) $ <span class="hljs-keyword">do</span>
-  i &lt;- <span class="hljs-number">1</span> .. n
-  j &lt;- i .. n
+<pre><code class="language-haskell"><span class="hljs-title">factors</span> :: <span class="hljs-type">Int</span> -> <span class="hljs-type">Array</span> (<span class="hljs-type">Array</span> <span class="hljs-type">Int</span>)
+<span class="hljs-title">factors</span> n = filter (\xs -> product xs == n) $ <span class="hljs-keyword">do</span>
+  i <- <span class="hljs-number">1</span> .. n
+  j <- i .. n
   pure [i, j]
 </code></pre>
 <p>予約語 <code>do</code>はdo記法を使うコードのブロックを導入します。このブロックは幾つかの型の式で構成されています。</p>
@@ -267,10 +267,10 @@ factors 10
 [[1, 2]]
 </code></pre>
 <p>配列の場合、 <code>pure</code>は単に１要素の配列を作成します。実際に、 <code>pure</code>の代わりにこの形式を使うように <code>factors</code>関数を変更することもできます。</p>
-<pre><code class="language-haskell"><span class="hljs-title">factors</span> :: <span class="hljs-type">Int</span> -&gt; <span class="hljs-type">Array</span> (<span class="hljs-type">Array</span> <span class="hljs-type">Int</span>)
-<span class="hljs-title">factors</span> n = filter (\xs -&gt; product xs == n) $ <span class="hljs-keyword">do</span>
-  i &lt;- <span class="hljs-number">1</span> .. n
-  j &lt;- i .. n
+<pre><code class="language-haskell"><span class="hljs-title">factors</span> :: <span class="hljs-type">Int</span> -> <span class="hljs-type">Array</span> (<span class="hljs-type">Array</span> <span class="hljs-type">Int</span>)
+<span class="hljs-title">factors</span> n = filter (\xs -> product xs == n) $ <span class="hljs-keyword">do</span>
+  i <- <span class="hljs-number">1</span> .. n
+  j <- i .. n
   [[i, j]]
 </code></pre>
 <p>そして、結果は同じになります。</p>
@@ -278,10 +278,10 @@ factors 10
 <p><code>factors</code>関数を更に改良する方法としては、filterを配列内包表記の内側に移動するというものがあります。これは <code>purescript-control</code>ライブラリにある <code>Control.MonadZero</code>モジュールの <code>guard</code>関数を使用することで可能になります。</p>
 <pre><code class="language-haskell"><span class="hljs-keyword">import</span> Control.MonadZero (<span class="hljs-title">guard</span>)
 
-<span class="hljs-title">factors</span> :: <span class="hljs-type">Int</span> -&gt; <span class="hljs-type">Array</span> (<span class="hljs-type">Array</span> <span class="hljs-type">Int</span>)
+<span class="hljs-title">factors</span> :: <span class="hljs-type">Int</span> -> <span class="hljs-type">Array</span> (<span class="hljs-type">Array</span> <span class="hljs-type">Int</span>)
 <span class="hljs-title">factors</span> n = <span class="hljs-keyword">do</span>
-  i &lt;- <span class="hljs-number">1</span> .. n
-  j &lt;- i .. n
+  i <- <span class="hljs-number">1</span> .. n
+  j <- i .. n
   guard $ i * j == n
   pure [i, j]
 </code></pre>
@@ -292,7 +292,7 @@ factors 10
 forall m. MonadZero m => Boolean -> m Unit
 </code></pre>
 <p>今回の場合は、 <code>PSCi</code>は次の型を報告するものと考えてください。</p>
-<pre><code class="language-haskell"><span class="hljs-built_in">Boolean</span> -&gt; <span class="hljs-built_in">Array</span> Unit
+<pre><code class="language-haskell"><span class="hljs-built_in">Boolean</span> -> <span class="hljs-built_in">Array</span> Unit
 </code></pre>
 <p>次の計算の結果から、配列における <code>guard</code>関数について今知りたいことはすべてわかります。</p>
 <pre><code class="language-text">import Data.Array
@@ -379,7 +379,7 @@ RangeError: Maximum call stack size exceeded
 <p>末尾再帰の最適化が可能かどうかには条件があります。<strong>末尾位置</strong>(tail position)にある関数の再帰的な呼び出しは、スタックフレームが確保されない<strong>ジャンプ</strong>に置き換えることができます。呼び出しは、関数が戻るより前の最後の呼び出しであるとき、<strong>末尾位置</strong>にあるといいます。なぜこの例でスタックオーバーフローを観察したのかはこれが理由です。この <code>f</code>の再帰呼び出しは、末尾位置<strong>ではない</strong>からです。</p>
 <p>実際には、PureScriptコンパイラは再帰呼び出しをジャンプに置き換えるのではなく、再帰的な関数全体を<strong>whileループ</strong>に置き換えます。</p>
 <p>以下はすべての再帰呼び出しが末尾位置にある再帰関数の例です。</p>
-<pre><code class="language-haskell"><span class="hljs-title">fact</span> :: <span class="hljs-type">Int</span> -&gt; <span class="hljs-type">Int</span> -&gt; <span class="hljs-type">Int</span>
+<pre><code class="language-haskell"><span class="hljs-title">fact</span> :: <span class="hljs-type">Int</span> -> <span class="hljs-type">Int</span> -> <span class="hljs-type">Int</span>
 <span class="hljs-title">fact</span> <span class="hljs-number">0</span> acc = acc
 <span class="hljs-title">fact</span> n acc = fact (n - <span class="hljs-number">1</span>) (acc * n)
 </code></pre>
@@ -387,13 +387,13 @@ RangeError: Maximum call stack size exceeded
 <h2>4.14 累積器</h2>
 <p>末尾再帰ではない関数を末尾再帰関数に変える一般的な方法としては、<strong>累積器引数</strong>(accumulator parameter)を使用する方法があります。結果を累積するために返り値を使うと末尾再帰を妨げることがありますが、それとは対照的に累積器引数は返り値を<strong>累積</strong>する関数へ追加される付加的な引数です。</p>
 <p>たとえば、入力配列を逆順にする、この配列の再帰を考えてみましょう。</p>
-<pre><code class="language-haskell"><span class="hljs-title">reverse</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Array</span> a -&gt; <span class="hljs-type">Array</span> a
+<pre><code class="language-haskell"><span class="hljs-title">reverse</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Array</span> a -> <span class="hljs-type">Array</span> a
 <span class="hljs-title">reverse</span> [] = []
 <span class="hljs-title">reverse</span> xs = snoc (reverse (unsafePartial tail xs))
                   (unsafePartial head xs)
 </code></pre>
 <p>この実装は末尾再帰ではないので、大きな入力配列に対して実行されると、生成されたJavaScriptはスタックオーバーフローを発生させるでしょう。しかし、代わりに、結果を蓄積するための２つ目の引数を関数に導入することで、これを末尾再帰に変えることができます。</p>
-<pre><code class="language-haskell"><span class="hljs-title">reverse</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Array</span> a -&gt; <span class="hljs-type">Array</span> a
+<pre><code class="language-haskell"><span class="hljs-title">reverse</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Array</span> a -> <span class="hljs-type">Array</span> a
 <span class="hljs-title">reverse</span> = reverse' []
   <span class="hljs-keyword">where</span>
     reverse' acc [] = acc
@@ -427,7 +427,7 @@ reverse [1, 2, 3]
 <p>(やや難しい) 累積器引数を使用して、次の関数を末尾再帰形に書きなおしてください。</p>
 <pre><code class="language-haskell"><span class="hljs-keyword">import</span> Prelude
 <span class="hljs-keyword">import</span> Data.Array.Partial (<span class="hljs-title">head</span>, <span class="hljs-title">tail</span>)
-<span class="hljs-title">count</span> :: <span class="hljs-keyword">forall</span> a. (a -&gt; <span class="hljs-type">Boolean</span>) -&gt; <span class="hljs-type">Array</span> a -&gt; <span class="hljs-type">Int</span>
+<span class="hljs-title">count</span> :: <span class="hljs-keyword">forall</span> a. (a -> <span class="hljs-type">Boolean</span>) -> <span class="hljs-type">Array</span> a -> <span class="hljs-type">Int</span>
 <span class="hljs-title">count</span> _ [] = <span class="hljs-number">0</span>
 <span class="hljs-title">count</span> p xs = <span class="hljs-keyword">if</span> p (unsafePartial head xs)
                <span class="hljs-keyword">then</span> count p (unsafePartial tail xs) + <span class="hljs-number">1</span>
@@ -453,13 +453,13 @@ reverse [1, 2, 3]
 <p>型については、型定義は次のようになっています。</p>
 <pre><code class="language-haskell"><span class="hljs-title">root</span> :: <span class="hljs-type">Path</span>
 
-<span class="hljs-title">ls</span> :: <span class="hljs-type">Path</span> -&gt; <span class="hljs-type">Array</span> <span class="hljs-type">Path</span>
+<span class="hljs-title">ls</span> :: <span class="hljs-type">Path</span> -> <span class="hljs-type">Array</span> <span class="hljs-type">Path</span>
 
-<span class="hljs-title">filename</span> :: <span class="hljs-type">Path</span> -&gt; <span class="hljs-type">String</span>
+<span class="hljs-title">filename</span> :: <span class="hljs-type">Path</span> -> <span class="hljs-type">String</span>
 
-<span class="hljs-title">size</span> :: <span class="hljs-type">Path</span> -&gt; <span class="hljs-type">Maybe</span> <span class="hljs-type">Number</span>
+<span class="hljs-title">size</span> :: <span class="hljs-type">Path</span> -> <span class="hljs-type">Maybe</span> <span class="hljs-type">Number</span>
 
-<span class="hljs-title">isDirectory</span> :: <span class="hljs-type">Path</span> -&gt; <span class="hljs-type">Boolean</span>
+<span class="hljs-title">isDirectory</span> :: <span class="hljs-type">Path</span> -> <span class="hljs-type">Boolean</span>
 </code></pre>
 <p><code>PSCi</code>でこのAPIを試してみましょう。</p>
 <pre><code class="language-text">$ pulp repl
@@ -477,7 +477,7 @@ ls root
 <p><code>FileOperations</code>モジュールでは、 <code>Data.Path</code>APIを操作するための関数を定義されています。 <code>Data.Path</code>モジュールを変更したり実装を理解したりする必要はありません。すべて <code>FileOperations</code>モジュールだけで作業を行います。</p>
 <h2>4.17 すべてのファイルの一覧</h2>
 <p>それでは、内側のディレクトリまで、すべてのファイルを列挙する関数を書いてみましょう。この関数は以下のような型を持つでしょう。</p>
-<pre><code class="language-haskell"><span class="hljs-title">allFiles</span> :: <span class="hljs-type">Path</span> -&gt; <span class="hljs-type">Array</span> <span class="hljs-type">Path</span>
+<pre><code class="language-haskell"><span class="hljs-title">allFiles</span> :: <span class="hljs-type">Path</span> -> <span class="hljs-type">Array</span> <span class="hljs-type">Path</span>
 </code></pre>
 <p>再帰を使うとこの関数を定義することができます。まずは <code>ls</code>を使用してディレクトリの直接の子を列挙します。それぞれの子について再帰的に <code>allFiles</code>を適用すると、それぞれパスの配列が返ってくるでしょう。 <code>concatMap</code>を適用すると、この結果を同時に平坦化することができます。</p>
 <p>最後に、 <code>:</code>演算子を使って現在のファイルも含めます。</p>
@@ -495,9 +495,9 @@ allFiles root
 <p>すばらしい！do記法で配列内包表記を使ってもこの関数を書くことができるので見ていきましょう。</p>
 <p>逆向きの矢印は配列から要素を選択するのに相当することを思い出してください。最初の手順は、引数の直接の子から要素を選択することです。それから、単にそのファイルに対してこの再帰関数を呼びします。do記法を使用しているので、再帰的な結果をすべて連結する <code>concatMap</code>が暗黙に呼び出されています。</p>
 <p>新しいコードは次のようになります。</p>
-<pre><code class="language-haskell"><span class="hljs-title">allFiles'</span> :: <span class="hljs-type">Path</span> -&gt; <span class="hljs-type">Array</span> <span class="hljs-type">Path</span>
+<pre><code class="language-haskell"><span class="hljs-title">allFiles'</span> :: <span class="hljs-type">Path</span> -> <span class="hljs-type">Array</span> <span class="hljs-type">Path</span>
 <span class="hljs-title">allFiles'</span> file = file : <span class="hljs-keyword">do</span>
-  child &lt;- ls file
+  child <- ls file
   allFiles' child
 </code></pre>
 <p><code>PSCi</code>で新しいコードを試してみてください。同じ結果が返ってくるはずです。どちらのほうがわかりやすいかの選択はお任せします。</p>

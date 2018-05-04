@@ -69,10 +69,10 @@
 <p><strong>注意</strong>：同じモジュール名を修飾名に使用する場合には不要な作業です。一般的には<code>import Math as M</code>などの短い名前がよく使われています。</p>
 <h2>5.3 単純なパターン照合</h2>
 <p>それではコード例を見ることから始めましょう。パターン照合を使用して2つの整数の最大公約数を計算する関数は、次のようになります。</p>
-<pre><code class="language-haskell"><span class="hljs-title">gcd</span> :: <span class="hljs-type">Int</span> -&gt; <span class="hljs-type">Int</span> -&gt; <span class="hljs-type">Int</span>
+<pre><code class="language-haskell"><span class="hljs-title">gcd</span> :: <span class="hljs-type">Int</span> -> <span class="hljs-type">Int</span> -> <span class="hljs-type">Int</span>
 <span class="hljs-title">gcd</span> n <span class="hljs-number">0</span> = n
 <span class="hljs-title">gcd</span> <span class="hljs-number">0</span> m = m
-<span class="hljs-title">gcd</span> n m = <span class="hljs-keyword">if</span> n &gt; m
+<span class="hljs-title">gcd</span> n m = <span class="hljs-keyword">if</span> n > m
             <span class="hljs-keyword">then</span> gcd (n - m) m
             <span class="hljs-keyword">else</span> gcd n (m - n)
 </code></pre>
@@ -97,11 +97,11 @@
 <li>どんな引数とも適合するが名前に束縛はしない、アンダースコア（ <code>_</code>）で表されるワイルドカードパターン</li>
 </ul>
 <p>ここではこれらの単純なパターンを使用した、さらに2つの例を示します。</p>
-<pre><code class="language-haskell">fromString :: <span class="hljs-built_in">String</span> -&gt; <span class="hljs-built_in">Boolean</span>
+<pre><code class="language-haskell">fromString :: <span class="hljs-built_in">String</span> -> <span class="hljs-built_in">Boolean</span>
 fromString <span class="hljs-string">"true"</span> = <span class="hljs-literal">true</span>
 fromString _      = <span class="hljs-literal">false</span>
 
-toString :: <span class="hljs-built_in">Boolean</span> -&gt; <span class="hljs-built_in">String</span>
+toString :: <span class="hljs-built_in">Boolean</span> -> <span class="hljs-built_in">String</span>
 toString <span class="hljs-literal">true</span>  = <span class="hljs-string">"true"</span>
 toString <span class="hljs-literal">false</span> = <span class="hljs-string">"false"</span>
 </code></pre>
@@ -109,10 +109,10 @@ toString <span class="hljs-literal">false</span> = <span class="hljs-string">"fa
 <h2>5.5 ガード</h2>
 <p>ユークリッドの互除法の例では、 <code>m > n</code>のときと <code>m <= n</code>のときの２つに分岐するために <code>if .. then .. else</code>式を使っていました。こういうときには他に<strong>ガード</strong>(guard)を使うという選択肢もあります。</p>
 <p>ガードは真偽値の式で、パターンによる制約に加えてそのガードが満たされたときに、その場合の結果になります。ガードを使用してユークリッドの互除法を書き直すと、次のようになります。</p>
-<pre><code class="language-haskell"><span class="hljs-title">gcd</span> :: <span class="hljs-type">Int</span> -&gt; <span class="hljs-type">Int</span> -&gt; <span class="hljs-type">Int</span>
+<pre><code class="language-haskell"><span class="hljs-title">gcd</span> :: <span class="hljs-type">Int</span> -> <span class="hljs-type">Int</span> -> <span class="hljs-type">Int</span>
 <span class="hljs-title">gcd</span> n <span class="hljs-number">0</span> = n
 <span class="hljs-title">gcd</span> <span class="hljs-number">0</span> n = n
-<span class="hljs-title">gcd</span> n m | n &gt; m = gcd (n - m) m
+<span class="hljs-title">gcd</span> n m | n > m = gcd (n - m) m
         | otherwise = gcd n (m - n)
 </code></pre>
 <p>３行目ではガードを使用して、最初の引数が第２引数よりも厳密に大きいという条件を付け加えています。</p>
@@ -128,12 +128,12 @@ toString <span class="hljs-literal">false</span> = <span class="hljs-string">"fa
 
 <h2>5.6 配列リテラルパターン</h2>
 <p><strong>配列リテラルパターン</strong>(array literal patterns)は、固定長の配列を照合する方法を提供します。たとえば、空の配列であることを特定する関数 <code>isEmpty</code>を書きたいとします。最初の選択肢に空の配列パターン（ <code>[]</code>）を用いるとこれを実現できます。</p>
-<pre><code class="language-haskell">isEmpty :: forall a. Array a -&gt; <span class="hljs-built_in">Boolean</span>
+<pre><code class="language-haskell">isEmpty :: forall a. Array a -> <span class="hljs-built_in">Boolean</span>
 isEmpty [] = <span class="hljs-literal">true</span>
 isEmpty _ = <span class="hljs-literal">false</span>
 </code></pre>
 <p>次の関数では、長さ5の配列と適合し、配列の5つの要素をそれぞれ異なった方法で束縛しています。</p>
-<pre><code class="language-haskell"><span class="hljs-title">takeFive</span> :: <span class="hljs-type">Array</span> <span class="hljs-type">Int</span> -&gt; <span class="hljs-type">Int</span>
+<pre><code class="language-haskell"><span class="hljs-title">takeFive</span> :: <span class="hljs-type">Array</span> <span class="hljs-type">Int</span> -> <span class="hljs-type">Int</span>
 <span class="hljs-title">takeFive</span> [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, a, b, _] = a * b
 <span class="hljs-title">takeFive</span> _ = <span class="hljs-number">0</span>
 </code></pre>
@@ -157,8 +157,8 @@ isEmpty _ = <span class="hljs-literal">false</span>
 <p><strong>レコードパターン</strong>(Record patterns)は(ご想像のとおり)レコードに照合します。</p>
 <p>レコードパターンはレコードリテラルに見た目が似ていますが、レコードリテラルでラベルと式を<strong>コロン</strong>で区切るのとは異なり、レコードパターンではラベルとパターンを<strong>等号</strong>で区切ります。</p>
 <p>たとえば、次のパターンは <code>first</code>と <code>last</code>と呼ばれるフィールドが含まれた任意のレコードにマッチし、これらのフィールドの値はそれぞれ <code>x</code>と <code>y</code>という名前に束縛されます。</p>
-<pre><code class="language-haskell">showPerson :: { <span class="hljs-attr">first</span> :: <span class="hljs-built_in">String</span>, <span class="hljs-attr">last</span> :: <span class="hljs-built_in">String</span> } -&gt; <span class="hljs-built_in">String</span>
-showPerson { <span class="hljs-attr">first</span>: x, <span class="hljs-attr">last</span>: y } = y &lt;&gt; <span class="hljs-string">", "</span> &lt;&gt; x
+<pre><code class="language-haskell">showPerson :: { <span class="hljs-attr">first</span> :: <span class="hljs-built_in">String</span>, <span class="hljs-attr">last</span> :: <span class="hljs-built_in">String</span> } -> <span class="hljs-built_in">String</span>
+showPerson { <span class="hljs-attr">first</span>: x, <span class="hljs-attr">last</span>: y } = y <> <span class="hljs-string">", "</span> <> x
 </code></pre>
 <p>レコードパターンはPureScriptの型システムの興味深い機能である<strong>行多相</strong>(row polymorphism)の良い例となっています。上の <code>showPerson</code>を型シグネチャなしで定義していたとします。この型はどのように推論されるのでしょうか？面白いことに、推論される型は上で与えた型とは同じではありません。</p>
 <pre><code class="language-text">> showPerson { first: x, last: y } = y <> ", " <> x
@@ -181,7 +181,7 @@ Type of expression lacks required label "last"
 <p><code>showPerson</code>の推論された型シグネチャは、 <code>String</code>であるような <code>first</code>と <code>last</code>というフィールドと、<strong>それ以外の任意のフィールドを</strong>持った任意のレコードを引数に取り、 <code>String</code>を返す、というように読むことができます。</p>
 <p>この関数はレコードフィールドの行 <code>r</code>について多相的なので、行多相と呼ばれるわけです。</p>
 <p>次のように書くことができることにも注意してください。</p>
-<pre><code class="language-haskell">&gt; showPerson p = p.last &lt;&gt; <span class="hljs-string">", "</span> &lt;&gt; p.first
+<pre><code class="language-haskell">> showPerson p = p.last <> <span class="hljs-string">", "</span> <> p.first
 </code></pre>
 <p>この場合も、 <code>PSCi</code>は先ほどと同じ型を推論するでしょう。</p>
 <p>後ほど<strong>拡張可能作用</strong>(Extensible effects)について議論するときに、再び行多相について見ていくことになります。</p>
@@ -192,16 +192,16 @@ Type of expression lacks required label "last"
 
 <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-type">Person</span> = { <span class="hljs-title">name</span> :: <span class="hljs-type">String</span>, <span class="hljs-title">address</span> :: <span class="hljs-type">Address</span> }</span>
 
-<span class="hljs-title">livesInLA</span> :: <span class="hljs-type">Person</span> -&gt; <span class="hljs-type">Boolean</span>
+<span class="hljs-title">livesInLA</span> :: <span class="hljs-type">Person</span> -> <span class="hljs-type">Boolean</span>
 <span class="hljs-title">livesInLA</span> { address: { city: <span class="hljs-string">"Los Angeles"</span> } } = true
 <span class="hljs-title">livesInLA</span> _ = false
 </code></pre>
 <h2>5.9 名前付きパターン</h2>
 <p>パターンには<strong>名前を付ける</strong>ことができ、入れ子になったパターンを使うときにスコープに追加の名前を導入することができます。任意のパターンに名前を付けるには、 <code>@</code>記号を使います。</p>
 <p>たとえば、次のコードは1つ以上の要素を持つ任意の配列と適合しますが、配列の先頭を <code>x</code>という名前、配列全体を <code>arr</code>という名前に束縛します。</p>
-<pre><code class="language-haskell">sortPair :: <span class="hljs-built_in">Array</span> Int -&gt; <span class="hljs-built_in">Array</span> Int
+<pre><code class="language-haskell">sortPair :: <span class="hljs-built_in">Array</span> Int -> <span class="hljs-built_in">Array</span> Int
 sortPair arr@[x, y]
-  | x &lt;= y = arr
+  | x <= y = arr
   | otherwise = [y, x]
 sortPair arr = arr
 </code></pre>
@@ -224,11 +224,11 @@ sortPair arr = arr
 <pre><code class="language-haskell"><span class="hljs-keyword">import</span> Data.Array.Partial (<span class="hljs-title">tail</span>)
 <span class="hljs-keyword">import</span> Partial.Unsafe (<span class="hljs-title">unsafePartial</span>)
 
-<span class="hljs-title">lzs</span> :: <span class="hljs-type">Array</span> <span class="hljs-type">Int</span> -&gt; <span class="hljs-type">Array</span> <span class="hljs-type">Int</span>
+<span class="hljs-title">lzs</span> :: <span class="hljs-type">Array</span> <span class="hljs-type">Int</span> -> <span class="hljs-type">Array</span> <span class="hljs-type">Int</span>
 <span class="hljs-title">lzs</span> [] = []
 <span class="hljs-title">lzs</span> xs = <span class="hljs-keyword">case</span> sum xs <span class="hljs-keyword">of</span>
-           <span class="hljs-number">0</span> -&gt; xs
-           _ -&gt; lzs (unsafePartial tail xs)
+           <span class="hljs-number">0</span> -> xs
+           _ -> lzs (unsafePartial tail xs)
 </code></pre>
 <p>例えば次のようになります。</p>
 <pre><code class="language-text">> lzs [1, 2, 3, 4]
@@ -243,8 +243,8 @@ sortPair arr = arr
 <p>簡単な例でこの動作を見てみましょう。</p>
 <pre><code class="language-haskell"><span class="hljs-keyword">import</span> Partial.Unsafe (<span class="hljs-title">unsafePartial</span>)
 
-<span class="hljs-title">partialFunction</span> :: <span class="hljs-type">Boolean</span> -&gt; <span class="hljs-type">Boolean</span>
-<span class="hljs-title">partialFunction</span> = unsafePartial \true -&gt; true
+<span class="hljs-title">partialFunction</span> :: <span class="hljs-type">Boolean</span> -> <span class="hljs-type">Boolean</span>
+<span class="hljs-title">partialFunction</span> = unsafePartial \true -> true
 </code></pre>
 <p>この関数はゼロの入力に対してのみ適合する単一の場合を含みます。このファイルをコンパイルして <code>PSCi</code>でそれ以外の値を与えてテストすると、実行時エラーが発生します。</p>
 <pre><code class="language-text">> partialFunction false
@@ -270,7 +270,7 @@ Partial => Boolean -> Boolean
 </code></pre>
 <p>本書ではのちに<code>=></code>記号を含むいろいろな型を見ることができます（これらは<strong>型クラス</strong>に関連しています）。しかし、今のところは、PureScriptは型システムを使って部分関数を追跡していること、開発者は型検証器にコードが安全であることを明示する必要があることを確認すれば十分です。</p>
 <p>コンパイラは、定義されたパターンが<strong>冗長</strong>であることを検出した場合（すでに定義されたパターンに一致するケースのみ）でも警告を生成します。</p>
-<pre><code class="language-purescript">redundantCase :: <span class="hljs-built_in">Boolean</span> -&gt; <span class="hljs-built_in">Boolean</span>
+<pre><code class="language-purescript">redundantCase :: <span class="hljs-built_in">Boolean</span> -> <span class="hljs-built_in">Boolean</span>
 redundantCase <span class="hljs-literal">true</span> = <span class="hljs-literal">true</span>
 redundantCase <span class="hljs-literal">false</span> = <span class="hljs-literal">false</span>
 redundantCase <span class="hljs-literal">false</span> = <span class="hljs-literal">false</span>
@@ -332,11 +332,11 @@ The definition has the following redundant cases:
 <p><code>p1</code>及び <code>p2</code>を構築するため、レコードを引数として <code>Point</code>構築子を適用しています。</p>
 <p>代数的データ型で値を構築することは簡単ですが、これをどうやって使ったらよいのでしょうか？ここで代数的データ型とパターン照合との重要な接点が見えてきます。代数的データ型の値がどの構築子から作られたかを調べたり、代数的データ型からフィールドの値を取り出す唯一の方法は、パターン照合を使用することです。</p>
 <p>例を見てみましょう。 <code>Shape</code>を <code>String</code>に変換したいとしましょう。 <code>Shape</code>を構築するのにどの構築子が使用されたかを調べるには、パターン照合を使用しなければなりません。これには次のようにします。</p>
-<pre><code class="language-haskell"><span class="hljs-title">showPoint</span> :: <span class="hljs-type">Point</span> -&gt; <span class="hljs-type">String</span>
+<pre><code class="language-haskell"><span class="hljs-title">showPoint</span> :: <span class="hljs-type">Point</span> -> <span class="hljs-type">String</span>
 <span class="hljs-title">showPoint</span> (<span class="hljs-type">Point</span> { x: x, y: y }) =
-  <span class="hljs-string">"("</span> &lt;&gt; show x &lt;&gt; <span class="hljs-string">", "</span> &lt;&gt; show y &lt;&gt; <span class="hljs-string">")"</span>
+  <span class="hljs-string">"("</span> <> show x <> <span class="hljs-string">", "</span> <> show y <> <span class="hljs-string">")"</span>
 
-<span class="hljs-title">showShape</span> :: <span class="hljs-type">Shape</span> -&gt; <span class="hljs-type">String</span>
+<span class="hljs-title">showShape</span> :: <span class="hljs-type">Shape</span> -> <span class="hljs-type">String</span>
 <span class="hljs-title">showShape</span> (<span class="hljs-type">Circle</span> c r)      = ...
 <span class="hljs-title">showShape</span> (<span class="hljs-type">Rectangle</span> c w h) = ...
 <span class="hljs-title">showShape</span> (<span class="hljs-type">Line</span> start end)  = ...
@@ -346,7 +346,7 @@ The definition has the following redundant cases:
 <p><code>showPoint</code>は、パターン照合の別の例にもなっています。 <code>showPoint</code>はひとつの場合しかありませんが、 <code>Point</code>構築子の中に含まれたレコードのフィールドに適合する、入れ子になったパターンが使われています。</p>
 <h2>5.14 レコード同名利用</h2>
 <p><code>showPoint</code>関数は引数内のレコードと一致し、 <code>x</code>と <code>y</code>プロパティを同じ名前の値に束縛します。 PureScriptでは、このようなパターン一致を次のように単純化できます。</p>
-<pre><code class="language-haskell"><span class="hljs-title">showPoint</span> :: <span class="hljs-type">Point</span> -&gt; <span class="hljs-type">String</span>
+<pre><code class="language-haskell"><span class="hljs-title">showPoint</span> :: <span class="hljs-type">Point</span> -> <span class="hljs-type">String</span>
 <span class="hljs-title">showPoint</span> (<span class="hljs-type">Point</span> { x, y }) = ...
 </code></pre>
 <p>ここでは、プロパティの名前のみを指定し、名前に導入したい値を指定する必要はありません。 これは<strong>レコード同名利用</strong>(record pun)と呼ばれます。</p>
@@ -385,7 +385,7 @@ The definition has the following redundant cases:
 <pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-type">Picture</span> = <span class="hljs-type">Array</span> <span class="hljs-type">Shape</span></span>
 </code></pre>
 <p>デバッグしていると <code>Picture</code>を <code>String</code>として表示できるようにしたくなることもあるでしょう。これはパターン照合を使用して定義された <code>showPicture</code>関数で行うことができます。</p>
-<pre><code class="language-haskell">showPicture :: Picture -&gt; <span class="hljs-built_in">Array</span> <span class="hljs-built_in">String</span>
+<pre><code class="language-haskell">showPicture :: Picture -> <span class="hljs-built_in">Array</span> <span class="hljs-built_in">String</span>
 showPicture = map showShape
 </code></pre>
 <p>それを試してみましょう。 モジュールを <code>pulp build</code>でコンパイルし、 <code>pulp repl</code>でPSCiを開きます。</p>
@@ -414,10 +414,10 @@ $ pulp repl
   }
 </code></pre>
 <p><code>Picture</code>内の <code>Shape</code>の配列を走査し、最小の外接矩形を累積するため、 <code>bounds</code>は <code>Data.Foldable</code>の <code>foldl</code>関数を使用しています。</p>
-<pre><code class="language-haskell"><span class="hljs-title">bounds</span> :: <span class="hljs-type">Picture</span> -&gt; <span class="hljs-type">Bounds</span>
+<pre><code class="language-haskell"><span class="hljs-title">bounds</span> :: <span class="hljs-type">Picture</span> -> <span class="hljs-type">Bounds</span>
 <span class="hljs-title">bounds</span> = foldl combine emptyBounds
   <span class="hljs-keyword">where</span>
-    combine :: <span class="hljs-type">Bounds</span> -&gt; <span class="hljs-type">Shape</span> -&gt; <span class="hljs-type">Bounds</span>
+    combine :: <span class="hljs-type">Bounds</span> -> <span class="hljs-type">Shape</span> -> <span class="hljs-type">Bounds</span>
     combine b shape = union (shapeBounds shape) b
 </code></pre>
 <p>畳み込みの初期値として空の <code>Picture</code>の最小外接矩形を求める必要がありますが、 <code>emptyBounds</code>で定義される空の外接矩形がその条件を満たしています。</p>
