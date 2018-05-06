@@ -40,17 +40,8 @@
     </header>
 
     <div class="markdown-body content">
-    <p class="home"><a href="index.html">目次に戻る</a></p>
-<h1>第12章 コールバック地獄</h1>
-<h2>12.1 この章の目標</h2>
-<p>この章では、これまでに見てきたモナド変換子やApplicative関手といった道具が、現実世界の問題解決にどのように役立つかを見ていきましょう。ここでは特に、<strong>コールバック地獄</strong>(callback hell)の問題を解決について見ていきます。</p>
-<h2>12.2 プロジェクトの準備</h2>
-<p>この章のソースコードは、 <code>pulp run</code>を使ってコンパイルして実行することができます。 また、 <code>request</code>モジュールをNPMを使ってインストールする必要があります。</p>
-<pre><code class="language-text">npm install
-</code></pre>
-<h2>12.3 問題</h2>
-<p>通常、JavaScriptの非同期処理コードでは、プログラムの流れを構造化するために<strong>コールバック</strong>(callbacks)を使用します。たとえば、ファイルからテキストを読み取るのに好ましいアプローチとしては、 <code>readFile</code>関数を使用し、コールバック、つまりテキストが利用可能になったときに呼び出される関数を渡すことです。</p>
-<pre><code class="language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">readText</span>(<span class="hljs-params">onSuccess, onFailure</span>) </span>{
+    <p class="home"><a href="index.html">目次に戻る</a></p><h1>第12章 コールバック地獄</h1><h2>12.1 この章の目標</h2><p>この章では、これまでに見てきたモナド変換子やApplicative関手といった道具が、現実世界の問題解決にどのように役立つかを見ていきましょう。ここでは特に、<strong>コールバック地獄</strong>(callback hell)の問題を解決について見ていきます。</p><h2>12.2 プロジェクトの準備</h2><p>この章のソースコードは、 <code>pulp run</code>を使ってコンパイルして実行することができます。 また、 <code>request</code>モジュールをNPMを使ってインストールする必要があります。</p><pre><code class="language-text">npm install
+</code></pre><h2>12.3 問題</h2><p>通常、JavaScriptの非同期処理コードでは、プログラムの流れを構造化するために<strong>コールバック</strong>(callbacks)を使用します。たとえば、ファイルからテキストを読み取るのに好ましいアプローチとしては、 <code>readFile</code>関数を使用し、コールバック、つまりテキストが利用可能になったときに呼び出される関数を渡すことです。</p><pre><code class="language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">readText</span>(<span class="hljs-params">onSuccess, onFailure</span>) </span>{
   <span class="hljs-keyword">var</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
   fs.readFile(<span class="hljs-string">'file1.txt'</span>, { <span class="hljs-attr">encoding</span>: <span class="hljs-string">'utf-8'</span> }, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">error, data</span>) </span>{
     <span class="hljs-keyword">if</span> (error) {
@@ -60,9 +51,7 @@
     }   
   });
 }
-</code></pre>
-<p>しかしながら、複数の非同期操作が関与している場合には入れ子になったコールバックを生じることになり、すぐに読めないコードになってしまいます。</p>
-<pre><code class="language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">copyFile</span>(<span class="hljs-params">onSuccess, onFailure</span>) </span>{
+</code></pre><p>しかしながら、複数の非同期操作が関与している場合には入れ子になったコールバックを生じることになり、すぐに読めないコードになってしまいます。</p><pre><code class="language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">copyFile</span>(<span class="hljs-params">onSuccess, onFailure</span>) </span>{
   <span class="hljs-keyword">var</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
   fs.readFile(<span class="hljs-string">'file1.txt'</span>, { <span class="hljs-attr">encoding</span>: <span class="hljs-string">'utf-8'</span> }, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">error, data1</span>) </span>{
     <span class="hljs-keyword">if</span> (error) {
@@ -78,9 +67,7 @@
     }   
   });
 } 
-</code></pre>
-<p>この問題に対する解決策のひとつとしては、独自の関数に個々の非同期呼び出しを分割することです。</p>
-<pre><code class="language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">writeCopy</span>(<span class="hljs-params">data, onSuccess, onFailure</span>) </span>{
+</code></pre><p>この問題に対する解決策のひとつとしては、独自の関数に個々の非同期呼び出しを分割することです。</p><pre><code class="language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">writeCopy</span>(<span class="hljs-params">data, onSuccess, onFailure</span>) </span>{
   <span class="hljs-keyword">var</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
   fs.writeFile(<span class="hljs-string">'file2.txt'</span>, data, { <span class="hljs-attr">encoding</span>: <span class="hljs-string">'utf-8'</span> }, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">error</span>) </span>{
     <span class="hljs-keyword">if</span> (error) {
@@ -101,32 +88,20 @@
     }   
   });
 } 
-</code></pre>
-<p>この解決策は一応は機能しますが、いくつか問題があります。</p>
-<ul>
+</code></pre><p>この解決策は一応は機能しますが、いくつか問題があります。</p><ul>
 <li>上で <code>writeCopy</code>へ <code>data</code>を渡したのと同じ方法で、非同期関数に関数の引数として途中の結果を渡さなければなりません。これは小さな関数についてはうまくいきますが、多くのコールバック関係する場合はデータの依存関係は複雑になることがあり、関数の引数が大量に追加される結果になります。</li>
 <li>どんな非同期関数でもコールバック <code>onSuccess</code>と <code>onFailure</code>が引数として定義されるという共通のパターンがありますが、このパターンはソースコードに付随したモジュールのドキュメントに記述することで実施しなければなりません。このパターンを管理するには型システムのほうがよいですし、型システムで使い方を強制しておくほうがいいでしょう。</li>
-</ul>
-<p>次に、これらの問題を解決するために、これまでに学んだ手法を使用する方法について説明していきます。</p>
-<h2>12.4 継続モナド</h2>
-<p><code>copyFile</code>の例をFFIを使ってPureScriptへと翻訳していきましょう。PureScriptで書いていくにつれ、計算の構造はわかりやすくなり、 <code>purescript-transformers</code>パッケージで定義されている継続モナド変換子 <code>ContT</code>が自然に導入されることになるでしょう。</p>
-<p>まず、FFIを使って <code>readFile</code>と <code>writeFile</code>に型を与えなくてはなりません。型同義語をいくつかと、ファイル入出力のための作用を定義することから始めましょう。</p>
-<pre><code class="language-haskell"><span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> data <span class="hljs-type">FS</span> :: <span class="hljs-type">Effect</span>
+</ul><p>次に、これらの問題を解決するために、これまでに学んだ手法を使用する方法について説明していきます。</p><h2>12.4 継続モナド</h2><p><code>copyFile</code>の例をFFIを使ってPureScriptへと翻訳していきましょう。PureScriptで書いていくにつれ、計算の構造はわかりやすくなり、 <code>purescript-transformers</code>パッケージで定義されている継続モナド変換子 <code>ContT</code>が自然に導入されることになるでしょう。</p><p>まず、FFIを使って <code>readFile</code>と <code>writeFile</code>に型を与えなくてはなりません。型同義語をいくつかと、ファイル入出力のための作用を定義することから始めましょう。</p><pre><code class="language-haskell"><span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> data <span class="hljs-type">FS</span> :: <span class="hljs-type">Effect</span>
 
 <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-type">ErrorCode</span> = <span class="hljs-type">String</span></span>
 <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-type">FilePath</span> = <span class="hljs-type">String</span></span>
-</code></pre>
-<p><code>readFile</code>はファイル名と2引数のコールバックを引数に取ります。ファイルが正常に読み込まれた場合は、2番目の引数にはファイルの内容が含まれますが、そうでない場合は、最初の引数がエラーを示すために使われます。</p>
-<p>今回は <code>readFile</code>を2つのコールバックを引数としてとる関数としてラップすることにします。先ほどの <code>copyFile</code>や <code>writeCopy</code>とまったく同じように、エラーコールバック(<code>onFailure</code>)と結果コールバック(<code>onSuccess</code>)の2つです。簡単のために <code>Data.Function</code>の多引数関数の機能を使うと、このラップされた関数 <code>readFileImpl</code>は次のようになるでしょう。</p>
-<pre><code class="language-haskell"><span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> readFileImpl
+</code></pre><p><code>readFile</code>はファイル名と2引数のコールバックを引数に取ります。ファイルが正常に読み込まれた場合は、2番目の引数にはファイルの内容が含まれますが、そうでない場合は、最初の引数がエラーを示すために使われます。</p><p>今回は <code>readFile</code>を2つのコールバックを引数としてとる関数としてラップすることにします。先ほどの <code>copyFile</code>や <code>writeCopy</code>とまったく同じように、エラーコールバック(<code>onFailure</code>)と結果コールバック(<code>onSuccess</code>)の2つです。簡単のために <code>Data.Function</code>の多引数関数の機能を使うと、このラップされた関数 <code>readFileImpl</code>は次のようになるでしょう。</p><pre><code class="language-haskell"><span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> readFileImpl
   :: <span class="hljs-keyword">forall</span> eff
    . <span class="hljs-type">Fn3</span> <span class="hljs-type">FilePath</span>
-         (<span class="hljs-type">String</span> -> <span class="hljs-type">Eff</span> (fs :: <span class="hljs-type">FS</span> | eff) <span class="hljs-type">Unit</span>)
-         (<span class="hljs-type">ErrorCode</span> -> <span class="hljs-type">Eff</span> (fs :: <span class="hljs-type">FS</span> | eff) <span class="hljs-type">Unit</span>)
+         (<span class="hljs-type">String</span> -&gt; <span class="hljs-type">Eff</span> (fs :: <span class="hljs-type">FS</span> | eff) <span class="hljs-type">Unit</span>)
+         (<span class="hljs-type">ErrorCode</span> -&gt; <span class="hljs-type">Eff</span> (fs :: <span class="hljs-type">FS</span> | eff) <span class="hljs-type">Unit</span>)
          (<span class="hljs-type">Eff</span> (fs :: <span class="hljs-type">FS</span> | eff) <span class="hljs-type">Unit</span>)
-</code></pre>
-<p>外部JavaScriptモジュールでは、<code>readFileImpl</code>は次のように定義されます。</p>
-<pre><code class="language-javascript">exports.readFileImpl = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">path, onSuccess, onFailure</span>) </span>{
+</code></pre><p>外部JavaScriptモジュールでは、<code>readFileImpl</code>は次のように定義されます。</p><pre><code class="language-javascript">exports.readFileImpl = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">path, onSuccess, onFailure</span>) </span>{
   <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>).readFile(path, {
       <span class="hljs-attr">encoding</span>: <span class="hljs-string">'utf-8'</span>
@@ -139,19 +114,14 @@
     });
   };
 };
-</code></pre>
-<p><code>readFileImpl</code>はファイルパス、成功時のコールバック、失敗時のコールバックという３つの引数を取り、空(<code>Unit</code>)の結果を返す副作用のある計算を返す、ということをこの型は言っています。コー​​ルバック自身にも、その作用を追跡するために <code>Eff</code>モナドを使うような型が与えられていることに注意してください。</p>
-<p>この <code>readFileImpl</code>の実装がその型の正しい実行時表現を持っている理由を、よく理解しておくようにしてください。</p>
-<p><code>writeFileImpl</code>もよく似ています。違いはファイルがコールバックではなく関数自身に渡されるということだけです。実装は次のようになります。</p>
-<pre><code class="language-haskell"><span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> writeFileImpl
+</code></pre><p><code>readFileImpl</code>はファイルパス、成功時のコールバック、失敗時のコールバックという３つの引数を取り、空(<code>Unit</code>)の結果を返す副作用のある計算を返す、ということをこの型は言っています。コー​​ルバック自身にも、その作用を追跡するために <code>Eff</code>モナドを使うような型が与えられていることに注意してください。</p><p>この <code>readFileImpl</code>の実装がその型の正しい実行時表現を持っている理由を、よく理解しておくようにしてください。</p><p><code>writeFileImpl</code>もよく似ています。違いはファイルがコールバックではなく関数自身に渡されるということだけです。実装は次のようになります。</p><pre><code class="language-haskell"><span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> writeFileImpl
   :: <span class="hljs-keyword">forall</span> eff
    . <span class="hljs-type">Fn4</span> <span class="hljs-type">FilePath</span>
          <span class="hljs-type">String</span>
          (<span class="hljs-type">Eff</span> (fs :: <span class="hljs-type">FS</span> | eff) <span class="hljs-type">Unit</span>)
-         (<span class="hljs-type">ErrorCode</span> -> <span class="hljs-type">Eff</span> (fs :: <span class="hljs-type">FS</span> | eff) <span class="hljs-type">Unit</span>)
+         (<span class="hljs-type">ErrorCode</span> -&gt; <span class="hljs-type">Eff</span> (fs :: <span class="hljs-type">FS</span> | eff) <span class="hljs-type">Unit</span>)
          (<span class="hljs-type">Eff</span> (fs :: <span class="hljs-type">FS</span> | eff) <span class="hljs-type">Unit</span>)
-</code></pre>
-<pre><code class="language-javascript">exports.writeFileImpl = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">path, data, onSuccess, onFailure</span>) </span>{
+</code></pre><pre><code class="language-javascript">exports.writeFileImpl = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">path, data, onSuccess, onFailure</span>) </span>{
   <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>).writeFile(path, data, {
       <span class="hljs-attr">encoding</span>: <span class="hljs-string">'utf-8'</span>
@@ -164,69 +134,50 @@
     });
   };
 };
-</code></pre>
-<p>これらのFFIの宣言が与えられれば、 <code>readFile</code>と <code>writeFile</code>の実装を書くことができます。 <code>Data.Function</code>ライブラリを使って、多引数のFFIバインディングを通常の(カリー化された)PureScript関数へと変換するので、もう少し読みやすい型になるでしょう。</p>
-<p>さらに、成功時と失敗時の２つの必須のコールバックに代わって、成功か失敗の<strong>どちらか</strong>(Either) に対応した単一のコールバックを要求するようにします。つまり、新しいコールバックは引数として <code>Either ErrorCode</code>モナドの値をとります。</p>
-<pre><code class="language-haskell"><span class="hljs-title">readFile</span> :: <span class="hljs-keyword">forall</span> eff . <span class="hljs-type">FilePath</span>
-  -> (<span class="hljs-type">Either</span> <span class="hljs-type">ErrorCode</span> <span class="hljs-type">String</span> -> <span class="hljs-type">Eff</span> (fs :: <span class="hljs-type">FS</span> | eff) <span class="hljs-type">Unit</span>)
-  -> <span class="hljs-type">Eff</span> (fs :: <span class="hljs-type">FS</span> | eff) <span class="hljs-type">Unit</span>
+</code></pre><p>これらのFFIの宣言が与えられれば、 <code>readFile</code>と <code>writeFile</code>の実装を書くことができます。 <code>Data.Function</code>ライブラリを使って、多引数のFFIバインディングを通常の(カリー化された)PureScript関数へと変換するので、もう少し読みやすい型になるでしょう。</p><p>さらに、成功時と失敗時の２つの必須のコールバックに代わって、成功か失敗の<strong>どちらか</strong>(Either) に対応した単一のコールバックを要求するようにします。つまり、新しいコールバックは引数として <code>Either ErrorCode</code>モナドの値をとります。</p><pre><code class="language-haskell"><span class="hljs-title">readFile</span> :: <span class="hljs-keyword">forall</span> eff . <span class="hljs-type">FilePath</span>
+  -&gt; (<span class="hljs-type">Either</span> <span class="hljs-type">ErrorCode</span> <span class="hljs-type">String</span> -&gt; <span class="hljs-type">Eff</span> (fs :: <span class="hljs-type">FS</span> | eff) <span class="hljs-type">Unit</span>)
+  -&gt; <span class="hljs-type">Eff</span> (fs :: <span class="hljs-type">FS</span> | eff) <span class="hljs-type">Unit</span>
 <span class="hljs-title">readFile</span> path k =
   runFn3 readFileImpl
          path
-         (k <<< <span class="hljs-type">Right</span>)
-         (k <<< <span class="hljs-type">Left</span>)
+         (k &lt;&lt;&lt; <span class="hljs-type">Right</span>)
+         (k &lt;&lt;&lt; <span class="hljs-type">Left</span>)
 
 <span class="hljs-title">writeFile</span> :: <span class="hljs-keyword">forall</span> eff . <span class="hljs-type">FilePath</span>
-  -> <span class="hljs-type">String</span>
-  -> (<span class="hljs-type">Either</span> <span class="hljs-type">ErrorCode</span> <span class="hljs-type">Unit</span> -> <span class="hljs-type">Eff</span> (fs :: <span class="hljs-type">FS</span> | eff) <span class="hljs-type">Unit</span>)
-  -> <span class="hljs-type">Eff</span> (fs :: <span class="hljs-type">FS</span> | eff) <span class="hljs-type">Unit</span>
+  -&gt; <span class="hljs-type">String</span>
+  -&gt; (<span class="hljs-type">Either</span> <span class="hljs-type">ErrorCode</span> <span class="hljs-type">Unit</span> -&gt; <span class="hljs-type">Eff</span> (fs :: <span class="hljs-type">FS</span> | eff) <span class="hljs-type">Unit</span>)
+  -&gt; <span class="hljs-type">Eff</span> (fs :: <span class="hljs-type">FS</span> | eff) <span class="hljs-type">Unit</span>
 <span class="hljs-title">writeFile</span> path text k =
   runFn4 writeFileImpl
          path
          text
          (k $ <span class="hljs-type">Right</span> unit)
-         (k <<< <span class="hljs-type">Left</span>)
-</code></pre>
-<p>ここで、重要なパターンを見つけることができます。これらの関数は何らかのモナド(この場合は <code>Eff (fs :: FS | eff)</code>)で値を返すコールバックをとり、<strong>同一のモナド</strong>で値を返します。これは、最初のコールバックが結果を返したときに、そのモナドは次の非同期関数の入力に結合するためにその結果を使用することができることを意味しています。実際、 <code>copyFile</code>の例で手作業でやったことがまさにそれです。</p>
-<p>これは <code>purescript-transformers</code>の <code>Control.Monad.Cont.Trans</code>モジュールで定義されている<strong>継続モナド変換子</strong>(continuation monad transformer)の基礎となっています。</p>
-<p><code>ContT</code>は次のようなnewtypeとして定義されます。</p>
-<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">newtype</span> <span class="hljs-type">ContT</span> r m a = <span class="hljs-type">ContT</span> ((<span class="hljs-title">a</span> -> <span class="hljs-title">m</span> <span class="hljs-title">r</span>) -> m r)</span>
-</code></pre>
-<p><strong>継続</strong>(continuation)はコールバックの別名です。継続は計算の<strong>残余</strong>(remainder)を捕捉します。ここで「残余」とは、非同期呼び出しが行われ、結果が提供された後に起こることを指しています。</p>
-<p><code>ContT</code>データ構築子の引数は <code>readFile</code>と <code>writeFile</code>の型ととてもよく似ています。実際、もし型<code>a</code>を<code>ErrorCode String</code>型、<code>r</code>を<code>Unit</code>、<code>m</code>をモナド<code>Eff(fs :: FS | eff)</code>というように選ぶと、<code>readFile</code>の型の右辺を復元することができます。</p>
-<p><code>readFile</code>や<code>writeFile</code>のような非同期のアクションを組み立てるために使う<code>Async</code>モナドを定義するため、次のような型同義語を導入します。</p>
-<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-type">Async</span> eff = <span class="hljs-type">ContT</span> <span class="hljs-type">Unit</span> (<span class="hljs-type">Eff</span> <span class="hljs-title">eff</span>)</span>
-</code></pre>
-<p>今回の目的では <code>Eff</code>モナドを変換するために常に <code>ContT</code>を使い、型 <code>r</code>は常に <code>Unit</code>になりますが、必ずそうしなければならないというわけではありません。</p>
-<p><code>ContT</code>データ構築子を適用するだけで、 <code>readFile</code>と <code>writeFile</code>を <code>Async</code>モナドの計算として扱うことができます。</p>
-<pre><code class="language-haskell"><span class="hljs-title">readFileCont</span>
+         (k &lt;&lt;&lt; <span class="hljs-type">Left</span>)
+</code></pre><p>ここで、重要なパターンを見つけることができます。これらの関数は何らかのモナド(この場合は <code>Eff (fs :: FS | eff)</code>)で値を返すコールバックをとり、<strong>同一のモナド</strong>で値を返します。これは、最初のコールバックが結果を返したときに、そのモナドは次の非同期関数の入力に結合するためにその結果を使用することができることを意味しています。実際、 <code>copyFile</code>の例で手作業でやったことがまさにそれです。</p><p>これは <code>purescript-transformers</code>の <code>Control.Monad.Cont.Trans</code>モジュールで定義されている<strong>継続モナド変換子</strong>(continuation monad transformer)の基礎となっています。</p><p><code>ContT</code>は次のようなnewtypeとして定義されます。</p><pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">newtype</span> <span class="hljs-type">ContT</span> r m a = <span class="hljs-type">ContT</span> ((<span class="hljs-title">a</span> -&gt; <span class="hljs-title">m</span> <span class="hljs-title">r</span>) -&gt; m r)</span>
+</code></pre><p><strong>継続</strong>(continuation)はコールバックの別名です。継続は計算の<strong>残余</strong>(remainder)を捕捉します。ここで「残余」とは、非同期呼び出しが行われ、結果が提供された後に起こることを指しています。</p><p><code>ContT</code>データ構築子の引数は <code>readFile</code>と <code>writeFile</code>の型ととてもよく似ています。実際、もし型<code>a</code>を<code>ErrorCode String</code>型、<code>r</code>を<code>Unit</code>、<code>m</code>をモナド<code>Eff(fs :: FS | eff)</code>というように選ぶと、<code>readFile</code>の型の右辺を復元することができます。</p><p><code>readFile</code>や<code>writeFile</code>のような非同期のアクションを組み立てるために使う<code>Async</code>モナドを定義するため、次のような型同義語を導入します。</p><pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-type">Async</span> eff = <span class="hljs-type">ContT</span> <span class="hljs-type">Unit</span> (<span class="hljs-type">Eff</span> <span class="hljs-title">eff</span>)</span>
+</code></pre><p>今回の目的では <code>Eff</code>モナドを変換するために常に <code>ContT</code>を使い、型 <code>r</code>は常に <code>Unit</code>になりますが、必ずそうしなければならないというわけではありません。</p><p><code>ContT</code>データ構築子を適用するだけで、 <code>readFile</code>と <code>writeFile</code>を <code>Async</code>モナドの計算として扱うことができます。</p><pre><code class="language-haskell"><span class="hljs-title">readFileCont</span>
   :: <span class="hljs-keyword">forall</span> eff
    . <span class="hljs-type">FilePath</span>
-  -> <span class="hljs-type">Async</span> (fs :: <span class="hljs-type">FS</span> | eff) (<span class="hljs-type">Either</span> <span class="hljs-type">ErrorCode</span> <span class="hljs-type">String</span>)
+  -&gt; <span class="hljs-type">Async</span> (fs :: <span class="hljs-type">FS</span> | eff) (<span class="hljs-type">Either</span> <span class="hljs-type">ErrorCode</span> <span class="hljs-type">String</span>)
 <span class="hljs-title">readFileCont</span> path = <span class="hljs-type">ContT</span> $ readFile path
 
 <span class="hljs-title">writeFileCont</span>
   :: <span class="hljs-keyword">forall</span> eff
    . <span class="hljs-type">FilePath</span>
-  -> <span class="hljs-type">String</span>
-  -> <span class="hljs-type">Async</span> (fs :: <span class="hljs-type">FS</span> | eff) (<span class="hljs-type">Either</span> <span class="hljs-type">ErrorCode</span> <span class="hljs-type">Unit</span>)
+  -&gt; <span class="hljs-type">String</span>
+  -&gt; <span class="hljs-type">Async</span> (fs :: <span class="hljs-type">FS</span> | eff) (<span class="hljs-type">Either</span> <span class="hljs-type">ErrorCode</span> <span class="hljs-type">Unit</span>)
 <span class="hljs-title">writeFileCont</span> path text = <span class="hljs-type">ContT</span> $ writeFile path text
-</code></pre>
-<p>ここで <code>ContT</code>モナド変換子に対してdo記法を使うだけで、ファイル複製処理を書くことができます。</p>
-<pre><code class="language-haskell"><span class="hljs-title">copyFileCont</span>
+</code></pre><p>ここで <code>ContT</code>モナド変換子に対してdo記法を使うだけで、ファイル複製処理を書くことができます。</p><pre><code class="language-haskell"><span class="hljs-title">copyFileCont</span>
   :: <span class="hljs-keyword">forall</span> eff
    . <span class="hljs-type">FilePath</span>
-  -> <span class="hljs-type">FilePath</span>
-  -> <span class="hljs-type">Async</span> (fs :: <span class="hljs-type">FS</span> | eff) (<span class="hljs-type">Either</span> <span class="hljs-type">ErrorCode</span> <span class="hljs-type">Unit</span>)
+  -&gt; <span class="hljs-type">FilePath</span>
+  -&gt; <span class="hljs-type">Async</span> (fs :: <span class="hljs-type">FS</span> | eff) (<span class="hljs-type">Either</span> <span class="hljs-type">ErrorCode</span> <span class="hljs-type">Unit</span>)
 <span class="hljs-title">copyFileCont</span> src dest = <span class="hljs-keyword">do</span>
-  e <- readFileCont src
+  e &lt;- readFileCont src
   <span class="hljs-keyword">case</span> e <span class="hljs-keyword">of</span>
-    <span class="hljs-type">Left</span> err -> pure $ <span class="hljs-type">Left</span> err
-    <span class="hljs-type">Right</span> content -> writeFileCont dest content
-</code></pre>
-<p><code>readFileCont</code>の非同期性がdo記法によってモナドの束縛に隠されていることに注目してください。これはまさに同期的なコードのように見えますが、 <code>ContT</code>モナド変換子は非同期関数を書くのを手助けしているのです。</p>
-<p>継続を与えて <code>runContT</code>ハンドラを使うと、この計算を実行することができます。この継続は<strong>次に何をするか</strong>、例えば非同期なファイル複製処理が完了した時に何をするか、を表しています。この簡単な例では、型 <code>Either ErrorCode Unit</code>の結果をコンソールに出力する <code>logShow</code>関数を単に継続として選んでいます。</p>
-<pre><code class="language-haskell"><span class="hljs-keyword">import</span> Prelude
+    <span class="hljs-type">Left</span> err -&gt; pure $ <span class="hljs-type">Left</span> err
+    <span class="hljs-type">Right</span> content -&gt; writeFileCont dest content
+</code></pre><p><code>readFileCont</code>の非同期性がdo記法によってモナドの束縛に隠されていることに注目してください。これはまさに同期的なコードのように見えますが、 <code>ContT</code>モナド変換子は非同期関数を書くのを手助けしているのです。</p><p>継続を与えて <code>runContT</code>ハンドラを使うと、この計算を実行することができます。この継続は<strong>次に何をするか</strong>、例えば非同期なファイル複製処理が完了した時に何をするか、を表しています。この簡単な例では、型 <code>Either ErrorCode Unit</code>の結果をコンソールに出力する <code>logShow</code>関数を単に継続として選んでいます。</p><pre><code class="language-haskell"><span class="hljs-keyword">import</span> Prelude
 
 <span class="hljs-keyword">import</span> Control.Monad.Eff.Console (<span class="hljs-title">logShow</span>)
 <span class="hljs-keyword">import</span> Control.Monad.Cont.Trans (<span class="hljs-title">runContT</span>)
@@ -235,8 +186,7 @@
   runContT
     (copyFileCont <span class="hljs-string">"/tmp/1.txt"</span> <span class="hljs-string">"/tmp/2.txt"</span>)
     logShow
-</code></pre>
-<div class="exercise"><h2>演習</h2><ol>
+</code></pre><div class="exercise"><h2>演習</h2><ol>
 <li>
 <p>(簡単)<code>readFileCont</code>と <code>writeFileCont</code>を使って、2つのテキストフ​​ァイルを連結する関数を書いてください。</p>
 </li>
@@ -249,75 +199,55 @@
 <span class="hljs-title">setTimeoutCont</span>
   :: <span class="hljs-keyword">forall</span> eff
    . <span class="hljs-type">Milliseconds</span>
-  -> <span class="hljs-type">Async</span> (timeout :: <span class="hljs-type">TIMEOUT</span> | eff) <span class="hljs-type">Unit</span>
+  -&gt; <span class="hljs-type">Async</span> (timeout :: <span class="hljs-type">TIMEOUT</span> | eff) <span class="hljs-type">Unit</span>
 </code></pre>
 </li>
-</ol></div>
-
-<h2>12.5 ExceptTを機能させる</h2>
-<p>この方法はうまく動きますが、まだ改良の余地があります。</p>
-<p><code>copyFileCont</code>の実装において、次に何をするかを決定するためには、パターン照合を使って(型 <code>Either ErrorCode String</code>の)<code>readFileCont</code>計算の結果を解析しなければなりません。しかしながら、 <code>Either</code>モナドは対応するモナド変換子 <code>ExceptT</code>を持っていることがわかっているので、 <code>ContT</code>を持つ <code>ExceptT</code>を使って非同期計算とエラー処理の２つの作用を結合できると期待するのは理にかなっています。</p>
-<p>実際にそれは可能で、 <code>ExceptT</code>の定義を見ればそれがなぜかがわかります。</p>
-<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">newtype</span> <span class="hljs-type">ExceptT</span> e m a = <span class="hljs-type">ExceptT</span> (<span class="hljs-title">m</span> (<span class="hljs-type">Either</span> <span class="hljs-title">e</span> <span class="hljs-title">a</span>))</span>
-</code></pre>
-<p><code>ExceptT</code>は基礎のモナドの結果を単純に <code>a</code>から <code>Either e a</code>に変更します。現在のモナドスタックを <code>ExceptT ErrorCode</code>変換子で変換するように、 <code>copyFileCont</code>を書き換えることができることを意味します。それは現在の方法に <code>ExceptT</code>データ構築子を適用するだけなので簡単です。型同義語を与えると、ここでも型シグネチャを整理することができます。</p>
-<pre><code class="language-haskell"><span class="hljs-title">readFileContEx</span>
+</ol></div><h2>12.5 ExceptTを機能させる</h2><p>この方法はうまく動きますが、まだ改良の余地があります。</p><p><code>copyFileCont</code>の実装において、次に何をするかを決定するためには、パターン照合を使って(型 <code>Either ErrorCode String</code>の)<code>readFileCont</code>計算の結果を解析しなければなりません。しかしながら、 <code>Either</code>モナドは対応するモナド変換子 <code>ExceptT</code>を持っていることがわかっているので、 <code>ContT</code>を持つ <code>ExceptT</code>を使って非同期計算とエラー処理の２つの作用を結合できると期待するのは理にかなっています。</p><p>実際にそれは可能で、 <code>ExceptT</code>の定義を見ればそれがなぜかがわかります。</p><pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">newtype</span> <span class="hljs-type">ExceptT</span> e m a = <span class="hljs-type">ExceptT</span> (<span class="hljs-title">m</span> (<span class="hljs-type">Either</span> <span class="hljs-title">e</span> <span class="hljs-title">a</span>))</span>
+</code></pre><p><code>ExceptT</code>は基礎のモナドの結果を単純に <code>a</code>から <code>Either e a</code>に変更します。現在のモナドスタックを <code>ExceptT ErrorCode</code>変換子で変換するように、 <code>copyFileCont</code>を書き換えることができることを意味します。それは現在の方法に <code>ExceptT</code>データ構築子を適用するだけなので簡単です。型同義語を与えると、ここでも型シグネチャを整理することができます。</p><pre><code class="language-haskell"><span class="hljs-title">readFileContEx</span>
   :: <span class="hljs-keyword">forall</span> eff
    . <span class="hljs-type">FilePath</span>
-  -> <span class="hljs-type">ExceptT</span> <span class="hljs-type">ErrorCode</span> (<span class="hljs-type">Async</span> (fs :: <span class="hljs-type">FS</span> | eff)) <span class="hljs-type">String</span>
+  -&gt; <span class="hljs-type">ExceptT</span> <span class="hljs-type">ErrorCode</span> (<span class="hljs-type">Async</span> (fs :: <span class="hljs-type">FS</span> | eff)) <span class="hljs-type">String</span>
 <span class="hljs-title">readFileContEx</span> path = <span class="hljs-type">ExceptT</span> $ readFileCont path
 
 <span class="hljs-title">writeFileContEx</span>
   :: <span class="hljs-keyword">forall</span> eff
    . <span class="hljs-type">FilePath</span>
-  -> <span class="hljs-type">String</span>
-  -> <span class="hljs-type">ExceptT</span> <span class="hljs-type">ErrorCode</span> (<span class="hljs-type">Async</span> (fs :: <span class="hljs-type">FS</span> | eff)) <span class="hljs-type">Unit</span>
+  -&gt; <span class="hljs-type">String</span>
+  -&gt; <span class="hljs-type">ExceptT</span> <span class="hljs-type">ErrorCode</span> (<span class="hljs-type">Async</span> (fs :: <span class="hljs-type">FS</span> | eff)) <span class="hljs-type">Unit</span>
 <span class="hljs-title">writeFileContEx</span> path text = <span class="hljs-type">ExceptT</span> $ writeFileCont path text
-</code></pre>
-<p>非同期エラー処理が <code>ExceptT</code>モナド変換子の内部に隠されているので、このファイル複製処理ははるかに単純になります。</p>
-<pre><code class="language-haskell"><span class="hljs-title">copyFileContEx</span>
+</code></pre><p>非同期エラー処理が <code>ExceptT</code>モナド変換子の内部に隠されているので、このファイル複製処理ははるかに単純になります。</p><pre><code class="language-haskell"><span class="hljs-title">copyFileContEx</span>
   :: <span class="hljs-keyword">forall</span> eff
    . <span class="hljs-type">FilePath</span>
-  -> <span class="hljs-type">FilePath</span>
-  -> <span class="hljs-type">ExceptT</span> <span class="hljs-type">ErrorCode</span> (<span class="hljs-type">Async</span> (fs :: <span class="hljs-type">FS</span> | eff)) <span class="hljs-type">Unit</span>
+  -&gt; <span class="hljs-type">FilePath</span>
+  -&gt; <span class="hljs-type">ExceptT</span> <span class="hljs-type">ErrorCode</span> (<span class="hljs-type">Async</span> (fs :: <span class="hljs-type">FS</span> | eff)) <span class="hljs-type">Unit</span>
 <span class="hljs-title">copyFileContEx</span> src dest = <span class="hljs-keyword">do</span>
-  content <- readFileContEx src
+  content &lt;- readFileContEx src
   writeFileContEx dest content
-</code></pre>
-<div class="exercise"><h2>演習</h2><ol>
+</code></pre><div class="exercise"><h2>演習</h2><ol>
 <li>
 <p>(やや難しい) 任意のエラーを処理するために、 <code>ExceptT</code>を使用して2つのファイルを連結しする先ほどの解決策を書きなおしてください。</p>
 </li>
 <li>
 <p>(やや難しい) 入力ファイル名の配列を与えて複数のテキストファイルを連結する関数 <code>concatenateMany</code>を書く。 <strong>ヒント</strong>：<code>traverse</code>を使用します。</p>
 </li>
-</ol></div>
-
-<h2>12.6 HTTPクライアント</h2>
-<p><code>ContT</code>を使って非同期機能を処理する例として、この章のソースコードの <code>Network.HTTP.Client</code>モジュールについても見ていきましょう。このモジュールでは <code>Async</code>モナドを使用して、NodeJSの非同期を <code>request</code>モジュールを使っています。</p>
-<p><code>request</code>モジュールは、URLとコールバックを受け取り、応答が利用可能なとき、またはエラーが発生したときにHTTP（S）リクエストを生成してコールバックを呼び出す関数を提供します。 リクエストの例を次に示します。</p>
-<pre><code class="language-javascript"><span class="hljs-built_in">require</span>(<span class="hljs-string">'request'</span>)(<span class="hljs-string">'http://purescript.org'</span>), <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, _, body</span>) </span>{
+</ol></div><h2>12.6 HTTPクライアント</h2><p><code>ContT</code>を使って非同期機能を処理する例として、この章のソースコードの <code>Network.HTTP.Client</code>モジュールについても見ていきましょう。このモジュールでは <code>Async</code>モナドを使用して、NodeJSの非同期を <code>request</code>モジュールを使っています。</p><p><code>request</code>モジュールは、URLとコールバックを受け取り、応答が利用可能なとき、またはエラーが発生したときにHTTP（S）リクエストを生成してコールバックを呼び出す関数を提供します。 リクエストの例を次に示します。</p><pre><code class="language-javascript"><span class="hljs-built_in">require</span>(<span class="hljs-string">'request'</span>)(<span class="hljs-string">'http://purescript.org'</span>), <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, _, body</span>) </span>{
   <span class="hljs-keyword">if</span> (err) {
     <span class="hljs-built_in">console</span>.error(err);
   } <span class="hljs-keyword">else</span> {
     <span class="hljs-built_in">console</span>.log(body);
   }
 });
-</code></pre>
-<p><code>Async</code>モナドを使うと、この簡単な例をPureScriptで書きなおすことができます。</p>
-<p><code>Network.HTTP.Client</code>モジュールでは、 <code>request</code>メソッドは以下のようなAPIを持つ関数 <code>getImpl</code>としてラップされています。</p>
-<pre><code class="language-haskell"><span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> data <span class="hljs-type">HTTP</span> :: <span class="hljs-type">Effect</span>
+</code></pre><p><code>Async</code>モナドを使うと、この簡単な例をPureScriptで書きなおすことができます。</p><p><code>Network.HTTP.Client</code>モジュールでは、 <code>request</code>メソッドは以下のようなAPIを持つ関数 <code>getImpl</code>としてラップされています。</p><pre><code class="language-haskell"><span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> data <span class="hljs-type">HTTP</span> :: <span class="hljs-type">Effect</span>
 
 <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-type">URI</span> = <span class="hljs-type">String</span></span>
 
 <span class="hljs-keyword">foreign</span> <span class="hljs-keyword">import</span> getImpl
   :: <span class="hljs-keyword">forall</span> eff
    . <span class="hljs-type">Fn3</span> <span class="hljs-type">URI</span>
-         (<span class="hljs-type">String</span> -> <span class="hljs-type">Eff</span> (http :: <span class="hljs-type">HTTP</span> | eff) <span class="hljs-type">Unit</span>)
-         (<span class="hljs-type">String</span> -> <span class="hljs-type">Eff</span> (http :: <span class="hljs-type">HTTP</span> | eff) <span class="hljs-type">Unit</span>)
+         (<span class="hljs-type">String</span> -&gt; <span class="hljs-type">Eff</span> (http :: <span class="hljs-type">HTTP</span> | eff) <span class="hljs-type">Unit</span>)
+         (<span class="hljs-type">String</span> -&gt; <span class="hljs-type">Eff</span> (http :: <span class="hljs-type">HTTP</span> | eff) <span class="hljs-type">Unit</span>)
          (<span class="hljs-type">Eff</span> (http :: <span class="hljs-type">HTTP</span> | eff) <span class="hljs-type">Unit</span>)
-</code></pre>
-<pre><code class="language-javascript">exports.getImpl = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">uri, done, fail</span>) </span>{
+</code></pre><pre><code class="language-javascript">exports.getImpl = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">uri, done, fail</span>) </span>{
   <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-built_in">require</span>(<span class="hljs-string">'request'</span>)(uri, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, _, body</span>) </span>{
       <span class="hljs-keyword">if</span> (err) {
@@ -328,40 +258,25 @@
     });
   };
 };
-</code></pre>
-<p>再び<code>Data.Function.Uncurried</code>モジュールを使って、これを通常のカリー化されたPureScript関数に変換します。先ほどと同じように、２つのコールバックを<code>Maybe Chunk</code>型の値を受け入れるひとつのコールバックに変換しています。<code>Either String String</code>型の値を受け取り、<code>ContT</code>データ構築子を適用して<code>Async</code>モナドのアクションを構築します。</p>
-<pre><code class="language-haskell"><span class="hljs-title">get</span> :: <span class="hljs-keyword">forall</span> eff.
-  <span class="hljs-type">URI</span> ->
+</code></pre><p>再び<code>Data.Function.Uncurried</code>モジュールを使って、これを通常のカリー化されたPureScript関数に変換します。先ほどと同じように、２つのコールバックを<code>Maybe Chunk</code>型の値を受け入れるひとつのコールバックに変換しています。<code>Either String String</code>型の値を受け取り、<code>ContT</code>データ構築子を適用して<code>Async</code>モナドのアクションを構築します。</p><pre><code class="language-haskell"><span class="hljs-title">get</span> :: <span class="hljs-keyword">forall</span> eff.
+  <span class="hljs-type">URI</span> -&gt;
   <span class="hljs-type">Async</span> (http :: <span class="hljs-type">HTTP</span> | eff) (<span class="hljs-type">Either</span> <span class="hljs-type">String</span> <span class="hljs-type">String</span>)
-<span class="hljs-title">get</span> req = <span class="hljs-type">ContT</span> \k ->
-  runFn3 getImpl req (k <<< <span class="hljs-type">Right</span>) (k <<< <span class="hljs-type">Left</span>)
-</code></pre>
-<div class="exercise"><h2>演習</h2><ol>
+<span class="hljs-title">get</span> req = <span class="hljs-type">ContT</span> \k -&gt;
+  runFn3 getImpl req (k &lt;&lt;&lt; <span class="hljs-type">Right</span>) (k &lt;&lt;&lt; <span class="hljs-type">Left</span>)
+</code></pre><div class="exercise"><h2>演習</h2><ol>
 <li>
 <p>(やや難しい)<code>runContT</code>を使ってHTTP応答の各チャンクをコンソールへ出力することで、 <code>get</code>を試してみてください。</p>
 </li>
 <li>
 <p>(やや難しい)<code>readFileCont</code>と <code>writeFileCont</code>に対して以前に行ったように、 <code>ExceptT</code>を使い <code>get</code>をラップする関数 <code>getEx</code>を書いてください。</p>
 </li>
-</ol></div>
-
-<p>1.（難しい） <code>getEx</code>と <code>writeFileContEx</code>を使って、ディスク上のファイルからの内容をを保存する関数を書いてください。</p>
-<h2>12.7 並列計算</h2>
-<p><code>ContT</code>モナドとdo記法を使って、非同期計算を順番に実行されるように合成する方法を見てきました。非同期計算を<strong>並列に</strong>合成することもできたら便利でしょう。</p>
-<p>もし<code>ContT</code>を使って<code>Eff</code>モナドを変換しているなら、単に２つの計算のうち一方を開始した後に他方の計算を開始すれば、並列に計算することができます。</p>
-<p><code>purescript-parallel</code>パッケージは型クラス<code>Parallel</code>を定義します。この型クラスはモナドのために並列計算を提供する<code>Async</code>のようなものです。以前に本書でApplicative関手を導入したとき、並列計算を合成するときにApplicative関手がどのように便利なのかを観察しました。実は<code>Parallel</code>のインスタンスは、(<code>Async</code>のような)モナド<code>m</code>と、並列に計算を合成するために使われるApplicative関手<code>f</code>との対応関係を定義しているのです。</p>
-<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">class</span> (<span class="hljs-type">Monad</span> <span class="hljs-title">m</span>, <span class="hljs-type">Applicative</span> <span class="hljs-title">f</span>) <= <span class="hljs-type">Parallel</span> f m | m -> f, f -> m <span class="hljs-keyword">where</span></span>
-  sequential :: <span class="hljs-keyword">forall</span> a. f a -> m a
-  parallel :: <span class="hljs-keyword">forall</span> a. m a -> f a
-</code></pre>
-<p>このクラスは2つの関数を定義しています。</p>
-<ul>
+</ol></div><p>1.（難しい） <code>getEx</code>と <code>writeFileContEx</code>を使って、ディスク上のファイルからの内容をを保存する関数を書いてください。</p><h2>12.7 並列計算</h2><p><code>ContT</code>モナドとdo記法を使って、非同期計算を順番に実行されるように合成する方法を見てきました。非同期計算を<strong>並列に</strong>合成することもできたら便利でしょう。</p><p>もし<code>ContT</code>を使って<code>Eff</code>モナドを変換しているなら、単に２つの計算のうち一方を開始した後に他方の計算を開始すれば、並列に計算することができます。</p><p><code>purescript-parallel</code>パッケージは型クラス<code>Parallel</code>を定義します。この型クラスはモナドのために並列計算を提供する<code>Async</code>のようなものです。以前に本書でApplicative関手を導入したとき、並列計算を合成するときにApplicative関手がどのように便利なのかを観察しました。実は<code>Parallel</code>のインスタンスは、(<code>Async</code>のような)モナド<code>m</code>と、並列に計算を合成するために使われるApplicative関手<code>f</code>との対応関係を定義しているのです。</p><pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">class</span> (<span class="hljs-type">Monad</span> <span class="hljs-title">m</span>, <span class="hljs-type">Applicative</span> <span class="hljs-title">f</span>) &lt;= <span class="hljs-type">Parallel</span> f m | m -&gt; f, f -&gt; m <span class="hljs-keyword">where</span></span>
+  sequential :: <span class="hljs-keyword">forall</span> a. f a -&gt; m a
+  parallel :: <span class="hljs-keyword">forall</span> a. m a -&gt; f a
+</code></pre><p>このクラスは2つの関数を定義しています。</p><ul>
 <li><code>parallel</code>：モナド <code>m</code>を計算し、それを応用ファンクタ <code>f</code>の計算に変換します。</li>
 <li><code>sequential</code>：反対方向の変換を行います。</li>
-</ul>
-<p><code>purescript-parallel</code>ライブラリは <code>Async</code>モナドの <code>Parallel</code>インスタンスを提供します。 これは、2つの継続(continuation)のどちらが呼び出されたかを追跡することによって、変更可能な参照を使用して並列に <code>Async</code>アクションを組み合わせます。 両方の結果が返されたら、最終結果を計算してメインの継続に渡すことができます。</p>
-<p><code>parallel</code>関数を使うと<code>readFileCont</code>アクションの別のバージョンを作成することもできます。これは並列に組み合わせることができます。２つのテキストファイルを並列に読み取り、連結してその結果を出力する簡単な例は次のようになります。</p>
-<pre><code class="language-haskell"><span class="hljs-keyword">import</span> Prelude
+</ul><p><code>purescript-parallel</code>ライブラリは <code>Async</code>モナドの <code>Parallel</code>インスタンスを提供します。 これは、2つの継続(continuation)のどちらが呼び出されたかを追跡することによって、変更可能な参照を使用して並列に <code>Async</code>アクションを組み合わせます。 両方の結果が返されたら、最終結果を計算してメインの継続に渡すことができます。</p><p><code>parallel</code>関数を使うと<code>readFileCont</code>アクションの別のバージョンを作成することもできます。これは並列に組み合わせることができます。２つのテキストファイルを並列に読み取り、連結してその結果を出力する簡単な例は次のようになります。</p><pre><code class="language-haskell"><span class="hljs-keyword">import</span> Prelude
 <span class="hljs-keyword">import</span> Control.Apply (<span class="hljs-title">lift2</span>)
 <span class="hljs-keyword">import</span> Control.Monad.Cont.Trans (<span class="hljs-title">runContT</span>)
 <span class="hljs-keyword">import</span> Control.Monad.Eff.Console (<span class="hljs-title">logShow</span>)
@@ -370,13 +285,9 @@
 <span class="hljs-title">main</span> = flip runContT logShow <span class="hljs-keyword">do</span>
   sequential $
    lift2 append
-     <$> parallel (readFileCont <span class="hljs-string">"/tmp/1.txt"</span>)
-     <*> parallel (readFileCont <span class="hljs-string">"/tmp/2.txt"</span>)
-</code></pre>
-<p><code>readFileCont</code>は <code>Either ErrorCode String</code>型の値を返すので、 <code>lift2</code>を使って <code>Either</code>型構築子より <code>append</code>関数を持ち上げて結合関数を形成する必要があることに注意してください。</p>
-<p>Applicative関手では任意個引数の関数の持ち上げができるので、このApplicativeコンビネータを使ってより多くの計算を並列に実行することができます。 <code>traverse</code>と <code>sequence</code>のようなApplicative関手を扱うすべての標準ライブラリ関数から恩恵を受けることもできます。</p>
-<p>必要に応じて <code>Parralel</code>と <code>runParallel</code>を使って型構築子を変更することで、do記法ブロックのApplicativeコンビネータを使って、直列的なコードの一部で並列計算を結合したり、またはその逆を行ったりすることができます。</p>
-<div class="exercise"><h2>演習</h2><ol>
+     &lt;$&gt; parallel (readFileCont <span class="hljs-string">"/tmp/1.txt"</span>)
+     &lt;*&gt; parallel (readFileCont <span class="hljs-string">"/tmp/2.txt"</span>)
+</code></pre><p><code>readFileCont</code>は <code>Either ErrorCode String</code>型の値を返すので、 <code>lift2</code>を使って <code>Either</code>型構築子より <code>append</code>関数を持ち上げて結合関数を形成する必要があることに注意してください。</p><p>Applicative関手では任意個引数の関数の持ち上げができるので、このApplicativeコンビネータを使ってより多くの計算を並列に実行することができます。 <code>traverse</code>と <code>sequence</code>のようなApplicative関手を扱うすべての標準ライブラリ関数から恩恵を受けることもできます。</p><p>必要に応じて <code>Parralel</code>と <code>runParallel</code>を使って型構築子を変更することで、do記法ブロックのApplicativeコンビネータを使って、直列的なコードの一部で並列計算を結合したり、またはその逆を行ったりすることができます。</p><div class="exercise"><h2>演習</h2><ol>
 <li>
 <p>(簡単)<code>parallel</code>と <code>sequential</code>を使って2つのHTTPリクエストを作成し、それらのレスポンス内容を並行して収集します。あなたの結合関数は2つのレスポンス内容を連結しなければならず、続けて <code>print</code>を使って結果をコンソールに出力してください。</p>
 </li>
@@ -385,8 +296,8 @@
 <p>この <code>Alternative</code>インスタンスを <code>setTimeoutCont</code>関数と共に使用して関数を定義してください。</p>
 <pre><code class="language-haskell"><span class="hljs-title">timeout</span> :: <span class="hljs-keyword">forall</span> a eff
          . <span class="hljs-type">Milliseconds</span>
-        -> <span class="hljs-type">Async</span> (timeout :: <span class="hljs-type">TIMEOUT</span> | eff) a
-        -> <span class="hljs-type">Async</span> (timeout :: <span class="hljs-type">TIMEOUT</span> | eff) (<span class="hljs-type">Maybe</span> a)
+        -&gt; <span class="hljs-type">Async</span> (timeout :: <span class="hljs-type">TIMEOUT</span> | eff) a
+        -&gt; <span class="hljs-type">Async</span> (timeout :: <span class="hljs-type">TIMEOUT</span> | eff) (<span class="hljs-type">Maybe</span> a)
 </code></pre>
 <p>指定された計算が指定されたミリ秒数以内に結果を提供しない場合、 <code>Nothing</code>を返します。</p>
 </li>
@@ -402,20 +313,11 @@
 <p>入力として単一のファイル名をとり、そのファイルから参照されているディスク上のすべてのJSONファイルをたどって、参照されたすべてのファイルの一覧を収集するユーティリティを書いてください。</p>
 <p>そのユーティリティは、JSON文書を解析するために <code>purescript-foreign</code>ライブラリを使用する必要があり、単一のファイルが参照するファイルは並列に取得しなければなりません！</p>
 </li>
-</ol></div>
-
-<h2>まとめ</h2>
-<p>この章ではモナド変換子の実用的なデモンストレーションを見てきました。</p>
-<ul>
+</ol></div><h2>まとめ</h2><p>この章ではモナド変換子の実用的なデモンストレーションを見てきました。</p><ul>
 <li>コールバック渡しの一般的なJavaScriptのイディオムを <code>ContT</code>モナド変換子によって捉えることができる方法を説明しました。</li>
 <li>どのようにコールバック地獄の問題を解決するかを説明しました。　直列の非同期計算を表現するdo記法を使用して、かつ並列性を表現するためにApplicative関手によって解決することができる方法を説明しました。</li>
 <li><strong>非同期エラー</strong>を表現するために <code>ExceptT</code>を使いました。</li>
-</ul>
-
-
-<a href="chapter13.html"><div class="next">次の第13章を読む</div></a>
-<p class="home"><a href="index.html">目次に戻る</a></p>
-</div>
+</ul><a href="chapter13.html"><div class="next">次の第13章を読む</div></a><p class="home"><a href="index.html">目次に戻る</a></p></div>
   </div>
 
 

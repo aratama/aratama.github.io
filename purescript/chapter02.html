@@ -40,38 +40,17 @@
     </header>
 
     <div class="markdown-body content">
-    <p class="home"><a href="index.html">目次に戻る</a></p>
-<h1>第2章 開発環境の準備</h1>
-<h2>2.1 この章の目標</h2>
-<p>この章の目標は、作業用のPureScript開発環境を準備し、最初のPureScriptプログラムを書くことです。</p>
-<p>これから書く最初のコードはごく単純なPureScriptライブラリで、直角三角形の対角線の長さを計算する関数ひとつだけを提供します。</p>
-<h2>2.2 導入</h2>
-<p>PureScript開発環境を準備するために、次のツールを使います。</p>
-<ul>
+    <p class="home"><a href="index.html">目次に戻る</a></p><h1>第2章 開発環境の準備</h1><h2>2.1 この章の目標</h2><p>この章の目標は、作業用のPureScript開発環境を準備し、最初のPureScriptプログラムを書くことです。</p><p>これから書く最初のコードはごく単純なPureScriptライブラリで、直角三角形の対角線の長さを計算する関数ひとつだけを提供します。</p><h2>2.2 導入</h2><p>PureScript開発環境を準備するために、次のツールを使います。</p><ul>
 <li><a href="http://purescript.org"><code>purs</code></a> -  PureScriptコンパイラ本体</li>
 <li><a href="http://npmjs.org"><code>npm</code></a> - 残りの開発ツールをインストールできるようにする、Nodeパッケージマネージャ</li>
 <li><a href="https://github.com/purescript-contrib/pulp"><code>Pulp</code></a> ​​- さまざまな作業をパッケージマネージャと連動して自動化するコマンドラインツール</li>
-</ul>
-<p>この章ではこれらのツールのインストール方法と設定を説明します。</p>
-<h2>2.3 PureScriptのインストール</h2>
-<p>PureScriptコンパイラをインストールするときにお勧めなのは、<a href="http://purescript.org">PureScriptのウェブサイト</a>からバイナリ配布物としてダウンロードする方法です。PureScriptコンパイラおよび関連する実行ファイルが、パス上で利用できるかどうか確認をしてください。試しに、コマンドラインでPureScriptコンパイラを実行してみましょう。</p>
-<pre><code class="language-text">$ purs
-</code></pre>
-<p>PureScriptコンパイラをインストールする他の選択肢としては、次のようなものがあります。</p>
-<ul>
+</ul><p>この章ではこれらのツールのインストール方法と設定を説明します。</p><h2>2.3 PureScriptのインストール</h2><p>PureScriptコンパイラをインストールするときにお勧めなのは、<a href="http://purescript.org">PureScriptのウェブサイト</a>からバイナリ配布物としてダウンロードする方法です。PureScriptコンパイラおよび関連する実行ファイルが、パス上で利用できるかどうか確認をしてください。試しに、コマンドラインでPureScriptコンパイラを実行してみましょう。</p><pre><code class="language-text">$ purs
+</code></pre><p>PureScriptコンパイラをインストールする他の選択肢としては、次のようなものがあります。</p><ul>
 <li>NPMを使用する。<code>npm install -g purescript</code></li>
 <li>ソースコードからコンパイルを行う。この方法については、PureScriptのWebサイトが参考になります。</li>
-</ul>
-<h2>2.4 各ツールのインストール</h2>
-<p>もし<a href="http://nodejs.org/">NodeJS</a>がインストールされていないなら、NodeJSをインストールする必要があります。そうするとシステムに <code>npm</code>パッケージマネージャもインストールされるはずです。 <code>npm</code>がインストールされ、パス上で利用可能であることを確認してください。</p>
-<p><code>npm</code>がインストールされたら、 <code>pulp</code>と <code>bower</code>もインストールする必要があります。プロジェクトがどこで作業しているかにかかわらずこれらのコマンドラインツールが利用可能であるようにするため、通常はグローバルにインストールしておくのがいいでしょう。</p>
-<pre><code class="language-text">$ npm install -g pulp bower
-</code></pre>
-<p>これで、最初のPureScriptプロジェクトを作成するために必要なすべてのツールの用意ができたことになります。</p>
-<h2>2.5 Hello, PureScript!</h2>
-<p>まずはシンプルに始めましょう。PureScriptコンパイラ<code>pulp</code>を直接使用して、基本的なHello World! プログラムをコンパイルします。
-最初に空のディレクトリ<code>my-project</code>を作成し、そこで<code>pulp init</code>を実行します。</p>
-<pre><code class="language-text">$ mkdir my-project
+</ul><h2>2.4 各ツールのインストール</h2><p>もし<a href="http://nodejs.org/">NodeJS</a>がインストールされていないなら、NodeJSをインストールする必要があります。そうするとシステムに <code>npm</code>パッケージマネージャもインストールされるはずです。 <code>npm</code>がインストールされ、パス上で利用可能であることを確認してください。</p><p><code>npm</code>がインストールされたら、 <code>pulp</code>と <code>bower</code>もインストールする必要があります。プロジェクトがどこで作業しているかにかかわらずこれらのコマンドラインツールが利用可能であるようにするため、通常はグローバルにインストールしておくのがいいでしょう。</p><pre><code class="language-text">$ npm install -g pulp bower
+</code></pre><p>これで、最初のPureScriptプロジェクトを作成するために必要なすべてのツールの用意ができたことになります。</p><h2>2.5 Hello, PureScript!</h2><p>まずはシンプルに始めましょう。PureScriptコンパイラ<code>pulp</code>を直接使用して、基本的なHello World! プログラムをコンパイルします。
+最初に空のディレクトリ<code>my-project</code>を作成し、そこで<code>pulp init</code>を実行します。</p><pre><code class="language-text">$ mkdir my-project
 $ cd my-project
 $ pulp init
 
@@ -80,50 +59,33 @@ $ pulp init
 $ ls
 
 bower.json	src		test
-</code></pre>
-<p>Pulpは<code>src</code>と<code>test</code>という2つのディレクトリと設定ファイル<code>bower.json</code>を作成してくれます。<code>src</code>ディレクトリにはソースコードファイルを保存し、<code>test</code>ディレクトリにはテストコードファイルを保存します。<code>test</code>ディレクトリはこの本の後半で使います。</p>
-<p><code>src/Main.purs</code>という名前のファイルに、以下のコードを貼り付けてください。</p>
-<pre><code class="language-haskell"><span class="hljs-keyword">module</span> Main <span class="hljs-keyword">where</span>
+</code></pre><p>Pulpは<code>src</code>と<code>test</code>という2つのディレクトリと設定ファイル<code>bower.json</code>を作成してくれます。<code>src</code>ディレクトリにはソースコードファイルを保存し、<code>test</code>ディレクトリにはテストコードファイルを保存します。<code>test</code>ディレクトリはこの本の後半で使います。</p><p><code>src/Main.purs</code>という名前のファイルに、以下のコードを貼り付けてください。</p><pre><code class="language-haskell"><span class="hljs-keyword">module</span> Main <span class="hljs-keyword">where</span>
 
 <span class="hljs-keyword">import</span> Control.Monad.Eff.Console
 
 <span class="hljs-title">main</span> = log <span class="hljs-string">"Hello, World!"</span>
-</code></pre>
-<p>これは小さなサンプルコードですが、​​いくつかの重要な概念を示しています。</p>
-<ul>
+</code></pre><p>これは小さなサンプルコードですが、​​いくつかの重要な概念を示しています。</p><ul>
 <li>すべてのソースファイルはモジュールヘッダから始まります。モジュール名は、ドットで区切られた大文字で始まる1つ以上の単語から構成されています。ここではモジュール名としてひとつの単語だけが使用されていますが、 <code>My.First.Module</code>というようなモジュール名も有効です。</li>
 <li>モジュールは、モジュール名の各部分を区切るためのドットを含めた、完全な名前を使用してインポートされます。ここでは <code>log</code>関数を提供する <code>Control.Monad.Eff.Console</code>モジュールをインポートしています。</li>
 <li>この <code>main</code>プログラムの定義本体は、関数適用の式になっています。PureScriptでは、関数適用は関数名のあとに引数を空白で区切って書くことで表します。</li>
-</ul>
-<p>それではこのコードをビルドして実行してみましょう。次のコマンドを実行します。</p>
-<pre><code class="language-text">$ pulp run
+</ul><p>それではこのコードをビルドして実行してみましょう。次のコマンドを実行します。</p><pre><code class="language-text">$ pulp run
 
 * Building project in ~/my-project
 * Build successful.
 Hello, World!
-</code></pre>
-<p>おめでとうございます!　はじめてPureScriptで作成されたプログラムのコンパイルと実行ができました。</p>
-<h2>2.6 ブラウザ向けのコンパイル</h2>
-<p>Pulpは <code>pulp browserify</code>を実行して、PureScriptコードをブラウザで使うことに適したJavaScriptに変換することができます。</p>
-<pre><code class="language-text">$ pulp browserify
+</code></pre><p>おめでとうございます!　はじめてPureScriptで作成されたプログラムのコンパイルと実行ができました。</p><h2>2.6 ブラウザ向けのコンパイル</h2><p>Pulpは <code>pulp browserify</code>を実行して、PureScriptコードをブラウザで使うことに適したJavaScriptに変換することができます。</p><pre><code class="language-text">$ pulp browserify
 
 * Browserifying project in ~/my-project
 * Building project in ~/my-project
 * Build successful.
 * Browserifying...
-</code></pre>
-<p>これに続いて、大量のJavaScriptコードがコンソールに表示されます。 これは<a href="http://browserify.org/">Browserify</a>の出力で、<strong>Prelude</strong>と呼ばれる標準のPureScriptライブラリに加え、<code>src</code>ディレクトリのコードにも適用されます。このJavaScriptコードをファイルに保存し、HTML文書に含めることもできます。これを試しに実行してみると、ブラウザのコンソールに"Hello、World！"という文章が出力されます。</p>
-<h2>2.7 使用されていないコードを取り除く</h2>
-<p>Pulpは代替コマンド <code>pulp build</code>を提供しています。 <code>-O</code>オプションで<strong>未使用コードの削除</strong>を適用すると、不要なJavaScriptを出力から取り除くことができます。</p>
-<pre><code class="language-text">$ pulp build -O --to output.js
+</code></pre><p>これに続いて、大量のJavaScriptコードがコンソールに表示されます。 これは<a href="http://browserify.org/">Browserify</a>の出力で、<strong>Prelude</strong>と呼ばれる標準のPureScriptライブラリに加え、<code>src</code>ディレクトリのコードにも適用されます。このJavaScriptコードをファイルに保存し、HTML文書に含めることもできます。これを試しに実行してみると、ブラウザのコンソールに"Hello、World！"という文章が出力されます。</p><h2>2.7 使用されていないコードを取り除く</h2><p>Pulpは代替コマンド <code>pulp build</code>を提供しています。 <code>-O</code>オプションで<strong>未使用コードの削除</strong>を適用すると、不要なJavaScriptを出力から取り除くことができます。</p><pre><code class="language-text">$ pulp build -O --to output.js
 
 * Building project in ~/my-project
 * Build successful.
 * Bundling Javascript...
 * Bundled.
-</code></pre>
-<p>この場合も、生成されたコードはHTML文書で使用できます。 <code>output.js</code>を開くと、次のようなコンパイルされたモジュールがいくつか表示されます。</p>
-<pre><code class="language-javascript">(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">exports</span>) </span>{
+</code></pre><p>この場合も、生成されたコードはHTML文書で使用できます。 <code>output.js</code>を開くと、次のようなコンパイルされたモジュールがいくつか表示されます。</p><pre><code class="language-javascript">(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">exports</span>) </span>{
 <span class="hljs-meta">  "use strict"</span>;
 
   <span class="hljs-keyword">var</span> Control_Monad_Eff_Console = PS[<span class="hljs-string">"Control.Monad.Eff.Console"</span>];
@@ -131,61 +93,29 @@ Hello, World!
   <span class="hljs-keyword">var</span> main = Control_Monad_Eff_Console.log(<span class="hljs-string">"Hello, World!"</span>);
   exports[<span class="hljs-string">"main"</span>] = main;
 })(PS[<span class="hljs-string">"Main"</span>] = PS[<span class="hljs-string">"Main"</span>] || {});
-</code></pre>
-<p>ここでPureScriptコンパイラがJavaScriptコードを生成する方法の要点が示されています。</p>
-<ul>
+</code></pre><p>ここでPureScriptコンパイラがJavaScriptコードを生成する方法の要点が示されています。</p><ul>
 <li>すべてのモジュールはオブジェクトに変換され、そのオブジェクトにはそのモジュールのエクスポートされたメンバが含まれています。モジュールは即時関数パターンによってスコープが限定されたコードで初期化されています。</li>
 <li>PureScriptは可能な限り変数の名前をそのまま使おうとします。</li>
 <li>PureScriptにおける関数適用は、そのままJavaScriptの関数適用に変換されます。</li>
 <li>引数のない単純な呼び出しとしてメインメソッド呼び出しが生成され、すべてのモジュールが定義された後に実行されます。</li>
 <li>PureScriptコードはどんな実行時ライブラリにも依存しません。コンパイラによって生成されるすべてのコードは、あなたのコードが依存するいずれかのPureScriptモジュールをもとに出力されているものです。</li>
-</ul>
-<p>PureScriptはシンプルで理解しやすいコードを生成すること重視しているので、これらの点は大切です。実際に、ほとんどのコード生成処理はごく軽い変換です。PureScriptについての理解が比較的浅くても、ある入力からどのようなJavaScriptコードが生成されるかを予測することは難しくありません。</p>
-<h2>2.8 CommonJSモジュールのコンパイル</h2>
-<p>pulpは、PureScriptコードからCommonJSモジュールを生成するためにも使用できます。 これは、NodeJSを使用する場合やCommonJSモジュールを使用してコードを小さなコンポーネントに分割する大きなプロジェクトを開発する場合に便利です。</p>
-<p>CommonJSモジュールをビルドするには、（ <code>-O</code>オプションなしで） <code>pulp build</code>コマンドを使います。</p>
-<pre><code class="language-text">$ pulp build
+</ul><p>PureScriptはシンプルで理解しやすいコードを生成すること重視しているので、これらの点は大切です。実際に、ほとんどのコード生成処理はごく軽い変換です。PureScriptについての理解が比較的浅くても、ある入力からどのようなJavaScriptコードが生成されるかを予測することは難しくありません。</p><h2>2.8 CommonJSモジュールのコンパイル</h2><p>pulpは、PureScriptコードからCommonJSモジュールを生成するためにも使用できます。 これは、NodeJSを使用する場合やCommonJSモジュールを使用してコードを小さなコンポーネントに分割する大きなプロジェクトを開発する場合に便利です。</p><p>CommonJSモジュールをビルドするには、（ <code>-O</code>オプションなしで） <code>pulp build</code>コマンドを使います。</p><pre><code class="language-text">$ pulp build
 
 * Building project in ~/my-project
 * Build successful.
-</code></pre>
-<p>生成されたモジュールはデフォルトで <code>output</code>ディレクトリに置かれます。 各PureScriptモジュールは、それ自身のサブディレクトリにある独自のCommonJSモジュールにコンパイルされます。</p>
-<h2>2.9 Bowerによる依存関係の追跡</h2>
-<p>この章の目的となっている <code>diagonal</code>関数を書くためには、平方根を計算できるようにする必要があります。 <code>purescript-math</code>パッケージにはJavaScriptの <code>Math</code>オブジェクトのプロパティとして定義されている関数の型定義が含まれていますので、 <code>purescript-math</code>パッケージをインストールしてみましょう。 <code>npm</code>の依存関係でやったのと同じように、次のようにコマンドラインに入力すると直接このパッケージをダウンロードできます。</p>
-<pre><code class="language-text">$ bower install purescript-math --save
-</code></pre>
-<p><code>--save</code>オプションは依存関係を <code>bower.json</code>設定ファイルに追加させます。</p>
-<p><code>purescript-math</code>ライブラリは、依存するライブラリと一緒に <code>bower_components</code>サブディレクトリにインストールされます。</p>
-<h2>2.10 対角線の長さの計算</h2>
-<p>それでは外部ライブラリの関数を使用する例として <code>diagonal</code>関数を書いてみましょう。</p>
-<p>まず、 <code>src/Main.purs</code>ファイルの先頭に次の行を追加し、 <code>Math</code>モジュールをインポートします。</p>
-<pre><code class="language-haskell"><span class="hljs-keyword">import</span> Math (<span class="hljs-title">sqrt</span>)
-</code></pre>
-<p>また、数値の加算や乗算のようなごく基本的な演算を定義する <code>Prelude</code>モジュールをインポートすることも必要です。</p>
-<pre><code class="language-haskell"><span class="hljs-keyword">import</span> Prelude
-</code></pre>
-<p>そして、次のように <code>diagonal</code>関数を定義します。</p>
-<pre><code class="language-haskell">diagonal w h = sqrt (w * w + h * h)
-</code></pre>
-<p>この関数の型を定義する必要はないことに注意してください。 <code>diagonal</code>は2つの数を取り数を返す関数である、とコンパイラは推論することができます。しかし、ドキュメントとしても役立つので、通常は型注釈を提供しておくことをお勧めします。</p>
-<p>それでは、新しい <code>diagonal</code>関数を使うように <code>main</code>関数も変更してみましょう。</p>
-<pre><code class="language-haskell">main = logShow (diagonal 3.0 4.0)
-</code></pre>
-<p><code>pulp run</code>を使用して、モジュールを再コンパイルします。</p>
-<pre><code class="language-text">$ pulp run
+</code></pre><p>生成されたモジュールはデフォルトで <code>output</code>ディレクトリに置かれます。 各PureScriptモジュールは、それ自身のサブディレクトリにある独自のCommonJSモジュールにコンパイルされます。</p><h2>2.9 Bowerによる依存関係の追跡</h2><p>この章の目的となっている <code>diagonal</code>関数を書くためには、平方根を計算できるようにする必要があります。 <code>purescript-math</code>パッケージにはJavaScriptの <code>Math</code>オブジェクトのプロパティとして定義されている関数の型定義が含まれていますので、 <code>purescript-math</code>パッケージをインストールしてみましょう。 <code>npm</code>の依存関係でやったのと同じように、次のようにコマンドラインに入力すると直接このパッケージをダウンロードできます。</p><pre><code class="language-text">$ bower install purescript-math --save
+</code></pre><p><code>--save</code>オプションは依存関係を <code>bower.json</code>設定ファイルに追加させます。</p><p><code>purescript-math</code>ライブラリは、依存するライブラリと一緒に <code>bower_components</code>サブディレクトリにインストールされます。</p><h2>2.10 対角線の長さの計算</h2><p>それでは外部ライブラリの関数を使用する例として <code>diagonal</code>関数を書いてみましょう。</p><p>まず、 <code>src/Main.purs</code>ファイルの先頭に次の行を追加し、 <code>Math</code>モジュールをインポートします。</p><pre><code class="language-haskell"><span class="hljs-keyword">import</span> Math (<span class="hljs-title">sqrt</span>)
+</code></pre><p>また、数値の加算や乗算のようなごく基本的な演算を定義する <code>Prelude</code>モジュールをインポートすることも必要です。</p><pre><code class="language-haskell"><span class="hljs-keyword">import</span> Prelude
+</code></pre><p>そして、次のように <code>diagonal</code>関数を定義します。</p><pre><code class="language-haskell">diagonal w h = sqrt (w * w + h * h)
+</code></pre><p>この関数の型を定義する必要はないことに注意してください。 <code>diagonal</code>は2つの数を取り数を返す関数である、とコンパイラは推論することができます。しかし、ドキュメントとしても役立つので、通常は型注釈を提供しておくことをお勧めします。</p><p>それでは、新しい <code>diagonal</code>関数を使うように <code>main</code>関数も変更してみましょう。</p><pre><code class="language-haskell">main = logShow (diagonal 3.0 4.0)
+</code></pre><p><code>pulp run</code>を使用して、モジュールを再コンパイルします。</p><pre><code class="language-text">$ pulp run
 
 * Building project in ~/my-project
 * Build successful.
 5.0
-</code></pre>
-<h2>2.11 対話式処理系を使用したコードのテスト</h2>
-<p>PureScriptコンパイラには <code>PSCi</code>と呼ばれる対話式のREPL(Read-eval-print loop)が付属しています。 <code>PSCi</code>はコードをテストなど思いついたことを試すのにとても便利です。それでは、 <code>psci</code>を使って <code>diagonal</code>関数をテストしてみましょう。</p>
-<p><code>pulp repl</code>コマンドを使ってソースモジュールを自動的に <code>PSCi</code>にロードすることができます。</p>
-<pre><code class="language-text">$ pulp repl
+</code></pre><h2>2.11 対話式処理系を使用したコードのテスト</h2><p>PureScriptコンパイラには <code>PSCi</code>と呼ばれる対話式のREPL(Read-eval-print loop)が付属しています。 <code>PSCi</code>はコードをテストなど思いついたことを試すのにとても便利です。それでは、 <code>psci</code>を使って <code>diagonal</code>関数をテストしてみましょう。</p><p><code>pulp repl</code>コマンドを使ってソースモジュールを自動的に <code>PSCi</code>にロードすることができます。</p><pre><code class="language-text">$ pulp repl
 >
-</code></pre>
-<p>コマンドの一覧を見るには、 <code>:?</code>と入力します。</p>
-<pre><code class="language-text">> :?
+</code></pre><p>コマンドの一覧を見るには、 <code>:?</code>と入力します。</p><pre><code class="language-text">> :?
 The following commands are available:
 
     :?                        Show this help menu
@@ -197,53 +127,29 @@ The following commands are available:
     :show        import       Show imported modules
     :show        loaded       Show loaded modules
     :paste       paste        Enter multiple lines, terminated by ^D
-</type></type></expr></expr></module></module></code></pre>
-<p>Tabキーを押すと、自分のコードで利用可能なすべての関数、及びBowerの依存関係とプレリュードモジュールのリストをすべて見ることができるはずです。</p>
-<p><code>Prelude</code>モジュールを読み込んでください。</p>
-<pre><code class="language-text">> import Prelude
-</code></pre>
-<p>幾つか数式を評価してみてください。 <code>PSCi</code>で評価を行うには、1行以上の式を入力し、Ctrl+ Dで入力を終了します。</p>
-<pre><code class="language-text">> 1 + 2
+</code></pre><p>Tabキーを押すと、自分のコードで利用可能なすべての関数、及びBowerの依存関係とプレリュードモジュールのリストをすべて見ることができるはずです。</p><p><code>Prelude</code>モジュールを読み込んでください。</p><pre><code class="language-text">> import Prelude
+</code></pre><p>幾つか数式を評価してみてください。 <code>PSCi</code>で評価を行うには、1行以上の式を入力し、Ctrl+ Dで入力を終了します。</p><pre><code class="language-text">> 1 + 2
 3
 
 > "Hello, " <> "World!"
 "Hello, World!"
-</code></pre>
-<p>それでは <code>PSCi</code>で <code>diagonal</code>関数を試してみましょう。</p>
-<pre><code class="language-text">> import Main
+</code></pre><p>それでは <code>PSCi</code>で <code>diagonal</code>関数を試してみましょう。</p><pre><code class="language-text">> import Main
 > diagonal 5.0 12.0
 
 13.0
-</code></pre>
-<p>また、 <code>PSCi</code>で関数を定義することもできます。</p>
-<pre><code class="language-text">> double x = x * 2
+</code></pre><p>また、 <code>PSCi</code>で関数を定義することもできます。</p><pre><code class="language-text">> double x = x * 2
 
 > double 10
 20
-</code></pre>
-<p>コード例の構文がまだよくわからなくても心配はいりません。 この本を読み進めるうちにわかるようになっていきます。</p>
-<p>最後に、 <code>:type</code>コマンドを使うと式の型を確認することができます。</p>
-<pre><code class="language-text">> :type true
+</code></pre><p>コード例の構文がまだよくわからなくても心配はいりません。 この本を読み進めるうちにわかるようになっていきます。</p><p>最後に、 <code>:type</code>コマンドを使うと式の型を確認することができます。</p><pre><code class="language-text">> :type true
 Boolean
 
 > :type [1, 2, 3]
 Array Int
-</code></pre>
-<p><code>PSCi</code>で試してみてください。もしどこかでつまずいた場合は、メモリ内にあるコンパイル済みのすべてのモジュールをアンロードするリセットコマンド <code>：reset</code>を使用してみてください。</p>
-<div class="exercise"><h2>演習</h2><ol>
+</code></pre><p><code>PSCi</code>で試してみてください。もしどこかでつまずいた場合は、メモリ内にあるコンパイル済みのすべてのモジュールをアンロードするリセットコマンド <code>：reset</code>を使用してみてください。</p><div class="exercise"><h2>演習</h2><ol>
 <li>(簡単) <code>Math</code>モジュールで定義されている <code>pi</code>定数を使用し、指定された半径の円の面積を計算する関数 <code>circleArea</code>を書いてみましょう。また、 <code>PSCi</code>を使用してその関数をテストしてください。 (<strong>ヒント</strong>： <code>import math</code>文を修正して、 <code>pi</code>をインポートすることを忘れないようにしましょう)</li>
-<li>(やや難しい) <code>purecript-globals</code>パッケージを依存関係としてインストールするには、<code>bower install</code>を使います。PSCiでその機能を試してみてください。 (<strong>ヒント</strong>： PSCiの <code>：browse</code>コマンドを使うと、モジュールの内容を閲覧することができます)</li>
-</ol></div>
-
-<h2>まとめ</h2>
-<p>この章では、Pulpツールを使用して簡単なPureScriptプロジェクトを設定しました。</p>
-<p>また、最初のPureScript関数を書き、コンパイルし、NodeJSを使用して実行することができました。</p>
-<p>以降の章では、コードをコンパイルやデバッグ、テストするためにこの開発設定を使用しますので、これらのツールや使用手順に十分習熟しておくとよいでしょう。</p>
-
-
-<a href="chapter03.html"><div class="next">次の第3章を読む</div></a>
-<p class="home"><a href="index.html">目次に戻る</a></p>
-</div>
+<li>(やや難しい) <code>purescript-globals</code>パッケージを依存関係としてインストールするには、<code>bower install</code>を使います。PSCiでその機能を試してみてください。 (<strong>ヒント</strong>： PSCiの <code>：browse</code>コマンドを使うと、モジュールの内容を閲覧することができます)</li>
+</ol></div><h2>まとめ</h2><p>この章では、Pulpツールを使用して簡単なPureScriptプロジェクトを設定しました。</p><p>また、最初のPureScript関数を書き、コンパイルし、NodeJSを使用して実行することができました。</p><p>以降の章では、コードをコンパイルやデバッグ、テストするためにこの開発設定を使用しますので、これらのツールや使用手順に十分習熟しておくとよいでしょう。</p><a href="chapter03.html"><div class="next">次の第3章を読む</div></a><p class="home"><a href="index.html">目次に戻る</a></p></div>
   </div>
 
 

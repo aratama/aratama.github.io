@@ -40,42 +40,22 @@
     </header>
 
     <div class="markdown-body content">
-    <p class="home"><a href="index.html">目次に戻る</a></p>
-<h1>第13章 テストの自動生成</h1>
-<h2>13.1 この章の目標</h2>
-<p>この章では、テスティングの問題に対する、型クラスの特に洗練された応用について示します。<strong>どのようにテストするのかを</strong>コンパイラに教えるのではなく、コードが<strong>どのような性質を持っているべきか</strong>を教えることでテストします。型クラスを使って無作為データ生成のための定型コードを隠し、テストケースを仕様から無作為に生成することができます。これは<strong>生成的テスティング</strong>(generative testing、またはproperty-based testing）と呼ばれ、Haskellの<a href="http://www.haskell.org/haskellwiki/Introduction_to_QuickCheck1">QuickCheck</a>ライブラリによって知られるようになった手法です。</p>
-<p><code>purescript-quickcheck</code>パッケージはHaskellのQuickCheckライブラリをPureScriptにポーティングしたもので、型や構文はもとのライブラリとほとんど同じようになっています。 <code>purescript-quickcheck</code>を使って簡単なライブラリをテストし、Pulpでテストスイートを自動化されたビルドに統合する方法を見ていきます。</p>
-<h2>13.2 プロジェクトの準備</h2>
-<p>この章のプロジェクトにはBower依存関係として <code>purescript-quickcheck</code>が追加されます。</p>
-<p>Pulpプロジェクトでは、テストソースは <code>test</code>ディレクトリに置かれ、テストスイートのメインモジュールは <code>Test.Main</code>と名づけられます。 テストスイートは、 <code>pulp test</code>コマンドを使用して実行できます。</p>
-<h2>13.3 プロパティの書き込み</h2>
-<p><code>Merge</code>モジュールでは <code>purescript-quickcheck</code>ライブラリの機能を実演するために使う簡単な関数 <code>merge</code>が実装されています。</p>
-<pre><code class="language-haskell">merge :: <span class="hljs-built_in">Array</span> Int -> <span class="hljs-built_in">Array</span> Int -> <span class="hljs-built_in">Array</span> Int
-</code></pre>
-<p><code>merge</code>は2つのソートされた数の配列をとって、その要素を統合し、ソートされた結果を返します。例えば次のようになります。</p>
-<pre><code class="language-text">> import Merge
+    <p class="home"><a href="index.html">目次に戻る</a></p><h1>第13章 テストの自動生成</h1><h2>13.1 この章の目標</h2><p>この章では、テスティングの問題に対する、型クラスの特に洗練された応用について示します。<strong>どのようにテストするのかを</strong>コンパイラに教えるのではなく、コードが<strong>どのような性質を持っているべきか</strong>を教えることでテストします。型クラスを使って無作為データ生成のための定型コードを隠し、テストケースを仕様から無作為に生成することができます。これは<strong>生成的テスティング</strong>(generative testing、またはproperty-based testing）と呼ばれ、Haskellの<a href="http://www.haskell.org/haskellwiki/Introduction_to_QuickCheck1">QuickCheck</a>ライブラリによって知られるようになった手法です。</p><p><code>purescript-quickcheck</code>パッケージはHaskellのQuickCheckライブラリをPureScriptにポーティングしたもので、型や構文はもとのライブラリとほとんど同じようになっています。 <code>purescript-quickcheck</code>を使って簡単なライブラリをテストし、Pulpでテストスイートを自動化されたビルドに統合する方法を見ていきます。</p><h2>13.2 プロジェクトの準備</h2><p>この章のプロジェクトにはBower依存関係として <code>purescript-quickcheck</code>が追加されます。</p><p>Pulpプロジェクトでは、テストソースは <code>test</code>ディレクトリに置かれ、テストスイートのメインモジュールは <code>Test.Main</code>と名づけられます。 テストスイートは、 <code>pulp test</code>コマンドを使用して実行できます。</p><h2>13.3 プロパティの書き込み</h2><p><code>Merge</code>モジュールでは <code>purescript-quickcheck</code>ライブラリの機能を実演するために使う簡単な関数 <code>merge</code>が実装されています。</p><pre><code class="language-haskell">merge :: <span class="hljs-built_in">Array</span> Int -&gt; <span class="hljs-built_in">Array</span> Int -&gt; <span class="hljs-built_in">Array</span> Int
+</code></pre><p><code>merge</code>は2つのソートされた数の配列をとって、その要素を統合し、ソートされた結果を返します。例えば次のようになります。</p><pre><code class="language-text">> import Merge
 > merge [1, 3, 5] [2, 4, 6]
 
 [1, 2, 3, 4, 5, 6]
-</code></pre>
-<p>典型的なテストスイートでは、手作業でこのような小さなテストケースをいくつも作成し、結果が正しい値と等しいことを確認することでテスト実施します。しかし、 <code>merge</code>関数について知る必要があるものはすべて、2つの性質に要約することができます。</p>
-<ul>
+</code></pre><p>典型的なテストスイートでは、手作業でこのような小さなテストケースをいくつも作成し、結果が正しい値と等しいことを確認することでテスト実施します。しかし、 <code>merge</code>関数について知る必要があるものはすべて、2つの性質に要約することができます。</p><ul>
 <li>(既ソート性)<code>xs</code>と <code>ys</code>がソート済みなら、 <code>merge xs ys</code>もソート済みになります。</li>
 <li>（部分配列） <code>xs</code>と <code>ys</code>ははどちらも <code>merge xs ys</code>の部分配列で、要素は元の配列と同じ順序で現れます。</li>
-</ul>
-<p><code>purescript-quickcheck</code>では、無作為なテストケースを生成することで、直接これらの性質をテストすることができます。コードが持つべき性質を、次のような関数として述べるだけです。</p>
-<pre><code class="language-haskell"><span class="hljs-title">main</span> = <span class="hljs-keyword">do</span>
-  quickCheck \xs ys ->
+</ul><p><code>purescript-quickcheck</code>では、無作為なテストケースを生成することで、直接これらの性質をテストすることができます。コードが持つべき性質を、次のような関数として述べるだけです。</p><pre><code class="language-haskell"><span class="hljs-title">main</span> = <span class="hljs-keyword">do</span>
+  quickCheck \xs ys -&gt;
     isSorted $ merge (sort xs) (sort ys)
-  quickCheck \xs ys ->
+  quickCheck \xs ys -&gt;
     xs `isSubarrayOf` merge xs ys
-</code></pre>
-<p>ここで、 <code>isSorted</code>と <code>isSubarrayOf</code>は次のような型を持つ補助関数として実装されています。</p>
-<pre><code class="language-haskell"><span class="hljs-title">isSorted</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Ord</span> a => <span class="hljs-type">Array</span> a -> <span class="hljs-type">Boolean</span>
-<span class="hljs-title">isSubarrayOf</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Eq</span> a => <span class="hljs-type">Array</span> a -> <span class="hljs-type">Array</span> a -> <span class="hljs-type">Boolean</span>
-</code></pre>
-<p>このコードを実行すると、 <code>purescript-quickcheck</code>は無作為な入力 <code>xs</code>と <code>ys</code>を生成してこの関数に渡すことで、主張しようとしている性質を反証しようとします。何らかの入力に対して関数が <code>false</code>を返した場合、性質は正しくないことが示され、ライブラリはエラーを発生させます。幸いなことに、次のように100個の無作為なテストケースを生成しても、ライブラリはこの性質を反証することができません。</p>
-<pre><code class="language-text">$ pulp test
+</code></pre><p>ここで、 <code>isSorted</code>と <code>isSubarrayOf</code>は次のような型を持つ補助関数として実装されています。</p><pre><code class="language-haskell"><span class="hljs-title">isSorted</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Ord</span> a =&gt; <span class="hljs-type">Array</span> a -&gt; <span class="hljs-type">Boolean</span>
+<span class="hljs-title">isSubarrayOf</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Eq</span> a =&gt; <span class="hljs-type">Array</span> a -&gt; <span class="hljs-type">Array</span> a -&gt; <span class="hljs-type">Boolean</span>
+</code></pre><p>このコードを実行すると、 <code>purescript-quickcheck</code>は無作為な入力 <code>xs</code>と <code>ys</code>を生成してこの関数に渡すことで、主張しようとしている性質を反証しようとします。何らかの入力に対して関数が <code>false</code>を返した場合、性質は正しくないことが示され、ライブラリはエラーを発生させます。幸いなことに、次のように100個の無作為なテストケースを生成しても、ライブラリはこの性質を反証することができません。</p><pre><code class="language-text">$ pulp test
 
 * Build successful. Running tests...
 
@@ -83,213 +63,123 @@
 100/100 test(s) passed.
 
 * Tests OK.
-</code></pre>
-<p>もし <code>merge</code>関数に意図的にバグを混入した場合（例えば、大なりのチェックを小なりのチェックへと変更するなど）、最初に失敗したテストケースの後で例外が実行時に投げられます。</p>
-<pre><code class="language-text">Error: Test 1 failed:
+</code></pre><p>もし <code>merge</code>関数に意図的にバグを混入した場合（例えば、大なりのチェックを小なりのチェックへと変更するなど）、最初に失敗したテストケースの後で例外が実行時に投げられます。</p><pre><code class="language-text">Error: Test 1 failed:
 Test returned false
-</code></pre>
-<p>このエラーメッセージではあまり役に立ちませんが、これから見ていくように、少しの作業で改良することができます。</p>
-<h2>13.4 エラーメッセージの改善</h2>
-<p>テストケースが失敗した時に同時にエラーメッセージを提供するには、 <code>purescript-quickcheck</code>の <code><!--?--></code>演算子を使います。次のように性質の定義に続けて <code><!--?--></code>で区切ってエラーメッセージを書くだけです。</p>
-<pre><code class="language-haskell"><span class="hljs-title">quickCheck</span> \xs ys ->
+</code></pre><p>このエラーメッセージではあまり役に立ちませんが、これから見ていくように、少しの作業で改良することができます。</p><h2>13.4 エラーメッセージの改善</h2><p>テストケースが失敗した時に同時にエラーメッセージを提供するには、 <code>purescript-quickcheck</code>の <code><?></code>演算子を使います。次のように性質の定義に続けて <code><?></code>で区切ってエラーメッセージを書くだけです。</p><pre><code class="language-haskell"><span class="hljs-title">quickCheck</span> \xs ys -&gt;
   <span class="hljs-keyword">let</span>
     result = merge (sort xs) (sort ys)
   <span class="hljs-keyword">in</span>
-    xs `isSubarrayOf` result <?> show xs <> <span class="hljs-string">" not a subarray of "</span> <> show result
-</code></pre>
-<p>このとき、もしバグを混入するようにコードを変更すると、最初のテストケースが失敗したときに改良されたエラーメッセージが表示されます。</p>
-<pre><code class="language-text">Error: Test 6 failed:
+    xs `isSubarrayOf` result &lt;?&gt; show xs &lt;&gt; <span class="hljs-string">" not a subarray of "</span> &lt;&gt; show result
+</code></pre><p>このとき、もしバグを混入するようにコードを変更すると、最初のテストケースが失敗したときに改良されたエラーメッセージが表示されます。</p><pre><code class="language-text">Error: Test 6 failed:
 [79168] not a subarray of [-752832,686016]
-</code></pre>
-<p>入力 <code>xs</code>が無作為に選ばれた数の配列として生成されていることに注目してください。</p>
-<div class="exercise"><h2>演習</h2><ol>
+</code></pre><p>入力 <code>xs</code>が無作為に選ばれた数の配列として生成されていることに注目してください。</p><div class="exercise"><h2>演習</h2><ol>
 <li>
 <p>（簡単）　空の配列を持つ配列を統合しても元の配列は変更されない、と主張する性質を書いてください。</p>
 </li>
 <li>
 <p>（簡単） <code>merge</code>の残りの性質に対して、適切なエラーメッセージを追加してください。</p>
 </li>
-</ol></div>
-
-<h2>13.5 多相的なコードのテスト</h2>
-<p><code>Merge</code>モジュールでは、数の配列だけでなく、 <code>Ord</code>型クラスに属するどんな型の配列に対しても動作する、 <code>merge</code>関数を一般化した <code>mergePoly</code>という関数が定義されています。</p>
-<pre><code class="language-haskell"><span class="hljs-title">mergePoly</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Ord</span> a => <span class="hljs-type">Array</span> a -> <span class="hljs-type">Array</span> a -> <span class="hljs-type">Array</span> a
-</code></pre>
-<p><code>merge</code>の代わりに <code>mergePoly</code>を使うように元のテストを変更すると、次のようなエラーメッセージが表示されます。</p>
-<pre><code class="language-text">No type class instance was found for
+</ol></div><h2>13.5 多相的なコードのテスト</h2><p><code>Merge</code>モジュールでは、数の配列だけでなく、 <code>Ord</code>型クラスに属するどんな型の配列に対しても動作する、 <code>merge</code>関数を一般化した <code>mergePoly</code>という関数が定義されています。</p><pre><code class="language-haskell"><span class="hljs-title">mergePoly</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Ord</span> a =&gt; <span class="hljs-type">Array</span> a -&gt; <span class="hljs-type">Array</span> a -&gt; <span class="hljs-type">Array</span> a
+</code></pre><p><code>merge</code>の代わりに <code>mergePoly</code>を使うように元のテストを変更すると、次のようなエラーメッセージが表示されます。</p><pre><code class="language-text">No type class instance was found for
 
   Test.QuickCheck.Arbitrary.Arbitrary t0
 
 The instance head contains unknown type variables.
 Consider adding a type annotation.
-</code></pre>
-<p>このエラーメッセージは、配列に持たせたい要素の型が何なのかわからないので、コンパイラが無作為なテストケースを生成できなかったということを示しています。このような場合、補助関数を使と、コンパイラが特定の型を推論すること強制できます。例えば、恒等関数の同義語として <code>ints</code>という関数を定義します。</p>
-<pre><code class="language-haskell">ints :: <span class="hljs-built_in">Array</span> Int -> <span class="hljs-built_in">Array</span> Int
+</code></pre><p>このエラーメッセージは、配列に持たせたい要素の型が何なのかわからないので、コンパイラが無作為なテストケースを生成できなかったということを示しています。このような場合、補助関数を使と、コンパイラが特定の型を推論すること強制できます。例えば、恒等関数の同義語として <code>ints</code>という関数を定義します。</p><pre><code class="language-haskell">ints :: <span class="hljs-built_in">Array</span> Int -&gt; <span class="hljs-built_in">Array</span> Int
 ints = id
-</code></pre>
-<p>それから、コンパイラが引数の２つの配列の型 <code>Array Int</code>を推論するように、テストを変更します。</p>
-<pre><code class="language-haskell"><span class="hljs-title">quickCheck</span> \xs ys ->
+</code></pre><p>それから、コンパイラが引数の２つの配列の型 <code>Array Int</code>を推論するように、テストを変更します。</p><pre><code class="language-haskell"><span class="hljs-title">quickCheck</span> \xs ys -&gt;
   isSorted $ ints $ mergePoly (sort xs) (sort ys)
-<span class="hljs-title">quickCheck</span> \xs ys ->
+<span class="hljs-title">quickCheck</span> \xs ys -&gt;
   ints xs `isSubarrayOf` mergePoly xs ys
-</code></pre>
-<p>ここで、 <code>numbers</code>関数が不明な型を解消するために使われるので、 <code>xs</code>と <code>ys</code>はどちらも型 <code>Array Int</code>を持っています。</p>
-<div class="exercise"><h2>演習</h2><ol>
+</code></pre><p>ここで、 <code>numbers</code>関数が不明な型を解消するために使われるので、 <code>xs</code>と <code>ys</code>はどちらも型 <code>Array Int</code>を持っています。</p><div class="exercise"><h2>演習</h2><ol>
 <li>
 <p>(簡単)<code>xs</code>と <code>ys</code>の型を <code>Array Boolean</code>に強制する関数 <code>bools</code>を書き、 <code>mergePoly</code>をその型でテストする性質を追加してください。</p>
 </li>
 <li>
 <p>(やや難しい) 標準関数から(例えば <code>purescript-arrays</code>パッケージから)ひとつ関数を選び、適切なエラーメッセージを含めてQuickCheckの性質を書いてください。その性質は、補助関数を使って多相型引数を <code>Int</code>か <code>Boolean</code>のどちらかに固定しなければいけません。</p>
 </li>
-</ol></div>
-
-<h2>13.6 任意のデータの生成</h2>
-<p><code>purescript-quickcheck</code>ライブラリを使って性質についてのテストケースを無作為に生成する方法について説明します。</p>
-<p>無作為に値を生成することができるような型は、次のような型クラス <code>Arbitary</code>のインスタンスを持っています。</p>
-<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-type">Arbitrary</span> t <span class="hljs-keyword">where</span></span>
+</ol></div><h2>13.6 任意のデータの生成</h2><p><code>purescript-quickcheck</code>ライブラリを使って性質についてのテストケースを無作為に生成する方法について説明します。</p><p>無作為に値を生成することができるような型は、次のような型クラス <code>Arbitary</code>のインスタンスを持っています。</p><pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-type">Arbitrary</span> t <span class="hljs-keyword">where</span></span>
   arbitrary :: <span class="hljs-type">Gen</span> t
-</code></pre>
-<p><code>Gen</code>型構築子は<strong>決定的無作為データ生成</strong>の副作用を表しています。 決定的無作為データ生成は、擬似乱数生成器を使って、シード値から決定的無作為関数の引数を生成します。 <code>Test.QuickCheck.Gen</code>モジュールは、ジェネレータを構築するためのいくつかの有用なコンビネータを定義します。</p>
-<p><code>Gen</code>はモナドでもApplicative関手でもあるので、 <code>Arbitary</code>型クラスの新しいインスタンスを作成するのに、いつも使っているようなコンビネータを自由に使うことができます。</p>
-<p>例えば、 <code>purescript-quickcheck</code>ライブラリで提供されている <code>Int</code>型の <code>Arbitrary</code>インスタンスは、関数を整数から任意の整数値のバイトまでマップするための <code>Functor</code>インスタンスを <code>Gen</code>に使用することで、バイト値の分布した値を生成します。</p>
-<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">newtype</span> <span class="hljs-type">Byte</span> = <span class="hljs-type">Byte</span> <span class="hljs-type">Int</span></span>
+</code></pre><p><code>Gen</code>型構築子は<strong>決定的無作為データ生成</strong>の副作用を表しています。 決定的無作為データ生成は、擬似乱数生成器を使って、シード値から決定的無作為関数の引数を生成します。 <code>Test.QuickCheck.Gen</code>モジュールは、ジェネレータを構築するためのいくつかの有用なコンビネータを定義します。</p><p><code>Gen</code>はモナドでもApplicative関手でもあるので、 <code>Arbitary</code>型クラスの新しいインスタンスを作成するのに、いつも使っているようなコンビネータを自由に使うことができます。</p><p>例えば、 <code>purescript-quickcheck</code>ライブラリで提供されている <code>Int</code>型の <code>Arbitrary</code>インスタンスは、関数を整数から任意の整数値のバイトまでマップするための <code>Functor</code>インスタンスを <code>Gen</code>に使用することで、バイト値の分布した値を生成します。</p><pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">newtype</span> <span class="hljs-type">Byte</span> = <span class="hljs-type">Byte</span> <span class="hljs-type">Int</span></span>
 <span class="hljs-class">
 <span class="hljs-keyword">instance</span> arbitraryByte :: <span class="hljs-type">Arbitrary</span> <span class="hljs-type">Byte</span> <span class="hljs-keyword">where</span></span>
   arbitrary = map intToByte arbitrary
     <span class="hljs-keyword">where</span>
-    intToByte n | n >= <span class="hljs-number">0</span> = <span class="hljs-type">Byte</span> (n `mod` <span class="hljs-number">256</span>)
+    intToByte n | n &gt;= <span class="hljs-number">0</span> = <span class="hljs-type">Byte</span> (n `mod` <span class="hljs-number">256</span>)
                 | otherwise = intToByte (-n)
-</code></pre>
-<p>ここでは、0から255までの間の整数値であるような型 <code>Byte</code>を定義しています。 <code>Arbitrary</code>インスタンスの <code><$></code>演算子を使って、 <code>uniformToByte</code>関数を <code>arbitrary</code>アクションまで持ち上げています。この型の <code>arbitrary</code>アクションの型は <code>Gen Number</code>だと推論されますが、これは0から1の間に均一に分布する数を生成することを意味しています。</p>
-<p>この考え方を <code>merge</code>に対しての既ソート性テストを改良するのに使うこともできます。</p>
-<pre><code class="language-haskell"><span class="hljs-title">quickCheck</span> \xs ys ->
+</code></pre><p>ここでは、0から255までの間の整数値であるような型 <code>Byte</code>を定義しています。 <code>Arbitrary</code>インスタンスの <code><$></code>演算子を使って、 <code>uniformToByte</code>関数を <code>arbitrary</code>アクションまで持ち上げています。この型の <code>arbitrary</code>アクションの型は <code>Gen Number</code>だと推論されますが、これは0から1の間に均一に分布する数を生成することを意味しています。</p><p>この考え方を <code>merge</code>に対しての既ソート性テストを改良するのに使うこともできます。</p><pre><code class="language-haskell"><span class="hljs-title">quickCheck</span> \xs ys -&gt;
   isSorted $ numbers $ mergePoly (sort xs) (sort ys)
-</code></pre>
-<p>このテストでは、任意の配列 <code>xs</code>と <code>ys</code>を生成しますが、 <code>merge</code>はソート済みの入力を期待しているので、 <code>xs</code>と <code>ys</code>をソートしておかなければなりません。一方で、ソートされた配列を表すnewtypeを作成し、ソートされたデータを生成する <code>Arbitrary</code>インスタンスを書くこともできます。</p>
-<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">newtype</span> <span class="hljs-type">Sorted</span> a = <span class="hljs-type">Sorted</span> (<span class="hljs-type">Array</span> <span class="hljs-title">a</span>)</span>
+</code></pre><p>このテストでは、任意の配列 <code>xs</code>と <code>ys</code>を生成しますが、 <code>merge</code>はソート済みの入力を期待しているので、 <code>xs</code>と <code>ys</code>をソートしておかなければなりません。一方で、ソートされた配列を表すnewtypeを作成し、ソートされたデータを生成する <code>Arbitrary</code>インスタンスを書くこともできます。</p><pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">newtype</span> <span class="hljs-type">Sorted</span> a = <span class="hljs-type">Sorted</span> (<span class="hljs-type">Array</span> <span class="hljs-title">a</span>)</span>
 
-<span class="hljs-title">sorted</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Sorted</span> a -> <span class="hljs-type">Array</span> a
+<span class="hljs-title">sorted</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Sorted</span> a -&gt; <span class="hljs-type">Array</span> a
 <span class="hljs-title">sorted</span> (<span class="hljs-type">Sorted</span> xs) = xs
 <span class="hljs-class">
-<span class="hljs-keyword">instance</span> arbSorted :: (<span class="hljs-type">Arbitrary</span> <span class="hljs-title">a</span>, <span class="hljs-type">Ord</span> <span class="hljs-title">a</span>) => <span class="hljs-type">Arbitrary</span> (<span class="hljs-type">Sorted</span> <span class="hljs-title">a</span>) <span class="hljs-keyword">where</span></span>
-  arbitrary = map (<span class="hljs-type">Sorted</span> <<< sort) arbitrary
-</code></pre>
-<p>この型構築子を使うと、テストを次のように変更することができます。</p>
-<pre><code class="language-haskell"><span class="hljs-title">quickCheck</span> \xs ys ->
+<span class="hljs-keyword">instance</span> arbSorted :: (<span class="hljs-type">Arbitrary</span> <span class="hljs-title">a</span>, <span class="hljs-type">Ord</span> <span class="hljs-title">a</span>) =&gt; <span class="hljs-type">Arbitrary</span> (<span class="hljs-type">Sorted</span> <span class="hljs-title">a</span>) <span class="hljs-keyword">where</span></span>
+  arbitrary = map (<span class="hljs-type">Sorted</span> &lt;&lt;&lt; sort) arbitrary
+</code></pre><p>この型構築子を使うと、テストを次のように変更することができます。</p><pre><code class="language-haskell"><span class="hljs-title">quickCheck</span> \xs ys -&gt;
   isSorted $ ints $ mergePoly (sorted xs) (sorted ys)
-</code></pre>
-<p>これは些細な変更に見えるかもしれませんが、 <code>xs</code>と <code>ys</code>の型はただの <code>Array Int</code>から <code>Sorted Int</code>へと変更されています。これにより、 <code>mergePoly</code>関数はソート済みの入力を取る、という<strong>意図</strong>を、わかりやすく示すことができます。理想的には、 <code>mergePoly</code>関数自体の型が <code>Sorted</code>型構築子を使うようにするといいでしょう。</p>
-<p>より興味深い例として、 <code>Tree</code>モジュールでは枝の値でソートされた二分木の型が定義されています。</p>
-<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">data</span> <span class="hljs-type">Tree</span> a</span>
+</code></pre><p>これは些細な変更に見えるかもしれませんが、 <code>xs</code>と <code>ys</code>の型はただの <code>Array Int</code>から <code>Sorted Int</code>へと変更されています。これにより、 <code>mergePoly</code>関数はソート済みの入力を取る、という<strong>意図</strong>を、わかりやすく示すことができます。理想的には、 <code>mergePoly</code>関数自体の型が <code>Sorted</code>型構築子を使うようにするといいでしょう。</p><p>より興味深い例として、 <code>Tree</code>モジュールでは枝の値でソートされた二分木の型が定義されています。</p><pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">data</span> <span class="hljs-type">Tree</span> a</span>
   = <span class="hljs-type">Leaf</span>
   | <span class="hljs-type">Branch</span> (<span class="hljs-type">Tree</span> a) a (<span class="hljs-type">Tree</span> a)
-</code></pre>
-<p><code>Tree</code>モジュールでは次のAPIが定義されています。</p>
-<pre><code class="language-haskell"><span class="hljs-title">insert</span>    :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Ord</span> a => a -> <span class="hljs-type">Tree</span> a -> <span class="hljs-type">Tree</span> a
-<span class="hljs-title">member</span>    :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Ord</span> a => a -> <span class="hljs-type">Tree</span> a -> <span class="hljs-type">Boolean</span>
-<span class="hljs-title">fromArray</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Ord</span> a => <span class="hljs-type">Array</span> a -> <span class="hljs-type">Tree</span> a
-<span class="hljs-title">toArray</span>   :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Tree</span> a -> <span class="hljs-type">Array</span> a
-</code></pre>
-<p><code>insert</code>関数は新しい要素をソート済みの二分木に挿入するのに使われ、 <code>member</code>関数は特定の値の有無を木に問い合わせるのに使われます。例えば次のようになります。</p>
-<pre><code class="language-text">> import Tree
+</code></pre><p><code>Tree</code>モジュールでは次のAPIが定義されています。</p><pre><code class="language-haskell"><span class="hljs-title">insert</span>    :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Ord</span> a =&gt; a -&gt; <span class="hljs-type">Tree</span> a -&gt; <span class="hljs-type">Tree</span> a
+<span class="hljs-title">member</span>    :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Ord</span> a =&gt; a -&gt; <span class="hljs-type">Tree</span> a -&gt; <span class="hljs-type">Boolean</span>
+<span class="hljs-title">fromArray</span> :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Ord</span> a =&gt; <span class="hljs-type">Array</span> a -&gt; <span class="hljs-type">Tree</span> a
+<span class="hljs-title">toArray</span>   :: <span class="hljs-keyword">forall</span> a. <span class="hljs-type">Tree</span> a -&gt; <span class="hljs-type">Array</span> a
+</code></pre><p><code>insert</code>関数は新しい要素をソート済みの二分木に挿入するのに使われ、 <code>member</code>関数は特定の値の有無を木に問い合わせるのに使われます。例えば次のようになります。</p><pre><code class="language-text">> import Tree
 
 > member 2 $ insert 1 $ insert 2 Leaf
 true
 
 > member 1 Leaf
 false
-</code></pre>
-<p><code>toArray</code>関数と <code>fromArray</code>関数は、ソートされた木とソートされた配列を相互に変換するために使われます。 <code>fromArray</code>を使うと、木についての <code>Arbitrary</code>インスタンスを書くことができます。</p>
-<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">instance</span> arbTree :: (<span class="hljs-type">Arbitrary</span> <span class="hljs-title">a</span>, <span class="hljs-type">Ord</span> <span class="hljs-title">a</span>) => <span class="hljs-type">Arbitrary</span> (<span class="hljs-type">Tree</span> <span class="hljs-title">a</span>) <span class="hljs-keyword">where</span></span>
+</code></pre><p><code>toArray</code>関数と <code>fromArray</code>関数は、ソートされた木とソートされた配列を相互に変換するために使われます。 <code>fromArray</code>を使うと、木についての <code>Arbitrary</code>インスタンスを書くことができます。</p><pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">instance</span> arbTree :: (<span class="hljs-type">Arbitrary</span> <span class="hljs-title">a</span>, <span class="hljs-type">Ord</span> <span class="hljs-title">a</span>) =&gt; <span class="hljs-type">Arbitrary</span> (<span class="hljs-type">Tree</span> <span class="hljs-title">a</span>) <span class="hljs-keyword">where</span></span>
   arbitrary = map fromArray arbitrary
-</code></pre>
-<p>型 <code>a</code>についての有効な <code>Arbitary</code>インスタンスが存在していれば、テストする性質の引数の型として <code>Tree a</code>を使うことができます。例えば、 <code>member</code>テストは値を挿入した後は常に <code>true</code>を返すことをテストできます。</p>
-<pre><code class="language-haskell"><span class="hljs-title">quickCheck</span> \t a ->
+</code></pre><p>型 <code>a</code>についての有効な <code>Arbitary</code>インスタンスが存在していれば、テストする性質の引数の型として <code>Tree a</code>を使うことができます。例えば、 <code>member</code>テストは値を挿入した後は常に <code>true</code>を返すことをテストできます。</p><pre><code class="language-haskell"><span class="hljs-title">quickCheck</span> \t a -&gt;
   member a $ insert a $ treeOfInt t
-</code></pre>
-<p>ここでは、引数 <code>t</code>は <code>Tree Number</code>型の無作為に生成された木です。型引数は、識別関数 <code>treeOfInt</code>によって明確化されています。</p>
-<div class="exercise"><h2>演習</h2><ol>
+</code></pre><p>ここでは、引数 <code>t</code>は <code>Tree Number</code>型の無作為に生成された木です。型引数は、識別関数 <code>treeOfInt</code>によって明確化されています。</p><div class="exercise"><h2>演習</h2><ol>
 <li>
 <p>（やや難しい） <code>a-z</code>の範囲から無作為に選ばれた文字の集まりを生成する <code>Arbitrary</code>インスタンスを持った、 <code>String</code>のnewtypeを作ってください。<strong>ヒント</strong>：<code>Test.QuickCheck.Gen</code>モジュールから <code>elements</code>と <code>arrayOf</code>関数を使います。</p>
 </li>
 <li>
 <p>（難しい） 木に挿入された値は、任意に多くの挿入があった後も、その木の構成要素であることを主張する性質を書いてください。</p>
 </li>
-</ol></div>
+</ol></div><h2>13.7 高階関数のテスト</h2><p><code>Merge</code>モジュールは <code>merge</code>関数についての他の生成も定義します。 <code>mergeAith</code>関数は、統合される要素の順序を決定するのに使われる、追加の関数を引数としてとります。つまり <code>mergeWith</code>は高階関数です。</p><p>例えば、すでに長さの昇順になっている２つの配列を統合するのに、 <code>length</code>関数を最初の引数として渡します。このとき、結果も長さの昇順になっていなければなりません。</p><pre><code class="language-haskell">&gt; <span class="hljs-keyword">import</span> Data.String
 
-<h2>13.7 高階関数のテスト</h2>
-<p><code>Merge</code>モジュールは <code>merge</code>関数についての他の生成も定義します。 <code>mergeAith</code>関数は、統合される要素の順序を決定するのに使われる、追加の関数を引数としてとります。つまり <code>mergeWith</code>は高階関数です。</p>
-<p>例えば、すでに長さの昇順になっている２つの配列を統合するのに、 <code>length</code>関数を最初の引数として渡します。このとき、結果も長さの昇順になっていなければなりません。</p>
-<pre><code class="language-haskell">> <span class="hljs-keyword">import</span> Data.String
-
-> mergeWith length
+&gt; mergeWith length
     [<span class="hljs-string">""</span>, <span class="hljs-string">"ab"</span>, <span class="hljs-string">"abcd"</span>]
     [<span class="hljs-string">"x"</span>, <span class="hljs-string">"xyz"</span>]
 
 [<span class="hljs-string">""</span>,<span class="hljs-string">"x"</span>,<span class="hljs-string">"ab"</span>,<span class="hljs-string">"xyz"</span>,<span class="hljs-string">"abcd"</span>]
-</code></pre>
-<p>このような関数をテストするにはどうしたらいいでしょうか。理想的には、関数であるような最初の引数を含めた、３つの引数すべてについて、値を生成したいと思うでしょう。</p>
-<p>関数を無作為に生成せきるようにする、もうひとつの型クラスがあります。この型クラスは <code>Coarbitrary</code>と呼ばれており、次のように定義されています。</p>
-<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-type">Coarbitrary</span> t <span class="hljs-keyword">where</span></span>
-  coarbitrary :: <span class="hljs-keyword">forall</span> r. t -> <span class="hljs-type">Gen</span> r -> <span class="hljs-type">Gen</span> r
-</code></pre>
-<p><code>coarbitrary</code>関数は、型 <code>t</code>と、関数の結果の型 <code>r</code>についての無作為な生成器を関数の引数としてとり、無作為な生成器を<strong>かき乱す</strong>のにこの引数を使います。つまり、この引数を使って、乱数生成器の無作為な出力を変更しているのです。</p>
-<p>また、もし関数の定義域が <code>Coarbitrary</code>で、値域が <code>Arbitrary</code>なら、 <code>Arbitrary</code>の関数を与える型クラスインスタンスが存在しています。</p>
-<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">instance</span> arbFunction :: (<span class="hljs-type">Coarbitrary</span> <span class="hljs-title">a</span>, <span class="hljs-type">Arbitrary</span> <span class="hljs-title">b</span>) => <span class="hljs-type">Arbitrary</span> (<span class="hljs-title">a</span> -> <span class="hljs-title">b</span>)
-</span></code></pre>
-<p>実は、これが意味しているのは、引数として関数を取るような性質を記述できるということです。 <code>mergeWith</code>関数の場合では、新しい引数を考慮するようにテストを修正すると、最初の引数を無作為に生成することができます。</p>
-<p>既ソート性の性質については、必ずしも <code>Ord</code>インスタンスを持っているとは限らないので、結果がソートされているということを保証することができませんが、引数として渡す関数 <code>f</code>にしたがって結果がソートされている期待することはできます。さらに、２つの入力配列が <code>f</code>に従ってソートされている必要がありますので、 <code>sortBy</code>関数を使って関数 <code>f</code>が適用されたあとの比較に基づいて <code>xs</code>と <code>ys</code>をソートします。</p>
-<pre><code class="language-haskell">quickCheck \xs ys f ->
+</code></pre><p>このような関数をテストするにはどうしたらいいでしょうか。理想的には、関数であるような最初の引数を含めた、３つの引数すべてについて、値を生成したいと思うでしょう。</p><p>関数を無作為に生成せきるようにする、もうひとつの型クラスがあります。この型クラスは <code>Coarbitrary</code>と呼ばれており、次のように定義されています。</p><pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-type">Coarbitrary</span> t <span class="hljs-keyword">where</span></span>
+  coarbitrary :: <span class="hljs-keyword">forall</span> r. t -&gt; <span class="hljs-type">Gen</span> r -&gt; <span class="hljs-type">Gen</span> r
+</code></pre><p><code>coarbitrary</code>関数は、型 <code>t</code>と、関数の結果の型 <code>r</code>についての無作為な生成器を関数の引数としてとり、無作為な生成器を<strong>かき乱す</strong>のにこの引数を使います。つまり、この引数を使って、乱数生成器の無作為な出力を変更しているのです。</p><p>また、もし関数の定義域が <code>Coarbitrary</code>で、値域が <code>Arbitrary</code>なら、 <code>Arbitrary</code>の関数を与える型クラスインスタンスが存在しています。</p><pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">instance</span> arbFunction :: (<span class="hljs-type">Coarbitrary</span> <span class="hljs-title">a</span>, <span class="hljs-type">Arbitrary</span> <span class="hljs-title">b</span>) =&gt; <span class="hljs-type">Arbitrary</span> (<span class="hljs-title">a</span> -&gt; <span class="hljs-title">b</span>)
+</span></code></pre><p>実は、これが意味しているのは、引数として関数を取るような性質を記述できるということです。 <code>mergeWith</code>関数の場合では、新しい引数を考慮するようにテストを修正すると、最初の引数を無作為に生成することができます。</p><p>既ソート性の性質については、必ずしも <code>Ord</code>インスタンスを持っているとは限らないので、結果がソートされているということを保証することができませんが、引数として渡す関数 <code>f</code>にしたがって結果がソートされている期待することはできます。さらに、２つの入力配列が <code>f</code>に従ってソートされている必要がありますので、 <code>sortBy</code>関数を使って関数 <code>f</code>が適用されたあとの比較に基づいて <code>xs</code>と <code>ys</code>をソートします。</p><pre><code class="language-haskell">quickCheck \xs ys f -&gt;
   isSorted $
     map f $
       mergeWith (intToBool f)
                 (sortBy (compare <span class="hljs-string">`on`</span> f) xs)
                 (sortBy (compare <span class="hljs-string">`on`</span> f) ys)
-</code></pre>
-<p>ここでは、関数 <code>f</code>の型を明確にするために、関数 <code>intToBool</code>を使用しています。</p>
-<pre><code class="language-haskell"><span class="hljs-title">intToBool</span> :: (<span class="hljs-type">Int</span> -> <span class="hljs-type">Boolean</span>) -> <span class="hljs-type">Int</span> -> <span class="hljs-type">Boolean</span>
+</code></pre><p>ここでは、関数 <code>f</code>の型を明確にするために、関数 <code>intToBool</code>を使用しています。</p><pre><code class="language-haskell"><span class="hljs-title">intToBool</span> :: (<span class="hljs-type">Int</span> -&gt; <span class="hljs-type">Boolean</span>) -&gt; <span class="hljs-type">Int</span> -&gt; <span class="hljs-type">Boolean</span>
 <span class="hljs-title">intToBool</span> = id
-</code></pre>
-<p>部分配列性については、単に関数の名前を <code>mergeWith</code>に変えるだけです。引き続き入力配列は結果の部分配列になっていると期待できます。</p>
-<pre><code class="language-haskell"><span class="hljs-title">quickCheck</span> \xs ys f ->
+</code></pre><p>部分配列性については、単に関数の名前を <code>mergeWith</code>に変えるだけです。引き続き入力配列は結果の部分配列になっていると期待できます。</p><pre><code class="language-haskell"><span class="hljs-title">quickCheck</span> \xs ys f -&gt;
   xs `isSubarrayOf` mergeWith (numberToBool f) xs ys
-</code></pre>
-<p>関数は <code>Arbitrary</code>であるだけでなく <code>Coarbitrary</code>でもあります。</p>
-<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">instance</span> coarbFunction :: (<span class="hljs-type">Arbitrary</span> <span class="hljs-title">a</span>, <span class="hljs-type">Coarbitrary</span> <span class="hljs-title">b</span>) => <span class="hljs-type">Coarbitrary</span> (<span class="hljs-title">a</span> -> <span class="hljs-title">b</span>)
-</span></code></pre>
-<p>これは値の生成が単純な関数だけに限定されるものではないことを意味しています。つまり、<strong>高階関数</strong>や、引数が高階関数であるような関数すら無作為に生成することができるのです。</p>
-<h2>13.8 Coarbitraryのインスタンスを書く</h2>
-<p><code>Gen</code>の <code>Monad</code>や <code>Applicative</code>インスタンスを使って独自のデータ型に対して <code>Arbitrary</code>インスタンスを書くことができるのとちょうど同じように、独自の <code>Coarbitrary</code>インスタンスを書くこともできます。これにより、無作為に生成される関数の定義域として、独自のデータ型を使うことができるようになります。</p>
-<p><code>Tree</code>型の <code>Coarbitrary</code>インスタンスを書いてみましょう。枝に格納されている要素の型に <code>Coarbitrary</code>インスタンスが必要になります。</p>
-<pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">instance</span> coarbTree :: <span class="hljs-type">Coarbitrary</span> a => <span class="hljs-type">Coarbitrary</span> (<span class="hljs-type">Tree</span> <span class="hljs-title">a</span>) <span class="hljs-keyword">where</span></span>
-</code></pre>
-<p>型 <code>Tree a</code>の値を与えられた乱数発生器をかき乱す関数を記述する必要があります。入力値が <code>Leaf</code>であれば、そのままの生成器を返します。</p>
-<pre><code class="language-haskell">coarbitrary Leaf = id
-</code></pre>
-<p>もし木が <code>Branch</code>なら、
+</code></pre><p>関数は <code>Arbitrary</code>であるだけでなく <code>Coarbitrary</code>でもあります。</p><pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">instance</span> coarbFunction :: (<span class="hljs-type">Arbitrary</span> <span class="hljs-title">a</span>, <span class="hljs-type">Coarbitrary</span> <span class="hljs-title">b</span>) =&gt; <span class="hljs-type">Coarbitrary</span> (<span class="hljs-title">a</span> -&gt; <span class="hljs-title">b</span>)
+</span></code></pre><p>これは値の生成が単純な関数だけに限定されるものではないことを意味しています。つまり、<strong>高階関数</strong>や、引数が高階関数であるような関数すら無作為に生成することができるのです。</p><h2>13.8 Coarbitraryのインスタンスを書く</h2><p><code>Gen</code>の <code>Monad</code>や <code>Applicative</code>インスタンスを使って独自のデータ型に対して <code>Arbitrary</code>インスタンスを書くことができるのとちょうど同じように、独自の <code>Coarbitrary</code>インスタンスを書くこともできます。これにより、無作為に生成される関数の定義域として、独自のデータ型を使うことができるようになります。</p><p><code>Tree</code>型の <code>Coarbitrary</code>インスタンスを書いてみましょう。枝に格納されている要素の型に <code>Coarbitrary</code>インスタンスが必要になります。</p><pre><code class="language-haskell"><span class="hljs-class"><span class="hljs-keyword">instance</span> coarbTree :: <span class="hljs-type">Coarbitrary</span> a =&gt; <span class="hljs-type">Coarbitrary</span> (<span class="hljs-type">Tree</span> <span class="hljs-title">a</span>) <span class="hljs-keyword">where</span></span>
+</code></pre><p>型 <code>Tree a</code>の値を与えられた乱数発生器をかき乱す関数を記述する必要があります。入力値が <code>Leaf</code>であれば、そのままの生成器を返します。</p><pre><code class="language-haskell">coarbitrary Leaf = id
+</code></pre><p>もし木が <code>Branch</code>なら、
 関数合成で独自のかき乱し関数を作ることにより、
-左の部分木、値、右の部分木を使って生成器をかき乱します。</p>
-<pre><code class="language-haskell">coarbitrary (Branch l a r) =
-  coarbitrary l <<<
-  coarbitrary a <<<
+左の部分木、値、右の部分木を使って生成器をかき乱します。</p><pre><code class="language-haskell">coarbitrary (Branch l a r) =
+  coarbitrary l &lt;&lt;&lt;
+  coarbitrary a &lt;&lt;&lt;
   coarbitrary r
-</code></pre>
-<p>これで、木を引数にとるような関数を含む性質を自由に書くことができるようになりました。たとえば、 <code>Tree</code>モジュールでは述語が引数のどんな部分木についても成り立っているかを調べる関数 <code>anywhere</code>が定義されています。</p>
-<pre><code class="language-haskell"><span class="hljs-title">anywhere</span> :: <span class="hljs-keyword">forall</span> a. (<span class="hljs-type">Tree</span> a -> <span class="hljs-type">Boolean</span>) -> <span class="hljs-type">Tree</span> a -> <span class="hljs-type">Boolean</span>
-</code></pre>
-<p>これで、無作為にこの述語関数 <code>anywhere</code>を生成することができるようになりました。例えば、 <code>anywhere</code>関数が次のような<strong>ある命題のもとで不変</strong>であることを期待します。</p>
-<pre><code class="language-haskell"><span class="hljs-title">quickCheck</span> \f g t ->
-  anywhere (\s -> f s || g s) t ==
+</code></pre><p>これで、木を引数にとるような関数を含む性質を自由に書くことができるようになりました。たとえば、 <code>Tree</code>モジュールでは述語が引数のどんな部分木についても成り立っているかを調べる関数 <code>anywhere</code>が定義されています。</p><pre><code class="language-haskell"><span class="hljs-title">anywhere</span> :: <span class="hljs-keyword">forall</span> a. (<span class="hljs-type">Tree</span> a -&gt; <span class="hljs-type">Boolean</span>) -&gt; <span class="hljs-type">Tree</span> a -&gt; <span class="hljs-type">Boolean</span>
+</code></pre><p>これで、無作為にこの述語関数 <code>anywhere</code>を生成することができるようになりました。例えば、 <code>anywhere</code>関数が次のような<strong>ある命題のもとで不変</strong>であることを期待します。</p><pre><code class="language-haskell"><span class="hljs-title">quickCheck</span> \f g t -&gt;
+  anywhere (\s -&gt; f s || g s) t ==
     anywhere f (treeOfInt t) || anywhere g t
-</code></pre>
-<p>ここで、 <code>treeOfInt</code>関数は木に含まれる値の型を型 <code>Int</code>に固定するために使われています。</p>
-<pre><code class="language-haskell"><span class="hljs-title">treeOfInt</span> :: <span class="hljs-type">Tree</span> <span class="hljs-type">Int</span> -> <span class="hljs-type">Tree</span> <span class="hljs-type">Int</span>
+</code></pre><p>ここで、 <code>treeOfInt</code>関数は木に含まれる値の型を型 <code>Int</code>に固定するために使われています。</p><pre><code class="language-haskell"><span class="hljs-title">treeOfInt</span> :: <span class="hljs-type">Tree</span> <span class="hljs-type">Int</span> -&gt; <span class="hljs-type">Tree</span> <span class="hljs-type">Int</span>
 <span class="hljs-title">treeOfInt</span> = id
-</code></pre>
-<h2>13.9 副作用のないテスト</h2>
-<p>テストの目的では通常、テストスイートの <code>main</code>アクションには <code>quickCheck</code>関数の呼び出しが含まれています。しかし、副作用を使わない <code>quickCheckPure</code>と呼ばれる <code>quickCheck</code>関数の亜種もあります。 <code>quickCheckPure</code>は、入力として乱数の種をとり、テスト結果の配列を返す純粋な関数です。</p>
-<p><code>PSCi</code>を使用して <code>quickCheckPure</code>を使ってみましょう。ここでは <code>merge</code>操作が結合法則を満たすことをテストしてみます。</p>
-<pre><code class="language-text">> import Prelude
+</code></pre><h2>13.9 副作用のないテスト</h2><p>テストの目的では通常、テストスイートの <code>main</code>アクションには <code>quickCheck</code>関数の呼び出しが含まれています。しかし、副作用を使わない <code>quickCheckPure</code>と呼ばれる <code>quickCheck</code>関数の亜種もあります。 <code>quickCheckPure</code>は、入力として乱数の種をとり、テスト結果の配列を返す純粋な関数です。</p><p><code>PSCi</code>を使用して <code>quickCheckPure</code>を使ってみましょう。ここでは <code>merge</code>操作が結合法則を満たすことをテストしてみます。</p><pre><code class="language-text">> import Prelude
 > import Merge
 > import Test.QuickCheck
 > import Test.QuickCheck.LCG (mkSeed)
@@ -301,10 +191,7 @@ false
 … ^D
 
 Success : Success : ...
-</code></pre>
-<p><code>quickCheckPure</code>は乱数の種、生成するテストケースの数、テストする性質の３つの引数をとります。もしすべてのテストケースに成功したら、 <code>Success</code>データ構築子の配列がコンソールに出力されます。</p>
-<p><code>quickCheckPure</code>は、性能ベンチマークの入力データ生成や、ウェブアプリケーションのフォームデータ例を無作為に生成するというような状況で便利かもしれません。</p>
-<div class="exercise"><h2>演習</h2><ol>
+</code></pre><p><code>quickCheckPure</code>は乱数の種、生成するテストケースの数、テストする性質の３つの引数をとります。もしすべてのテストケースに成功したら、 <code>Success</code>データ構築子の配列がコンソールに出力されます。</p><p><code>quickCheckPure</code>は、性能ベンチマークの入力データ生成や、ウェブアプリケーションのフォームデータ例を無作為に生成するというような状況で便利かもしれません。</p><div class="exercise"><h2>演習</h2><ol>
 <li>
 <p>（簡単） <code>Byte</code>と <code>Sorted</code>型構築子についての <code>Coarbitrary</code>インスタンスを書いてください。</p>
 </li>
@@ -320,18 +207,12 @@ Success : Success : ...
 <li>
 <p>(やや難しい)<code>all</code>関数を使って <code>quickCheckPure</code>関数の結果を単純化してください。その関数はもしどんなテストもパスするなら <code>true</code>を返し、そうでなければ <code>false</code>を返さなくてはいけません。 <code>purescript-monoids</code>で定義されている <code>First</code>モノイドを、失敗時の最初のエラーを保存するために <code>foldMap</code>関数と一緒に使ってみてください。</p>
 </li>
-</ol></div>
-
-<h2>まとめ</h2>
-<p>この章では、生成的テスティングのパラダイムを使って宣言的な方法でテストを書くための、 <code>purescript-quickcheck</code>パッケージを導入しました。</p>
-<ul>
+</ol></div><h2>まとめ</h2><p>この章では、生成的テスティングのパラダイムを使って宣言的な方法でテストを書くための、 <code>purescript-quickcheck</code>パッケージを導入しました。</p><ul>
 <li><code>pulp test</code>使ってQuickCheckをテストを自動化する方法を説明しました。</li>
-<li>エラーメッセージを改良する <code><!--?--></code>演算子の使い方と、性質を関数として書く方法を説明しました。</li>
+<li>エラーメッセージを改良する <code><?></code>演算子の使い方と、性質を関数として書く方法を説明しました。</li>
 <li><code>Arbitrary</code>と <code>Coarbitrary</code>型クラスは、定型的なテストコードの自動生成を可能にし、高階性質関数を可能にすることも説明しました。</li>
 <li>独自のデータ型に対して <code>Arbitrary</code>と <code>Coarbitrary</code>インスタンスを実装する方法を説明しました。</li>
-</ul>
-<p class="home"><a href="index.html">目次に戻る</a></p>
-</div>
+</ul><p class="home"><a href="index.html">目次に戻る</a></p></div>
   </div>
 
 
