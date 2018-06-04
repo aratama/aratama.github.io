@@ -1819,7 +1819,7 @@ Control_Monad_Eff.forE(<span class="hljs-number">0</span>)(time * <span class="h
 </ul><p>上記のライブラリを抽象化するPureScript向けのライブラリもあります。</p><ul>
 <li><a href="http://github.com/paf31/purescript-thermite"><code>purescript-thermite</code></a> - <code>purescript-react</code>上で構築されるライブラリ</li>
 <li><a href="http://github.com/slamdata/purescript-halogen"><code>purescript-halogen</code></a> - 仮想DOMを抽象的する型安全なライブラリ</li>
-</ul><p>この章では <code>purescript-react</code>を使用し、住所簿にインターフェイスを追加しますが、興味のあるユーザは異なるアプローチで進めることをおすすめします。</p><h2>8.19 住所録のユーザーインタフェース</h2><p><code>purescript-react</code>を使用するために<strong>Reactコンポーネント</strong>と同じ様にアプリケーションを定義します。Reactコンポーネントは、コード内のHTML要素を純粋なデータ構造体として記述し、効率的にDOMにレンダリングします。さらに、コンポーネントはボタンのクリックなどのイベントに応答できます。 <code>purescript-react</code>ライブラリは <code>Eff</code>モナドを使ってこれらのイベントをどのように扱うかを記述します。</p><p>Reactライブラリの完全なチュートリアルはこの章の範囲をはるかに超えていますが、読者は必要に応じてマニュアルを参照することをお勧めします。目的に応じて、Reactは <code>Eff</code>モナドの実用的な例を提供してくれます。</p><p>まずは利用者が住所録に新しい項目を追加できるフォームを構築することにしましょう。フォームには、さまざまなフィールド（姓、名前、都市、州など）を入力するテキストボックス、および検証エラーが表示される領域が含まれます。テキストボックスに利用者がテキストを入力すると、検証エラーが更新されます。</p><p>シンプルさを保つために、フォームは固定の形状とします。電話番号は種類（自宅、携帯電話、仕事、その他）ごとに別々のテキストボックスへ分けることにします。</p><p>次の行を除いて、HTMLファイルは基本的に空です。</p><pre><code class="language-html"><script type="text/javascript" src="../dist/Main.js"></script>
+</ul><p>この章では <code>purescript-react</code>を使用し、住所簿にインターフェイスを追加しますが、興味のあるユーザは異なるアプローチで進めることをおすすめします。</p><h2>8.19 住所録のユーザーインタフェース</h2><p><code>purescript-react</code>を使用するために<strong>Reactコンポーネント</strong>と同じ様にアプリケーションを定義します。Reactコンポーネントは、コード内のHTML要素を純粋なデータ構造体として記述し、効率的にDOMにレンダリングします。さらに、コンポーネントはボタンのクリックなどのイベントに応答できます。 <code>purescript-react</code>ライブラリは <code>Eff</code>モナドを使ってこれらのイベントをどのように扱うかを記述します。</p><p>Reactライブラリの完全なチュートリアルはこの章の範囲をはるかに超えていますが、読者は必要に応じてマニュアルを参照することをお勧めします。目的に応じて、Reactは <code>Eff</code>モナドの実用的な例を提供してくれます。</p><p>まずは利用者が住所録に新しい項目を追加できるフォームを構築することにしましょう。フォームには、さまざまなフィールド（姓、名前、都市、州など）を入力するテキストボックス、および検証エラーが表示される領域が含まれます。テキストボックスに利用者がテキストを入力すると、検証エラーが更新されます。</p><p>シンプルさを保つために、フォームは固定の形状とします。電話番号は種類（自宅、携帯電話、仕事、その他）ごとに別々のテキストボックスへ分けることにします。</p><p>次の行を除いて、HTMLファイルは基本的に空です。</p><pre><code class="language-html">&lt;script type=<span class="hljs-string">"text/javascript"</span> src=<span class="hljs-string">"../dist/Main.js"</span>&gt;<span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span>
 </code></pre><p>この行には、Pulpによって生成されたJavaScriptコードが含まれています。これをファイルの最後に配置して、コードからアクセスしようとする関連要素が上にあることを確認します。 <code>Main.js</code>ファイルを再構築するには、 <code>pulp browserify</code>コマンドを使うことができます。最初に <code>dist</code>ディレクトリが存在し、ReactをNPM依存関係としてインストールしたことを確認してください。</p><pre><code class="language-text">$ npm install # Install React
 $ mkdir dist/
 $ pulp browserify --to dist/Main.js
@@ -3558,7 +3558,7 @@ unit
 </li>
 <li>
 <p>(やや難しい)　<code>checked</code>と <code>disabled</code>など、値を要求しないHTML属性がありますが、これらは次のような<strong>空の属性</strong>として表示されるかもしれません。</p>
-<pre><code class="language-html">&lt;input disabled&gt;
+<pre><code class="language-html">&amp;lt;input disabled&amp;gt;
 </code></pre>
 <p>空の属性を扱えるように <code>Attribute</code>の表現を変更してください。要素に空の属性を追加するために、 <code>attribute</code>または <code>:=</code>の代わりに使える関数を記述してください。</p>
 </li>
