@@ -19,6 +19,7 @@
   "homepage": "https://github.com/aratama/aratama.github.io",
   "devDependencies": {},
   "dependencies": {
-    "cpx": "^1.5.0"
+    "cpx": "^1.5.0",
+    "rimraf": "^2.6.2"
   }
 }
